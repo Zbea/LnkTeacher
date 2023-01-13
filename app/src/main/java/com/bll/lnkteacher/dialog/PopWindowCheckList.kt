@@ -1,0 +1,97 @@
+package com.bll.lnkteacher.dialog
+
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.PopupWindow
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkteacher.R
+import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
+
+/**
+ * 多选弹框
+ */
+class PopWindowCheckList(var context:Context, var list:MutableList<PopWindowBean>, var view: View, val yoff:Int) {
+
+    private var mPopupWindow:PopupWindow?=null
+    private var width=0
+
+    fun builder(): PopWindowCheckList?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
+        mPopupWindow = PopupWindow(context)
+        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        // 设置PopupWindow的内容view
+        mPopupWindow?.contentView=popView
+        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
+        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
+        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+
+        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
+        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        rvList.adapter = mAdapter
+        mAdapter?.bindToRecyclerView(rvList)
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            list[position].isCheck=!list[position].isCheck
+            mAdapter?.notifyDataSetChanged()
+        }
+
+        mPopupWindow?.setOnDismissListener {
+            var checkList= mutableListOf<PopWindowBean>()
+            for (item in list){
+                if (item.isCheck)
+                    checkList.add(item)
+            }
+            if (checkList.size>0)
+                onSelectListener?.onSelect(checkList)
+        }
+
+        popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        width = mPopupWindow?.contentView?.measuredWidth!!
+
+        show()
+        return this
+    }
+
+    fun dismiss() {
+        if (mPopupWindow != null) {
+            mPopupWindow?.dismiss()
+        }
+    }
+
+    fun show() {
+        if (mPopupWindow != null) {
+            mPopupWindow?.showAsDropDown(view,-width, yoff,Gravity.RIGHT);
+        }
+    }
+
+   private var onSelectListener:OnSelectListener?=null
+
+    fun setOnSelectListener(onSelectListener:OnSelectListener)
+    {
+        this.onSelectListener=onSelectListener
+    }
+
+    interface OnSelectListener{
+        fun onSelect(items: List<PopWindowBean>)
+    }
+
+
+    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+
+        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+
+            helper.setText(R.id.tv_name,item.name)
+            helper.setVisible(R.id.iv_check,item.isCheck)
+
+        }
+
+    }
+
+}

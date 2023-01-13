@@ -1,0 +1,23 @@
+package com.bll.lnkteacher.ui.adapter
+
+import com.bll.lnkteacher.R
+import com.bll.lnkteacher.mvp.model.AccountList
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
+
+class AccountVipAdapter(layoutResId: Int, data: List<AccountList.ListBean>?) : BaseQuickAdapter<AccountList.ListBean, BaseViewHolder>(layoutResId, data) {
+
+    var mPosition = 0
+
+    override fun convert(helper: BaseViewHolder, item: AccountList.ListBean) {
+        helper.setText(R.id.tv_name,item.name.toString())
+        helper.setText(R.id.tv_price,item.price.toString())
+        helper.setVisible(R.id.iv_select,helper.adapterPosition==mPosition)
+    }
+
+    fun setItemView(position: Int) {
+        mPosition=position
+        notifyDataSetChanged()
+    }
+
+}

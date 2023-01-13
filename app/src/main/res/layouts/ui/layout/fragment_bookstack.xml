@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page">
+
+    <include layout="@layout/common_fragment_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp_50"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="200dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_jc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="教材"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+            <View
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="0dp"/>
+
+            <TextView
+                android:id="@+id/tv_gj"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="古籍"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="100dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_zrkx"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="自然科学"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+            <View
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="0dp"/>
+
+            <TextView
+                android:id="@+id/tv_shkx"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="社会科学"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginTop="100dp"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/tv_swkx"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="思维科学"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+            <View
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="0dp"/>
+
+            <TextView
+                android:id="@+id/tv_ydcy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="运动才艺"
+                android:gravity="center"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_gray_stroke_10dp_corner"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

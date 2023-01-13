@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_50"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_line_bottom"
+    >
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
+        android:id="@+id/tv_job"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        android:hint="职务"
+        />
+
+    <TextView
+        android:id="@+id/tv_birthday"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
+        android:id="@+id/tv_parent"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
+        android:id="@+id/tv_parent_name"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:src="@mipmap/icon_check_nor"
+        />
+
+    <TextView
+        android:id="@+id/tv_out"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:text="踢出"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+
+</LinearLayout>

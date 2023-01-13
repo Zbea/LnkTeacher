@@ -1,0 +1,159 @@
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'org.greenrobot.greendao'
+}
+
+android {
+    compileSdk 28
+
+    defaultConfig {
+        applicationId "com.bll.lnkteacher"
+        minSdk 26
+        targetSdk 28
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled = true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    greendao{
+        //指定数据库schema版本号，迁移等操作会用到;
+        schemaVersion 2
+        //dao的包名
+        daoPackage 'com.bll.lnkteacher.greendao'
+        //生成数据库文件的目录;
+        targetGenDir 'src/main/java'
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
+        }
+    }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            Set<File> fileSet = options.bootstrapClasspath.getFiles()
+            List<File> newFileList =  new ArrayList<>();
+            //相对位置，根据存放的位置修改路径
+            newFileList.add(new File("./libs/eink/classes.jar"))
+            newFileList.addAll(fileSet)
+            options.bootstrapClasspath = files(
+                    newFileList.toArray()
+            )
+        }
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs =
+                    [
+                            'src/main/res/layouts/adapter',
+                            'src/main/res/layouts/common',
+                            'src/main/res/layouts/dialog',
+                            'src/main/res/layouts/ui',
+                            'src/main/res/layouts',
+                            'src/main/res'
+                    ]
+        }
+    }
+
+
+}
+
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.0'
+    compileOnly files('libs/eink/classes.jar')
+//    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.core:core-ktx:1.5.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //noinspection GradleCompatible
+    implementation 'com.android.support:support-v4:27.1.1'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-annotations:27.1.1'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:cardview-v7:27.1.1'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.5'
+//    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.1.0'
+
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+
+    implementation 'com.androidkun:XTabLayout:1.1.5'
+
+    implementation 'com.haibin:calendarview:3.7.1'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+    //数据库存储
+    implementation 'org.greenrobot:greendao:3.3.0' // add library greendao
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.0.0'
+    //运行时权限
+    implementation 'pub.devrel:easypermissions:1.2.0'
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    //zxing
+    implementation 'com.king.zxing:zxing-lite:1.1.7-androidx'
+    //图片加载
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    //文件下载
+    implementation 'com.liulishuo.filedownloader:library:1.7.7'
+    //视频播放
+    implementation 'cn.jzvd:jiaozivideoplayer:7.7.0'
+//    implementation 'com.github.barteksc:android-pdf-viewer:3.2.0-beta.1'
+
+    // https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
+    implementation("net.lingala.zip4j:zip4j:2.11.1")
+
+
+}
+
+//preBuild {
+//    doLast {
+//        def imlFile = file(project.name + ".iml")
+//        println('Change ' + project.name + '.iml order')
+//        try {
+//            def parsedXml = (new XmlParser()).parse(imlFile)
+//            def jdkNode = parsedXml.component[1].orderEntry.find { it.'@type' == 'jdk' }
+//            parsedXml.component[1].remove(jdkNode)
+//            def sdkString = "Android API " + android.compileSdkVersion.substring("android-".length()) + " Platform"
+//            new groovy.util.Node(parsedXml.component[1], 'orderEntry', ['type': 'jdk', 'jdkName': sdkString, 'jdkType': 'Android SDK'])
+//            groovy.xml.XmlUtil.serialize(parsedXml, new FileOutputStream(imlFile))
+//        } catch (FileNotFoundException e) {
+//            // nop, iml not found
+//        }
+//    }
+//}

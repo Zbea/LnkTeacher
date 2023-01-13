@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/common_fragment_title" />
+
+    <LinearLayout
+        android:id="@+id/ll_tab"
+        android:layout_marginTop="@dimen/navigation_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_50"
+            android:layout_weight="1"
+            />
+
+        <ImageView
+            android:id="@+id/iv_down"
+            android:layout_width="60dp"
+            android:layout_height="@dimen/xtab_height"
+            android:layout_marginRight="@dimen/dp_10"
+            android:src="@mipmap/icon_bookstore_arrow_down"
+            android:scaleType="centerInside"/>
+
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_page_number"
+        android:layout_below="@id/ll_tab"
+        android:layout_marginTop="@dimen/dp_25" />
+
+    <include
+        android:id="@+id/ll_page_number"
+        layout="@layout/common_page_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_30" />
+
+
+    <ImageView
+        android:id="@+id/tv_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:src="@mipmap/icon_add" />
+</RelativeLayout>

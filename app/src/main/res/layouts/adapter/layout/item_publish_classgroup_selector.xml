@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_10">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <CheckBox
+            android:id="@+id/cb_class"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="班群名称"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+
+        <CheckBox
+            android:id="@+id/cb_commit"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="是否提交"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="选择时间"
+            android:gravity="center"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_parent"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navigation_height"
+    android:gravity="center_vertical"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:scaleType="center"
+        android:src="@mipmap/icon_back" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="15dp"
+        android:textColor="@color/black"
+        android:textSize="31sp"
+        android:text="标题"
+        />
+
+    <TextView
+        android:id="@+id/tv_search"
+        android:layout_width="200dp"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginEnd="30dp"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/bg_gary_arch"
+        android:drawableStart="@mipmap/icon_search"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/tv_class"
+        android:layout_width="162dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="@dimen/dp_30"
+        android:drawableRight="@mipmap/icon_arrow_down"
+        android:drawablePadding="@dimen/dp_10"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_22"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:text="班级选择"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        />
+
+    <TextView
+        android:id="@+id/tv_send"
+        android:layout_width="60dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_22"
+        android:gravity="center"
+        android:text="发送"
+        android:visibility="gone"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        />
+
+    <ImageView
+        android:id="@+id/iv_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:visibility="gone"
+        android:src="@mipmap/icon_save"/>
+    <ImageView
+        android:id="@+id/iv_manager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:visibility="gone"
+        android:src="@mipmap/icon_manager"/>
+
+</LinearLayout>
