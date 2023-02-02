@@ -46,10 +46,10 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         val id=intent.getIntExtra("id",0)
 
         val groups=if (index==2){
-            DataBeanManager.getIncetance().groupsSchool
+            DataBeanManager.getInstance().groupsSchool
         }
         else{
-            DataBeanManager.getIncetance().groupsArea
+            DataBeanManager.getInstance().groupsArea
         }
 
         for (i in 0 until groups.size){

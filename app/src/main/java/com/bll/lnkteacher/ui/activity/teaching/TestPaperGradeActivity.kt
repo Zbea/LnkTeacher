@@ -33,7 +33,7 @@ class TestPaperGradeActivity:BaseActivity(){
             datas.add(item)
         }
 
-        var datas= DataBeanManager.getIncetance().classGroups
+        var datas= DataBeanManager.getInstance().classGroups
         for (i in 0 until datas.size){
             var item=datas[i]
             popClasss.add(PopWindowBean(item.classId,item.name,i==0))

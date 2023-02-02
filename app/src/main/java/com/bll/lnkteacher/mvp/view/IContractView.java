@@ -5,6 +5,7 @@ import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.BookEvent;
 import com.bll.lnkteacher.mvp.model.BookStore;
+import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.ClassGroup;
 import com.bll.lnkteacher.mvp.model.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.Group;
@@ -35,8 +36,6 @@ public interface IContractView {
     interface IAccountInfoView extends IBaseView {
         void onLogout();
         void onEditNameSuccess();
-        void getVipList(AccountList list);
-        void onVipOrder(AccountOrder order);
     }
 
     //钱包页面回调
@@ -48,9 +47,9 @@ public interface IContractView {
 
     //书城
     interface IBookStoreView extends IBaseView {
-        void onBookStore(BookStore bookStore);//商城列表
-        void onBuyBook(BookEvent bookEvent);//购买书籍回调
-        void onDownBook(BookEvent bookEvent);//下载书籍回调
+        void onBook(BookStore bookStore);
+        void onType(BookStoreType bookStoreType);
+        void buyBookSuccess();
     }
 
     //班群

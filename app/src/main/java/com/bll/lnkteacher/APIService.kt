@@ -67,32 +67,27 @@ interface APIService{
      */
     @GET("wallets/order/{id}")
     fun getOrderStatus(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
-    /**
-     * //获取vip列表
-     */
-    @GET("wallets/vips/list")
-    fun getVipList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountList>>
-    /**
-     * 提交vip订单
-     */
-    @POST("wallets/vips/buy/{id}")
-    fun postOrderVip(@Path("id") id:String): Observable<BaseResult<AccountOrder>>
 
     /**
-     * 书城列表
+     * 教材分类
      */
-    @GET("books")
-    fun getBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    @GET("book/types")
+    fun getBookType(): Observable<BaseResult<BookStoreType>>
+    /**
+     * 教材列表
+     */
+    @GET("textbook/list")
+    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
+     * 教材参考列表
+     */
+    @GET("book/list")
+    fun getTextBookCKs(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
     /**
      * 购买书籍
      */
-    @GET("books/{id}/buy")
-    fun buyBook(@Path("id") id:String): Observable<BaseResult<BookEvent>>
-    /**
-     * 下载书籍
-     */
-    @GET("books/{id}/download")
-    fun downloadBook(@Path("id") id:String): Observable<BaseResult<BookEvent>>
+    @POST("buy/book/createOrder")
+    fun buyBooks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 应用列表

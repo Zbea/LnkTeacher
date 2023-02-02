@@ -1,8 +1,6 @@
 package com.bll.lnkteacher.ui.fragment
 
 import android.view.View
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
@@ -15,9 +13,8 @@ import com.bll.lnkteacher.mvp.presenter.GroupManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.group.ClassGroupFragment
 import com.bll.lnkteacher.ui.fragment.group.GroupFragment
-import com.bll.lnkteacher.utils.DP2PX
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_group_manager.*
+import kotlinx.android.synthetic.main.common_radiogroup.*
 
 class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
 
@@ -114,21 +111,11 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     private fun initTab() {
         val strs= mutableListOf("班群","校群","际群")
         for (i in strs.indices){
-            var radioButton = layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-            radioButton.id = i
-            radioButton.text = strs[i]
-            radioButton.isChecked = i == 0
-            var layoutParams = RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
-                DP2PX.dip2px(activity, 45f))
-            layoutParams.marginEnd = if (i == strs.size-1) 0 else DP2PX.dip2px(activity, 44f)
-            radioButton.layoutParams = layoutParams
-            rg_group.addView(radioButton)
+            rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            val position = i
-            when (position) {
+            when (i) {
                 0 -> {
                     disMissView(iv_add)
                     switchFragment(lastFragment, classGroupFragment)
@@ -145,7 +132,7 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
                 }
 
             }
-            lastPosition = position!!
+            lastPosition = i
         }
 
     }

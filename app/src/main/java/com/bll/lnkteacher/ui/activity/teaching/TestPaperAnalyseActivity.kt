@@ -29,7 +29,7 @@ class TestPaperAnalyseActivity:BaseActivity() {
 
     override fun initData() {
         testPaperWork=intent.getBundleExtra("bundle").get("TestPaperWork") as TestPaperWork
-        val scores= DataBeanManager.getIncetance().scoreList
+        val scores= DataBeanManager.getInstance().scoreList
         for (i in scores.indices)
         {
             val popWindowBean=PopWindowBean(i,scores[i].toString(),i==1)

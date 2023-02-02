@@ -20,20 +20,19 @@ class TextbookActivity:BaseActivity() {
 
         for (i in 0..6){
             var book= Book()
-            book.name= "数学$i"
+            book.bookName= "数学$i"
             items.add(book)
         }
 
     }
 
     override fun initView() {
-        setPageTitle("教义")
+        setPageTitle("我的讲义")
 
         rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_textbook, items)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
 
     }
 }

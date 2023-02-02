@@ -53,7 +53,7 @@ class GroupAddDialog(val context: Context, val type:Int) {
 
     private var popWindow:PopWindowCheckList?=null
     private fun selectorClassGroup(view: View){
-        val groups= DataBeanManager.getIncetance().classGroups
+        val groups= DataBeanManager.getInstance().classGroups
         val pops= mutableListOf<PopWindowBean>()
         for (item in groups){
             pops.add(PopWindowBean(item.classId,item.name,false))

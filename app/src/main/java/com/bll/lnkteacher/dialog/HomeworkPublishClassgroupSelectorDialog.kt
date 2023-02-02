@@ -23,7 +23,7 @@ class HomeworkPublishClassgroupSelectorDialog(val mContext: Context) {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val classs= DataBeanManager.getIncetance().classGroups
+        val classs= DataBeanManager.getInstance().classGroups
         val datas= mutableListOf<HomeworkAssign.ClassGroupBean>()
         for (item in classs){
             val ite= HomeworkAssign().ClassGroupBean()

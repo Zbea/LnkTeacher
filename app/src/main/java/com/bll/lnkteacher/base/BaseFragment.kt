@@ -8,9 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.R
@@ -19,10 +17,7 @@ import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity
-import com.bll.lnkteacher.utils.ActivityManager
-import com.bll.lnkteacher.utils.KeyboardUtils
-import com.bll.lnkteacher.utils.SPUtil
-import com.bll.lnkteacher.utils.SToast
+import com.bll.lnkteacher.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -197,6 +192,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
                 view.visibility = View.GONE
             }
         }
+    }
+
+    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+        var radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        var layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(activity, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
     }
 
 

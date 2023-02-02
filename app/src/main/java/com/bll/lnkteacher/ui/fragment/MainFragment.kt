@@ -49,16 +49,18 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     private var mainPresenter=MainPresenter(this)
     private var mBookAdapter: BookAdapter? = null
-    private var books= mutableListOf<Book>()
+    private var textbooks= mutableListOf<Book>()
     private var mTeachingAdapter: MainClassGroupAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
 
     private var notes= mutableListOf<Notebook>()
     private var mainNoteAdapter: MainNoteAdapter? = null
 
-    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
-        if (!classGroups.isNullOrEmpty()) {
-            DataBeanManager.getIncetance().classGroups=classGroups
+    override fun onClassList(groups: MutableList<ClassGroup>?) {
+        if (!groups.isNullOrEmpty()) {
+            DataBeanManager.getInstance().classGroups=groups
+            classGroups=groups
+            mTeachingAdapter?.setNewData(classGroups)
         }
     }
 
@@ -74,8 +76,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
                     areas.add(item)
                 }
             }
-            DataBeanManager.getIncetance().groupsSchool=schools
-            DataBeanManager.getIncetance().groupsArea=areas
+            DataBeanManager.getInstance().groupsSchool=schools
+            DataBeanManager.getInstance().groupsArea=areas
         }
     }
 
@@ -99,8 +101,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         initNote()
 
         findNotes()
-        findBook()
         findTeaching()
+        findTextBook()
     }
 
     override fun lazyLoad() {
@@ -116,10 +118,6 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
         ll_message.setOnClickListener {
             startActivity(Intent(activity, MessageListActivity::class.java))
-        }
-
-        ll_textbook.setOnClickListener {
-            startActivity(Intent(activity, TextbookActivity::class.java))
         }
 
         ll_note.setOnClickListener {
@@ -163,7 +161,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     //消息相关处理
     private fun initMessageView() {
-        val messages = DataBeanManager.getIncetance().message
+        val messages = DataBeanManager.getInstance().message
         rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
         var messageAdapter = MainMessageAdapter(R.layout.item_main_message, messages)
         rv_main_message.adapter = messageAdapter
@@ -172,16 +170,16 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         rv_main_message.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
     }
 
-    //继续阅读
+    //我的课本
     private fun initTextBookView() {
         rv_main_book.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mBookAdapter = BookAdapter(R.layout.item_main_book, books)
+        mBookAdapter = BookAdapter(R.layout.item_main_book, textbooks)
         rv_main_book.adapter = mBookAdapter
         mBookAdapter?.bindToRecyclerView(rv_main_book)
 
     }
 
-    //课业进度
+    //教学进度
     private fun initTeachingView() {
 
         rv_main_teaching.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
@@ -219,21 +217,18 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
     }
 
     /**
-     * 查找书籍
+     * 查找课本
      */
-    private fun findBook(){
-        books= BookGreenDaoManager.getInstance().queryAllBook("0")
-        if (books.size>6){
-            books=books.subList(0,6)
-        }
-        mBookAdapter?.setNewData(books)
+    private fun findTextBook(){
+        textbooks=BookGreenDaoManager.getInstance().queryAllTextBook(0,"我的课本")
+        mBookAdapter?.setNewData(textbooks)
     }
 
     /**
      * 查找教学
      */
     private fun findTeaching(){
-        classGroups=DataBeanManager.getIncetance().classGroups
+        classGroups=DataBeanManager.getInstance().classGroups
         mTeachingAdapter?.setNewData(classGroups)
     }
 
@@ -264,13 +259,12 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         if (msgFlag==NOTE_EVENT){
             findNotes()
         }
-        if (msgFlag== TEXT_BOOK_EVENT){
-            findBook()
-        }
         if (msgFlag== CLASSGROUP_EVENT){
             findTeaching()
         }
-
+        if (msgFlag== TEXT_BOOK_EVENT){
+            findTextBook()
+        }
     }
 
 

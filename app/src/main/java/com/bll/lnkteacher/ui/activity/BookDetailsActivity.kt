@@ -5,7 +5,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
 import android.widget.ImageView
-import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -43,7 +42,7 @@ class BookDetailsActivity:BaseActivity() {
     }
 
     override fun initData() {
-        val id=intent.getLongExtra("book_id",0)
+        val id=intent.getIntExtra("book_id",0)
         book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
         page=book?.pageIndex!!
         if (book==null) return
@@ -164,9 +163,6 @@ class BookDetailsActivity:BaseActivity() {
         book?.time=System.currentTimeMillis()
         book?.pageIndex=page
         BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-        if (book?.type!="0")
-            EventBus.getDefault().post(BOOK_EVENT)
-        else
             EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 

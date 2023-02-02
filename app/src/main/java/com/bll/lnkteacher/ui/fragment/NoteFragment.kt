@@ -172,7 +172,7 @@ class NoteFragment : BaseFragment() {
      */
     private fun findTabs() {
 
-        noteTypes = DataBeanManager.getIncetance().noteBook
+        noteTypes = DataBeanManager.getInstance().noteBook
         noteTypes.addAll( BaseTypeBeanDaoManager.getInstance().queryAll())
         setAllCheckFalse(noteTypes)
 

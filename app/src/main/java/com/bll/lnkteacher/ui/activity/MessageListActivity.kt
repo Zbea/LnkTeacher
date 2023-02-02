@@ -24,7 +24,7 @@ class MessageListActivity : BaseActivity() {
 
     override fun initData() {
         setPageTitle("消息通知")
-        lists = DataBeanManager.getIncetance().message
+        lists = DataBeanManager.getInstance().message
     }
 
     override fun initView() {

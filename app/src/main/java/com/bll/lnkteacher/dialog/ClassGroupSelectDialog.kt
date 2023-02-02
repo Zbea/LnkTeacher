@@ -28,7 +28,7 @@ class ClassGroupSelectDialog(val context: Context){
             dialog.dismiss()
         }
 
-        val classs= DataBeanManager.getIncetance().classGroups
+        val classs= DataBeanManager.getInstance().classGroups
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
         var mAdapter = MainClassGroupAdapter(R.layout.item_classgroup, classs)

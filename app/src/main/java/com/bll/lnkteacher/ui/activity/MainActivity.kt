@@ -25,20 +25,21 @@ class MainActivity : BaseActivity() {
     private var teachingFragment: TeachingFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
-
+    private var textbookFragment: TextbookFragment? = null
 
     override fun layoutId(): Int {
         return R.layout.ac_main
     }
 
     override fun initData() {
-        mData= DataBeanManager.getIncetance().getIndexData(this)
+        mData= DataBeanManager.getInstance().getIndexData(this)
     }
 
 
     override fun initView() {
 
         mainFragment = MainFragment()
+        textbookFragment= TextbookFragment()
         bookcaseFragment = BookCaseFragment()
         groupManagerFragment= GroupManagerFragment()
         teachingFragment = TeachingFragment()
@@ -58,11 +59,12 @@ class MainActivity : BaseActivity() {
 
             when (position) {
                 0 -> switchFragment(lastFragment, mainFragment)
-                1 -> switchFragment(lastFragment, bookcaseFragment)
+                1 -> switchFragment(lastFragment, textbookFragment)
                 2 -> switchFragment(lastFragment, groupManagerFragment)
                 3 -> switchFragment(lastFragment, teachingFragment)
                 4 -> switchFragment(lastFragment, noteFragment)
-                5 -> switchFragment(lastFragment, appFragment)
+                5 -> switchFragment(lastFragment, bookcaseFragment)
+                6 -> switchFragment(lastFragment, appFragment)
             }
 
             lastPosition=position

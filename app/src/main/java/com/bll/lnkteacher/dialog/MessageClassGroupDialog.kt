@@ -23,7 +23,7 @@ class MessageClassGroupDialog(val context: Context) {
         dialog?.show()
 
         val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter= MyAdapter(R.layout.item_message_classgroup, DataBeanManager.getIncetance().classGroups)
+        var mAdapter= MyAdapter(R.layout.item_message_classgroup, DataBeanManager.getInstance().classGroups)
         rvList?.layoutManager = LinearLayoutManager(context)//创建布局管理
         rvList?.adapter = mAdapter
         rvList?.addItemDecoration(SpaceItemDeco(0,0,0,20,0))

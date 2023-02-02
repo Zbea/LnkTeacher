@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.widget.MaxRecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -32,7 +32,7 @@ class PopWindowRadioList(var context:Context, var list:MutableList<PopWindowBean
         mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
         mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
 
-        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
         var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter

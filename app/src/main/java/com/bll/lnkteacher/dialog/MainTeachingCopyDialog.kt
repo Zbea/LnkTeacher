@@ -25,7 +25,7 @@ class MainTeachingCopyDialog(private val context: Context, private val classId:I
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val groups= DataBeanManager.getIncetance().classGroups
+        val groups= DataBeanManager.getInstance().classGroups
         for (item in groups){
             if (item.classId!=classId){
                 pops.add(PopWindowBean(item.classId,item.name,false))

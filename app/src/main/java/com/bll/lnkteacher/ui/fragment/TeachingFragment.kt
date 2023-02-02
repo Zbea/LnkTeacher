@@ -1,7 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
@@ -17,9 +15,8 @@ import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkWorkFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TeachingTestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TeachingTestPaperWorkFragment
-import com.bll.lnkteacher.utils.DP2PX
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_teaching.*
+import kotlinx.android.synthetic.main.common_radiogroup.*
 import java.util.*
 
 class TeachingFragment : BaseFragment() {
@@ -79,23 +76,13 @@ class TeachingFragment : BaseFragment() {
      * 设置tab
      */
     private fun initTab() {
-        val strs=DataBeanManager.getIncetance().teachingStrs
+        val strs=DataBeanManager.getInstance().teachingStrs
         for (i in strs.indices){
-            var radioButton = layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-            radioButton.id = i
-            radioButton.text = strs[i]
-            radioButton.isChecked = i == 0
-            var layoutParams = RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
-                DP2PX.dip2px(activity, 45f))
-            layoutParams.marginEnd = if (i == strs.size-1) 0 else DP2PX.dip2px(activity, 44f)
-            radioButton.layoutParams = layoutParams
-            rg_group.addView(radioButton)
+            rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            val position = i
-            when (position) {
+            when (i) {
                 0 -> {
                     showView(iv_manager)
                     switchFragment(lastFragment, homeworkAssignFragment)
@@ -117,7 +104,7 @@ class TeachingFragment : BaseFragment() {
                 }
 
             }
-            lastPosition = position!!
+            lastPosition = i
         }
 
     }
@@ -208,7 +195,7 @@ class TeachingFragment : BaseFragment() {
     private fun showCreateHomeworkName(hint: String,type:Int) {
         HomeworkCreateTypeDialog(requireContext(), hint).builder()
             .setOnDialogClickListener { str ->
-                val covers = DataBeanManager.getIncetance().homeworkCover
+                val covers = DataBeanManager.getInstance().homeworkCover
                 val index = Random().nextInt(covers.size)
                 var homeworkType = HomeworkType()
                 homeworkType.name = str

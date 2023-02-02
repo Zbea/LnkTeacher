@@ -9,7 +9,7 @@
     android:paddingEnd="@dimen/dp_20"
     android:paddingStart="@dimen/dp_20">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bll.lnkteacher.widget.MaxRecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

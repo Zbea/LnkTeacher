@@ -1,16 +1,19 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.BookEvent
 import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 
 class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<IContractView.IBookStoreView>(view) {
 
-    fun getBooks(map: HashMap<String,Any>) {
+    /**
+     * 教材
+     */
+    fun getTextBooks(map: HashMap<String,Any>) {
 
-        val books = RetrofitManager.service.getBooks(map)
+        val books = RetrofitManager.service.getTextBooks(map)
 
         doRequest(books, object : Callback<BookStore>(view) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
@@ -18,45 +21,67 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
             }
 
             override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBookStore(tBaseResult.data)
+                view.onBook(tBaseResult.data)
             }
 
         }, true)
 
     }
 
-    fun buyBook(id:String) {
+    /**
+     * 参考教材
+     */
+    fun getTextBookCks(map: HashMap<String,Any>) {
 
-        val books = RetrofitManager.service.buyBook(id)
+        val books = RetrofitManager.service.getTextBookCKs(map)
 
-        doRequest(books, object : Callback<BookEvent>(view) {
-            override fun failed(tBaseResult: BaseResult<BookEvent>): Boolean {
+        doRequest(books, object : Callback<BookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<BookEvent>) {
-                view.onBuyBook(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<BookStore>) {
+                view.onBook(tBaseResult.data)
             }
 
         }, true)
 
     }
 
-    fun downBook(id:String) {
+    /**
+     * 获取分类
+     */
+    fun getBookType() {
 
-        val books = RetrofitManager.service.downloadBook(id)
+        val type = RetrofitManager.service.getBookType()
 
-        doRequest(books, object : Callback<BookEvent>(view) {
-            override fun failed(tBaseResult: BaseResult<BookEvent>): Boolean {
+        doRequest(type, object : Callback<BookStoreType>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStoreType>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<BookEvent>) {
-                view.onDownBook(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<BookStoreType>) {
+                view.onType(tBaseResult.data)
             }
 
         }, true)
 
+    }
+    fun buyBook(map: HashMap<String,Any>){
+
+        val body= RequestUtils.getBody(map)
+        val buy = RetrofitManager.service.buyBooks(body)
+
+        doRequest(buy, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.buyBookSuccess()
+            }
+
+        }, true)
     }
 
 }

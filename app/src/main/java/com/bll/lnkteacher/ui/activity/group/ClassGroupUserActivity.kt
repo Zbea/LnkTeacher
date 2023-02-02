@@ -52,7 +52,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
     override fun initData() {
         index=intent.flags
 
-        var datas= DataBeanManager.getIncetance().classGroups
+        var datas= DataBeanManager.getInstance().classGroups
         for (i in 0 until datas.size){
             var item=datas[i]
             pops.add(PopWindowBean(item.classId,item.name,i==index))
@@ -66,7 +66,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
         setPageTitle("详情")
         showView(tv_class)
 
-        tv_class.text= DataBeanManager.getIncetance().classGroups[index].name
+        tv_class.text= DataBeanManager.getInstance().classGroups[index].name
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, users)

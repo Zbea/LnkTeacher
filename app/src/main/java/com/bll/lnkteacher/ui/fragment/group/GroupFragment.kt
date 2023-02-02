@@ -47,10 +47,10 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
             mAdapter?.setNewData(groups)
             //更新全局设置
             if (index==1){
-                DataBeanManager.getIncetance().groupsSchool=groups
+                DataBeanManager.getInstance().groupsSchool=groups
             }
             else{
-                DataBeanManager.getIncetance().groupsArea=groups
+                DataBeanManager.getInstance().groupsArea=groups
             }
         }
     }

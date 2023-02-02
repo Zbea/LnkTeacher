@@ -63,7 +63,7 @@ class TestPaperAssignContentActivity : BaseActivity() {
      */
     private fun selectorClassGroup() {
         var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getIncetance().classGroups
+        var datas = DataBeanManager.getInstance().classGroups
         for (i in 0 until datas.size) {
             var item = datas[i] as ClassGroup
             pops.add(PopWindowBean(item.classId, item.name, false))
@@ -85,7 +85,7 @@ class TestPaperAssignContentActivity : BaseActivity() {
      */
     private fun selectorSchoolGroup() {
         var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getIncetance().groupsSchool
+        var datas = DataBeanManager.getInstance().groupsSchool
         for (i in 0 until datas.size) {
             var item = datas[i]
             pops.add(PopWindowBean(item.id, item.schoolName, false))
@@ -108,7 +108,7 @@ class TestPaperAssignContentActivity : BaseActivity() {
      */
     private fun selectorAreaGroup() {
         var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getIncetance().groupsArea
+        var datas = DataBeanManager.getInstance().groupsArea
         for (i in 0 until datas.size) {
             var item = datas[i]
             pops.add(PopWindowBean(item.id, item.schoolName, false))
