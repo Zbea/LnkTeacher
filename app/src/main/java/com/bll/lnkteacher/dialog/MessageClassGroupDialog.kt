@@ -5,8 +5,8 @@ import android.content.Context
 import android.widget.CheckBox
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkteacher.R
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.ClassGroup
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -23,7 +23,7 @@ class MessageClassGroupDialog(val context: Context) {
         dialog?.show()
 
         val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter= MyAdapter(R.layout.item_message_classgroup, DataBeanManager.getInstance().classGroups)
+        var mAdapter= MyAdapter(R.layout.item_message_classgroup, DataBeanManager.classGroups)
         rvList?.layoutManager = LinearLayoutManager(context)//创建布局管理
         rvList?.adapter = mAdapter
         rvList?.addItemDecoration(SpaceItemDeco(0,0,0,20,0))

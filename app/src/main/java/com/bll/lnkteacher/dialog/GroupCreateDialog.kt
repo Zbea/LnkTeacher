@@ -7,12 +7,12 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PopWindowBean
 import com.bll.lnkteacher.utils.KeyboardUtils
 
 class GroupCreateDialog(val context: Context,val type:Int) {
 
     private var classIds= mutableListOf<Int>()
+    private var popWindow:PopupCheckList?=null
 
     fun builder(): GroupCreateDialog? {
 
@@ -50,23 +50,16 @@ class GroupCreateDialog(val context: Context,val type:Int) {
         return this
     }
 
-    private var popWindow:PopWindowCheckList?=null
     private fun selectorClassGroup(view: TextView){
-        val groups= DataBeanManager.getInstance().classGroups
-        val pops= mutableListOf<PopWindowBean>()
-        for (item in groups){
-            pops.add(PopWindowBean(item.classId,item.name,false))
-        }
+        val pops= DataBeanManager.popClassGroups
         if (popWindow==null)
         {
-            popWindow= PopWindowCheckList(context, pops, view,  5).builder()
-            popWindow  ?.setOnSelectListener(object : PopWindowCheckList.OnSelectListener {
-                override fun onSelect(items: List<PopWindowBean>) {
-                    for (item in items){
-                        classIds.add(item.id)
-                    }
+            popWindow= PopupCheckList(context, pops, view,  5).builder()
+            popWindow  ?.setOnSelectListener { items ->
+                for (item in items) {
+                    classIds.add(item.id)
                 }
-            })
+            }
         }
         else{
             popWindow?.show()

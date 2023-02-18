@@ -23,13 +23,13 @@ class HomeworkPublishClassgroupSelectorDialog(val mContext: Context) {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val classs= DataBeanManager.getInstance().classGroups
+        val classs= DataBeanManager.classGroups
         val datas= mutableListOf<HomeworkAssign.ClassGroupBean>()
         for (item in classs){
-            val ite= HomeworkAssign().ClassGroupBean()
-            ite.className=item.name
-            ite.classId=item.classNum.toString()
-            datas.add(ite)
+            datas.add(HomeworkAssign().ClassGroupBean().apply {
+                className=item.name
+                classId=item.classNum.toString()
+            })
         }
 
         var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)

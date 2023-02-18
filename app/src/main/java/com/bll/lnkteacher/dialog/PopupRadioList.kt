@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.widget.MaxRecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -17,20 +17,26 @@ import com.chad.library.adapter.base.BaseViewHolder
 /**
  * 单选弹框
  */
-class PopWindowRadioList(var context:Context, var list:MutableList<PopWindowBean>, var view: View, val yoff:Int) {
+class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val view: View, val width:Int, val yoff:Int) {
 
     private var mPopupWindow:PopupWindow?=null
-    private var width=0
+    private var xoff=0
 
-    fun builder(): PopWindowRadioList?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
-        mPopupWindow = PopupWindow(context)
-        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // 设置PopupWindow的内容view
-        mPopupWindow?.contentView=popView
-        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
-        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
-        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+    constructor(context: Context, list: MutableList<PopupBean>, view: View, yoff: Int):this(context, list, view, 0,yoff)
+
+    fun builder(): PopupRadioList?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
+        mPopupWindow = PopupWindow(context).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 设置PopupWindow的内容view
+            contentView=popView
+            isFocusable=true // 设置PopupWindow可获得焦点
+            isTouchable=true // 设置PopupWindow可触摸
+            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            if (this@PopupRadioList.width!=0){
+                width=this@PopupRadioList.width
+            }
+        }
 
         var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
@@ -50,7 +56,7 @@ class PopWindowRadioList(var context:Context, var list:MutableList<PopWindowBean
         }
 
         popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        width = mPopupWindow?.contentView?.measuredWidth!!
+        xoff = mPopupWindow?.contentView?.measuredWidth!!
 
         show()
         return this
@@ -64,7 +70,7 @@ class PopWindowRadioList(var context:Context, var list:MutableList<PopWindowBean
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,-width, yoff,Gravity.RIGHT)
+            mPopupWindow?.showAsDropDown(view,if (width!=0)0 else -xoff, yoff,Gravity.RIGHT)
         }
     }
 
@@ -76,13 +82,13 @@ class PopWindowRadioList(var context:Context, var list:MutableList<PopWindowBean
     }
 
     fun interface OnSelectListener{
-        fun onSelect(item: PopWindowBean)
+        fun onSelect(item: PopupBean)
     }
 
 
-    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+        override fun convert(helper: BaseViewHolder, item: PopupBean) {
 
             helper.setText(R.id.tv_name,item.name)
             helper.setVisible(R.id.iv_check,item.isCheck)

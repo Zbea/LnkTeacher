@@ -9,19 +9,20 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.BookDetailsDialog
-import com.bll.lnkteacher.dialog.PopWindowRadioList
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.manager.FileDownManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
@@ -30,7 +31,7 @@ import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.math.ceil
 
-class BookStoreActivity: BaseActivity() ,
+class BookStoreActivity : BaseActivity(),
     IContractView.IBookStoreView {
 
     private var typeId = 0 //书籍分类
@@ -48,12 +49,12 @@ class BookStoreActivity: BaseActivity() ,
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: Book? = null
 
-    private var popWindowGrade: PopWindowRadioList? = null
-    private var popWindowProvince: PopWindowRadioList? = null
+    private var popWindowGrade: PopupRadioList? = null
+    private var popWindowProvince: PopupRadioList? = null
 
-    private var provinceList = mutableListOf<PopWindowBean>()
-    private var gradeList = mutableListOf<PopWindowBean>()
-    private var typeList = mutableListOf<BaseTypeBean>()
+    private var provinceList = mutableListOf<PopupBean>()
+    private var gradeList = mutableListOf<PopupBean>()
+    private var typeList = mutableListOf<String>()
 
     override fun onBook(bookStore: BookStore?) {
         pageCount = ceil(bookStore?.total?.toDouble()!! / pageSize).toInt()
@@ -73,7 +74,13 @@ class BookStoreActivity: BaseActivity() ,
         //年级分类
         if (bookStoreType?.grade.isNullOrEmpty()) return
         for (i in bookStoreType?.grade?.indices!!) {
-            gradeList.add(PopWindowBean(i, bookStoreType?.grade[i], i == 0))
+            gradeList.add(
+                PopupBean(
+                    i,
+                    bookStoreType?.grade[i],
+                    i == 0
+                )
+            )
         }
         gradeStr = gradeList[0].name
         initSelectorView()
@@ -96,11 +103,17 @@ class BookStoreActivity: BaseActivity() ,
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
         val cityBean = Gson().fromJson(citysStr, CityBean::class.java)
         for (i in cityBean.provinces.indices) {
-            provinceList.add(PopWindowBean(i, cityBean.provinces[i].provinceName, i == 0))
+            provinceList.add(
+                PopupBean(
+                    i,
+                    cityBean.provinces[i].provinceName,
+                    i == 0
+                )
+            )
         }
         provinceStr = provinceList[0].name
-        typeList = DataBeanManager.getInstance().bookTypeJc
-        typeStr = typeList[0].name
+        typeList = DataBeanManager.textbookType.toMutableList()
+        typeStr = typeList[0]
         typeList.removeAt(3)
 
         getData()
@@ -164,7 +177,7 @@ class BookStoreActivity: BaseActivity() ,
 
         tv_grade.setOnClickListener {
             if (popWindowGrade == null) {
-                popWindowGrade = PopWindowRadioList(this, gradeList, tv_grade, 5).builder()
+                popWindowGrade = PopupRadioList(this, gradeList, tv_grade, tv_grade.width,5).builder()
                 popWindowGrade?.setOnSelectListener { item ->
                     gradeStr = item.name
                     tv_grade.text = gradeStr
@@ -178,7 +191,7 @@ class BookStoreActivity: BaseActivity() ,
 
         tv_province.setOnClickListener {
             if (popWindowProvince == null) {
-                popWindowProvince = PopWindowRadioList(this, provinceList, tv_province, 5).builder()
+                popWindowProvince = PopupRadioList(this, provinceList, tv_province,tv_province.width, 5).builder()
                 popWindowProvince?.setOnSelectListener { item ->
                     provinceStr = item.name
                     tv_province.text = item.name
@@ -207,9 +220,10 @@ class BookStoreActivity: BaseActivity() ,
     //设置tab分类
     private fun initTab() {
         for (i in typeList.indices) {
-            var radioButton = layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+            var radioButton =
+                layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
             radioButton.id = i
-            radioButton.text = typeList[i].name
+            radioButton.text = typeList[i]
             radioButton.isChecked = i == 0
             var layoutParams = RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.WRAP_CONTENT,
@@ -221,8 +235,8 @@ class BookStoreActivity: BaseActivity() ,
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            typeId = typeList[i].typeId
-            typeStr = typeList[i].name
+            typeId = i
+            typeStr = typeList[i]
             pageIndex = 1
             setFetchData()
         }
@@ -242,7 +256,6 @@ class BookStoreActivity: BaseActivity() ,
         }
     }
 
-
     /**
      * 展示书籍详情
      */
@@ -250,20 +263,19 @@ class BookStoreActivity: BaseActivity() ,
         bookDetailsDialog = BookDetailsDialog(this, book)
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
-            if (book.buyStatus==1){
+            if (book.buyStatus == 1) {
                 val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
                 if (localBook == null) {
                     showLoading()
-                    val downloadTask = downLoadStart(book.downloadUrl,book)
+                    val downloadTask = downLoadStart(book.downloadUrl, book)
                     mDownMapPool[book.bookId] = downloadTask!!
                 } else {
-                    book.loadSate=2
+                    book.loadSate = 2
                     showToast("已下载")
                     bookDetailsDialog?.setDissBtn()
                     mAdapter?.notifyDataSetChanged()
                 }
-            }
-            else{
+            } else {
                 val map = HashMap<String, Any>()
                 map["type"] = if (typeId == 2) 1 else 2
                 map["bookId"] = book.bookId
@@ -272,8 +284,10 @@ class BookStoreActivity: BaseActivity() ,
         }
     }
 
-    //下载book
-    private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
+    /**
+     * 下载解压书籍
+     */
+    private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
 
         val fileName = book?.bookId.toString()//文件名
         val targetFileStr = FileAddress().getPathZip(fileName)
@@ -283,7 +297,7 @@ class BookStoreActivity: BaseActivity() ,
         }
 
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
-            .startDownLoad(object : FileDownManager.DownLoadCallBack {
+            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book?.bookId]) {
@@ -308,37 +322,7 @@ class BookStoreActivity: BaseActivity() ,
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     lock.lock()
-                    ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
-                        override fun onFinish(success: Boolean) {
-                            if (success) {
-                                showToast("下载完成")
-                                book?.loadSate=2
-                                book?.category=0
-                                book?.textBookType=typeStr
-                                book?.time = System.currentTimeMillis()//下载时间用于排序
-                                book?.bookPath = FileAddress().getPathBook(fileName)
-                                //下载解压完成后更新存储的book
-                                BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                                EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                                //更新列表
-                                mAdapter?.notifyDataSetChanged()
-                                bookDetailsDialog?.dismiss()
-                            } else {
-                                showToast("解压失败")
-                            }
-                        }
-
-                        override fun onProgress(percentDone: Int) {
-                        }
-
-                        override fun onError(msg: String?) {
-                            showToast(msg!!)
-                        }
-
-                        override fun onStart() {
-                        }
-
-                    })
+                    unzip(book, targetFileStr, fileName)
                     mDialog?.dismiss()
                     lock.unlock()
                 }
@@ -346,11 +330,48 @@ class BookStoreActivity: BaseActivity() ,
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     mDialog?.dismiss()
-                    showToast("下载书籍失败")
+                    showToast("${book.bookName}下载失败")
                     deleteDoneTask(task)
                 }
             })
         return download
+    }
+
+    /**
+     * 下载完成书籍解压
+     */
+    private fun unzip(book: Book, targetFileStr: String, fileName: String) {
+        ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
+            override fun onFinish(success: Boolean) {
+                if (success) {
+                    showToast("${book.bookName}下载完成")
+                    book?.loadSate = 2
+                    book?.category = 0
+                    book?.textBookType = typeStr
+                    book?.time = System.currentTimeMillis()//下载时间用于排序
+                    book?.bookPath = FileAddress().getPathBook(fileName)
+                    //下载解压完成后更新存储的book
+                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                    //更新列表
+                    mAdapter?.notifyDataSetChanged()
+                    bookDetailsDialog?.dismiss()
+                } else {
+                    showToast("${book.bookName}解压失败")
+                }
+            }
+
+            override fun onProgress(percentDone: Int) {
+            }
+
+            override fun onError(msg: String?) {
+                showToast(msg!!)
+            }
+
+            override fun onStart() {
+            }
+
+        })
     }
 
     fun getFormatNum(pi: Double, format: String?): String? {
@@ -381,16 +402,7 @@ class BookStoreActivity: BaseActivity() ,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (mDownMapPool != null && mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-            val iterator = entries.iterator();
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<Long, BaseDownloadTask>
-                val entity = entry.value
-                entity.pause()
-            }
-        }
+        FileDownloader.getImpl().pauseAll()
     }
 
 

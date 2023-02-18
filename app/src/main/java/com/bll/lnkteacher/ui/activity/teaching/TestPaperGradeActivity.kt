@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.PopWindowRadioList
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.TestPaperGrade
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_teaching_testpaper_assign.*
 
 class TestPaperGradeActivity:BaseActivity(){
 
-    private var popClasss= mutableListOf<PopWindowBean>()
+    private var popClasss= mutableListOf<PopupBean>()
     private var mAdapter: TestPaperGradeAdapter?=null
     private var datas= mutableListOf<TestPaperGrade>()
 
@@ -32,12 +32,7 @@ class TestPaperGradeActivity:BaseActivity(){
             item.className="三年级一班"
             datas.add(item)
         }
-
-        var datas= DataBeanManager.getInstance().classGroups
-        for (i in 0 until datas.size){
-            var item=datas[i]
-            popClasss.add(PopWindowBean(item.classId,item.name,i==0))
-        }
+        popClasss= DataBeanManager.popClassGroups
     }
 
     override fun initView() {
@@ -62,13 +57,13 @@ class TestPaperGradeActivity:BaseActivity(){
     }
 
 
-    private var popWindowClass:PopWindowRadioList?=null
+    private var popWindowClass:PopupRadioList?=null
     /**
      * 班级选择
      */
     private fun showClassGroup(){
         if (popWindowClass==null){
-            popWindowClass=PopWindowRadioList(this, popClasss, tv_class,  5).builder()
+            popWindowClass=PopupRadioList(this, popClasss, tv_class,tv_class.width,  5).builder()
             popWindowClass?.setOnSelectListener { item->
 
             }

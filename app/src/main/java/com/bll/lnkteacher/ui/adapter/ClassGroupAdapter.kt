@@ -9,16 +9,15 @@ import com.chad.library.adapter.base.BaseViewHolder
 class ClassGroupAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAdapter<ClassGroup, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: ClassGroup) {
-        helper.setText(R.id.tv_name,item.name)
-        helper.setText(R.id.tv_code,item.classNum.toString())
-        helper.setText(R.id.tv_date,DateUtils.longToStringDataNoHour(item.time))
-        helper.setText(R.id.tv_number,item.studentCount.toString())
-        helper.setText(R.id.tv_course,item.subject)
+        helper.apply {
+            setText(R.id.tv_name,item.name)
+            setText(R.id.tv_code,item.classNum.toString())
+            setText(R.id.tv_date,DateUtils.longToStringDataNoHour(item.time))
+            setText(R.id.tv_number,item.studentCount.toString())
+            setText(R.id.tv_course,item.subject)
 
-        helper.addOnClickListener(R.id.ll_content)
-        helper.addOnClickListener(R.id.tv_info)
-        helper.addOnClickListener(R.id.tv_dissolve)
-        helper.addOnClickListener(R.id.tv_edit)
+            addOnClickListener(R.id.ll_content,R.id.tv_info,R.id.tv_dissolve,R.id.tv_edit)
+        }
     }
 
 }

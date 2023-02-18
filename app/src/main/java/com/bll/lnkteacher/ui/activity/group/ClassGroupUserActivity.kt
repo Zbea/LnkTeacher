@@ -6,9 +6,9 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.PopWindowRadioList
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ClassGroupUser
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.ClassGroupUserPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserAdapter
@@ -18,11 +18,11 @@ import kotlinx.android.synthetic.main.common_title.*
 class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
 
     private val mPresenter= ClassGroupUserPresenter(this)
-    private var popWindowClass: PopWindowRadioList?=null
+    private var popWindowClass: PopupRadioList?=null
     private var index=0
     private var users= mutableListOf<ClassGroupUser>()
     private var mAdapter:ClassGroupUserAdapter?=null
-    private var pops= mutableListOf<PopWindowBean>()
+    private var pops= mutableListOf<PopupBean>()
     private var position=0
     private var job=""
 
@@ -51,22 +51,15 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
 
     override fun initData() {
         index=intent.flags
-
-        var datas= DataBeanManager.getInstance().classGroups
-        for (i in 0 until datas.size){
-            var item=datas[i]
-            pops.add(PopWindowBean(item.classId,item.name,i==index))
-        }
-
+        pops= DataBeanManager.popClassGroups
         mPresenter.getClassList(pops[index].id)
-
     }
 
     override fun initView() {
         setPageTitle("详情")
         showView(tv_class)
 
-        tv_class.text= DataBeanManager.getInstance().classGroups[index].name
+        tv_class.text= DataBeanManager.classGroups[index].name
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, users)
@@ -118,7 +111,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
      */
     private fun selectorClassGroupView(){
         if (popWindowClass==null){
-            popWindowClass= PopWindowRadioList(this, pops, tv_class,  5).builder()
+            popWindowClass= PopupRadioList(this, pops, tv_class, tv_class.width, 5).builder()
             popWindowClass?.setOnSelectListener { item ->
                 tv_class.text = item.name
                 mPresenter.getClassList(item.id)

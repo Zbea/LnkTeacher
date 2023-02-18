@@ -4,10 +4,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.PopWindowRadioList
-import com.bll.lnkteacher.mvp.model.ClassGroup
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.HomeworkAssignContent
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -16,6 +15,9 @@ class TestPaperAssignContentActivity : BaseActivity() {
 
     private var mAdapter: HomeworkAssignContentAdapter? = null
     private var items = mutableListOf<HomeworkAssignContent>()
+    private var popWindowArea: PopupRadioList? = null
+    private var popWindowClass: PopupRadioList? = null
+    private var popWindowSchool: PopupRadioList? = null
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_assgin_content
@@ -56,20 +58,13 @@ class TestPaperAssignContentActivity : BaseActivity() {
 
     }
 
-    private var popWindowClass: PopWindowRadioList? = null
-
     /**
      * 班级选择
      */
     private fun selectorClassGroup() {
-        var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getInstance().classGroups
-        for (i in 0 until datas.size) {
-            var item = datas[i] as ClassGroup
-            pops.add(PopWindowBean(item.classId, item.name, false))
-        }
+        val pops = DataBeanManager.popClassGroups
         if (popWindowClass == null) {
-            popWindowClass = PopWindowRadioList(this, pops, tv_class_name,  5).builder()
+            popWindowClass = PopupRadioList(this, pops, tv_class_name,tv_class_name.width,  5).builder()
             popWindowClass?.setOnSelectListener { item ->
                 tv_class_name.text = item.name
             }
@@ -78,20 +73,17 @@ class TestPaperAssignContentActivity : BaseActivity() {
         }
     }
 
-    private var popWindowSchool: PopWindowRadioList? = null
-
     /**
      * 校群选择
      */
     private fun selectorSchoolGroup() {
-        var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getInstance().groupsSchool
-        for (i in 0 until datas.size) {
-            var item = datas[i]
-            pops.add(PopWindowBean(item.id, item.schoolName, false))
+        val pops = mutableListOf<PopupBean>()
+        val groups = DataBeanManager.schoolGroups
+        for (i in 0 until groups.size) {
+            pops.add(PopupBean(groups[i].id, groups[i].schoolName, false))
         }
         if (popWindowSchool == null) {
-            popWindowSchool = PopWindowRadioList(this, pops, tv_school_name,  5).builder()
+            popWindowSchool = PopupRadioList(this, pops, tv_school_name,tv_school_name.width,  5).builder()
             popWindowSchool?.setOnSelectListener { item ->
                 tv_school_name.text = item.name
             }
@@ -100,21 +92,17 @@ class TestPaperAssignContentActivity : BaseActivity() {
         }
     }
 
-
-    private var popWindowArea: PopWindowRadioList? = null
-
     /**
      * 际群选择
      */
     private fun selectorAreaGroup() {
-        var pops = mutableListOf<PopWindowBean>()
-        var datas = DataBeanManager.getInstance().groupsArea
-        for (i in 0 until datas.size) {
-            var item = datas[i]
-            pops.add(PopWindowBean(item.id, item.schoolName, false))
+        val pops = mutableListOf<PopupBean>()
+        val groups = DataBeanManager.areaGroups
+        for (i in 0 until groups.size) {
+            pops.add(PopupBean(groups[i].id, groups[i].schoolName, false))
         }
         if (popWindowArea == null) {
-            popWindowArea = PopWindowRadioList(this, pops, tv_group_name,  5).builder()
+            popWindowArea = PopupRadioList(this, pops, tv_group_name,tv_group_name.width,  5).builder()
             popWindowArea?.setOnSelectListener { item ->
                 tv_group_name.text = item.name
             }

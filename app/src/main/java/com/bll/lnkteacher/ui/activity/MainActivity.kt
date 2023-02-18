@@ -16,7 +16,7 @@ class MainActivity : BaseActivity() {
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData: ArrayList<MainListBean>? = null
+    private var mData= mutableListOf<MainListBean>()
     private var lastFragment: Fragment? = null
 
     private var mainFragment: MainFragment? = null
@@ -32,7 +32,7 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData() {
-        mData= DataBeanManager.getInstance().getIndexData(this)
+        mData= DataBeanManager.getIndexData()
     }
 
 

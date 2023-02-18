@@ -6,7 +6,7 @@ import com.bll.lnkteacher.mvp.model.BaseTypeBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class BookCaseTypeAdapter(layoutResId: Int, data: List<BaseTypeBean>?) : BaseQuickAdapter<BaseTypeBean, BaseViewHolder>(layoutResId, data) {
+class NoteTypeAdapter(layoutResId: Int, data: List<BaseTypeBean>?) : BaseQuickAdapter<BaseTypeBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: BaseTypeBean) {
         var tv_name=helper.getView<TextView>(R.id.tv_name)

@@ -8,13 +8,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 class AppListAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<AppBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: AppBean) {
-        helper.setText(R.id.tv_name,item.appName)
-        helper.setImageDrawable(R.id.iv_image,item.image)
-
-        helper.addOnClickListener(R.id.iv_image)
-
+        helper.apply {
+            setText(R.id.tv_name,item.appName)
+            setImageDrawable(R.id.iv_image,item.image)
+            addOnClickListener(R.id.iv_image)
+        }
     }
-
-
 
 }

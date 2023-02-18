@@ -75,12 +75,12 @@ class TextbookFragment : BaseFragment() {
 
     //设置头部索引
     private fun initTab() {
-        var tabStrs = DataBeanManager.getInstance().bookTypeJc
+        var tabStrs = DataBeanManager.textbookType
         for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i, tabStrs[i].name, tabStrs.size - 1))
+            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            textBook = tabStrs[id].name
+            textBook = tabStrs[id]
             pageIndex=1
             findData()
         }

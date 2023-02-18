@@ -1,11 +1,11 @@
 package com.bll.lnkteacher.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.MessageClassGroupDialog
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.mvp.model.ClassGroup
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.ui.adapter.MessageListAdapter
@@ -24,7 +24,7 @@ class MessageListActivity : BaseActivity() {
 
     override fun initData() {
         setPageTitle("消息通知")
-        lists = DataBeanManager.getInstance().message
+        lists = DataBeanManager.message
     }
 
     override fun initView() {

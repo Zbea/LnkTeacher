@@ -58,7 +58,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     override fun onClassList(groups: MutableList<ClassGroup>?) {
         if (!groups.isNullOrEmpty()) {
-            DataBeanManager.getInstance().classGroups=groups
+            DataBeanManager.classGroups=groups
             classGroups=groups
             mTeachingAdapter?.setNewData(classGroups)
         }
@@ -76,8 +76,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
                     areas.add(item)
                 }
             }
-            DataBeanManager.getInstance().groupsSchool=schools
-            DataBeanManager.getInstance().groupsArea=areas
+            DataBeanManager.schoolGroups=schools
+            DataBeanManager.areaGroups=areas
         }
     }
 
@@ -161,7 +161,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     //消息相关处理
     private fun initMessageView() {
-        val messages = DataBeanManager.getInstance().message
+        val messages = DataBeanManager.message
         rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
         var messageAdapter = MainMessageAdapter(R.layout.item_main_message, messages)
         rv_main_message.adapter = messageAdapter
@@ -228,7 +228,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
      * 查找教学
      */
     private fun findTeaching(){
-        classGroups=DataBeanManager.getInstance().classGroups
+        classGroups=DataBeanManager.classGroups
         mTeachingAdapter?.setNewData(classGroups)
     }
 

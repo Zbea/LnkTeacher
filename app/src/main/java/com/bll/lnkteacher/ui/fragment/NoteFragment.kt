@@ -12,16 +12,16 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
 import com.bll.lnkteacher.dialog.NotebookAddDialog
-import com.bll.lnkteacher.dialog.PopWindowRadioList
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BaseTypeBeanDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
 import com.bll.lnkteacher.mvp.model.BaseTypeBean
 import com.bll.lnkteacher.mvp.model.Notebook
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.activity.NoteDrawingActivity
 import com.bll.lnkteacher.ui.activity.NoteTypeManagerActivity
-import com.bll.lnkteacher.ui.adapter.BookCaseTypeAdapter
+import com.bll.lnkteacher.ui.adapter.NoteTypeAdapter
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -36,15 +36,15 @@ import kotlin.math.ceil
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var popWindowList: PopWindowRadioList? = null
-    private var popWindowBeans = mutableListOf<PopWindowBean>()
-    private var popWindowMoreBeans = mutableListOf<PopWindowBean>()
+    private var popWindowList: PopupRadioList? = null
+    private var popupBeans = mutableListOf<PopupBean>()
+    private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var dialog: NoteModuleAddDialog? = null
     private var noteTypes = mutableListOf<BaseTypeBean>()
     private var noteBooks = mutableListOf<Notebook>()
     private var type = 0 //当前笔记本类型
     private var mAdapter: NoteAdapter? = null
-    private var mAdapterType: BookCaseTypeAdapter? = null
+    private var mAdapterType: NoteTypeAdapter? = null
     private var position = 0 //当前笔记标记
     private var resId = ""
     private var positionType = 0//当前笔记本标记
@@ -59,11 +59,23 @@ class NoteFragment : BaseFragment() {
 
     override fun initView() {
 
-        popWindowBeans.add(PopWindowBean(0,"新建笔记本",true))
-        popWindowBeans.add(PopWindowBean(1,"笔记本管理",false))
+        popupBeans.add(PopupBean(0, "新建笔记本", true))
+        popupBeans.add(PopupBean(1, "笔记本管理", false))
 
-        popWindowMoreBeans.add(PopWindowBean(0,"重命名",true))
-        popWindowMoreBeans.add(PopWindowBean(1,"删除",false))
+        popWindowMoreBeans.add(
+            PopupBean(
+                0,
+                "重命名",
+                true
+            )
+        )
+        popWindowMoreBeans.add(
+            PopupBean(
+                1,
+                "删除",
+                false
+            )
+        )
 
         EventBus.getDefault().register(this)
 
@@ -107,7 +119,7 @@ class NoteFragment : BaseFragment() {
     private fun initTab() {
 
         rv_type.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
-        mAdapterType = BookCaseTypeAdapter(R.layout.item_bookcase_type, noteTypes)
+        mAdapterType = NoteTypeAdapter(R.layout.item_bookcase_type, noteTypes)
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
         mAdapterType?.setOnItemClickListener { adapter, view, position ->
@@ -172,7 +184,7 @@ class NoteFragment : BaseFragment() {
      */
     private fun findTabs() {
 
-        noteTypes = DataBeanManager.getInstance().noteBook
+        noteTypes = DataBeanManager.noteBook
         noteTypes.addAll( BaseTypeBeanDaoManager.getInstance().queryAll())
         setAllCheckFalse(noteTypes)
 
@@ -280,7 +292,7 @@ class NoteFragment : BaseFragment() {
     //顶部弹出选择
     private fun setTopSelectView() {
         if (popWindowList == null) {
-            popWindowList = PopWindowRadioList(requireActivity(), popWindowBeans, iv_manager, 20).builder()
+            popWindowList = PopupRadioList(requireActivity(), popupBeans, iv_manager, 20).builder()
             popWindowList?.setOnSelectListener { item ->
                 if (item.id == 0) {
                     addNoteBookType()

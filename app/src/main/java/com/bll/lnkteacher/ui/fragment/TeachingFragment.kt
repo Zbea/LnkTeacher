@@ -6,10 +6,10 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkCreateTypeDialog
-import com.bll.lnkteacher.dialog.PopWindowRadioList
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.HomeworkAssign
 import com.bll.lnkteacher.mvp.model.HomeworkType
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.TestPaperType
 import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkWorkFragment
@@ -29,8 +29,8 @@ class TeachingFragment : BaseFragment() {
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
-    private var homeworkPopBeans = mutableListOf<PopWindowBean>()
-    private var testPaperPopBeans = mutableListOf<PopWindowBean>()
+    private var homeworkPopBeans = mutableListOf<PopupBean>()
+    private var testPaperPopBeans = mutableListOf<PopupBean>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching
@@ -57,12 +57,42 @@ class TeachingFragment : BaseFragment() {
 
     private fun initDate() {
 
-        homeworkPopBeans.add(PopWindowBean(0, "布置详情", true))
-        homeworkPopBeans.add(PopWindowBean(1, "新增作业本", false))
-        homeworkPopBeans.add(PopWindowBean(2, "新增作业卷", false))
+        homeworkPopBeans.add(
+            PopupBean(
+                0,
+                "布置详情",
+                true
+            )
+        )
+        homeworkPopBeans.add(
+            PopupBean(
+                1,
+                "新增作业本",
+                false
+            )
+        )
+        homeworkPopBeans.add(
+            PopupBean(
+                2,
+                "新增作业卷",
+                false
+            )
+        )
 
-        testPaperPopBeans.add(PopWindowBean(0, "布置详情", true))
-        testPaperPopBeans.add(PopWindowBean(1, "新增考试卷", false))
+        testPaperPopBeans.add(
+            PopupBean(
+                0,
+                "布置详情",
+                true
+            )
+        )
+        testPaperPopBeans.add(
+            PopupBean(
+                1,
+                "新增考试卷",
+                false
+            )
+        )
 
     }
 
@@ -76,7 +106,7 @@ class TeachingFragment : BaseFragment() {
      * 设置tab
      */
     private fun initTab() {
-        val strs=DataBeanManager.getInstance().teachingStrs
+        val strs=DataBeanManager.teachingStrs
         for (i in strs.indices){
             rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
         }
@@ -141,7 +171,7 @@ class TeachingFragment : BaseFragment() {
                 testPaperPopBeans
             }
         }
-        PopWindowRadioList(requireActivity(), popBeans, ivManagers!!,  10).builder()
+        PopupRadioList(requireActivity(), popBeans, ivManagers!!,  10).builder()
             ?.setOnSelectListener { item ->
                 when (lastPosition) {
                     0, 1 -> {
@@ -195,7 +225,7 @@ class TeachingFragment : BaseFragment() {
     private fun showCreateHomeworkName(hint: String,type:Int) {
         HomeworkCreateTypeDialog(requireContext(), hint).builder()
             .setOnDialogClickListener { str ->
-                val covers = DataBeanManager.getInstance().homeworkCover
+                val covers = DataBeanManager.homeworkCover
                 val index = Random().nextInt(covers.size)
                 var homeworkType = HomeworkType()
                 homeworkType.name = str

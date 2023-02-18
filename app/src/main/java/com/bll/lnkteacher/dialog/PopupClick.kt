@@ -10,24 +10,31 @@ import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class PopWindowBtnList(var context:Context, var list:MutableList<PopWindowBean>, var view: View) {
+class PopupClick(val context:Context, val list:MutableList<PopupBean>, val view: View, val width:Int) {
 
     private var mPopupWindow:PopupWindow?=null
-    private var width=0
+    private var xoff=0
 
-    fun builder(): PopWindowBtnList?{
-        val popView = LayoutInflater.from(context).inflate(R.layout.popwindow_list, null, false)
-        mPopupWindow = PopupWindow(context)
-        mPopupWindow?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        // 设置PopupWindow的内容view
-        mPopupWindow?.contentView=popView
-        mPopupWindow?.isFocusable=true // 设置PopupWindow可获得焦点
-        mPopupWindow?.isTouchable=true // 设置PopupWindow可触摸
-        mPopupWindow?.isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+    constructor(context: Context, list: MutableList<PopupBean>, view: View):this(context, list, view, 0)
+
+    fun builder(): PopupClick?{
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
+        mPopupWindow = PopupWindow(context).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            // 设置PopupWindow的内容view
+            contentView=popView
+            isFocusable=true // 设置PopupWindow可获得焦点
+            isTouchable=true // 设置PopupWindow可触摸
+            isOutsideTouchable=true // 设置非PopupWindow区域可触摸
+            if (this@PopupClick.width!=0){
+                width=this@PopupClick.width
+            }
+
+        }
 
         var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
@@ -40,7 +47,7 @@ class PopWindowBtnList(var context:Context, var list:MutableList<PopWindowBean>,
         }
 
         popView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        width = mPopupWindow?.contentView?.measuredWidth!!
+        xoff = mPopupWindow?.contentView?.measuredWidth!!
 
         show()
         return this
@@ -54,7 +61,7 @@ class PopWindowBtnList(var context:Context, var list:MutableList<PopWindowBean>,
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,-width, 5,Gravity.RIGHT)
+            mPopupWindow?.showAsDropDown(view,if (width!=0)0 else -xoff, 5,Gravity.RIGHT)
         }
     }
 
@@ -66,13 +73,13 @@ class PopWindowBtnList(var context:Context, var list:MutableList<PopWindowBean>,
     }
 
     fun interface OnSelectListener{
-        fun onSelect(item: PopWindowBean)
+        fun onSelect(item: PopupBean)
     }
 
 
-    private class MAdapter(layoutResId: Int, data: List<PopWindowBean>?) : BaseQuickAdapter<PopWindowBean, BaseViewHolder>(layoutResId, data) {
+    private class MAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: PopWindowBean) {
+        override fun convert(helper: BaseViewHolder, item: PopupBean) {
 
             helper.setText(R.id.tv_name,item.name)
             helper.setImageResource(R.id.iv_check,item.resId)

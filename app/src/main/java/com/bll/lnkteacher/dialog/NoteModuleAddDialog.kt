@@ -31,7 +31,7 @@ class NoteModuleAddDialog(private val context: Context, private val type: Int) {
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
-        val datas=if (type==0) DataBeanManager.getInstance().noteModuleDiary else DataBeanManager.getInstance().noteModuleBook
+        val datas=if (type==0) DataBeanManager.noteModuleDiary else DataBeanManager.noteModuleBook
         var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rvList?.layoutManager =GridLayoutManager(context,if (type==0) 2 else 3)//创建布局管理
         var mAdapter = MyAdapter(R.layout.item_note_module, datas)

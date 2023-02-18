@@ -1,11 +1,11 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.widget.TextView
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.PopWindowRadioList
-import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.TestPaperWork
 import com.bll.lnkteacher.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
@@ -19,9 +19,9 @@ class TestPaperAnalyseActivity:BaseActivity() {
 
     private var index=0//当前学生的作业下标
     private var testPaperWork:TestPaperWork?=null
-    private var popScores= mutableListOf<PopWindowBean>()
-    private var popScoresDown= mutableListOf<PopWindowBean>()
-    private var popRanks= mutableListOf<PopWindowBean>()
+    private var popScores= mutableListOf<PopupBean>()
+    private var popScoresDown= mutableListOf<PopupBean>()
+    private var popRanks= mutableListOf<PopupBean>()
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_analyse
@@ -29,17 +29,21 @@ class TestPaperAnalyseActivity:BaseActivity() {
 
     override fun initData() {
         testPaperWork=intent.getBundleExtra("bundle").get("TestPaperWork") as TestPaperWork
-        val scores= DataBeanManager.getInstance().scoreList
+        val scores= DataBeanManager.scoreList
         for (i in scores.indices)
         {
-            val popWindowBean=PopWindowBean(i,scores[i].toString(),i==1)
-            popScores.add(popWindowBean)
-            popScoresDown.add(popWindowBean)
+            val popupBean= PopupBean(
+                i,
+                scores[i].toString(),
+                i == 1
+            )
+            popScores.add(popupBean)
+            popScoresDown.add(popupBean)
         }
 
-        popRanks.add(PopWindowBean(0, "班级排名", true))
-        popRanks.add(PopWindowBean(1, "年级排名", false))
-        popRanks.add(PopWindowBean(2, "区域排名", false))
+        popRanks.add(PopupBean(0, "班级排名", true))
+        popRanks.add(PopupBean(1, "年级排名", false))
+        popRanks.add(PopupBean(2, "区域排名", false))
 
     }
 
@@ -73,7 +77,7 @@ class TestPaperAnalyseActivity:BaseActivity() {
         }
 
         iv_manager.setOnClickListener {
-            PopWindowRadioList(this, popRanks, iv_manager,  10).builder()
+            PopupRadioList(this, popRanks, iv_manager,  10).builder()
                 ?.setOnSelectListener { item ->
 
                 }
@@ -91,8 +95,8 @@ class TestPaperAnalyseActivity:BaseActivity() {
     /**
      * 分数选择 以上
      */
-    private fun showPopwindowScore(list:MutableList<PopWindowBean>,view:TextView){
-        PopWindowRadioList(this, list, view,  0).builder()
+    private fun showPopwindowScore(list:MutableList<PopupBean>, view:TextView){
+        PopupRadioList(this, list, view,  0).builder()
             ?.setOnSelectListener { item ->
                 view.text = item.name
             }
@@ -101,8 +105,8 @@ class TestPaperAnalyseActivity:BaseActivity() {
     /**
      * 分数选择 以下
      */
-    private fun showPopwindowScoreDown(list:MutableList<PopWindowBean>,view:TextView){
-        PopWindowRadioList(this, list, view,  0).builder()
+    private fun showPopwindowScoreDown(list:MutableList<PopupBean>, view:TextView){
+        PopupRadioList(this, list, view,  0).builder()
             ?.setOnSelectListener { item ->
                 view.text = item.name
             }

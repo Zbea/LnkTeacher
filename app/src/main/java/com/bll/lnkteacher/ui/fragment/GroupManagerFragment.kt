@@ -7,8 +7,8 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.GroupAddDialog
 import com.bll.lnkteacher.dialog.GroupCreateDialog
-import com.bll.lnkteacher.dialog.PopWindowRadioList
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.GroupManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.group.ClassGroupFragment
@@ -27,8 +27,8 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
-    private var groupPops = mutableListOf<PopWindowBean>()
-    private var areaPops = mutableListOf<PopWindowBean>()
+    private var groupPops = mutableListOf<PopupBean>()
+    private var areaPops = mutableListOf<PopupBean>()
 
     override fun onCreateClassGroupSuccess() {
         classGroupFragment?.refreshData()
@@ -159,9 +159,9 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     }
 
     //顶部弹出pop选择框
-    private fun showPopView(pops:MutableList<PopWindowBean>) {
+    private fun showPopView(pops:MutableList<PopupBean>) {
 
-        PopWindowRadioList(requireContext(), pops, iv_manager,  10).builder()
+        PopupRadioList(requireContext(), pops, iv_manager,  10).builder()
             ?.setOnSelectListener { item ->
                 when (item.id) {
                     0 -> createGroup(if (lastPosition==1) 2 else 1)

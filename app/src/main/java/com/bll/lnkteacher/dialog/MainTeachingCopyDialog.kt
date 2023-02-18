@@ -8,14 +8,14 @@ import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.DateEventDaoManager
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.utils.DateUtils
 
 
 class MainTeachingCopyDialog(private val context: Context, private val classId:Int) {
 
     private var dialog:Dialog?=null
-    private var pops= mutableListOf<PopWindowBean>()
+    private var pops= mutableListOf<PopupBean>()
     private var id=0
 
     fun builder(): MainTeachingCopyDialog {
@@ -25,12 +25,7 @@ class MainTeachingCopyDialog(private val context: Context, private val classId:I
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val groups= DataBeanManager.getInstance().classGroups
-        for (item in groups){
-            if (item.classId!=classId){
-                pops.add(PopWindowBean(item.classId,item.name,false))
-            }
-        }
+        pops= DataBeanManager.popClassGroups
         pops[0].isCheck=true
         id=pops[0].id
 
@@ -95,11 +90,11 @@ class MainTeachingCopyDialog(private val context: Context, private val classId:I
         return this
     }
 
-    private var popWindow:PopWindowRadioList?=null
+    private var popWindow:PopupRadioList?=null
     private fun selectorClassGroup(view: TextView){
         if (popWindow==null)
         {
-            popWindow= PopWindowRadioList(context, pops, view,  20).builder()
+            popWindow= PopupRadioList(context, pops, view,  20).builder()
             popWindow  ?.setOnSelectListener { item ->
                 view.text = item.name
                 id=item.id

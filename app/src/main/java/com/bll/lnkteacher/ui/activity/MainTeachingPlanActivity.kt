@@ -7,7 +7,7 @@ import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.mvp.model.ClassGroup
 import com.bll.lnkteacher.mvp.model.Date
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
@@ -18,16 +18,16 @@ import org.greenrobot.eventbus.EventBus
 class MainTeachingPlanActivity:DateActivity() {
 
     private var classGroup:ClassGroup?=null
-    private var pops= mutableListOf<PopWindowBean>()
+    private var pops= mutableListOf<PopupBean>()
     private var mAdapter: MainTeachingAdapter?=null
 
     override fun initData() {
         super.initData()
         classGroup = intent.getBundleExtra("bundle").getSerializable("classGroup") as ClassGroup
 
-        pops.add(PopWindowBean(0,"教学移动",false))
-        pops.add(PopWindowBean(1,"教学复制",false))
-        pops.add(PopWindowBean(2,"教学删除",false))
+        pops.add(PopupBean(0, "教学移动", false))
+        pops.add(PopupBean(1, "教学复制", false))
+        pops.add(PopupBean(2, "教学删除", false))
     }
 
 
@@ -87,7 +87,7 @@ class MainTeachingPlanActivity:DateActivity() {
     }
 
     private fun showPopView(){
-        PopWindowBtnList(this, pops, iv_manager).builder()
+        PopupClick(this, pops, iv_manager).builder()
             ?.setOnSelectListener { item ->
                 when (item.id) {
                     0 -> {

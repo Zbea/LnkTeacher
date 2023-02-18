@@ -4,10 +4,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.PopWindowRadioList
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.Group
 import com.bll.lnkteacher.mvp.model.GroupUser
-import com.bll.lnkteacher.mvp.model.PopWindowBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.GroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.GroupUserAdapter
@@ -17,11 +17,11 @@ import kotlinx.android.synthetic.main.common_title.*
 class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
 
     private val mPresenter= GroupPresenter(this)
-    private var popWindowClass: PopWindowRadioList?=null
+    private var popWindowClass: PopupRadioList?=null
     private var index=0//校群 班群
     private var users= mutableListOf<GroupUser>()
     private var mAdapter: GroupUserAdapter?=null
-    private var pops= mutableListOf<PopWindowBean>()
+    private var pops= mutableListOf<PopupBean>()
     private var position=0
 
     override fun onGroupList(groups: MutableList<Group>?) {
@@ -46,15 +46,21 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         val id=intent.getIntExtra("id",0)
 
         val groups=if (index==2){
-            DataBeanManager.getInstance().groupsSchool
+            DataBeanManager.schoolGroups
         }
         else{
-            DataBeanManager.getInstance().groupsArea
+            DataBeanManager.areaGroups
         }
 
         for (i in 0 until groups.size){
             var item=groups[i]
-            pops.add(PopWindowBean(item.id,item.schoolName,i==position))
+            pops.add(
+                PopupBean(
+                    item.id,
+                    item.schoolName,
+                    i == position
+                )
+            )
         }
 
         mPresenter.getGroupUsers(id)
@@ -87,7 +93,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
      */
     private fun selectorClassGroupView(){
         if (popWindowClass==null){
-            popWindowClass= PopWindowRadioList(this, pops, tv_class,  5).builder()
+            popWindowClass= PopupRadioList(this, pops, tv_class, tv_class.width, 5).builder()
             popWindowClass?.setOnSelectListener { item ->
                 tv_class.text = item.name
                 mPresenter.getGroupUsers(item.id)

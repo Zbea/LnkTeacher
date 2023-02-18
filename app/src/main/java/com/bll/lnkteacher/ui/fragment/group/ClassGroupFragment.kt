@@ -34,7 +34,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
             classGroups=list
             mAdapter?.setNewData(classGroups)
             //更新全局班群
-            DataBeanManager.getInstance().classGroups=classGroups
+            DataBeanManager.classGroups=classGroups
         }
     }
 
