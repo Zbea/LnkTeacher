@@ -10,7 +10,7 @@ import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.ListBean
+import com.bll.lnkteacher.mvp.model.ListItem
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 
@@ -62,7 +62,7 @@ class ClassGroupCreateDialog(val context: Context) {
     }
 
 
-    class SpinnerAdapter(val context: Context, val list: List<ListBean>) : BaseAdapter() {
+    class SpinnerAdapter(val context: Context, val list: List<ListItem>) : BaseAdapter() {
 
         override fun getCount(): Int {
             return list.size

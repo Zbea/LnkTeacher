@@ -50,12 +50,31 @@ object DataBeanManager {
         get(){
             val popClasss= mutableListOf<PopupBean>()
             for (i in 0 until classGroups.size){
-                var item=classGroups[i]
+                val item=classGroups[i]
                 popClasss.add(PopupBean(item.classId, item.name, i == 0))
             }
             return popClasss
         }
 
+    val popSchoolGroups:MutableList<PopupBean>
+        get(){
+            val popSchools= mutableListOf<PopupBean>()
+            for (i in 0 until schoolGroups.size){
+                val item=schoolGroups[i]
+                popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
+            }
+            return popSchools
+        }
+
+    val popAreaGroups:MutableList<PopupBean>
+        get(){
+            val popSchools= mutableListOf<PopupBean>()
+            for (i in 0 until areaGroups.size){
+                val item=areaGroups[i]
+                popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
+            }
+            return popSchools
+        }
 
     /**
      * 获取index栏目

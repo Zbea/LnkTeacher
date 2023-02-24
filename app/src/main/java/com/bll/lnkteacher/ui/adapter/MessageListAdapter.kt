@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.adapter
 
-import android.widget.CheckBox
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
@@ -16,6 +15,7 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
 
         helper.setText(R.id.tv_content,item.content)
         helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.createTime))
+        helper.setChecked(R.id.cb_check,item.isCheck)
 
         var rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext)
@@ -23,13 +23,7 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
 
-        var checkBox=helper.getView<CheckBox>(R.id.cb_check)
-        checkBox.isChecked=item.isCheck
-        checkBox.setOnCheckedChangeListener { compoundButton, b ->
-            item.isCheck=b
-        }
 
-        helper.addOnClickListener(R.id.iv_delete)
     }
 
 

@@ -84,12 +84,12 @@
         <activity android:name="com.bll.lnkteacher.ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />
-        <activity android:name="com.bll.lnkteacher.ui.activity.teaching.HomeworkWorkActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperGradeActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.group.ClassGroupUserActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity"/>
-        <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperWorkActivity"
+        <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name="com.bll.lnkteacher.ui.activity.group.GroupUserActivity"/>

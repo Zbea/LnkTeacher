@@ -6,7 +6,7 @@ import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.ListBean
+import com.bll.lnkteacher.mvp.model.ListItem
 import com.bll.lnkteacher.ui.adapter.BookCatalogAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -39,7 +39,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         rv_list?.layoutManager = LinearLayoutManager(context)
 
         if (type==0){
-            var mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ListBean>)
+            var mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ListItem>)
             rv_list?.adapter = mAdapter
             mAdapter?.bindToRecyclerView(rv_list)
             mAdapter?.setOnItemClickListener  { adapter, view, position ->
@@ -89,9 +89,9 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         this.listener = listener
     }
 
-    class CatalogAdapter(layoutResId: Int, data: List<ListBean>) : BaseQuickAdapter<ListBean, BaseViewHolder>(layoutResId, data) {
+    class CatalogAdapter(layoutResId: Int, data: List<ListItem>) : BaseQuickAdapter<ListItem, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: ListBean) {
+        override fun convert(helper: BaseViewHolder, item: ListItem) {
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
         }

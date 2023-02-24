@@ -10,81 +10,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_45"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center|right"
         >
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:text="班群单考"
-            />
-
-
-        <TextView
-            android:id="@+id/tv_class_name"
-            android:layout_width="182dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_10"
-            android:lines="1"
-            android:ellipsize="end"
-            android:drawableRight="@mipmap/icon_arrow_down"
-            android:drawablePadding="@dimen/dp_10"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:gravity="center_vertical"
-            android:text="班级选择"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:text="校群联考"
-            />
-
-
-        <TextView
-            android:id="@+id/tv_school_name"
-            android:layout_width="182dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_10"
-            android:lines="1"
-            android:ellipsize="end"
-            android:drawableRight="@mipmap/icon_arrow_down"
-            android:drawablePadding="@dimen/dp_10"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:gravity="center_vertical"
-            android:text="校群选择"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_40"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:text="际群联考"
-            />
-
-
-        <TextView
             android:id="@+id/tv_group_name"
-            android:layout_width="182dp"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_30"
             android:lines="1"
             android:ellipsize="end"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -94,7 +30,25 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:gravity="center_vertical"
-            android:text="际群选择"
+            android:textColorHint="@color/color_text_hint"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            />
+
+        <TextView
+            android:id="@+id/tv_group"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:lines="1"
+            android:ellipsize="end"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:drawablePadding="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:gravity="center_vertical"
+            android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
 
@@ -105,9 +59,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginEnd="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_30"
         />
 
     <include

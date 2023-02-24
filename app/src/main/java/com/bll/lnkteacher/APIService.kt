@@ -173,5 +173,32 @@ interface APIService{
     @GET("group/classList")
     fun checkGroupUser(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<GroupUser>>>
 
+    /**
+     * 获取考卷分类
+     */
+    @GET("common/type/list")
+    fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperType>>
+    /**
+     * 添加考卷分类成功
+     */
+    @POST("common/type/insert")
+    fun addPaperType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取考卷内容列表
+     */
+    @GET("task/list/exam")
+    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaper>>
+
+    /**
+     * 查看考卷列表
+     */
+    @GET("task/image/listExamJob")
+    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaper>>
+    /**
+     * 删除考卷
+     */
+    @POST("task/delete")
+    fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
 
 }

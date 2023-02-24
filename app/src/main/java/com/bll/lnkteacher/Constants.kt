@@ -20,13 +20,13 @@ package com.bll.lnkteacher
 /**
  * desc: 常量  分辨率为 1404x1872，屏幕尺寸为 10.3
  */
-class Constants private constructor() {
+class Constants{
 
     companion object {
 
-        val PAGE_SIZE = 12
+        const val PAGE_SIZE = 12
 
-//        const val URL_BASE = "https://api2.bailianlong.com/v1/"
+        //        const val URL_BASE = "https://api2.bailianlong.com/v1/"
         const val URL_BASE = "http://192.168.101.10:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -52,13 +52,13 @@ class Constants private constructor() {
         val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date").path
 
         //eventbus通知标志
-        val DATE_EVENT = "DateEvent"
-        val BOOK_EVENT = "BookEvent"
-        val TEXT_BOOK_EVENT = "TextBookEvent"
-        val COURSE_EVENT = "CourseEvent"
-        val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
-        val NOTE_EVENT = "NoteEvent"
-        val CLASSGROUP_EVENT = "ClassGroupEvent"
+        const val DATE_EVENT = "DateEvent"
+        const val BOOK_EVENT = "BookEvent"
+        const val TEXT_BOOK_EVENT = "TextBookEvent"
+        const val COURSE_EVENT = "CourseEvent"
+        const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
+        const val NOTE_EVENT = "NoteEvent"
+        const val CLASSGROUP_EVENT = "ClassGroupEvent"
     }
 
 }

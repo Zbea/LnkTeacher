@@ -42,10 +42,9 @@ class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val v
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
         var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            for (item in list)
-            {
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
+            for (item in list) {
                 item.isCheck=false
             }
             list[position].isCheck=true

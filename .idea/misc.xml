@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/android-sdk-windows/platforms/android-28/data/res/layout/always_use_checkbox.xml" value="0.2515625" />
+        <entry key="..\:/android-sdk-windows/platforms/android-28/data/res/layout/sms_short_code_confirmation_dialog.xml" value="0.2515625" />
+        <entry key="..\:/android-sdk-windows/platforms/android-28/data/res/layout/unsupported_display_size_dialog_content.xml" value="0.2515625" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_black_arch.xml" value="0.23" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_black_solid_10dp_corner.xml" value="0.261" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/drawable/bg_black_strok_10dp_corner.xml" value="0.257" />
@@ -202,6 +205,7 @@
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_list.xml" value="0.3067708333333333" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_notebook.xml" value="0.1904226618705036" />
         <entry key="..\:/workspace/LnkStudy/app/src/main/res/layout/popwindow_record_setting.xml" value="0.2989583333333333" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_black_arch.xml" value="0.275" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_black_stroke_0dp_corner.xml" value="0.213" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_btn_black_solid.xml" value="0.2725" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_check_selector.xml" value="0.213" />
@@ -214,6 +218,8 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_rb_line_selector.xml" value="0.2725" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/bg_top_search.xml" value="0.2725" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/color_black_gray_selector.xml" value="0.2525" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/rb_bg_zfb.xml" value="0.2365" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/drawable/rb_course_bg.xml" value="0.275" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layout/ac_account_info.xml" value="0.27239583333333334" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layout/ac_app_list.xml" value="0.2682291666666667" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layout/ac_bookstore.xml" value="0.2635416666666667" />
@@ -271,6 +277,7 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layout/popwindow_record_setting.xml" value="0.2864583333333333" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_account_group.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_account_smoney.xml" value="0.28072916666666664" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_account_vip.xml" value="0.41504854368932037" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_app_download.xml" value="0.25" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_app_list.xml" value="0.2364258230012826" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_app_wallpaper.xml" value="0.2370806890299184" />
@@ -308,7 +315,7 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_main_message.xml" value="0.3278985507246377" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_main_note.xml" value="0.2370806890299184" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_message.xml" value="0.3442028985507246" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_message_classgroup.xml" value="0.328125" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_message_classgroup.xml" value="0.9" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_message_classname.xml" value="0.2436938862761864" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_module.xml" value="0.2436938862761864" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_note.xml" value="0.2436938862761864" />
@@ -321,6 +328,7 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_classgroup_user.xml" value="0.67" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_assign.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_assign_list.xml" value="0.27447916666666666" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_correct.xml" value="0.39441747572815533" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_type.xml" value="0.2875" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_work.xml" value="0.3015625" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_teaching_homework_work_bean.xml" value="0.5" />
@@ -329,8 +337,8 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_assign_content.xml" value="0.33" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_grade.xml" value="0.33" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_type.xml" value="0.3072916666666667" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_work.xml" value="0.25" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_work_type.xml" value="0.3026041666666667" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_work.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_testpaper_work_type.xml" value="0.67" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/adapter/layout/item_textbook.xml" value="0.22573749465583584" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/common/layout/common_book_empty.xml" value="0.23300555793073963" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/common/layout/common_date_title.xml" value="0.2394185549380077" />
@@ -366,8 +374,9 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_group_selector.xml" value="0.22488242838820008" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_homework_assign_details.xml" value="0.25" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_homework_publish.xml" value="0.33" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_homework_publish_classgroup_selector.xml" value="0.31690997566909973" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_homework_publish_classgroup_selector.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_homework_type_create.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_image.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_input_content.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_main_teaching_copy.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_main_teaching_date_event.xml" value="0.33" />
@@ -376,6 +385,7 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_message_classgroup_selector.xml" value="0.22759103641456582" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_message_details.xml" value="0.28229166666666666" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_message_publish.xml" value="0.33" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_message_send.xml" value="0.67" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_module_add.xml" value="0.2436938862761864" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_note_add_module.xml" value="0.2436938862761864" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_notebook_add.xml" value="0.30416666666666664" />
@@ -388,6 +398,7 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_teaching_classgroup_user.xml" value="0.2833333333333333" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/dialog_teaching_homework_assign_list.xml" value="0.27447916666666666" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/popup_date_number_selector.xml" value="0.16356968215158924" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/popup_list.xml" value="0.25" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/popwindow_bookstore_type.xml" value="0.23685335613510047" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/popwindow_btn_list.xml" value="0.28854166666666664" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/dialog/layout/popwindow_date_number_selector.xml" value="0.20126926563916592" />
@@ -418,11 +429,11 @@
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_homework_assgin_image.xml" value="0.33" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_homework_work.xml" value="0.3229166666666667" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_main.xml" value="0.30231143552311435" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_message_list.xml" value="0.3442028985507246" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_message_list.xml" value="0.5" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_note_draw_details.xml" value="0.21419410004275333" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_note_type_manager.xml" value="0.16552567237163815" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_testpaper_analyse.xml" value="0.33" />
-        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_testpaper_assgin_content.xml" value="0.5" />
+        <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_testpaper_assgin_content.xml" value="0.33" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_testpaper_grade.xml" value="0.33" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_testpaper_work.xml" value="0.25" />
         <entry key="..\:/workspace/LnkTeacher/app/src/main/res/layouts/ui/layout/ac_textbook.xml" value="0.22359982898674646" />

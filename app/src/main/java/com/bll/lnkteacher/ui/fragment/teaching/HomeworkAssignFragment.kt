@@ -11,7 +11,7 @@ import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_homework_assign.*
 
-class TeachingHomeworkAssignFragment:BaseFragment() {
+class HomeworkAssignFragment:BaseFragment() {
 
     private var mAdapter:HomeworkAssignAdapter?=null
     private var types= mutableListOf<HomeworkType>()

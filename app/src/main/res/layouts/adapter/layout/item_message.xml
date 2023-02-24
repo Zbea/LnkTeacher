@@ -5,6 +5,13 @@
     android:layout_height="wrap_content"
     >
 
+    <CheckBox
+        android:id="@+id/cb_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:button="@drawable/bg_check_selector"
+        android:layout_marginEnd="@dimen/dp_10" />
 
         <TextView
             android:id="@+id/tv_content"
@@ -28,17 +35,7 @@
         android:layout_width="180dp"
         android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:id="@+id/iv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_notebook_delete"
-            />
 
-        <CheckBox
-            android:id="@+id/cb_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30" />
+
 
 </LinearLayout>

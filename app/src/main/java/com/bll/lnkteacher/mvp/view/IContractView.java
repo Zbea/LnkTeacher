@@ -2,18 +2,17 @@ package com.bll.lnkteacher.mvp.view;
 
 import com.bll.lnkteacher.mvp.model.AccountList;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
-import com.bll.lnkteacher.mvp.model.AppBean;
-import com.bll.lnkteacher.mvp.model.BookEvent;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.ClassGroup;
 import com.bll.lnkteacher.mvp.model.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.Group;
 import com.bll.lnkteacher.mvp.model.GroupUser;
+import com.bll.lnkteacher.mvp.model.TestPaper;
+import com.bll.lnkteacher.mvp.model.TestPaperType;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.net.IBaseView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IContractView {
@@ -88,5 +87,20 @@ public interface IContractView {
         void onClassList(List<ClassGroup> classGroups);
         void onGroupList(List<Group> groups);
     }
+
+    //考卷布置
+    interface ITestPaperAssignView extends IBaseView{
+        void onType(List<TestPaperType.TypeBean> types);
+        void onTypeSuccess();
+        void onList(TestPaper testPaper);
+        void onImageList(TestPaper testPaper);
+        void onDeleteSuccess();
+    }
+
+    //考卷批改
+    interface ITestPaperCorrectView extends IBaseView{
+
+    }
+
 
 }

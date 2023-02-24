@@ -46,10 +46,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
         setPageTitle("我的账户")
 
-        tv_user.text = mUser?.account
-        tv_name.text = mUser?.nickname
-        tv_phone.text =  mUser?.telNumber?.substring(0,3)+"****"+mUser?.telNumber?.substring(7,11)
-        tv_school.text=mUser?.schoolName
+        mUser?.apply {
+            tv_user.text = account
+            tv_name.text = nickname
+            tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
+            tv_school.text=schoolName
+        }
 
         btn_edit_psd.setOnClickListener {
             startActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
@@ -86,8 +88,5 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         super.onDestroy()
         mUser?.let { SPUtil.putObj("user", it) }
     }
-
-
-
 
 }

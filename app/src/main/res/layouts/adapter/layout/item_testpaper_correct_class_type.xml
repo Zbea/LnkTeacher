@@ -84,13 +84,14 @@
             android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="保存"
+            android:text="发送"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16"
             android:paddingStart="6dp"
             android:paddingEnd="6dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
+            android:visibility="gone"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
     </LinearLayout>

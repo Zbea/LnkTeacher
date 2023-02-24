@@ -40,7 +40,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var mView:View?=null
     var tvPageTitle: TextView? = null
     var ivBack: ImageView? = null
-    var ivManagers: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
@@ -119,7 +118,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     fun initCommonTitle() {
         tvPageTitle = requireView().findViewById(R.id.tv_title)
         ivBack=requireView().findViewById(R.id.iv_back)
-        ivManagers = requireView().findViewById(R.id.iv_manager)
         tvSearch= requireView().findViewById(R.id.tv_search)
     }
 
@@ -146,12 +144,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             disMissView(ivBack)
         }
     }
-
-
-    fun showNoteView() {
-        showView(ivManagers)
-    }
-
 
     /**
      * 显示view

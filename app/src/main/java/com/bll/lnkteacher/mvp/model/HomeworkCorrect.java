@@ -1,17 +1,15 @@
 package com.bll.lnkteacher.mvp.model;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class TestPaperWork implements Serializable {
+public class HomeworkCorrect {
 
     public int id;
-    public String type;//考试 类型
+    public String content;
+    public String type;//类型
     public int typeId;
-    public String testPaperType;//考试内容分组
-    public int testPaperTypeId;
-    public long commitDate;
     public long createDate;
+    public long commitDate;
     public int state;//0未批改
     public List<ListBean> lists;
     public String[] images = {
@@ -19,8 +17,7 @@ public class TestPaperWork implements Serializable {
             , "http://files.eduuu.com/img/2012/12/14/165129_50cae891a6231.jpg"
     };
 
-    public class ListBean implements Serializable{
-
+    public class ListBean {
         public int id;
         public String className;
         public int classId;

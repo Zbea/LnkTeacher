@@ -10,6 +10,6 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
 
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
         helper.setText(R.id.tv_message_content,item.content)
-        helper.setText(R.id.tv_time,DateUtils.longToStringWeek(item.createTime))
+        helper.setText(R.id.tv_message_time,DateUtils.longToStringWeek(item.createTime))
     }
 }

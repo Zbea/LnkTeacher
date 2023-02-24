@@ -102,9 +102,10 @@ class MainCourseActivity : BaseActivity() {
     override fun initView() {
 
         setPageTitle("排课表   编辑")
-        showView(iv_save)
+        showView(iv_manager)
+        iv_manager.setImageResource(R.mipmap.icon_save)
 
-        iv_save?.setOnClickListener {
+        iv_manager?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
             CourseGreenDaoManager.getInstance().insertAll(selectLists)
@@ -522,51 +523,49 @@ class MainCourseActivity : BaseActivity() {
 
     //获得第二列课节view
     private fun getLessonsView(resId: Int): View {
-        var view = layoutInflater.inflate(R.layout.common_course_lessons, null)
-        var ivName = view.findViewById<ImageView>(R.id.iv_name)
-        ivName.setImageResource(resId)
-
-        return view
+        return layoutInflater.inflate(R.layout.common_course_lessons, null).apply {
+            findViewById<ImageView>(R.id.iv_name).setImageResource(resId)
+        }
     }
 
     //获取星期
     private fun getWeekView(resId: Int): View {
-        var view = ImageView(this)
-        view.setImageResource(resId)
-        view.scaleType = ImageView.ScaleType.CENTER
-        view.setPadding(0,0,0,10)
-        return view
+        return ImageView(this).apply {
+            setImageResource(resId)
+            scaleType = ImageView.ScaleType.CENTER
+            setPadding(0,0,0,10)
+        }
     }
 
     //获得课程
     private fun getCourseView(): TextView {
-        var view = TextView(this)
-        view.setTextColor(Color.BLACK)
-        view.textSize = 30f
-//        view.setSingleLine(true)
-        view.gravity = Gravity.CENTER
-        return view
+        return TextView(this).apply {
+            setTextColor(Color.BLACK)
+            textSize = 30f
+//          setSingleLine(true)
+            gravity = Gravity.CENTER
+        }
     }
 
     //空白view
     private fun getCourseView1(): TextView {
-        var view = TextView(this)
-        view.setTextColor(Color.BLACK)
-        view.textSize = 20f
-        view.gravity = Gravity.CENTER
-        view.setPadding(20, 0, 20, 0)
-        return view
+        return TextView(this).apply {
+            setTextColor(Color.BLACK)
+            textSize = 20f
+            gravity = Gravity.CENTER
+            setPadding(20, 0, 20, 0)
+        }
     }
 
     //获得第一列 时间
     private fun getDateView(resId: Int, padding: Int): View {
-        var view = layoutInflater.inflate(R.layout.common_course_date, null)
-        var tv1 = view.findViewById<ImageView>(R.id.tv_1)
-        tv1.setImageResource(resId)
-        tv1.setPadding(0, 0, 0, padding)
-        return view
+        return layoutInflater.inflate(R.layout.common_course_date, null).apply {
+            findViewById<ImageView>(R.id.tv_1).apply {
+            setImageResource(resId)
+            setPadding(0, 0, 0, padding)
+            }
+        }
     }
-
 
     //时间选择器
     private fun selectTime(tvStart: TextView,tvEnd: TextView, id: Int) {
@@ -576,10 +575,11 @@ class MainCourseActivity : BaseActivity() {
             tvStart.text = startStr
             tvEnd.text = endStr
 
-            var course = CourseBean()
-            course.name = "$startStr~$endStr"
-            course.viewId = id
-            course.type = type
+            val course = CourseBean().apply {
+                name = "$startStr~$endStr"
+                viewId = id
+                type = this@MainCourseActivity.type
+            }
 
             //删除已经存在了的
             if (selectLists.size > 0) {
@@ -600,16 +600,15 @@ class MainCourseActivity : BaseActivity() {
      * 输入课程
      */
     private fun inputContent(v: TextView) {
-
         ClassGroupSelectDialog(this).builder()
             .setOnDialogClickListener{
                 v.text = it.name
 
-                var course = CourseBean()
-                course.viewId = v.id
-                course.name = it.name
-                course.type = type
-
+                val course = CourseBean().apply {
+                    viewId = v.id
+                    name = it.name
+                    type = this@MainCourseActivity.type
+                }
                 //删除已经存在了的
                 if (selectLists.size > 0) {
                     var it = selectLists.iterator()

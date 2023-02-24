@@ -92,7 +92,9 @@
             android:id="@+id/cb_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="往前" />
+            android:gravity="center_vertical"
+            android:button="@drawable/bg_check_selector"
+            android:text="  往前" />
 
         <CheckBox
             android:id="@+id/cb_down"
@@ -100,7 +102,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
-            android:text="往后" />
+            android:gravity="center_vertical"
+            android:button="@drawable/bg_check_selector"
+            android:text="  往后" />
 
     </LinearLayout>
 

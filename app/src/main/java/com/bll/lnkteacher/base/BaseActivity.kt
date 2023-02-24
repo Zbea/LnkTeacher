@@ -50,7 +50,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var tvSearch:TextView?=null
-    var tvSetting: TextView? = null
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -126,7 +125,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             ivBack!!.setOnClickListener { finish() }
         }
         tvSearch= findViewById(R.id.tv_search)
-        tvSetting = findViewById(R.id.tv_setting)
     }
 
     fun showBackView(isShow:Boolean) {
@@ -138,13 +136,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun setPageSetting(setStr:String){
-        if (tvSetting!=null){
-            showView(tvSetting)
-            tvSetting?.text=setStr
-        }
-
-    }
 
     fun showSearchView(isShow:Boolean) {
        if (isShow){

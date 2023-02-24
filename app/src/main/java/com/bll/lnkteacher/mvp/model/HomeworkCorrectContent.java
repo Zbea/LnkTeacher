@@ -2,7 +2,7 @@ package com.bll.lnkteacher.mvp.model;
 
 import java.util.List;
 
-public class HomeworkWorkContent {
+public class HomeworkCorrectContent {
 
     public int id;
     public String className;

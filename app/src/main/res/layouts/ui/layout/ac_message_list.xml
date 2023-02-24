@@ -5,55 +5,7 @@
     android:background="@color/bg_page"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginStart="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_50"
-        >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:text="信息内容"
-            />
-        <TextView
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:text="信息时间"
-            />
-
-        <TextView
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:gravity="center"
-            android:text="收发对象"
-            />
-
-        <ImageView
-            android:id="@+id/iv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/icon_notebook_delete"
-            />
-
-        <CheckBox
-            android:id="@+id/cb_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_30" />
-
-    </LinearLayout>
+    <include layout="@layout/common_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
@@ -63,60 +15,9 @@
         android:layout_marginStart="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_50"
         android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:orientation="horizontal"
-        android:layout_marginStart="130dp"
-        android:layout_marginBottom="97dp"
-        android:layout_marginEnd="130dp"
-        >
-
-        <EditText
-            android:id="@+id/et_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:lines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:hint="信息内容"
-            android:textColorHint="@color/color_text_hint"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-        <TextView
-            android:id="@+id/tv_class_name"
-            android:layout_width="162dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_30"
-            android:drawableRight="@mipmap/icon_arrow_down"
-            android:drawablePadding="@dimen/dp_10"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:gravity="center_vertical"
-            android:text="班级选择"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-        <TextView
-            android:id="@+id/tv_send"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_30"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:gravity="center"
-            android:text="发送"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-    </LinearLayout>
-
+    <include layout="@layout/common_page_number"/>
 
 </LinearLayout>

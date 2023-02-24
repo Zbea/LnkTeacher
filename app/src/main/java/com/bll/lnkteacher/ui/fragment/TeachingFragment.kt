@@ -10,27 +10,25 @@ import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.HomeworkAssign
 import com.bll.lnkteacher.mvp.model.HomeworkType
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.TestPaperType
-import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkAssignFragment
-import com.bll.lnkteacher.ui.fragment.teaching.TeachingHomeworkWorkFragment
-import com.bll.lnkteacher.ui.fragment.teaching.TeachingTestPaperAssignFragment
-import com.bll.lnkteacher.ui.fragment.teaching.TeachingTestPaperWorkFragment
+import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
+import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
+import com.bll.lnkteacher.ui.fragment.teaching.TestPaperAssignFragment
+import com.bll.lnkteacher.ui.fragment.teaching.TestPaperCorrectFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import java.util.*
 
 class TeachingFragment : BaseFragment() {
 
-    private var homeworkAssignFragment: TeachingHomeworkAssignFragment? = null
-    private var homeworkWorkFragment: TeachingHomeworkWorkFragment? = null
-    private var testPaperAssignFragment: TeachingTestPaperAssignFragment? = null
-    private var testPaperWorkFragment: TeachingTestPaperWorkFragment? = null
+    private var homeworkAssignFragment: HomeworkAssignFragment? = null
+    private var homeworkCorrectFragment: HomeworkCorrectFragment? = null
+    private var testPaperAssignFragment: TestPaperAssignFragment? = null
+    private var testPaperCorrectFragment: TestPaperCorrectFragment? = null
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
     private var homeworkPopBeans = mutableListOf<PopupBean>()
-    private var testPaperPopBeans = mutableListOf<PopupBean>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching
@@ -38,12 +36,12 @@ class TeachingFragment : BaseFragment() {
 
     override fun initView() {
         setTitle("教学")
-        showSearch(false)
+        showView(iv_manager)
 
-        homeworkAssignFragment = TeachingHomeworkAssignFragment()
-        homeworkWorkFragment = TeachingHomeworkWorkFragment()
-        testPaperAssignFragment = TeachingTestPaperAssignFragment()
-        testPaperWorkFragment = TeachingTestPaperWorkFragment()
+        homeworkAssignFragment = HomeworkAssignFragment()
+        homeworkCorrectFragment = HomeworkCorrectFragment()
+        testPaperAssignFragment = TestPaperAssignFragment()
+        testPaperCorrectFragment = TestPaperCorrectFragment()
 
         switchFragment(lastFragment, homeworkAssignFragment)
 
@@ -56,49 +54,19 @@ class TeachingFragment : BaseFragment() {
     }
 
     private fun initDate() {
-
-        homeworkPopBeans.add(
-            PopupBean(
-                0,
-                "布置详情",
-                true
-            )
-        )
-        homeworkPopBeans.add(
-            PopupBean(
-                1,
-                "新增作业本",
-                false
-            )
-        )
-        homeworkPopBeans.add(
-            PopupBean(
-                2,
-                "新增作业卷",
-                false
-            )
-        )
-
-        testPaperPopBeans.add(
-            PopupBean(
-                0,
-                "布置详情",
-                true
-            )
-        )
-        testPaperPopBeans.add(
-            PopupBean(
-                1,
-                "新增考试卷",
-                false
-            )
-        )
-
+        homeworkPopBeans.add(PopupBean(0, "布置详情", true))
+        homeworkPopBeans.add(PopupBean(1, "新增作业本", false))
+        homeworkPopBeans.add(PopupBean(2, "新增作业卷", false))
     }
 
     private fun onBindClick() {
-        ivManagers?.setOnClickListener {
-            showPopView()
+        iv_manager?.setOnClickListener {
+            if (lastPosition==2){
+                showCreateTestPaperName()
+            }
+            else{
+                showPopView()
+            }
         }
     }
 
@@ -115,26 +83,28 @@ class TeachingFragment : BaseFragment() {
             when (i) {
                 0 -> {
                     showView(iv_manager)
+                    iv_manager.setImageResource(R.mipmap.icon_manager)
                     switchFragment(lastFragment, homeworkAssignFragment)
                 }
 
                 1 -> {
                     disMissView(iv_manager)
-                    switchFragment(lastFragment, homeworkWorkFragment)
+                    switchFragment(lastFragment, homeworkCorrectFragment)
                 }
 
                 2 -> {
                     showView(iv_manager)
+                    iv_manager.setImageResource(R.mipmap.icon_add)
                     switchFragment(lastFragment, testPaperAssignFragment)
                 }
 
                 3 -> {
                     disMissView(iv_manager)
-                    switchFragment(lastFragment, testPaperWorkFragment)
+                    switchFragment(lastFragment, testPaperCorrectFragment)
                 }
 
             }
-            lastPosition = i
+            this.lastPosition = i
         }
 
     }
@@ -162,35 +132,15 @@ class TeachingFragment : BaseFragment() {
 
     //顶部弹出pop选择框
     private fun showPopView() {
-
-        val popBeans = when (lastPosition) {
-            0, 1 -> {
-                homeworkPopBeans
-            }
-            else -> {
-                testPaperPopBeans
-            }
-        }
-        PopupRadioList(requireActivity(), popBeans, ivManagers!!,  10).builder()
+        PopupRadioList(requireActivity(), homeworkPopBeans, iv_manager,  10).builder()
             ?.setOnSelectListener { item ->
-                when (lastPosition) {
-                    0, 1 -> {
-                        when (item.id) {
-                            0 -> showHomeworkList()
-                            1 -> showCreateHomeworkName("作业本名称", 0)
-                            2 -> showCreateHomeworkName("作业卷集名称", 1)
-                        }
-                    }
-                    2, 3 -> {
-                        when (item.id) {
-                            0 -> showHomeworkList()
-                            1 -> showCreateTestPaperName()
-                        }
-                    }
+                when (item.id) {
+                    0 -> showHomeworkList()
+                    1 -> showCreateHomeworkName("作业本名称", 0)
+                    2 -> showCreateHomeworkName("作业卷集名称", 1)
                 }
             }
     }
-
 
 
     /**
@@ -243,9 +193,7 @@ class TeachingFragment : BaseFragment() {
     private fun showCreateTestPaperName() {
         HomeworkCreateTypeDialog(requireContext(), "新增考试卷").builder()
             .setOnDialogClickListener { str ->
-                var testPaperType = TestPaperType()
-                testPaperType.name = str
-                testPaperAssignFragment?.refreshData(testPaperType)
+                testPaperAssignFragment?.addType(str)
             }
 
     }

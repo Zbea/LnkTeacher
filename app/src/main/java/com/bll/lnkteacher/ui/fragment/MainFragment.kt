@@ -163,11 +163,11 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
     private fun initMessageView() {
         val messages = DataBeanManager.message
         rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        var messageAdapter = MainMessageAdapter(R.layout.item_main_message, messages)
-        rv_main_message.adapter = messageAdapter
-        messageAdapter?.bindToRecyclerView(rv_main_message)
-        messageAdapter?.setEmptyView(R.layout.common_empty)
-        rv_main_message.addItemDecoration(SpaceItemDeco(0, 0, 0, 20, 0))
+        MainMessageAdapter(R.layout.item_main_message, messages).apply {
+            rv_main_message.adapter = this
+            bindToRecyclerView(rv_main_message)
+        }
+
     }
 
     //我的课本

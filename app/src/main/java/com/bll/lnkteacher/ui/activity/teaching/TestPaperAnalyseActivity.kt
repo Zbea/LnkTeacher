@@ -6,19 +6,15 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.TestPaperWork
+import com.bll.lnkteacher.mvp.model.TestPaperCorrect
 import com.bll.lnkteacher.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
-import kotlinx.android.synthetic.main.ac_testpaper_work.iv_down
-import kotlinx.android.synthetic.main.ac_testpaper_work.iv_image
-import kotlinx.android.synthetic.main.ac_testpaper_work.iv_up
-import kotlinx.android.synthetic.main.ac_testpaper_work.tv_page
 import kotlinx.android.synthetic.main.common_title.*
 
 class TestPaperAnalyseActivity:BaseActivity() {
 
     private var index=0//当前学生的作业下标
-    private var testPaperWork:TestPaperWork?=null
+    private var testPaperCorrect: TestPaperCorrect?=null
     private var popScores= mutableListOf<PopupBean>()
     private var popScoresDown= mutableListOf<PopupBean>()
     private var popRanks= mutableListOf<PopupBean>()
@@ -28,7 +24,7 @@ class TestPaperAnalyseActivity:BaseActivity() {
     }
 
     override fun initData() {
-        testPaperWork=intent.getBundleExtra("bundle").get("TestPaperWork") as TestPaperWork
+        testPaperCorrect=intent.getBundleExtra("bundle").get("TestPaperWork") as TestPaperCorrect
         val scores= DataBeanManager.scoreList
         for (i in scores.indices)
         {
@@ -48,7 +44,7 @@ class TestPaperAnalyseActivity:BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("考卷分析 ${testPaperWork?.type} ${testPaperWork?.testPaperType}")
+        setPageTitle("考卷分析 ${testPaperCorrect?.type} ${testPaperCorrect?.testPaperType}")
         showView(iv_manager)
 
         setImageContent()
@@ -60,7 +56,7 @@ class TestPaperAnalyseActivity:BaseActivity() {
             }
         }
         iv_down.setOnClickListener {
-            if (index< testPaperWork?.images?.size?.minus(1)!!){
+            if (index< testPaperCorrect?.images?.size?.minus(1)!!){
                 index+=1
                 setImageContent()
             }
@@ -88,8 +84,8 @@ class TestPaperAnalyseActivity:BaseActivity() {
      * 设置作业内容
      */
     private fun setImageContent(){
-        GlideUtils.setImageRoundUrl(this, testPaperWork?.images?.get(index),iv_image,10)
-        tv_page.text="${index+1}/${testPaperWork?.images?.size}"
+        GlideUtils.setImageRoundUrl(this, testPaperCorrect?.images?.get(index),iv_image,10)
+        tv_page.text="${index+1}/${testPaperCorrect?.images?.size}"
     }
 
     /**
