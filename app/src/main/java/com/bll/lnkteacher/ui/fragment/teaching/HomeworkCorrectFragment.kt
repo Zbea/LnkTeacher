@@ -1,7 +1,8 @@
 package com.bll.lnkteacher.ui.fragment.teaching
 
 import android.content.Intent
-import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
@@ -10,7 +11,7 @@ import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_homework_work.*
+import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
 class HomeworkCorrectFragment:BaseFragment() {
 
@@ -19,7 +20,7 @@ class HomeworkCorrectFragment:BaseFragment() {
     private var homeworks= mutableListOf<HomeworkCorrect>()
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_homework_work
+        return R.layout.fragment_teaching_list
     }
 
     override fun initView() {
@@ -52,17 +53,22 @@ class HomeworkCorrectFragment:BaseFragment() {
         homeworks.add(homeworkCorrect)
         homeworks.add(homeworkCorrect)
 
-        rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mAdapter = HomeworkCorrectAdapter(R.layout.item_teaching_homework_correct, homeworks)
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity,40f), 0))
-        mAdapter?.setOnChildClickListener(object : HomeworkCorrectAdapter.OnChildClickListener {
-            override fun onClick(view: View, parentPosition: Int, position: Int) {
-                this@HomeworkCorrectFragment.position =parentPosition
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.weight=1f
+        layoutParams.setMargins(DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),0)
+        rv_list.layoutParams=layoutParams
+        rv_list.layoutManager = LinearLayoutManager(requireActivity())
+
+        mAdapter = HomeworkCorrectAdapter(R.layout.item_teaching_homework_correct, homeworks).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity,30f)))
+            setOnChildClickListener { view, parentPosition, position ->
+                this@HomeworkCorrectFragment.position = parentPosition
                 startActivity(Intent(activity, HomeworkCorrectActivity::class.java))
             }
-        })
+        }
+
 
     }
 

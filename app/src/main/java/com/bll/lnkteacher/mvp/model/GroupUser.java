@@ -1,7 +1,5 @@
 package com.bll.lnkteacher.mvp.model;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * 校群、际群的班级列表
  */

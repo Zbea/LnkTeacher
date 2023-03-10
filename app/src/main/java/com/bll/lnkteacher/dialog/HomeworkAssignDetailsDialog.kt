@@ -13,15 +13,15 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<HomeworkAssign>) {
 
 
-    fun builder(): HomeworkAssignDetailsDialog? {
+    fun builder(): HomeworkAssignDetailsDialog {
 
         val dialog = Dialog(mContext)
         dialog.setContentView(R.layout.dialog_homework_assign_details)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter= ListAdapter(R.layout.item_homework_assign_details, items)
+        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        val mAdapter= ListAdapter(R.layout.item_homework_assign_details, items)
         rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)

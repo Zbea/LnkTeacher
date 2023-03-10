@@ -92,7 +92,7 @@ class TextbookFragment : BaseFragment() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_book_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(DP2PX.dip2px(activity, 33f), 38))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity, 33f), 38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             var intent = Intent(activity, BookDetailsActivity::class.java)
             intent.putExtra("book_id", books[position].bookId)
@@ -112,7 +112,7 @@ class TextbookFragment : BaseFragment() {
     private fun onLongClick(): Boolean {
         BookManageDialog(requireActivity(), book!!).builder()
             .setOnDialogClickListener {
-                CommonDialog(activity).setContent("确认删除该教材？").builder()
+                CommonDialog(requireActivity()).setContent("确认删除该教材？").builder()
                     .setDialogClickListener(object :
                         CommonDialog.OnDialogClickListener {
                         override fun cancel() {

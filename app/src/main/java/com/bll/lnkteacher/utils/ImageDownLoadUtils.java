@@ -131,7 +131,6 @@ public class ImageDownLoadUtils {
         this.callBack = callBack;
     }
 
-
     public interface ImageDownLoadCallBack {
         void onDownLoadSuccess(Map<Integer, String> map);
 

@@ -22,11 +22,9 @@
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_weight="1">
-
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="姓名"
@@ -34,9 +32,8 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="分数"
@@ -44,9 +41,8 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="排名"
@@ -55,9 +51,9 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_class_name"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="班级名称"
@@ -74,9 +70,8 @@
             android:layout_weight="1">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="140dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="姓名"
@@ -84,9 +79,8 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="分数"
@@ -94,9 +88,8 @@
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="排名"
@@ -105,9 +98,8 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:text="班级名称"

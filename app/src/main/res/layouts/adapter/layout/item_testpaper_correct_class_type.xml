@@ -21,10 +21,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_36"
-            android:text="单元测试卷"
+            android:text="考卷分类"
             android:textStyle="bold"
-            android:textColor="@color/black_50"
-            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black_20"
+            android:textSize="@dimen/sp_20"
             />
 
         <TextView
@@ -33,7 +33,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_20"
-            android:text="班级名"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
             />
@@ -44,7 +43,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_5"
-            android:text="40"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
             />
@@ -75,7 +73,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
-            android:text="30"
+
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
             />
@@ -91,7 +89,7 @@
             android:paddingEnd="6dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
     </LinearLayout>

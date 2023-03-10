@@ -11,16 +11,13 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class HomeworkCorrectAdapter(layoutResId: Int, data: List<HomeworkCorrect>?) : BaseQuickAdapter<HomeworkCorrect, BaseViewHolder>(layoutResId, data) {
 
-    var mAdapter:TypeAdapter?=null
-
     override fun convert(helper: BaseViewHolder, item: HomeworkCorrect) {
         helper.setText(R.id.tv_type,item.content)
-        helper.setText(R.id.tv_date_commit,"上交时间  "+DateUtils.longToStringDataNoYearNoHour(item.commitDate))
+        helper.setText(R.id.tv_date_commit,"上交时间  "+DateUtils.longToStringWeek(item.commitDate))
         helper.setText(R.id.tv_date_create,"布置时间  "+DateUtils.longToStringWeek(item.createDate))
-
         var rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type, item.type,item.lists)
+        val mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type, item.type,item.lists)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
@@ -43,7 +40,7 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<HomeworkCorrect>?) : B
 
     private var listener: OnChildClickListener? = null
 
-    interface OnChildClickListener {
+    fun interface OnChildClickListener {
         fun onClick(view: View,parentPosition:Int,position: Int)
     }
 

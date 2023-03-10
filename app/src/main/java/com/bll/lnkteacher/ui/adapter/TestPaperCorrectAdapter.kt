@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.R.id.*
 import com.bll.lnkteacher.mvp.model.TestPaperCorrect
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -11,40 +12,45 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<TestPaperCorrect.CorrectBean>?) : BaseQuickAdapter<TestPaperCorrect.CorrectBean, BaseViewHolder>(layoutResId, data) {
 
-    var mAdapter:TypeAdapter?=null
-
     override fun convert(helper: BaseViewHolder, item: TestPaperCorrect.CorrectBean) {
-        helper.setText(R.id.tv_exam_type,item.type)
-        helper.setText(R.id.tv_date_create,"布置时间  "+ DateUtils.longToStringDataNoHour(item.createDate))
-
-        var rvList=helper.getView<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type, item.testPaperType,item.lists)
-        rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            listener?.onClick(view,position)
+        when(item.type){
+            1-> helper.setText(tv_exam_type,"班群单考")
+            2->helper.setText(tv_exam_type,"校群联考")
+            else->helper.setText(tv_exam_type,"际群联考")
         }
-
-        helper.addOnClickListener(R.id.tv_data,R.id.tv_analyse,R.id.iv_delete,R.id.tv_student)
+        helper.setText(tv_date_create,"布置时间  "+ DateUtils.longToStringWeek(item.time*1000))
+        helper.setText(tv_group_name,item.name)
+        val rvList=helper.getView<RecyclerView>(rv_list)
+        rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
+        ClassAdapter(R.layout.item_testpaper_correct_class_type, item.examList).apply {
+            rvList.adapter = this
+            bindToRecyclerView(rvList)
+            setOnItemChildClickListener { adapter, view, position ->
+                listener?.onClick(view,helper.adapterPosition,position)
+            }
+        }
+        helper.addOnClickListener(tv_data,tv_analyse,iv_delete,tv_student)
 
     }
 
-    class TypeAdapter(layoutResId: Int,var testType:String,data: List<TestPaperCorrect.ListBean>?) : BaseQuickAdapter<TestPaperCorrect.ListBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: TestPaperCorrect.ListBean) {
-            helper.setText(R.id.tv_type,testType)
-            helper.setText(R.id.tv_class_name,item.className)
-            helper.setText(R.id.tv_number,"${item.number}人")
-            helper.setText(R.id.tv_receive_number,"${item.receiveNumber}人")
+    class ClassAdapter(layoutResId: Int,data: MutableList<TestPaperCorrect.ClassBean>?) : BaseQuickAdapter<TestPaperCorrect.ClassBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: TestPaperCorrect.ClassBean) {
+            helper.apply {
+                setText(tv_type,item.examName)
+                setText(tv_class_name,item.name)
+                setText(tv_number,"${item.totalStudent}人")
+                setText(tv_receive_number,"${item.totalSubmitStudent}人")
+                setVisible(tv_save,item.status==2)
+                addOnClickListener(ll_content, tv_save)
+            }
         }
 
     }
 
     private var listener: OnChildClickListener? = null
 
-    interface OnChildClickListener {
-        fun onClick(view: View,position:Int)
+    fun interface OnChildClickListener {
+        fun onClick(view: View,parentPos:Int,position:Int)
     }
 
     fun setOnChildClickListener(listener: OnChildClickListener?) {

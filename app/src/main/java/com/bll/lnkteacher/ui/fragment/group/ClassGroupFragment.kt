@@ -68,7 +68,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(activity,40f),0))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(activity,40f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             when(view.id){
@@ -98,7 +98,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
      * 解散班群
      */
     private fun dissolveGroup(){
-        CommonDialog(activity).setContent("确定解散班群？").builder()
+        CommonDialog(requireActivity()).setContent("确定解散班群？").builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

@@ -26,7 +26,7 @@ class Constants{
 
         const val PAGE_SIZE = 12
 
-        //        const val URL_BASE = "https://api2.bailianlong.com/v1/"
+//        const val URL_BASE = "https://api2.bailianlong.com/v1/"
         const val URL_BASE = "http://192.168.101.10:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -38,6 +38,9 @@ class Constants{
         //解压的目录
         ///storage/emulated/0/Android/data/yourPackageName/files/BookFile
         val BOOK_PATH = MyApplication.mContext.getExternalFilesDir("BookFile").path
+
+        val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper").path
+        val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework").path
 
         val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val BOOK_PICTURE_FILES = "contents" //图片资源的最确路径

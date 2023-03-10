@@ -17,42 +17,40 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
     private var dialog: Dialog?=null
 
     fun builder(): Dialog? {
-        dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_book_detail)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog= Dialog(context).apply {
+            setContentView(R.layout.dialog_book_detail)
+            show()
+            window.setBackgroundDrawableResource(android.R.color.transparent)
+            btn_ok = findViewById(R.id.btn_ok)
+            val iv_cancel = findViewById<ImageView>(R.id.iv_cancel)
+            val iv_book = findViewById<ImageView>(R.id.iv_book)
+            val tv_price =findViewById<TextView>(R.id.tv_price)
+            val tv_course = findViewById<TextView>(R.id.tv_course)
+            val tv_version = findViewById<TextView>(R.id.tv_version)
+            val tv_info = findViewById<TextView>(R.id.tv_info)
+            val tv_book_name = findViewById<TextView>(R.id.tv_book_name)
 
-        btn_ok = dialog?.findViewById(R.id.btn_ok)
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
-        val iv_book = dialog?.findViewById<ImageView>(R.id.iv_book)
-        val tv_price = dialog?.findViewById<TextView>(R.id.tv_price)
-        val tv_course = dialog?.findViewById<TextView>(R.id.tv_course)
-        val tv_version = dialog?.findViewById<TextView>(R.id.tv_version)
-        val tv_info = dialog?.findViewById<TextView>(R.id.tv_info)
-        val tv_book_name = dialog?.findViewById<TextView>(R.id.tv_book_name)
+            GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-        GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
+            tv_book_name?.text = book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
+            tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
+            tv_course?.text = "课目： " + book.subjectName
+            tv_version?.text = "出版社： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
+            tv_info?.text = "简介： " + book.bookDesc
 
-        tv_book_name?.text = book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
-        tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-        tv_course?.text = "课目： " + book.subjectName
-        tv_version?.text = "出版社： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
-        tv_info?.text = "简介： " + book.bookDesc
+            if (book.buyStatus == 1) {
+                btn_ok?.text = "点击下载"
+            } else {
+                btn_ok?.text = "点击购买"
+            }
 
-        if (book.buyStatus == 1) {
-            btn_ok?.text = "点击下载"
-        } else {
-            btn_ok?.text = "点击购买"
+            if (book.loadSate==2){
+                btn_ok?.visibility= View.GONE
+            }
+
+            iv_cancel?.setOnClickListener { dismiss() }
+            btn_ok?.setOnClickListener { listener?.onClick() }
         }
-
-        if (book.loadSate==2){
-            btn_ok?.visibility= View.GONE
-        }
-
-        iv_cancel?.setOnClickListener { dialog?.dismiss() }
-        btn_ok?.setOnClickListener { listener?.onClick() }
-
         return dialog
     }
 

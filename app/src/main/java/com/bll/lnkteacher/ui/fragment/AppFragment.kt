@@ -41,7 +41,7 @@ class AppFragment:BaseFragment() {
         mAdapter = AppListAdapter(R.layout.item_app_list, apps)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(0,70))
+        rv_list.addItemDecoration(SpaceGridItemDeco(5,70))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             if (view.id==R.id.iv_image){
                 val packageName= apps[position].packageName

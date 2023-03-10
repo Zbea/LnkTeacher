@@ -10,8 +10,7 @@ import com.bll.lnkteacher.utils.KeyboardUtils
 class InputContentDialog(val context: Context,val string: String) {
 
 
-    fun builder(): InputContentDialog? {
-
+    fun builder(): InputContentDialog{
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_input_content)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)

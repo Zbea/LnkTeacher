@@ -11,7 +11,7 @@ import com.bll.lnkteacher.utils.KeyboardUtils
 class HomeworkPublishDialog(val context: Context) {
 
 
-    fun builder(): HomeworkPublishDialog? {
+    fun builder(): HomeworkPublishDialog {
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_homework_publish)

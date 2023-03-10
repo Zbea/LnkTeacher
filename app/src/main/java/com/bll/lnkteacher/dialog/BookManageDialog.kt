@@ -18,8 +18,7 @@ class BookManageDialog(val context: Context, val book:Book){
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_book_manage)
         dialog.show()
-        val window = dialog.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window.setBackgroundDrawableResource(android.R.color.transparent)
 
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)
         val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)

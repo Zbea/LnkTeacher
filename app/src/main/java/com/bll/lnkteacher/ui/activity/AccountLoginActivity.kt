@@ -52,7 +52,7 @@ class AccountLoginActivity:BaseActivity(),
             Manifest.permission.RECORD_AUDIO
         )
 
-        ed_user.setText("zhufeng1")
+        ed_user.setText("techerone")
         ed_psw.setText("123456")
 
 

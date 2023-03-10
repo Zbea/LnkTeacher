@@ -33,7 +33,7 @@ import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.SPUtil
-import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -186,10 +186,10 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         mTeachingAdapter = MainClassGroupAdapter(R.layout.item_main_classgroup, null)
         rv_main_teaching.adapter = mTeachingAdapter
         mTeachingAdapter?.bindToRecyclerView(rv_main_teaching)
-        rv_main_teaching.addItemDecoration(SpaceItemDeco(0, 0, 0, 15, 0))
+        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(3, 15))
         mTeachingAdapter?.setOnItemClickListener { _, _, position ->
-            var intent = Intent(activity, MainTeachingPlanActivity::class.java)
-            var bundle = Bundle()
+            val intent = Intent(activity, MainTeachingPlanActivity::class.java)
+            val bundle = Bundle()
             bundle.putSerializable("classGroup", classGroups[position])
             intent.putExtra("bundle", bundle)
             startActivity(intent)

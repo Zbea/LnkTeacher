@@ -17,9 +17,8 @@ class MainTeachingDeleteDialog(private val context: Context, private val classId
     fun builder(): MainTeachingDeleteDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_main_teaching_delete)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val dp_start = dialog?.findViewById<DatePicker>(R.id.dp_start)
         val dp_end = dialog?.findViewById<DatePicker>(R.id.dp_end)

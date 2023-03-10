@@ -9,6 +9,9 @@ import com.bll.lnkteacher.mvp.model.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.Group;
 import com.bll.lnkteacher.mvp.model.GroupUser;
 import com.bll.lnkteacher.mvp.model.TestPaper;
+import com.bll.lnkteacher.mvp.model.TestPaperCorrect;
+import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass;
+import com.bll.lnkteacher.mvp.model.TestPaperGrade;
 import com.bll.lnkteacher.mvp.model.TestPaperType;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.net.IBaseView;
@@ -95,11 +98,23 @@ public interface IContractView {
         void onList(TestPaper testPaper);
         void onImageList(TestPaper testPaper);
         void onDeleteSuccess();
+        void onGroupTypes();
+        void onSendSuccess();
     }
 
     //考卷批改
     interface ITestPaperCorrectView extends IBaseView{
+        void onList(TestPaperCorrect bean);
+        void onDeleteSuccess();
+        void onImageList(List<TestPaper.ListBean> list);
+        void onClassPapers(TestPaperCorrectClass bean);
+        void onGrade(List<TestPaperGrade> list);
+        void onCorrectSuccess();
+    }
 
+    //文件上传
+    interface IFileUploadView extends IBaseView{
+        void onSuccess(List<String> urls);
     }
 
 

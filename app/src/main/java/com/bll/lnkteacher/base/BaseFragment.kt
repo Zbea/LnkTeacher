@@ -260,7 +260,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {
-            startActivity(Intent(activity, AccountLoginActivity::class.java))
+            startActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }

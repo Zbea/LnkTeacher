@@ -17,6 +17,7 @@ class MainTeachingCopyDialog(private val context: Context, private val classId:I
     private var dialog:Dialog?=null
     private var pops= mutableListOf<PopupBean>()
     private var id=0
+    private var popWindow:PopupRadioList?=null
 
     fun builder(): MainTeachingCopyDialog {
         dialog =Dialog(context)
@@ -90,7 +91,7 @@ class MainTeachingCopyDialog(private val context: Context, private val classId:I
         return this
     }
 
-    private var popWindow:PopupRadioList?=null
+
     private fun selectorClassGroup(view: TextView){
         if (popWindow==null)
         {

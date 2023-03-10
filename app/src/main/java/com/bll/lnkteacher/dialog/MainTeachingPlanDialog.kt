@@ -23,17 +23,16 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
 
     fun builder(): MainTeachingPlanDialog? {
         val dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_main_teaching_date_event)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.setContentView(R.layout.dialog_main_teaching_date_event)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
 
-        val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
-        val ivUp = dialog?.findViewById<ImageView>(R.id.iv_up)
-        val ivDown = dialog?.findViewById<ImageView>(R.id.iv_down)
-        etContent = dialog?.findViewById(R.id.et_content)
-        tvDate = dialog?.findViewById(R.id.tv_date)
+        val cancleTv = dialog.findViewById<TextView>(R.id.tv_cancel)
+        val okTv = dialog.findViewById<TextView>(R.id.tv_ok)
+        val ivUp = dialog.findViewById<ImageView>(R.id.iv_up)
+        val ivDown = dialog.findViewById<ImageView>(R.id.iv_down)
+        etContent = dialog.findViewById(R.id.et_content)
+        tvDate = dialog.findViewById(R.id.tv_date)
         nowLong=date
         setChangeView()
 
@@ -64,7 +63,7 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
             }
             DateEventDaoManager.getInstance().insertOrReplace(dateEvent)
             listener?.onClick()
-            dialog?.dismiss()
+            dialog.dismiss()
         }
 
         return this

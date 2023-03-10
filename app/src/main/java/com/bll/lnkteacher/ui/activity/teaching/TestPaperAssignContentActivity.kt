@@ -29,6 +29,8 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private var pageIndex=1 //当前页码
     private var pageCount=1
     private val pageSize=12
+    private var type=1
+    private var subtype=0
 
     override fun onType(types: MutableList<TestPaperType.TypeBean>?) {
     }
@@ -62,7 +64,12 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         items.removeAll(getCheckedItems())
         mAdapter?.setNewData(items)
     }
-
+    override fun onGroupTypes() {
+    }
+    override fun onSendSuccess() {
+        showToast("布置成功")
+        finish()
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_assgin_content
@@ -72,12 +79,17 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         id=intent.flags
         fetchData()
 
-        popGroupNames.add(PopupBean(0,"班群单考",true))
-        popGroupNames.add(PopupBean(1,"校群联考",false))
-        popGroupNames.add(PopupBean(2,"际群联考",false))
-        popGroups=DataBeanManager.popClassGroups
+        popGroupNames.add(PopupBean(1,"班群单考",true))
+        popGroupNames.add(PopupBean(2,"校群联考",false))
+        popGroupNames.add(PopupBean(3,"际群联考",false))
         tv_group_name.text=popGroupNames[0].name
-        tv_group.text=popGroups[0].name
+        popGroups=DataBeanManager.popClassGroups
+        if (popGroups.size>0){
+            tv_group.text=popGroups[0].name
+            subtype=popGroups[0].id
+        }
+
+        presenter.getGroupTypes()
     }
 
     override fun initView() {
@@ -142,9 +154,18 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
 
         tv_send.setOnClickListener {
-
+            if (getCheckedItems().size>0){
+                val ids= mutableListOf<Int>()
+                for (item in getCheckedItems()){
+                    ids.add(item.taskId)
+                }
+                val map=HashMap<String,Any>()
+                map["type"]=type
+                map["groupId"]=subtype
+                map["ids"]=ids.toIntArray()
+                presenter.sendPapers(map)
+            }
         }
-
     }
 
     private fun fetchData(){
@@ -167,24 +188,17 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         return lists
     }
 
-    /**
-     * 查看考卷
-     */
-    private fun checkImages(item: TestPaper.ListBean){
-        if (!item.urls.isNullOrEmpty()){
-            ImageDialog(this,item.urls).builder()
-        }
-    }
 
     private fun selectorName() {
         PopupRadioList(this, popGroupNames, tv_group_name,  5).builder()
             ?.setOnSelectListener { item ->
+                type=item.id
                 tv_group_name.text = item.name
                 popGroups = when(item.id){
-                    0->{
+                    1->{
                         DataBeanManager.popClassGroups
                     }
-                    1->{
+                    2->{
                         DataBeanManager.popSchoolGroups
                     }
                     else->{
@@ -192,6 +206,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                     }
                 }
                 tv_group.text=popGroups[0].name
+                subtype=popGroups[0].id
             }
     }
 
@@ -199,6 +214,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         PopupRadioList(this, popGroups, tv_group,  5).builder()
          ?.setOnSelectListener { item ->
              tv_group.text = item.name
+             subtype=item.id
         }
     }
 

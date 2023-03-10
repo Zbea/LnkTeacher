@@ -16,7 +16,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkPublishClassgroupSelectorDialog(val mContext: Context) {
 
 
-    fun builder(): HomeworkPublishClassgroupSelectorDialog? {
+    fun builder(): HomeworkPublishClassgroupSelectorDialog {
 
         val dialog = Dialog(mContext)
         dialog.setContentView(R.layout.dialog_homework_publish_classgroup_selector)
@@ -32,8 +32,8 @@ class HomeworkPublishClassgroupSelectorDialog(val mContext: Context) {
             })
         }
 
-        var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter= MyAdapter(R.layout.item_publish_classgroup_selector, datas)
+        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        val mAdapter= MyAdapter(R.layout.item_publish_classgroup_selector, datas)
         rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)

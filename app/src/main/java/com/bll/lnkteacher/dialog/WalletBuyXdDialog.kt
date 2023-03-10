@@ -19,8 +19,8 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountList.ListBea
     fun builder(): WalletBuyXdDialog? {
 
         dialog = Dialog(context)
-        dialog!!.setContentView(R.layout.dialog_account_xd)
-        dialog!!.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setContentView(R.layout.dialog_account_xd)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 
         val recyclerview = dialog!!.findViewById<RecyclerView>(R.id.rv_list)
@@ -31,7 +31,7 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountList.ListBea
         recyclerview.layoutManager = GridLayoutManager(context,4)//创建布局管理
         var mAdapter = AccountXdAdapter(R.layout.item_account_smoney, list)
         recyclerview.adapter = mAdapter
-        recyclerview.addItemDecoration(SpaceGridItemDeco(0,40))
+        recyclerview.addItemDecoration(SpaceGridItemDeco(4,40))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             mAdapter?.setItemView(position)
             id= list[position].id

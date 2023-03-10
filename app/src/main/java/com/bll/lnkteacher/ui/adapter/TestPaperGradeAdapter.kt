@@ -10,7 +10,7 @@ class TestPaperGradeAdapter(layoutResId: Int, data: List<TestPaperGrade>?) : Bas
     override fun convert(helper: BaseViewHolder, item: TestPaperGrade) {
         helper.setText(R.id.tv_name,item.name)
         helper.setText(R.id.tv_score,item.score.toString())
-        helper.setText(R.id.tv_rank,item.rank.toString())
+        helper.setText(R.id.tv_rank,(helper.adapterPosition+1).toString())
         helper.setText(R.id.tv_class_name,item.className)
     }
 

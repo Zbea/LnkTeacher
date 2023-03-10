@@ -35,7 +35,7 @@ class MessageSendDialog(private val context: Context) {
         rvList?.layoutManager=GridLayoutManager(context,3)
         rvList?.adapter=mAdapter
         mAdapter.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceItemDeco(0, 0, 0, 30, 0))
+        rvList?.addItemDecoration(SpaceItemDeco(0, 0, 0, 30))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val item=groups[position]
             item.isCheck=!item.isCheck

@@ -73,11 +73,11 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
         rv_list.layoutManager = LinearLayoutManager(context)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(activity,40f),0))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(activity,40f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.tv_out){
-                CommonDialog(context).setContent(if (groups[position].selfStatus==2) "确定退出群？" else "确定解散群？")
+                CommonDialog(requireActivity()).setContent(if (groups[position].selfStatus==2) "确定退出群？" else "确定解散群？")
                     .builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }

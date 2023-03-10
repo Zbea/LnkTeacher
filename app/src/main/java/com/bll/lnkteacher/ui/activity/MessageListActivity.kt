@@ -35,7 +35,7 @@ class MessageListActivity : BaseActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, 40, 0))
+            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, 40))
             }
 
         iv_manager.setOnClickListener {

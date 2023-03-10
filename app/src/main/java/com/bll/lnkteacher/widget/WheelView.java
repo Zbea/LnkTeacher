@@ -348,8 +348,6 @@ public class WheelView extends ScrollView {
             paint.setColor(Color.parseColor("#d8d8d8"));
             paint.setStrokeWidth(2);
         }
-
-
         background = new Drawable() {
             @Override
             public void draw(Canvas canvas) {

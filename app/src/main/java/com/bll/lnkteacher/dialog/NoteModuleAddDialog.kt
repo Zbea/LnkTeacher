@@ -20,13 +20,12 @@ class NoteModuleAddDialog(private val context: Context, private val type: Int) {
     fun builder(): NoteModuleAddDialog? {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_note_add_module)
-        dialog?.show()
         val width=if (type==0) DP2PX.dip2px(context,450f) else DP2PX.dip2px(context,611f)
         val window = dialog?.window
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.width=width
-        window.attributes = layoutParams
+        dialog?.show()
 
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }

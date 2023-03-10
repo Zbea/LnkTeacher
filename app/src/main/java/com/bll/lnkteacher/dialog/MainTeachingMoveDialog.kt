@@ -19,9 +19,8 @@ class MainTeachingMoveDialog(private val context: Context,private val classId:In
     fun builder(): MainTeachingMoveDialog {
         dialog =Dialog(context)
         dialog?.setContentView(R.layout.dialog_main_teaching_move)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val dp_start = dialog?.findViewById<DatePicker>(R.id.dp_start)
         val dp_end = dialog?.findViewById<DatePicker>(R.id.dp_end)

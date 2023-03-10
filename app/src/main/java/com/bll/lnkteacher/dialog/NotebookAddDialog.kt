@@ -11,30 +11,29 @@ import com.bll.lnkteacher.utils.KeyboardUtils
 class NotebookAddDialog(private val context: Context, val title: String, val name:String, val nameHint:String) {
 
 
-    fun builder(): NotebookAddDialog? {
+    fun builder(): NotebookAddDialog {
         var dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_notebook_add)
-        dialog?.show()
-        val window = dialog?.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
 
-        val btn_ok = dialog?.findViewById<TextView>(R.id.tv_ok)
-        val btn_cancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
 
-        val tvTitle=dialog?.findViewById<TextView>(R.id.tv_title)
-        tvTitle?.setText(title)
+        val tvTitle=dialog.findViewById<TextView>(R.id.tv_title)
+        tvTitle?.text = title
 
-        val etName=dialog?.findViewById<EditText>(R.id.et_name)
+        val etName=dialog.findViewById<EditText>(R.id.et_name)
         etName?.setText(name)
         etName?.hint=nameHint
 
-        btn_cancel?.setOnClickListener { dialog?.dismiss() }
+        btn_cancel?.setOnClickListener { dialog.dismiss() }
         btn_ok?.setOnClickListener {
-            var nameStr=etName?.text.toString()
-            if (!nameStr.isNullOrEmpty())
+            val nameStr=etName?.text.toString()
+            if (nameStr.isNotEmpty())
             {
                 listener?.onClick(nameStr)
-                dialog?.dismiss()
+                dialog.dismiss()
             }
         }
 

@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_60"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal"
         >
 
@@ -21,16 +22,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="分数："
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_26"
             android:textColor="@color/black"
             />
 
         <EditText
             android:id="@+id/et_score"
-            android:layout_width="@dimen/dp_120"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_22"
-            android:inputType="numberDecimal"
+            android:textSize="@dimen/sp_26"
+            android:gravity="center"
+            android:inputType="phone"
             android:textColor="@color/black"
             android:background="@drawable/bg_line_bottom"
             />
@@ -39,9 +41,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_height="1115dp"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal"
         >
 
@@ -53,7 +54,7 @@
             android:background="@drawable/bg_gray_stroke_10dp_corner"
             android:layout_weight="1"
             >
-            <ImageView
+            <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -95,7 +96,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_30"/>

@@ -2,10 +2,23 @@ package com.bll.lnkteacher.utils;
 
 import android.content.Context;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ToolUtils {
+
+    public static String getImagesStr(List<String> images){
+        String url="";
+        for (int i = 0; i < images.size(); i++) {
+            if (i== images.size()-1){
+                url+=images.get(i);
+            }else {
+                url+=images.get(i)+",";
+            }
+        }
+        return url;
+    }
 
 
     //返回图片唯一值(用于存储)

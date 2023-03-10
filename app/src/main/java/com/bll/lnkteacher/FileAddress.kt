@@ -5,6 +5,7 @@ import com.bll.lnkteacher.Constants.Companion.BOOK_PICTURE_FILES
 import com.bll.lnkteacher.Constants.Companion.CATALOG_TXT
 import com.bll.lnkteacher.Constants.Companion.DATE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
+import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.ZIP_PATH
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.SPUtil
@@ -73,6 +74,13 @@ class FileAddress {
      */
     fun getPathDate(dateStr:String):String{
         return "$DATE_PATH/$mUserId/$dateStr"
+    }
+
+    /**
+     * 批改学生试卷保存地址
+     */
+    fun getPathTestPaper(paperCorrectId: Int?,classId: Int?,userId:Int):String{
+        return "$TESTPAPER_PATH/$mUserId/paperCorrectId$paperCorrectId/classId$classId/userId$userId"
     }
 
 

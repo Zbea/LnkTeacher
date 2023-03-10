@@ -19,9 +19,8 @@ class ClassGroupSelectDialog(val context: Context){
     fun builder(): ClassGroupSelectDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_class_selector)
+        dialog.window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
-        val window = dialog.window
-        window!!.setBackgroundDrawableResource(android.R.color.transparent)
 
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
         ivClose.setOnClickListener {
@@ -31,11 +30,11 @@ class ClassGroupSelectDialog(val context: Context){
         val classs= DataBeanManager.classGroups
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
-        var mAdapter = MainClassGroupAdapter(R.layout.item_classgroup, classs)
+        val mAdapter = MainClassGroupAdapter(R.layout.item_classgroup, classs)
         rvList.layoutManager = GridLayoutManager(context,2)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceGridItemDeco(0,40))
+        rvList?.addItemDecoration(SpaceGridItemDeco(2,40))
         mAdapter.setOnItemClickListener { _, view, position ->
             onClickListener?.onSelect(classs[position])
             dialog.dismiss()

@@ -3,11 +3,19 @@ package com.bll.lnkteacher
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.net.BaseResult
 import io.reactivex.Observable
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
 
 interface APIService{
+
+    /**
+     * 文件上传
+     */
+    @Multipart
+    @POST("file/manyUpload")
+    fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
 
     /**
      * 用户登录 "/login"
@@ -199,6 +207,46 @@ interface APIService{
      */
     @POST("task/delete")
     fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 得到考卷班群分类信息
+     */
+    @GET("task/group/types")
+    fun getPaperGroupTypes(): Observable<BaseResult<TestPaperGroupType>>
+    /**
+     * 布置考卷
+     */
+    @POST("task/group/insertExamJob")
+    fun sendPapers(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
+    /**
+     * 获取考卷订单列表
+     */
+    @GET("task/group/list")
+    fun getPaperCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperCorrect>>
+    /**
+     * 删除考卷批改列表
+     */
+    @POST("task/group/delete")
+    fun deletePaperCorrectList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 查看考卷图片
+     */
+    @GET("exam/change/image")
+    fun getPaperCorrectImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<TestPaper.ListBean>>>
+    /**
+     * 获取班级同学提交考卷列表
+     */
+    @GET("exam/change/edit")
+    fun getPaperCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperCorrectClass>>
+    /**
+     * 考试评分
+     */
+    @GET("task/group/one")
+    fun getPaperGrade(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<TestPaperGrade>>>
+    /**
+     * 提交学生批改
+     */
+    @POST("student/task/update")
+    fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

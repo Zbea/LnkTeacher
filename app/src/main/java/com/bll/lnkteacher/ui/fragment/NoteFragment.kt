@@ -57,9 +57,8 @@ class NoteFragment : BaseFragment() {
     }
 
     override fun initView() {
-
-        popupBeans.add(PopupBean(0, "新建笔记本", true))
-        popupBeans.add(PopupBean(1, "笔记本管理", false))
+        popupBeans.add(PopupBean(0, "笔记本管理", false))
+        popupBeans.add(PopupBean(1, "新建笔记本", true))
         popupBeans.add(PopupBean(2, "新建笔记", false))
 
         popWindowMoreBeans.add(PopupBean(0, "重命名", true))
@@ -248,13 +247,13 @@ class NoteFragment : BaseFragment() {
 
     //删除
     private fun deleteNotebook() {
-        CommonDialog(activity).setContent("确定要删除笔记本？").builder()
+        CommonDialog(requireActivity()).setContent("确定要删除笔记本？").builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
 
                 override fun ok() {
-                    var note = noteBooks[position]
+                    val note = noteBooks[position]
                     noteBooks.removeAt(position)
                     mAdapter?.notifyDataSetChanged()
                     //删除笔记本
@@ -274,8 +273,8 @@ class NoteFragment : BaseFragment() {
             popWindowList = PopupRadioList(requireActivity(), popupBeans, iv_manager, 20).builder()
             popWindowList?.setOnSelectListener { item ->
                 when (item.id) {
-                    0 -> addNoteBookType()
-                    1 -> startActivity(Intent(activity, NoteTypeManagerActivity::class.java))
+                    0 -> startActivity(Intent(activity, NoteTypeManagerActivity::class.java))
+                    1 -> addNoteBookType()
                     else -> {
                         NoteModuleAddDialog(requireContext(), type).builder()
                             ?.setOnDialogClickListener { moduleBean ->

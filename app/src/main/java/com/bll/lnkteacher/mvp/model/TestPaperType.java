@@ -3,6 +3,9 @@ package com.bll.lnkteacher.mvp.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 考卷分类
+ */
 public class TestPaperType {
 
     public int total;

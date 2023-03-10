@@ -1,41 +1,60 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.TestPaperGrade
+import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDecoGrade
+import kotlinx.android.synthetic.main.ac_testpaper_grade.*
 import kotlinx.android.synthetic.main.common_title.*
-import kotlinx.android.synthetic.main.fragment_teaching_testpaper_assign.*
 
-class TestPaperGradeActivity:BaseActivity(){
+class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectView{
 
+    private val mPresenter=TestPaperCorrectPresenter(this)
     private var popClasss= mutableListOf<PopupBean>()
     private var mAdapter: TestPaperGradeAdapter?=null
     private var datas= mutableListOf<TestPaperGrade>()
+    private var testPaperCorrect: TestPaperCorrect.CorrectBean?=null
+
+    override fun onList(bean: TestPaperCorrect?) {
+    }
+    override fun onDeleteSuccess() {
+    }
+    override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
+    }
+    override fun onClassPapers(bean: TestPaperCorrectClass?) {
+    }
+    override fun onGrade(list: MutableList<TestPaperGrade>?) {
+        if (list != null) {
+            datas=list
+        }
+        mAdapter?.setNewData(datas)
+    }
+    override fun onCorrectSuccess() {
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_grade
     }
 
     override fun initData() {
-        for (i in 0..50){
-            var item=TestPaperGrade()
-            item.name="张三"
-            item.score=98.5
-            item.rank=1
-            item.className="三年级一班"
-            datas.add(item)
+        testPaperCorrect=intent.getBundleExtra("bundle").get("paperCorrect") as TestPaperCorrect.CorrectBean
+
+        for (item in testPaperCorrect?.examList!!){
+            popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
-        popClasss= DataBeanManager.popClassGroups
+
+        mPresenter.getPaperGrade(testPaperCorrect?.id!!)
     }
 
     override fun initView() {
+        setPageTitle("成绩统计")
 
         initRecyclerView()
         showView(tv_class)
@@ -56,21 +75,23 @@ class TestPaperGradeActivity:BaseActivity(){
 
     }
 
-
-    private var popWindowClass:PopupRadioList?=null
     /**
      * 班级选择
      */
     private fun showClassGroup(){
-        if (popWindowClass==null){
-            popWindowClass=PopupRadioList(this, popClasss, tv_class,tv_class.width,  5).builder()
-            popWindowClass?.setOnSelectListener { item->
-
+        PopupRadioList(this, popClasss, tv_class,tv_class.width,  5).builder()
+        ?.setOnSelectListener { item->
+            tv_class.text=item.name
+            val items= mutableListOf<TestPaperGrade>()
+            for (ite in datas){
+                if (item.id==ite.examChangeId){
+                    items.add(ite)
+                }
             }
-        }
-        else{
-            popWindowClass?.show()
+            mAdapter?.setNewData(items)
         }
     }
+
+
 
 }

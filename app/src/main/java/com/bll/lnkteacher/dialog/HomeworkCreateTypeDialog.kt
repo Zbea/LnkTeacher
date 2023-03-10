@@ -29,8 +29,8 @@ class HomeworkCreateTypeDialog(val context: Context, val hint: String) {
             dialog.dismiss()
         }
         btn_ok.setOnClickListener {
-            var content = etName.text.toString()
-            if (!content.isNullOrEmpty()) {
+            val content = etName.text.toString()
+            if (content.isNotEmpty()) {
                 dialog.dismiss()
                 listener?.onClick(content)
             }
