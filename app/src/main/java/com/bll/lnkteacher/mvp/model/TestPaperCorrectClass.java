@@ -25,7 +25,7 @@ public class TestPaperCorrectClass implements Serializable {
         public String submitUrl;
         public String studentUrl;
         public int taskId;
-        public int status;
+        public int status;//3学生未提交1已提交未批改2已批改
         public int score;
         public int sendStatus;
         public int examChangeId;

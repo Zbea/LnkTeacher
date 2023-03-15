@@ -11,7 +11,7 @@ public class TestPaperGrade {
     public long date;
     public String name;
     public String userId;
-    public double score;
+    public int score;
     public int rank;
 
 }

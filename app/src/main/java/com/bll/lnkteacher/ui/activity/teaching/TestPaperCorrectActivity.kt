@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
-import android.os.Looper
+import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +16,7 @@ import com.bll.lnkteacher.mvp.model.TestPaperCorrect
 import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass
 import com.bll.lnkteacher.mvp.model.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
-import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
+import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
@@ -25,11 +25,11 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
 import java.io.File
 
-class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectView,IFileUploadView{
+class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
 
     private var id=0
     private val mUploadPresenter=FileUploadPresenter(this)
-    private val mPresenter=TestPaperCorrectPresenter(this)
+    private val mPresenter=TestPaperCorrectDetailsPresenter(this)
     private var mClassBean:TestPaperCorrect.ClassBean?=null
     private var userItems= mutableListOf<TestPaperCorrectClass.UserBean>()
 
@@ -51,17 +51,21 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
     }
 
 
-    override fun onList(bean: TestPaperCorrect?) {
-    }
-    override fun onDeleteSuccess() {
-    }
     override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
-        userItems= bean?.list as MutableList<TestPaperCorrectClass.UserBean>
+        val beans=bean?.list!!
+        for (item in beans){
+            if (item.status!=3){
+                userItems.add(item)
+            }
+        }
         if (userItems.size>0){
             userItems[posUser].isCheck=true
             setContentView()
+        }
+        else{
+            setEditState(false)
         }
         mAdapter?.setNewData(userItems)
     }
@@ -72,8 +76,6 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
         userItems[posUser].score=getScoreInput()
         userItems[posUser].submitUrl=url
         mAdapter?.notifyDataSetChanged()
-
-        showLog(getPath())
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
     }
@@ -92,20 +94,17 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
 
     override fun initView() {
         elik=iv_image.pwInterFace
+        elik?.setPWEnabled(false)
 
         setPageTitle("考卷批改  ${mClassBean?.examName}  ${mClassBean?.name}")
 
         initRecyclerView()
 
         et_score.doAfterTextChanged {
-            val score=it.toString()
-            //输入分数不为空且大于0 提交学生考卷
-            if (score.isNotEmpty()&&score.toInt()>0){
-                Thread(Runnable {
-                    Looper.prepare()
+            if (getScoreInput()>0){
+                Handler().postDelayed(Runnable {
                     commitPapers(posUser)
-                    Looper.loop()
-                }).start()
+                },500)
             }
         }
 
@@ -145,12 +144,12 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
     }
 
     /**
-     * 提交上个学生考卷
+     * 提交学生考卷
      */
     private fun commitPapers(pos:Int){
         val item=userItems[pos]
-        //当输入的分数大于0,且学生分数为0 时候开始上传老师批改考卷
-        if (getScoreInput()>0 && item.score==0 && item.submitUrl.isEmpty()){
+        if (getScoreInput()>0 && item.status==1){
+            showLoading()
             val paths= mutableListOf<String>()
             //手写,图片合图
             for (i in currentImages?.indices!!){
@@ -179,18 +178,19 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
      */
     private fun setContentView(){
         val userItem=userItems[posUser]
-        if (userItem.score>0&&userItem.submitUrl.isNotEmpty()){
+        if (userItem.status==2){
             currentImages=userItem.submitUrl.split(",").toTypedArray()
             et_score.setText(userItem.score.toString())
             setEditState(false)
             elik?.setPWEnabled(false)
+            setContentImage()
         }
         else{
-            currentImages=userItem.imageUrl.split(",").toTypedArray()
+            currentImages=userItem.studentUrl.split(",").toTypedArray()
             loadPapers()
             elik?.setPWEnabled(true)
         }
-        setContentImage()
+
     }
 
     /**
@@ -205,8 +205,14 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
-
-        GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage) ,iv_image,10)
+        //批改成功后删掉原来，加载提交后的图片
+        if (userItems[posUser].status==2){
+            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage) ,iv_image,10)
+        }
+        else{
+            val masterImage="${getPath()}/${posImage+1}.png"//原图
+            GlideUtils.setImageFile(this,File(masterImage),iv_image)
+        }
         tv_page.text="${posImage+1}/${getImageSize()}"
 
         if (userItems[posUser].submitUrl.isEmpty()){
@@ -230,6 +236,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
      * 下载学生提交试卷
      */
     private fun loadPapers(){
+        showLoading()
         val file = File(getPath())
         val files = FileUtils.getFiles(file.path)
         if (files == null) {
@@ -237,6 +244,8 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
             imageDownLoad.startDownload()
             imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                 override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
+                    hideLoading()
+                    setContentImage()
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                     imageDownLoad.reloadImage()

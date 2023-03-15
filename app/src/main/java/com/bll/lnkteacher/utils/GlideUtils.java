@@ -33,6 +33,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(true);
         requestOptions.transform(new RoundedCorners(round));
 
         Glide.with(mContext)

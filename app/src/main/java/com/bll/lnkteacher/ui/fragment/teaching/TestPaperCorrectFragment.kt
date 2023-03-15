@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.mvp.model.TestPaper
 import com.bll.lnkteacher.mvp.model.TestPaperCorrect
-import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass
-import com.bll.lnkteacher.mvp.model.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
@@ -51,13 +48,9 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         showToast("删除成功")
         mAdapter?.remove(pos)
     }
-    override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
-    }
-    override fun onClassPapers(bean: TestPaperCorrectClass?) {
-    }
-    override fun onGrade(list: List<TestPaperGrade>) {
-    }
-    override fun onCorrectSuccess() {
+
+    override fun onSendSuccess() {
+
     }
 
 
@@ -101,23 +94,41 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
             rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(requireActivity(),30f)))
             setEmptyView(R.layout.common_empty)
             setOnItemChildClickListener { _, view, position ->
-                if (view.id==R.id.tv_analyse){
-                    val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
-                    val bundle=Bundle()
-                    bundle.putSerializable("paperCorrect",items[position])
-                    intent.putExtra("bundle",bundle)
-                    startActivity(intent)
-                }
-                if (view.id==R.id.tv_data){
-                    val intent=Intent(requireActivity(), TestPaperGradeActivity::class.java)
-                    val bundle=Bundle()
-                    bundle.putSerializable("paperCorrect",items[position])
-                    intent.putExtra("bundle",bundle)
-                    startActivity(intent)
-                }
-                if (view.id==R.id.iv_delete){
-                    this@TestPaperCorrectFragment.pos=position
-                    deletePaperCorrect()
+                val item=items[position]
+                when(view.id){
+                    R.id.tv_analyse->{
+                        if (item.sendStatus==2){
+                            val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
+                            val bundle=Bundle()
+                            bundle.putSerializable("paperCorrect",item)
+                            intent.putExtra("bundle",bundle)
+                            startActivity(intent)
+                        }
+                        else{
+                            showToast("未批改完成")
+                        }
+                    }
+                    R.id.tv_data->{
+                        if (item.sendStatus==2){
+                            val intent=Intent(requireActivity(), TestPaperGradeActivity::class.java)
+                            val bundle=Bundle()
+                            bundle.putSerializable("paperCorrect",item)
+                            intent.putExtra("bundle",bundle)
+                            startActivity(intent)
+                        }
+                        else{
+                            showToast("未批改完成")
+                        }
+                    }
+                    R.id.tv_delete->{
+                        this@TestPaperCorrectFragment.pos=position
+                        deletePaperCorrect()
+                    }
+                    R.id.tv_student->{
+                        if (item.sendStatus==2){
+                            mPresenter.sendGroup(item.id)
+                        }
+                    }
                 }
             }
             setOnChildClickListener { view,parentPos, position ->
@@ -130,7 +141,7 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                     startActivity(intent)
                 }
                 if (view.id==R.id.tv_save){
-
+                    mPresenter.sendClass(items[parentPos].examList[position].examChangeId)
                 }
             }
         }

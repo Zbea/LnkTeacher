@@ -248,5 +248,15 @@ interface APIService{
      */
     @POST("student/task/update")
     fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 发送单个班级
+     */
+    @POST("exam/change/sendStudent")
+    fun sendPaperCorrectClass(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 发送整个群
+     */
+    @POST("task/group/sendStudent")
+    fun sendPaperCorrectGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }

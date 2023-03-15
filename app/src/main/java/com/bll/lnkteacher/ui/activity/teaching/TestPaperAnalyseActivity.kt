@@ -6,15 +6,15 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.*
-import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
+import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
 import kotlinx.android.synthetic.main.common_title.*
 
-class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectView {
+class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDetailsView {
 
-    private val mPresenter=TestPaperCorrectPresenter(this)
+    private val mPresenter= TestPaperCorrectDetailsPresenter(this)
     private var index=0//当前学生的作业下标
     private var testPaperCorrect: TestPaperCorrect.CorrectBean?=null
     private var popScores= mutableListOf<PopupBean>()
@@ -22,10 +22,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
     private val popClasss= mutableListOf<PopupBean>()
     private var images= mutableListOf<String>()
 
-    override fun onList(bean: TestPaperCorrect?) {
-    }
-    override fun onDeleteSuccess() {
-    }
+
     override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
         if (list != null) {
             for (item in list){
@@ -49,7 +46,6 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
 
     override fun initData() {
         testPaperCorrect=intent.getBundleExtra("bundle").get("paperCorrect") as TestPaperCorrect.CorrectBean
-        images= testPaperCorrect?.images?.toMutableList()!!
         val scores= DataBeanManager.scoreList
         for (i in scores.indices)
         {
@@ -62,7 +58,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
 
-        mPresenter.getPaperImages(testPaperCorrect?.id!!)
+        mPresenter.getPaperImages(testPaperCorrect?.examList!![0].taskId)
     }
 
     override fun initView() {
@@ -72,8 +68,6 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
         tv_class.text=popClasss[0].name
         popClasss[0].isCheck=true
 
-        setImageContent()
-
         iv_up.setOnClickListener {
             if (index>0){
                 index-=1
@@ -81,7 +75,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
             }
         }
         iv_down.setOnClickListener {
-            if (index< testPaperCorrect?.images?.size?.minus(1)!!){
+            if (index<images.size-1){
                 index+=1
                 setImageContent()
             }
@@ -111,8 +105,10 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectVie
      * 设置作业内容
      */
     private fun setImageContent(){
-        GlideUtils.setImageRoundUrl(this, images[index],iv_image,10)
-        tv_page.text="${index+1}/${images.size}"
+        if (index<images.size){
+            GlideUtils.setImageRoundUrl(this, images[index],iv_image,10)
+            tv_page.text="${index+1}/${images.size}"
+        }
     }
 
     /**

@@ -106,6 +106,11 @@ public interface IContractView {
     interface ITestPaperCorrectView extends IBaseView{
         void onList(TestPaperCorrect bean);
         void onDeleteSuccess();
+        void onSendSuccess();
+    }
+
+    //考卷批改
+    interface ITestPaperCorrectDetailsView extends IBaseView{
         void onImageList(List<TestPaper.ListBean> list);
         void onClassPapers(TestPaperCorrectClass bean);
         void onGrade(List<TestPaperGrade> list);

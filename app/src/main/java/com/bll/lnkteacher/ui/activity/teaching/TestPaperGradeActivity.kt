@@ -5,7 +5,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.*
-import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
+import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -13,18 +13,15 @@ import com.bll.lnkteacher.widget.SpaceGridItemDecoGrade
 import kotlinx.android.synthetic.main.ac_testpaper_grade.*
 import kotlinx.android.synthetic.main.common_title.*
 
-class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectView{
+class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetailsView{
 
-    private val mPresenter=TestPaperCorrectPresenter(this)
+    private val mPresenter= TestPaperCorrectDetailsPresenter(this)
     private var popClasss= mutableListOf<PopupBean>()
     private var mAdapter: TestPaperGradeAdapter?=null
     private var datas= mutableListOf<TestPaperGrade>()
     private var testPaperCorrect: TestPaperCorrect.CorrectBean?=null
 
-    override fun onList(bean: TestPaperCorrect?) {
-    }
-    override fun onDeleteSuccess() {
-    }
+
     override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
