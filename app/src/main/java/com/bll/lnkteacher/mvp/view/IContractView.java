@@ -4,15 +4,18 @@ import com.bll.lnkteacher.mvp.model.AccountList;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
-import com.bll.lnkteacher.mvp.model.ClassGroup;
-import com.bll.lnkteacher.mvp.model.ClassGroupUser;
-import com.bll.lnkteacher.mvp.model.Group;
-import com.bll.lnkteacher.mvp.model.GroupUser;
-import com.bll.lnkteacher.mvp.model.TestPaper;
-import com.bll.lnkteacher.mvp.model.TestPaperCorrect;
-import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass;
-import com.bll.lnkteacher.mvp.model.TestPaperGrade;
-import com.bll.lnkteacher.mvp.model.TestPaperType;
+import com.bll.lnkteacher.mvp.model.Grade;
+import com.bll.lnkteacher.mvp.model.group.ClassGroup;
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
+import com.bll.lnkteacher.mvp.model.group.Group;
+import com.bll.lnkteacher.mvp.model.group.GroupUser;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkType;
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
+import com.bll.lnkteacher.mvp.model.testpaper.AssignContent;
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect;
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass;
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade;
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.net.IBaseView;
 
@@ -89,31 +92,80 @@ public interface IContractView {
     interface IMainView extends IBaseView{
         void onClassList(List<ClassGroup> classGroups);
         void onGroupList(List<Group> groups);
+        void onList(List<Grade> grades);
     }
 
     //考卷布置
     interface ITestPaperAssignView extends IBaseView{
-        void onType(List<TestPaperType.TypeBean> types);
+        /**
+         * 考卷布置分类列表
+         */
+        void onType(TestPaperType testPaperType);
+        /**
+         * 添加考卷分类成功
+         */
         void onTypeSuccess();
-        void onList(TestPaper testPaper);
-        void onImageList(TestPaper testPaper);
+        /**
+         * 考卷内容列表
+         * @param assignContent
+         */
+        void onList(AssignContent assignContent);
+        /**
+         * 考卷图片列表
+         * @param lists
+         */
+        void onImageList(List<ContentListBean> lists);
+        /**
+         * 删除考卷内容成功
+         */
         void onDeleteSuccess();
+        /**
+         * 获取考卷 班级、群分组
+         */
         void onGroupTypes();
+        /**
+         * 发送考卷成功
+         */
         void onSendSuccess();
     }
 
     //考卷批改
     interface ITestPaperCorrectView extends IBaseView{
+        /**
+         * 考卷批改列表
+         * @param bean
+         */
         void onList(TestPaperCorrect bean);
+        /**
+         * 删除考卷批改
+         */
         void onDeleteSuccess();
+        /**
+         * 发送 已批改考卷
+         */
         void onSendSuccess();
     }
 
     //考卷批改
     interface ITestPaperCorrectDetailsView extends IBaseView{
-        void onImageList(List<TestPaper.ListBean> list);
+        /**
+         * 获取考卷原图
+         * @param list
+         */
+        void onImageList(List<ContentListBean> list);
+        /**
+         * 获取班级学生已提交考卷
+         * @param bean
+         */
         void onClassPapers(TestPaperCorrectClass bean);
+        /**
+         * 获取学生成绩
+         * @param list
+         */
         void onGrade(List<TestPaperGrade> list);
+        /**
+         * 老师提交批改
+         */
         void onCorrectSuccess();
     }
 
@@ -122,5 +174,39 @@ public interface IContractView {
         void onSuccess(List<String> urls);
     }
 
+    //作业布置
+    interface IHomeworkAssignView extends IBaseView{
+        /**
+         * 获取作业分类
+         * @param homeworkType
+         */
+        void onTypeList(HomeworkType homeworkType);
+        /**
+         * 添加作业分类
+         */
+        void onAddSuccess();
+        /**
+         * 获取作业卷内容列表
+         * @param homeworkContent
+         */
+        void onList(AssignContent homeworkContent);
+        /**
+         * 获取作业卷内容图片
+         * @param lists
+         */
+        void onImageList(List<ContentListBean> lists);
+    }
+
+    /**
+     * 教学公用接口
+     */
+    interface ITeachingView extends IBaseView{
+        void onHomeworkType(List<TestPaperType.TypeBean> types);
+        /**
+         * 获取学生成绩
+         * @param list
+         */
+        void onGrade(List<Grade> list);
+    }
 
 }

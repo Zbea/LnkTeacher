@@ -13,7 +13,7 @@
 
         <CheckBox
             android:id="@+id/cb_class"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="  班群名称"
             android:gravity="center_vertical"
@@ -24,7 +24,7 @@
 
         <CheckBox
             android:id="@+id/cb_commit"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="  是否提交"
             android:gravity="center_vertical"

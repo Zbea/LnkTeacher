@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.ClassGroupUser
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 

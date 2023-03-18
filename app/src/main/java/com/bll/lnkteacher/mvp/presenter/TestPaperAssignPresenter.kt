@@ -1,9 +1,9 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.TestPaper
-import com.bll.lnkteacher.mvp.model.TestPaperGroupType
-import com.bll.lnkteacher.mvp.model.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGroupType
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -15,25 +15,26 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
     /**
      * 获取分类
      */
-    fun getType() {
-        val map=HashMap<String,Any>()
-        map["type"]=1
-        map["size"]=20
+    fun getType(map: HashMap<String, Any>) {
+
         val type = RetrofitManager.service.getPaperType(map)
         doRequest(type, object : Callback<TestPaperType>(view) {
             override fun failed(tBaseResult: BaseResult<TestPaperType>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<TestPaperType>) {
-                view.onType(tBaseResult.data?.list)
+                if (tBaseResult.data!=null){
+                    view.onType(tBaseResult.data)
+                }
             }
         }, false)
     }
 
-    fun addType(name:String){
+    fun addType(name:String,grade:Int){
         val body= RequestUtils.getBody(
             Pair.create("name",name),
-            Pair.create("type",1)
+            Pair.create("type",1),
+            Pair.create("grade",grade)
         )
         val add = RetrofitManager.service.addPaperType(body)
         doRequest(add, object : Callback<Any>(view) {
@@ -48,12 +49,14 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
 
     fun getPaperList(map: HashMap<String,Any>){
         val list = RetrofitManager.service.getPaperList(map)
-        doRequest(list, object : Callback<TestPaper>(view) {
-            override fun failed(tBaseResult: BaseResult<TestPaper>): Boolean {
+        doRequest(list, object : Callback<AssignContent>(view) {
+            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<TestPaper>) {
-                view.onList(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<AssignContent>) {
+                if (tBaseResult.data!=null){
+                    view.onList(tBaseResult.data)
+                }
             }
         }, true)
     }
@@ -63,12 +66,14 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
         map["taskId"]=taskId
         map["size"]=100
         val list = RetrofitManager.service.getPaperImages(map)
-        doRequest(list, object : Callback<TestPaper>(view) {
-            override fun failed(tBaseResult: BaseResult<TestPaper>): Boolean {
+        doRequest(list, object : Callback<AssignContent>(view) {
+            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<TestPaper>) {
-                view.onImageList(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<AssignContent>) {
+                if (tBaseResult.data!=null){
+                    view.onImageList(tBaseResult.data?.list)
+                }
             }
         }, false)
     }

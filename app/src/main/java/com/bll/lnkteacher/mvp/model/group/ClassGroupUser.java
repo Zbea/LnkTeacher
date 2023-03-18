@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.group;
 
 public class ClassGroupUser {
 

@@ -20,9 +20,10 @@ import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
 import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.ClassGroup
-import com.bll.lnkteacher.mvp.model.Group
+import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.Notebook
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
@@ -56,31 +57,29 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
     private var notes= mutableListOf<Notebook>()
     private var mainNoteAdapter: MainNoteAdapter? = null
 
-    override fun onClassList(groups: MutableList<ClassGroup>?) {
-        if (!groups.isNullOrEmpty()) {
-            DataBeanManager.classGroups=groups
-            classGroups=groups
-            mTeachingAdapter?.setNewData(classGroups)
-        }
+    override fun onClassList(groups: MutableList<ClassGroup>) {
+        DataBeanManager.classGroups=groups
+        classGroups=groups
+        mTeachingAdapter?.setNewData(classGroups)
     }
 
-    override fun onGroupList(groups: MutableList<Group>?) {
-        if (!groups.isNullOrEmpty()){
-            val schools= mutableListOf<Group>()
-            val areas= mutableListOf<Group>()
-            for (item in groups){
-                if (item.type==2){
-                    schools.add(item)
-                }
-                else{
-                    areas.add(item)
-                }
+    override fun onGroupList(groups: MutableList<Group>) {
+        val schools= mutableListOf<Group>()
+        val areas= mutableListOf<Group>()
+        for (item in groups){
+            if (item.type==2){
+                schools.add(item)
             }
-            DataBeanManager.schoolGroups=schools
-            DataBeanManager.areaGroups=areas
+            else{
+                areas.add(item)
+            }
         }
+        DataBeanManager.schoolGroups=schools
+        DataBeanManager.areaGroups=areas
     }
-
+    override fun onList(grades: MutableList<Grade>) {
+        DataBeanManager.grades=grades
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main
@@ -108,6 +107,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
     override fun lazyLoad() {
         mainPresenter.getClassGroups()
         mainPresenter.getGroups()
+        mainPresenter.getGrades()
     }
 
     @SuppressLint("WrongConstant")
@@ -273,12 +273,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden){
-            lazyLoad()
-        }
+    override fun onRefreshData() {
+        lazyLoad()
     }
-
 
 }

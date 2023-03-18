@@ -16,8 +16,6 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -37,20 +35,22 @@ import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.ceil
 
 
 abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var ivBack: ImageView? = null
-    var tvPageTitle: TextView? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var tvSearch:TextView?=null
-
+    var pageIndex=1 //当前页码
+    var pageCount=1 //全部数据
+    var pageSize=0 //一页数据
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
             supportFragmentManager.beginTransaction()
@@ -119,38 +119,47 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
-        ivBack = findViewById(R.id.iv_back)
-        tvPageTitle = findViewById(R.id.tv_title)
-        if (ivBack != null) {
-            ivBack!!.setOnClickListener { finish() }
+
+        iv_back?.setOnClickListener { finish() }
+
+        btn_page_up?.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
         }
-        tvSearch= findViewById(R.id.tv_search)
+
+        btn_page_down?.setOnClickListener {
+            if(pageIndex<pageCount){
+                pageIndex+=1
+                fetchData()
+            }
+        }
     }
+
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
-            showView(ivBack)
+            showView(iv_back)
         }
         else{
-            disMissView(ivBack)
+            disMissView(iv_back)
         }
     }
 
 
     fun showSearchView(isShow:Boolean) {
        if (isShow){
-            showView(tvSearch)
+            showView(tv_search)
         }
         else{
-            disMissView(tvSearch)
+            disMissView(tv_search)
         }
     }
 
 
     fun setPageTitle(pageTitle: String) {
-        if (tvPageTitle != null) {
-            tvPageTitle!!.text = pageTitle
-        }
+        tv_title?.text = pageTitle
     }
 
     /**
@@ -190,6 +199,22 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         for (view in views) {
             if (view != null && view.visibility != View.GONE) {
                 view.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * 设置翻页
+     */
+    fun setPageNumber(total:Int){
+        if (ll_page_number!=null){
+            pageCount = ceil(total.toDouble() / pageSize).toInt()
+            if (total == 0) {
+                disMissView(ll_page_number)
+            } else {
+                tv_page_current.text = pageIndex.toString()
+                tv_page_total.text = pageCount.toString()
+                showView(ll_page_number)
             }
         }
     }
@@ -355,6 +380,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         mDialog!!.dismiss()
     }
 
+    open fun fetchData(){
+
+    }
 
 }
 

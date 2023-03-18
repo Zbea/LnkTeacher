@@ -1,6 +1,5 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.group;
 
-import java.io.Serializable;
 import java.util.List;
 
 public class ClassGroupList{

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.mvp.model.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
@@ -17,40 +17,25 @@ import com.bll.lnkteacher.ui.activity.teaching.TestPaperGradeActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
-import kotlin.math.ceil
 
 class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectView {
 
     private val mPresenter=TestPaperCorrectPresenter(this)
     private var mAdapter: TestPaperCorrectAdapter?=null
     private var items= mutableListOf<TestPaperCorrect.CorrectBean>()
-    private var pageIndex=1 //当前页码
-    private var pageCount=1
-    private val pageSize=3
     private var pos=0
 
-    override fun onList(bean: TestPaperCorrect?) {
-        pageCount = ceil(bean?.total?.toDouble()!! / pageSize).toInt()
-        val totalTotal = bean?.total
-        if (totalTotal == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        items= bean?.list as MutableList<TestPaperCorrect.CorrectBean>
+    override fun onList(bean: TestPaperCorrect) {
+        setPageNumber(bean.total)
+        items= bean.list
         mAdapter?.setNewData(items)
     }
     override fun onDeleteSuccess() {
         showToast("删除成功")
         mAdapter?.remove(pos)
     }
-
     override fun onSendSuccess() {
-
     }
 
 
@@ -59,21 +44,8 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
     }
 
     override fun initView() {
+        pageSize=3
         initRecyclerView()
-
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                fetchData()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                fetchData()
-            }
-        }
     }
 
     override fun lazyLoad() {
@@ -92,7 +64,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(requireActivity(),30f)))
-            setEmptyView(R.layout.common_empty)
             setOnItemChildClickListener { _, view, position ->
                 val item=items[position]
                 when(view.id){
@@ -120,8 +91,8 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                             showToast("未批改完成")
                         }
                     }
-                    R.id.tv_delete->{
-                        this@TestPaperCorrectFragment.pos=position
+                    R.id.iv_delete->{
+                        pos=position
                         deletePaperCorrect()
                     }
                     R.id.tv_student->{
@@ -147,13 +118,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         }
     }
 
-    private fun fetchData(){
-        val map=HashMap<String,Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        mPresenter.getList(map)
-    }
-
     /**
      * 删除批改
      */
@@ -168,11 +132,15 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         })
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden){
-            fetchData()
-        }
+    override fun onRefreshData() {
+        fetchData()
+    }
+
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        mPresenter.getList(map)
     }
 
 }

@@ -1,13 +1,17 @@
 package com.bll.lnkteacher.ui.activity
 
+import PopupClick
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.dialog.MainTeachingCopyDialog
+import com.bll.lnkteacher.dialog.MainTeachingDeleteDialog
+import com.bll.lnkteacher.dialog.MainTeachingMoveDialog
+import com.bll.lnkteacher.dialog.MainTeachingPlanDialog
 import com.bll.lnkteacher.manager.DateEventDaoManager
-import com.bll.lnkteacher.mvp.model.ClassGroup
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
@@ -17,7 +21,7 @@ import org.greenrobot.eventbus.EventBus
 
 class MainTeachingPlanActivity:DateActivity() {
 
-    private var classGroup:ClassGroup?=null
+    private var classGroup: ClassGroup?=null
     private var pops= mutableListOf<PopupBean>()
     private var mAdapter: MainTeachingAdapter?=null
 
@@ -87,8 +91,8 @@ class MainTeachingPlanActivity:DateActivity() {
     }
 
     private fun showPopView(){
-        PopupClick(this, pops, iv_manager).builder()
-            ?.setOnSelectListener { item ->
+        PopupClick(this, pops, iv_manager,10).builder()
+            .setOnSelectListener { item ->
                 when (item.id) {
                     0 -> {
                         move()

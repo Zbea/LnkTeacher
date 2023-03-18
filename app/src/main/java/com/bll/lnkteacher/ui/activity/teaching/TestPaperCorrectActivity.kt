@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.mvp.model.TestPaper
-import com.bll.lnkteacher.mvp.model.TestPaperCorrect
-import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass
-import com.bll.lnkteacher.mvp.model.TestPaperGrade
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -30,7 +30,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     private var id=0
     private val mUploadPresenter=FileUploadPresenter(this)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this)
-    private var mClassBean:TestPaperCorrect.ClassBean?=null
+    private var mClassBean: TestPaperCorrect.ClassBean?=null
     private var userItems= mutableListOf<TestPaperCorrectClass.UserBean>()
 
     private var mAdapter:TestPaperCorrectUserAdapter?=null
@@ -51,7 +51,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     }
 
 
-    override fun onImageList(list: MutableList<TestPaper.ListBean>?) {
+    override fun onImageList(list: MutableList<ContentListBean>?) {
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
         val beans=bean?.list!!

@@ -1,6 +1,12 @@
 package com.bll.lnkteacher
 
 import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.group.ClassGroupList
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
+import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.model.group.GroupUser
+import com.bll.lnkteacher.mvp.model.homework.HomeworkType
+import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.net.BaseResult
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -16,6 +22,12 @@ interface APIService{
     @Multipart
     @POST("file/manyUpload")
     fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
+
+    /**
+     * 公共年级接口
+     */
+    @GET("task/typeGrades")
+    fun getCommonGrade(): Observable<BaseResult<List<Grade>>>
 
     /**
      * 用户登录 "/login"
@@ -195,13 +207,13 @@ interface APIService{
      * 获取考卷内容列表
      */
     @GET("task/list/exam")
-    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaper>>
+    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
 
     /**
      * 查看考卷列表
      */
     @GET("task/image/listExamJob")
-    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaper>>
+    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
     /**
      * 删除考卷
      */
@@ -232,7 +244,7 @@ interface APIService{
      * 查看考卷图片
      */
     @GET("exam/change/image")
-    fun getPaperCorrectImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<TestPaper.ListBean>>>
+    fun getPaperCorrectImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<ContentListBean>>>
     /**
      * 获取班级同学提交考卷列表
      */
@@ -259,4 +271,27 @@ interface APIService{
     @POST("task/group/sendStudent")
     fun sendPaperCorrectGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
+
+    /**
+     * 获取作业本分类
+     */
+    @GET("task/list/job/")
+    fun getHomeworkType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkType>>
+    /**
+     * 添加作业本
+     */
+    @POST("task/insert")
+    fun addHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 获取考卷内容列表
+     */
+    @GET("task/list/exam")
+    fun getHomeworkContentList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
+
+    /**
+     * 查看考卷列表
+     */
+    @GET("task/image/listExamJob")
+    fun getHomeworkImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
 }

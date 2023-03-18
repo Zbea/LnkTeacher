@@ -7,8 +7,8 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.mvp.model.Group
-import com.bll.lnkteacher.mvp.model.GroupUser
+import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.model.group.GroupUser
 import com.bll.lnkteacher.mvp.presenter.GroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.group.GroupUserActivity

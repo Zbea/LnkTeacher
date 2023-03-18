@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/tv_class"
-        android:layout_width="162dp"
+        android:layout_width="160dp"
         android:layout_height="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_30"
         android:drawableRight="@mipmap/icon_arrow_down"
@@ -53,7 +53,7 @@
         android:visibility="gone"
         android:gravity="center_vertical"
         android:text="班级选择"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
         />
 
     <ImageView

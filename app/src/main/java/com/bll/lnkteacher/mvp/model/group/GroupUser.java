@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.group;
 
 /**
  * 校群、际群的班级列表

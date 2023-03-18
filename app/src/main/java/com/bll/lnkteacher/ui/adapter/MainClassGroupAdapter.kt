@@ -2,7 +2,7 @@ package com.bll.lnkteacher.ui.adapter
 
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.DateEventDaoManager
-import com.bll.lnkteacher.mvp.model.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

@@ -1,5 +1,7 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.group;
 
+
+import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 
 import java.util.List;
 

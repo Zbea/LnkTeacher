@@ -17,14 +17,13 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
-import kotlin.math.ceil
 
 class TextbookFragment : BaseFragment() {
 
@@ -33,15 +32,14 @@ class TextbookFragment : BaseFragment() {
     private var textBook = "我的课本"//用来区分课本类型
     private var position = 0
     private var book: Book? = null
-    private var pageIndex = 1
-    private var pageTotal = 1
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook
     }
 
     override fun initView() {
+        pageSize=12
+
         EventBus.getDefault().register(this)
         setTitle("教义")
         showSearch(true)
@@ -49,25 +47,11 @@ class TextbookFragment : BaseFragment() {
         initTab()
         initRecyclerView()
 
-        tvSearch?.setOnClickListener {
+        tv_search?.setOnClickListener {
             startActivity(Intent(activity, BookStoreActivity::class.java))
         }
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                findData()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageTotal){
-                pageIndex+=1
-                findData()
-            }
-        }
-
-        findData()
+        fetchData()
     }
 
     override fun lazyLoad() {
@@ -82,7 +66,7 @@ class TextbookFragment : BaseFragment() {
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
             textBook = tabStrs[id]
             pageIndex=1
-            findData()
+            fetchData()
         }
     }
 
@@ -131,30 +115,23 @@ class TextbookFragment : BaseFragment() {
     }
 
 
-    /**
-     * 查找本地课本
-     */
-    private fun findData() {
-        books = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook, pageIndex, 9)
-        val total = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook)
-        pageTotal = ceil((total.size.toDouble() / 9)).toInt()
-
-        mAdapter?.setNewData(books)
-        tv_page_current.text = pageIndex.toString()
-        tv_page_total.text = pageTotal.toString()
-    }
-
-
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
         if (msgFlag == TEXT_BOOK_EVENT) {
-            findData()
+            fetchData()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun fetchData() {
+        books = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook, pageIndex, 9)
+        val total = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook)
+        setPageNumber(total.size)
+        mAdapter?.setNewData(books)
     }
 }

@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.mvp.model.HomeworkCorrect
+import com.bll.lnkteacher.mvp.model.homework.HomeworkCorrect
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -32,7 +32,8 @@ class HomeworkCorrectFragment:BaseFragment() {
 
     private fun initRecyclerView(){
 
-        val homeworkCorrect= HomeworkCorrect()
+        val homeworkCorrect=
+            HomeworkCorrect()
         homeworkCorrect.id=0
         homeworkCorrect.type="家庭作业本"
         homeworkCorrect.createDate=System.currentTimeMillis()

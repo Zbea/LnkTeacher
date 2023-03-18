@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.testpaper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ public class TestPaperType {
     public static class TypeBean {
         public int id;
         public String name;
-        public int type;//1考卷
+        public int type;//1考卷2作业本
+        public int grade;
     }
 }

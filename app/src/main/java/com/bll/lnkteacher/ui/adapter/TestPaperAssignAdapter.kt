@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.ui.adapter
 
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 

@@ -24,12 +24,10 @@ import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
-import kotlin.math.ceil
 
 class BookStoreActivity : BaseActivity(),
     IContractView.IBookStoreView {
@@ -40,9 +38,7 @@ class BookStoreActivity : BaseActivity(),
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter? = null
-    private var pageCount = 0
-    private var pageIndex = 1 //当前页码
-    private var pageSize = 12
+
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
@@ -56,17 +52,9 @@ class BookStoreActivity : BaseActivity(),
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
 
-    override fun onBook(bookStore: BookStore?) {
-        pageCount = ceil(bookStore?.total?.toDouble()!! / pageSize).toInt()
-        val totalCount = bookStore?.total
-        if (totalCount == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        books = bookStore?.list
+    override fun onBook(bookStore: BookStore) {
+        setPageNumber(bookStore.total)
+        books = bookStore.list
         mAdapter?.setNewData(books)
     }
 
@@ -99,6 +87,7 @@ class BookStoreActivity : BaseActivity(),
     }
 
     override fun initData() {
+        pageSize=12
         //获取地区分类
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
         val cityBean = Gson().fromJson(citysStr, CityBean::class.java)
@@ -122,25 +111,7 @@ class BookStoreActivity : BaseActivity(),
     override fun initView() {
         setPageTitle("教材")
         initRecyclerView()
-
         initTab()
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex > 1) {
-                if (pageIndex < pageCount) {
-                    pageIndex -= 1
-                    setFetchData()
-                }
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if (pageIndex < pageCount) {
-                pageIndex += 1
-                setFetchData()
-            }
-        }
-
     }
 
     //获取数据
@@ -205,16 +176,7 @@ class BookStoreActivity : BaseActivity(),
     }
 
     private fun setFetchData() {
-        when (typeId) {
-            0, 1 -> {
-                showView(tv_province)
-                getDataBook()
-            }
-            else -> {
-                disMissView(tv_province)
-                getDataBookCk()
-            }
-        }
+
     }
 
     //设置tab分类
@@ -405,5 +367,17 @@ class BookStoreActivity : BaseActivity(),
         FileDownloader.getImpl().pauseAll()
     }
 
+    override fun fetchData() {
+        when (typeId) {
+            0, 1 -> {
+                showView(tv_province)
+                getDataBook()
+            }
+            else -> {
+                disMissView(tv_province)
+                getDataBookCk()
+            }
+        }
+    }
 
 }

@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.mvp.model.HomeworkCorrectContent
+import com.bll.lnkteacher.mvp.model.homework.HomeworkCorrectContent
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectUserAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.GlideUtils
@@ -25,7 +25,8 @@ class HomeworkCorrectActivity:BaseActivity() {
     override fun initData() {
 
         for (i in 0..20){
-            val userBean= HomeworkCorrectContent().UserBean()
+            val userBean= HomeworkCorrectContent()
+                .UserBean()
             userBean.name="张三"
             userBeans.add(userBean)
         }

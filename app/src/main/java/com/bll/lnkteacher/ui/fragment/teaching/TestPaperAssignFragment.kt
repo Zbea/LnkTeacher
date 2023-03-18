@@ -6,15 +6,16 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.mvp.model.TestPaper
-import com.bll.lnkteacher.mvp.model.TestPaperType.TypeBean
+import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType.TypeBean
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
 class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView {
@@ -23,21 +24,22 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     private var mAdapter: TestPaperAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var addTypeStr=""
+    private var grade=1//年级
 
-    override fun onType(types: MutableList<TypeBean>?) {
-        this.types=types!!
+    override fun onType(testPaperType: TestPaperType) {
+        setPageNumber(testPaperType.total)
+        types=testPaperType.list
         mAdapter?.setNewData(types)
     }
     override fun onTypeSuccess() {
-        types.add(TypeBean().apply {
-            id=types.size+1
-            name=addTypeStr
-        })
-        mAdapter?.notifyDataSetChanged()
+        if (types.size==pageSize){
+            pageIndex+=1
+        }
+        fetchData()
     }
-    override fun onList(testPaper: TestPaper?) {
+    override fun onList(assignContent: AssignContent?) {
     }
-    override fun onImageList(testPaper: TestPaper?) {
+    override fun onImageList(lists: MutableList<ContentListBean>?) {
     }
     override fun onDeleteSuccess() {
     }
@@ -52,7 +54,7 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     }
 
     override fun initView() {
-        disMissView(ll_page_number)
+        pageSize=6
         initRecyclerView()
     }
 
@@ -64,15 +66,15 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,50f),
-            DP2PX.dip2px(activity,30f),DP2PX.dip2px(activity,30f))
+            DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,60f),
+            DP2PX.dip2px(activity,30f),0)
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,2)
 
         mAdapter = TestPaperAssignAdapter(R.layout.item_testpaper_assign,types).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
+            rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(activity,50f)))
             setOnItemClickListener  { _, _, position ->
                 startActivity(Intent(activity, TestPaperAssignContentActivity::class.java)
                     .putExtra("title",types[position].name).setFlags(types[position].id)
@@ -81,24 +83,34 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
         }
     }
 
-    //获取考卷分类列表
-    private fun fetchData(){
-        presenter.getType()
-    }
 
     /**
      * 添加考卷
      */
     fun addType(name: String){
         addTypeStr=name
-        presenter.addType(name)
+        presenter.addType(name,grade)
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden){
-            fetchData()
-        }
+    /**
+     * 刷新年级
+     */
+    fun changeGrade(grade:Int){
+        this.grade=grade
+        fetchData()
+    }
+
+    override fun onRefreshData() {
+        fetchData()
+    }
+
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["type"]=1
+        map["page"]=pageIndex
+        map["size"]=pageSize
+        map["grade"]=grade
+        presenter.getType(map)
     }
 
 }

@@ -5,12 +5,14 @@ import android.content.Context
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.HomeworkAssign
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.utils.KeyboardUtils
+import com.bll.lnkteacher.utils.SToast
 
 class HomeworkPublishDialog(val context: Context) {
 
-
+    private var selectDialog: HomeworkPublishClassGroupSelectDialog? = null
+    private var selectClasss= mutableListOf<HomeworkClass>()
     fun builder(): HomeworkPublishDialog {
 
         val dialog = Dialog(context)
@@ -23,17 +25,20 @@ class HomeworkPublishDialog(val context: Context) {
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
 
         tv_class_name.setOnClickListener {
-            HomeworkPublishClassgroupSelectorDialog(context).builder()
-                ?.setOnDialogClickListener {
-
-                }
+            getSelectClass()
         }
 
         tv_send.setOnClickListener {
-            val contentStr=etContent.text.toString()
-            if (!contentStr.isNullOrEmpty())
-            {
-                dialog.dismiss()
+            val contentStr = etContent.text.toString()
+            if (contentStr.isNotEmpty()) {
+                if (selectClasss.isNotEmpty())
+                {
+                    dialog.dismiss()
+                    listener?.onSend(contentStr,selectClasss)
+                }
+                else{
+                    SToast.showText("未选中发送班级")
+                }
             }
         }
 
@@ -44,10 +49,26 @@ class HomeworkPublishDialog(val context: Context) {
         return this
     }
 
+    /**
+     * 班级选择
+     */
+    private fun getSelectClass() {
+        if (selectDialog == null) {
+            selectDialog = HomeworkPublishClassGroupSelectDialog(context).builder()
+            selectDialog?.setOnDialogClickListener {
+                selectClasss= it as MutableList<HomeworkClass>
+            }
+        } else {
+            selectDialog?.show()
+        }
+
+    }
+
+
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(item: HomeworkAssign)
+        fun onSend(contentStr:String,classs:List<HomeworkClass>)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

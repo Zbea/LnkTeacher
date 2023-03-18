@@ -1,6 +1,6 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -16,7 +16,9 @@ class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BaseP
                 return false
             }
             override fun success(tBaseResult: BaseResult<TestPaperCorrect>) {
-                view.onList(tBaseResult.data)
+                if (tBaseResult.data!=null){
+                    view.onList(tBaseResult.data)
+                }
             }
         }, false)
     }

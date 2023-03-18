@@ -7,7 +7,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.ClassGroupUser
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.ClassGroupUserPresenter
 import com.bll.lnkteacher.mvp.view.IContractView

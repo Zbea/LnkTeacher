@@ -1,5 +1,7 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.mvp.model.group.ClassGroup;
+
 import java.util.List;
 
 public class MessageBean {

@@ -20,8 +20,13 @@ import com.bll.lnkteacher.ui.activity.AccountLoginActivity
 import com.bll.lnkteacher.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.ac_bookstore.*
+import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.tv_title
+import kotlinx.android.synthetic.main.common_page_number.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import kotlin.math.ceil
 
 
 abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView {
@@ -38,12 +43,13 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 多种状态的 View 的切换
      */
     var mView:View?=null
-    var tvPageTitle: TextView? = null
-    var ivBack: ImageView? = null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
     var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
-    var tvSearch: TextView?=null
+
+    var pageIndex=1 //当前页码
+    var pageCount=1 //全部数据
+    var pageSize=0 //一页数据
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -116,32 +122,42 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
-        tvPageTitle = requireView().findViewById(R.id.tv_title)
-        ivBack=requireView().findViewById(R.id.iv_back)
-        tvSearch= requireView().findViewById(R.id.tv_search)
+
+        btn_page_up?.setOnClickListener {
+            if(pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+        }
+
+        btn_page_down?.setOnClickListener {
+            if(pageIndex<pageCount){
+                pageIndex+=1
+                fetchData()
+            }
+        }
     }
 
+
     fun setTitle(pageTitle: String) {
-        if (tvPageTitle != null) {
-            tvPageTitle?.text = pageTitle
-        }
+        tv_title?.text = pageTitle
     }
 
     fun showSearch(isShow:Boolean) {
         if (isShow){
-            showView(tvSearch)
+            showView(tv_search)
         }
         else{
-            disMissView(tvSearch)
+            disMissView(tv_search)
         }
     }
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
-            showView(ivBack)
+            showView(iv_back)
         }
         else{
-            disMissView(ivBack)
+            disMissView(iv_back)
         }
     }
 
@@ -182,6 +198,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         for (view in views) {
             if (view != null && view.visibility != View.GONE) {
                 view.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * 设置翻页
+     */
+    fun setPageNumber(total:Int){
+        if (ll_page_number!=null){
+            pageCount = ceil(total.toDouble() / pageSize).toInt()
+            if (total == 0) {
+                disMissView(ll_page_number)
+            } else {
+                tv_page_current.text = pageIndex.toString()
+                tv_page_total.text = pageCount.toString()
+                showView(ll_page_number)
             }
         }
     }
@@ -278,6 +310,27 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
     }
     override fun onComplete() {
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden){
+            onRefreshData()
+        }
+    }
+
+    /**
+     * 每次翻页，刷新数据
+     */
+    open fun onRefreshData(){
+
+    }
+
+    /**
+     * 网络请求数据
+     */
+    open fun fetchData(){
+
     }
 
 }

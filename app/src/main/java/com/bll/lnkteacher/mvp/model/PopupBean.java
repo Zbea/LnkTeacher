@@ -6,6 +6,7 @@ public class PopupBean {
     public String name;
     public boolean isCheck;
     public int resId;
+    public int index;
 
     public PopupBean() {
     }

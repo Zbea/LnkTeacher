@@ -8,57 +8,42 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.TestPaper
-import com.bll.lnkteacher.mvp.model.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import kotlin.math.ceil
 
 class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignView {
 
     private val presenter=TestPaperAssignPresenter(this)
     private var mAdapter: TestPaperAssignContentAdapter? = null
     private var id=0
-    private var items = mutableListOf<TestPaper.ListBean>()
+    private var items = mutableListOf<ContentListBean>()
     private var popGroupNames= mutableListOf<PopupBean>()
     private var popGroups= mutableListOf<PopupBean>()
-    private var pageIndex=1 //当前页码
-    private var pageCount=1
-    private val pageSize=12
-    private var type=1
-    private var subtype=0
+    private var type=1 //班群校群id
+    private var subtype=0 //选中群id
 
-    override fun onType(types: MutableList<TestPaperType.TypeBean>?) {
+    override fun onType(testPaperType: TestPaperType?) {
     }
     override fun onTypeSuccess() {
     }
-    override fun onList(testPaper: TestPaper?) {
-        pageCount = ceil(testPaper?.total?.toDouble()!! / pageSize).toInt()
-        val totalTotal = testPaper?.total
-        if (totalTotal == 0) {
-            disMissView(ll_page_number)
-        } else {
-            tv_page_current.text = pageIndex.toString()
-            tv_page_total.text = pageCount.toString()
-            showView(ll_page_number)
-        }
-        items= testPaper?.list as MutableList<TestPaper.ListBean>
+    override fun onList(assignContent: AssignContent) {
+        setPageNumber(assignContent.total)
+        items= assignContent.list
         mAdapter?.setNewData(items)
     }
-
-    override fun onImageList(testPaper: TestPaper?) {
+    override fun onImageList(lists: MutableList<ContentListBean>) {
         val images= mutableListOf<String>()
-        for (item in testPaper?.list!!){
+        for (item in lists){
             images.add(item.url)
         }
-        if (images.size>0)
-            ImageDialog(this,images).builder()
+        ImageDialog(this,images).builder()
     }
-
     override fun onDeleteSuccess() {
         showToast("删除成功")
         items.removeAll(getCheckedItems())
@@ -76,6 +61,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     override fun initData() {
+        pageSize=12
         id=intent.flags
         fetchData()
 
@@ -122,20 +108,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             selectorGroup()
         }
 
-        btn_page_up.setOnClickListener {
-            if(pageIndex>1){
-                pageIndex-=1
-                fetchData()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if(pageIndex<pageCount){
-                pageIndex+=1
-                fetchData()
-            }
-        }
-
         iv_manager.setOnClickListener {
             CommonDialog(this).setContent("确定删除选中？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
@@ -168,19 +140,11 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
     }
 
-    private fun fetchData(){
-        val map=HashMap<String,Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["commonTypeId"] = id
-        presenter.getPaperList(map)
-    }
-
     /**
      * 获的选中考卷
      */
-    private fun getCheckedItems():MutableList<TestPaper.ListBean>{
-        val lists= mutableListOf<TestPaper.ListBean>()
+    private fun getCheckedItems():MutableList<ContentListBean>{
+        val lists= mutableListOf<ContentListBean>()
         for (item in items){
             if (item.isCheck)
                 lists.add(item)
@@ -216,6 +180,14 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
              tv_group.text = item.name
              subtype=item.id
         }
+    }
+
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["commonTypeId"] = id
+        presenter.getPaperList(map)
     }
 
 }

@@ -2,6 +2,8 @@ package com.bll.lnkteacher
 
 import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.Group
 
 object DataBeanManager {
 
@@ -12,6 +14,8 @@ object DataBeanManager {
     var areaGroups= mutableListOf<Group>()
 
     var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
+
+    var grades= mutableListOf<Grade>()
 
     private val listTitle = arrayOf(
         "首页",
@@ -34,17 +38,6 @@ object DataBeanManager {
         "考卷发放",
         "考卷批改"
     )
-    var kmArray = arrayOf(
-        "语文",
-        "数学",
-        "英语",
-        "物理",
-        "化学",
-        "地理",
-        "政治",
-        "历史",
-        "生物"
-    ) //科目的数据
 
     val popClassGroups:MutableList<PopupBean>
         get(){
@@ -74,6 +67,15 @@ object DataBeanManager {
                 popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
             }
             return popSchools
+        }
+
+    val popupGrades: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in grades.indices){
+                list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
+            }
+            return list
         }
 
     /**

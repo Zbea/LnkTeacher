@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.ui.adapter.MainClassGroupAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 

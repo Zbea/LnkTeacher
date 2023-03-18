@@ -1,8 +1,8 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.TestPaper
-import com.bll.lnkteacher.mvp.model.TestPaperCorrectClass
-import com.bll.lnkteacher.mvp.model.TestPaperGrade
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -15,11 +15,11 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         val map=HashMap<String,Any>()
         map["taskId"]=taskId
         val list = RetrofitManager.service.getPaperCorrectImages(map)
-        doRequest(list, object : Callback<List<TestPaper.ListBean>>(view) {
-            override fun failed(tBaseResult: BaseResult<List<TestPaper.ListBean>>): Boolean {
+        doRequest(list, object : Callback<List<ContentListBean>>(view) {
+            override fun failed(tBaseResult: BaseResult<List<ContentListBean>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<List<TestPaper.ListBean>>) {
+            override fun success(tBaseResult: BaseResult<List<ContentListBean>>) {
                 view.onImageList(tBaseResult.data)
             }
         }, true)

@@ -25,12 +25,10 @@ import com.bll.lnkteacher.ui.adapter.NoteAdapter
 import com.bll.lnkteacher.ui.adapter.NoteTypeAdapter
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import kotlin.math.ceil
 
 /**
  * 笔记
@@ -49,14 +47,14 @@ class NoteFragment : BaseFragment() {
     private var positionType = 0//当前笔记本标记
     private var isDown = false //是否向下打开
 
-    private var pageIndex = 1
-    private var pageTotal = 1
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
     }
 
     override fun initView() {
+        pageSize=10
+
         popupBeans.add(PopupBean(0, "笔记本管理", false))
         popupBeans.add(PopupBean(1, "新建笔记本", true))
         popupBeans.add(PopupBean(2, "新建笔记", false))
@@ -110,15 +108,15 @@ class NoteFragment : BaseFragment() {
         rv_type.adapter = mAdapterType
         mAdapterType?.bindToRecyclerView(rv_type)
         mAdapterType?.setOnItemClickListener { adapter, view, position ->
-            noteTypes[positionType]?.isCheck = false
+            noteTypes[positionType].isCheck = false
             positionType = position
-            noteTypes[positionType]?.isCheck = true
+            noteTypes[positionType].isCheck = true
             mAdapterType?.notifyDataSetChanged()
 
-            type = noteTypes[positionType]?.typeId
+            type = noteTypes[positionType].typeId
             pageIndex = 1
-            pageTotal = 1
-            findDatas()
+            pageCount = 1
+            fetchData()
 
         }
 
@@ -139,21 +137,6 @@ class NoteFragment : BaseFragment() {
                 iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_up)
             }
             findTabs()
-        }
-
-
-        btn_page_up.setOnClickListener {
-            if (pageIndex > 1) {
-                pageIndex -= 1
-                findDatas()
-            }
-        }
-
-        btn_page_down.setOnClickListener {
-            if (pageIndex < pageTotal) {
-                pageIndex += 1
-                findDatas()
-            }
         }
 
     }
@@ -184,20 +167,9 @@ class NoteFragment : BaseFragment() {
 
         mAdapterType?.setNewData(noteTypes)
         type = noteTypes[positionType].typeId
-        findDatas()
+        fetchData()
     }
 
-    /**
-     * 笔记本数据
-     */
-    private fun findDatas() {
-        noteBooks = NotebookDaoManager.getInstance().queryAll(type, pageIndex, 10)
-        val total = NotebookDaoManager.getInstance().queryAll(type)
-        pageTotal = ceil((total.size.toDouble() / 10)).toInt()
-        mAdapter?.setNewData(noteBooks)
-        tv_page_current.text = pageIndex.toString()
-        tv_page_total.text = pageTotal.toString()
-    }
 
     //设置所有数据为不选中
     private fun setAllCheckFalse(tabs: List<BaseTypeBean>) {
@@ -222,7 +194,7 @@ class NoteFragment : BaseFragment() {
     private fun createNotebook() {
         var note = Notebook()
         NotebookAddDialog(requireContext(), "新建笔记本", "", "请输入笔记标题").builder()
-            ?.setOnDialogClickListener { string ->
+            .setOnDialogClickListener { string ->
                 note.title = string
                 note.createDate = System.currentTimeMillis()
                 note.type = type
@@ -295,7 +267,7 @@ class NoteFragment : BaseFragment() {
     //新建笔记分类
     private fun addNoteBookType() {
         NotebookAddDialog(requireContext(), "新建笔记分类", "", "输入笔记分类").builder()
-            ?.setOnDialogClickListener { string ->
+            .setOnDialogClickListener { string ->
                 var noteBook = BaseTypeBean()
                 noteBook.name = string
                 noteBook.typeId = noteTypes.size
@@ -313,7 +285,7 @@ class NoteFragment : BaseFragment() {
             findTabs()
         }
         if (msgFlag == NOTE_EVENT) {
-            findDatas()
+            fetchData()
         }
     }
 
@@ -322,5 +294,11 @@ class NoteFragment : BaseFragment() {
         EventBus.getDefault().unregister(this)
     }
 
+    override fun fetchData() {
+        noteBooks = NotebookDaoManager.getInstance().queryAll(type, pageIndex, 10)
+        val total = NotebookDaoManager.getInstance().queryAll(type)
+        setPageNumber(total.size)
+        mAdapter?.setNewData(noteBooks)
+    }
 
 }

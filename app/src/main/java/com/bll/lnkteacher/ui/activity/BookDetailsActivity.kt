@@ -32,7 +32,7 @@ class BookDetailsActivity:BaseActivity() {
     private var parentItems= mutableListOf<CatalogParentBean>()
     private var childItems= mutableListOf<CatalogChildBean>()
 
-    private var pageCount = 1
+    private var count = 1
     private var page = 1 //当前页码
 
     private var elik_a: EinkPWInterface?=null
@@ -74,7 +74,7 @@ class BookDetailsActivity:BaseActivity() {
     override fun initView() {
         if (catalogMsg!=null){
             setPageTitle(catalogMsg?.title!!)
-            pageCount=catalogMsg?.totalCount!!
+            count=catalogMsg?.totalCount!!
         }
 
         elik_a=v_content_a.pwInterFace
@@ -89,7 +89,7 @@ class BookDetailsActivity:BaseActivity() {
     private fun bindClick(){
 
         iv_catalog.setOnClickListener {
-            DrawingCatalogDialog(this,catalogs,1).builder()?.
+            DrawingCatalogDialog(this,catalogs,1).builder().
             setOnDialogClickListener { position ->
                 page = position
                 updateScreen()
@@ -105,9 +105,8 @@ class BookDetailsActivity:BaseActivity() {
         }
 
         btn_page_down.setOnClickListener {
-            if(page<pageCount){
+            if(page<count){
                 page+=1
-
                 updateScreen()
             }
         }
@@ -116,7 +115,7 @@ class BookDetailsActivity:BaseActivity() {
 
     //单屏翻页
     private fun updateScreen(){
-        tv_page.text="$page/$pageCount"
+        tv_page.text="$page/$count"
         loadPicture(page,elik_a!!,v_content_a)
     }
 

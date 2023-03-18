@@ -24,7 +24,7 @@ class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val v
 
     constructor(context: Context, list: MutableList<PopupBean>, view: View, yoff: Int):this(context, list, view, 0,yoff)
 
-    fun builder(): PopupRadioList?{
+    fun builder(): PopupRadioList{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -38,9 +38,9 @@ class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val v
             }
         }
 
-        var rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
         mAdapter.setOnItemClickListener { adapter, view, position ->
@@ -48,6 +48,7 @@ class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val v
                 item.isCheck=false
             }
             list[position].isCheck=true
+            list[position].index=position
             mAdapter?.notifyDataSetChanged()
             if (onSelectListener!=null)
                 onSelectListener?.onSelect(list[position])

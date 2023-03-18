@@ -1,7 +1,8 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.ClassGroupList
-import com.bll.lnkteacher.mvp.model.Group
+import com.bll.lnkteacher.mvp.model.Grade
+import com.bll.lnkteacher.mvp.model.group.ClassGroupList
+import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
 import com.bll.lnkteacher.net.BaseResult
@@ -20,7 +21,8 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
                 return false
             }
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                view.onClassList(tBaseResult?.data?.list)
+                if (tBaseResult.data?.list.isNullOrEmpty())
+                    view.onClassList(tBaseResult.data?.list)
             }
         }, false)
 
@@ -35,8 +37,26 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
             }
 
             override fun success(tBaseResult: BaseResult<MutableList<Group>>) {
-                view.onGroupList(tBaseResult.data)
+                if (tBaseResult.data.isNullOrEmpty())
+                    view.onGroupList(tBaseResult.data)
             }
+        }, false)
+
+    }
+
+    fun getGrades() {
+
+        val editName = RetrofitManager.service.getCommonGrade()
+
+        doRequest(editName, object : Callback<List<Grade>>(view) {
+            override fun failed(tBaseResult: BaseResult<List<Grade>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<Grade>>) {
+                if (tBaseResult.data.isNullOrEmpty())
+                    view.onList(tBaseResult.data)
+            }
+
         }, false)
 
     }
