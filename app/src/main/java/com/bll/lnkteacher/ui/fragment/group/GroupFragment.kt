@@ -55,7 +55,7 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
         }
     }
     override fun onQuitSuccess() {
-        showToast(if (groups[position].selfStatus==2) "退出成功" else "解散成功")
+        showToast(if (groups[position].selfStatus==2) R.string.out_success else R.string.dissolve_success)
         groups.removeAt(position)
         mAdapter?.notifyDataSetChanged()
     }
@@ -77,7 +77,7 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             if (view.id==R.id.tv_out){
-                CommonDialog(requireActivity()).setContent(if (groups[position].selfStatus==2) "确定退出群？" else "确定解散群？")
+                CommonDialog(requireActivity()).setContent(if (groups[position].selfStatus==2) R.string.group_is_out_tips else R.string.group_is_dissolve_tips)
                     .builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }

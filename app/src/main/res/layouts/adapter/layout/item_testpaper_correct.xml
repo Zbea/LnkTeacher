@@ -9,7 +9,7 @@
         android:id="@+id/tv_date_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="布置时间"
+        android:text="@string/teaching_assign_time"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_16" />
 
@@ -50,7 +50,7 @@
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
-                android:text="考卷分析"
+                android:text="@string/teaching_testpaper_analyse"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
 
@@ -61,7 +61,7 @@
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
-                android:text="成绩统计"
+                android:text="@string/teaching_testpaper_score"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
 
@@ -72,7 +72,7 @@
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
-                android:text="发送学生"
+                android:text="@string/teaching_testpaper_send"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
 

@@ -56,7 +56,7 @@ class HomeworkPublishDialog(val context: Context) {
         if (selectDialog == null) {
             selectDialog = HomeworkPublishClassGroupSelectDialog(context).builder()
             selectDialog?.setOnDialogClickListener {
-                selectClasss= it as MutableList<HomeworkClass>
+                selectClasss= it
             }
         } else {
             selectDialog?.show()

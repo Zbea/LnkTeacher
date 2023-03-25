@@ -22,9 +22,9 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
             }
 
             override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
-                if (!tBaseResult?.data.isNullOrEmpty()) {
+                if (tBaseResult.data?.isNotEmpty() == true)
                     view.onUserList(tBaseResult.data)
-                }
+
             }
         }, true)
     }

@@ -67,7 +67,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
                 override fun cancel() {
                 }
                 override fun ok() {
-                    presenter.logout()
+                    SPUtil.putString("token", "")
+                    SPUtil.removeObj("user")
+                    Handler().postDelayed(Runnable {
+                        startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
+                        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+                    }, 500)
                 }
             })
         }

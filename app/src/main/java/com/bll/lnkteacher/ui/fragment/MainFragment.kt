@@ -87,7 +87,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     override fun initView() {
         EventBus.getDefault().register(this)
-        setTitle("首页")
+        setTitle(R.string.main_home_title)
         showSearch(false)
 
         onClickView()
@@ -139,7 +139,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         GlideUtils.setImageNoCacheUrl(activity,Constants.SCREEN_PATH + "/course.png",iv_course)
 
         iv_course_more.setOnClickListener {
-            CourseModuleDialog(requireActivity()).builder()?.setOnClickListener { type ->
+            CourseModuleDialog(requireActivity()).builder().setOnClickListener { type ->
                 startActivity(
                     Intent(activity, MainCourseActivity::class.java).setFlags(0)
                         .putExtra("courseType", type)
@@ -220,7 +220,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
      * 查找课本
      */
     private fun findTextBook(){
-        textbooks=BookGreenDaoManager.getInstance().queryAllTextBook(0,"我的课本")
+        textbooks=BookGreenDaoManager.getInstance().queryAllTextBook(0,getString(R.string.textbook_tab_text))
         mBookAdapter?.setNewData(textbooks)
     }
 

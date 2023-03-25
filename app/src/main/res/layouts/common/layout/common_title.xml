@@ -22,7 +22,6 @@
         android:layout_marginLeft="15dp"
         android:textColor="@color/black"
         android:textSize="31sp"
-        android:text="标题"
         />
 
     <TextView

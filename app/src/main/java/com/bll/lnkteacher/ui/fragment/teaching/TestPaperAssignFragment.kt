@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.fragment.teaching
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -8,8 +9,8 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType.TypeBean
+import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity
@@ -26,9 +27,9 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     private var addTypeStr=""
     private var grade=1//年级
 
-    override fun onType(testPaperType: TestPaperType) {
-        setPageNumber(testPaperType.total)
-        types=testPaperType.list
+    override fun onType(typeList: TypeList) {
+        setPageNumber(typeList.total)
+        types=typeList.list
         mAdapter?.setNewData(types)
     }
     override fun onTypeSuccess() {
@@ -76,9 +77,11 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(activity,50f)))
             setOnItemClickListener  { _, _, position ->
-                startActivity(Intent(activity, TestPaperAssignContentActivity::class.java)
-                    .putExtra("title",types[position].name).setFlags(types[position].id)
-                )
+                val intent=Intent(activity, TestPaperAssignContentActivity::class.java)
+                val bundle= Bundle()
+                bundle.putSerializable("type",types[position])
+                intent.putExtra("bundle",bundle)
+                startActivity(intent)
             }
         }
     }

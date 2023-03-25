@@ -1,7 +1,8 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.homework.HomeworkType
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -14,12 +15,12 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
      * 获取作业本列表
      */
     fun getTypeList(map: HashMap<String, Any>) {
-        val type = RetrofitManager.service.getHomeworkType(map)
-        doRequest(type, object : Callback<HomeworkType>(view) {
-            override fun failed(tBaseResult: BaseResult<HomeworkType>): Boolean {
+        val type = RetrofitManager.service.getPaperType(map)
+        doRequest(type, object : Callback<TypeList>(view) {
+            override fun failed(tBaseResult: BaseResult<TypeList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<HomeworkType>) {
+            override fun success(tBaseResult: BaseResult<TypeList>) {
                 if(tBaseResult.data!=null){
                     view.onTypeList(tBaseResult.data)
                 }
@@ -32,7 +33,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
      */
     fun addType(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
-        val type = RetrofitManager.service.addHomeworkType(body)
+        val type = RetrofitManager.service.addPaperType(body)
         doRequest(type, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -44,7 +45,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     }
 
     fun getList(map: HashMap<String,Any>){
-        val list = RetrofitManager.service.getHomeworkContentList(map)
+        val list = RetrofitManager.service.getHomeworkList(map)
         doRequest(list, object : Callback<AssignContent>(view) {
             override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
                 return false
@@ -66,9 +67,71 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 return false
             }
             override fun success(tBaseResult: BaseResult<AssignContent>) {
-                view.onImageList(tBaseResult.data?.list)
+                if (tBaseResult.data!=null){
+                    view.onImageList(tBaseResult.data?.list)
+                }
             }
         }, false)
+    }
+
+    fun commitHomework(map:HashMap<String,Any>){
+        val boay=RequestUtils.getBody(map)
+        val list = RetrofitManager.service.commitHomework(boay)
+        doRequest(list, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCommitSuccess()
+            }
+        }, true)
+    }
+
+    fun commitHomeworkReel(map:HashMap<String,Any>){
+        val boay=RequestUtils.getBody(map)
+        val list = RetrofitManager.service.commitHomeworkReel(boay)
+        doRequest(list, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCommitSuccess()
+            }
+        }, true)
+    }
+
+    fun onDetails(grade:Int) {
+        val map=HashMap<String,Any>()
+        map["page"]=1
+        map["size"]=10
+        map["grade"]=grade
+        val type = RetrofitManager.service.assignHomeworkDetails(map)
+        doRequest(type, object : Callback<HomeworkAssignDetails>(view) {
+            override fun failed(tBaseResult: BaseResult<HomeworkAssignDetails>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<HomeworkAssignDetails>) {
+                if (tBaseResult.data!=null){
+                    view.onDetails(tBaseResult.data)
+                }
+            }
+        }, true)
+    }
+
+    fun deleteDetails(id:Int) {
+        val ids= arrayOf(id)
+        val map=HashMap<String,Any>()
+        map["ids"]=ids
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.deleteAssignDetails(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDetailsDeleteSuccess()
+            }
+        }, true)
     }
 
 }

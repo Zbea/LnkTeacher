@@ -93,6 +93,7 @@
             android:gravity="center"
             android:paddingEnd="@dimen/dp_5"
             android:text="60分"
+            android:visibility="gone"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_26" />
 
@@ -101,6 +102,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="以下"
+            android:visibility="gone"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_26" />
 
@@ -108,6 +110,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
+            android:visibility="gone"
             android:background="@drawable/bg_line_bottom"
             android:orientation="horizontal">
 

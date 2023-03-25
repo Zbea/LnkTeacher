@@ -5,16 +5,14 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
-import com.bll.lnkteacher.mvp.model.homework.HomeworkType
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
-import com.bll.lnkteacher.mvp.presenter.TeachingPresenter
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
+import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
@@ -23,9 +21,9 @@ import com.bll.lnkteacher.ui.fragment.teaching.TestPaperCorrectFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
-class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
+class TeachingFragment : BaseFragment(),IContractView.IMainView {
 
-    private val mPresenter=TeachingPresenter(this)
+    private var mainPresenter= MainPresenter(this)
     private var homeworkAssignFragment: HomeworkAssignFragment? = null
     private var homeworkCorrectFragment: HomeworkCorrectFragment? = null
     private var testPaperAssignFragment: TestPaperAssignFragment? = null
@@ -38,18 +36,30 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
     private var homeworkPopBeans = mutableListOf<PopupBean>()
     private var grade=1
 
-    override fun onHomeworkType(types: MutableList<TestPaperType.TypeBean>?) {
-        homeworkPopBeans.add(PopupBean(0, "布置详情", true))
-        for (item in types!!){
-            homeworkPopBeans.add(PopupBean(item.id, item.name, false))
-        }
+    override fun onClassList(groups: MutableList<ClassGroup>) {
+        DataBeanManager.classGroups=groups
     }
 
-    override fun onGrade(list: MutableList<Grade>) {
-        DataBeanManager.grades=list
+    override fun onGroupList(groups: MutableList<Group>) {
+        val schools= mutableListOf<Group>()
+        val areas= mutableListOf<Group>()
+        for (item in groups){
+            if (item.type==2){
+                schools.add(item)
+            }
+            else{
+                areas.add(item)
+            }
+        }
+        DataBeanManager.schoolGroups=schools
+        DataBeanManager.areaGroups=areas
+    }
+    override fun onList(grades: MutableList<Grade>) {
+        DataBeanManager.grades=grades
         grade=DataBeanManager.popupGrades[0].id
         tv_grade.text=DataBeanManager.popupGrades[0].name
     }
+
 
 
     override fun getLayoutId(): Int {
@@ -57,7 +67,7 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
     }
 
     override fun initView() {
-        setTitle("教学")
+        setTitle(R.string.main_teaching_title)
         showView(iv_manager,tv_grade)
 
         homeworkAssignFragment = HomeworkAssignFragment()
@@ -84,6 +94,13 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
     }
 
     override fun lazyLoad() {
+        if (DataBeanManager.grades.size==0){
+            mainPresenter.getGrades()
+        }
+        if (DataBeanManager.classGroups.size==0){
+            mainPresenter.getClassGroups()
+            mainPresenter.getGroups()
+        }
     }
 
     //初始化数据
@@ -92,12 +109,9 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
             grade=DataBeanManager.popupGrades[0].id
             tv_grade.text=DataBeanManager.popupGrades[0].name
         }
-        else{
-            mPresenter.getGrades()
-        }
-        homeworkPopBeans.add(PopupBean(0, "布置详情", true))
-        homeworkPopBeans.add(PopupBean(1, "新增作业本", false))
-        homeworkPopBeans.add(PopupBean(2, "新增作业卷", false))
+        homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))
+        homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book), false))
+        homeworkPopBeans.add(PopupBean(2, getString(R.string.teaching_pop_create_reel), false))
     }
 
     /**
@@ -166,7 +180,7 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
             .setOnSelectListener { item ->
                 when(item.id){
                     0->{
-                        showHomeworkList()
+                        homeworkAssignFragment?.showAssignDetails()
                     }
                     1->{
                         showCreateHomeworkName(item.name, item.id)
@@ -187,39 +201,14 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
                     grade=item.id
                     homeworkAssignFragment?.changeGrade(grade)
                     testPaperAssignFragment?.changeGrade(grade)
+                    homeworkCorrectFragment?.changeGrade(grade)
+                    testPaperCorrectFragment?.changeGrade(grade)
                 }
         }
         else{
             gradePopup?.show()
         }
 
-    }
-
-
-    /**
-     * 作业布置详情
-     */
-    private fun showHomeworkList() {
-        val items = mutableListOf<HomeworkAssignDetails>()
-        val classs = mutableListOf<HomeworkClass>()
-
-        val classGroupBean= HomeworkClass()
-        classGroupBean.className="三年1班"
-        classGroupBean.isCommit=true
-        classGroupBean.date=System.currentTimeMillis()
-        classs.add(classGroupBean)
-        classs.add(classGroupBean)
-        classs.add(classGroupBean)
-
-        for (i in 0..3) {
-            val item = HomeworkAssignDetails()
-            item.typeName = "家庭作业本"
-            item.date = System.currentTimeMillis()
-            item.content = "语文作业1.3.5页第三题"
-            item.list=classs
-            items.add(item)
-        }
-        HomeworkAssignDetailsDialog(requireContext(), items).builder()
     }
 
     /**
@@ -229,15 +218,15 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
         InputContentDialog(requireContext(), hint).builder()
             .setOnDialogClickListener { str ->
                 var subtype=2
-                var typeName="作业本"
+                var typeName=getString(R.string.teaching_book)
                 if (typeId==2){
                     subtype=1
-                    typeName="作业卷"
+                    typeName=getString(R.string.teaching_reel)
                 }
-                val homeworkType = HomeworkType.TypeBean()
-                homeworkType.title = str+ typeName
+                val homeworkType = TypeBean()
+                homeworkType.name = str+ typeName
                 homeworkType.subType = typeId
-                homeworkAssignFragment?.changeData(homeworkType,subtype)
+                homeworkAssignFragment?.addHomeworkType(homeworkType,subtype)
             }
 
     }
@@ -247,7 +236,7 @@ class TeachingFragment : BaseFragment(),IContractView.ITeachingView {
      * 新增作业本
      */
     private fun showCreateTestPaperName() {
-        InputContentDialog(requireContext(), "新增考试卷").builder()
+        InputContentDialog(requireContext(), getString(R.string.teaching_pop_create_testpaper)).builder()
             .setOnDialogClickListener { str ->
                 testPaperAssignFragment?.addType(str)
             }

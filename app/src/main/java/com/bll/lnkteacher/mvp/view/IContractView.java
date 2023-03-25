@@ -9,13 +9,13 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.group.Group;
 import com.bll.lnkteacher.mvp.model.group.GroupUser;
-import com.bll.lnkteacher.mvp.model.homework.HomeworkType;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails;
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent;
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect;
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade;
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType;
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.net.IBaseView;
 
@@ -100,7 +100,7 @@ public interface IContractView {
         /**
          * 考卷布置分类列表
          */
-        void onType(TestPaperType testPaperType);
+        void onType(TypeList typeList);
         /**
          * 添加考卷分类成功
          */
@@ -135,7 +135,7 @@ public interface IContractView {
          * 考卷批改列表
          * @param bean
          */
-        void onList(TestPaperCorrect bean);
+        void onList(CorrectList bean);
         /**
          * 删除考卷批改
          */
@@ -178,9 +178,9 @@ public interface IContractView {
     interface IHomeworkAssignView extends IBaseView{
         /**
          * 获取作业分类
-         * @param homeworkType
+         * @param list
          */
-        void onTypeList(HomeworkType homeworkType);
+        void onTypeList(TypeList list);
         /**
          * 添加作业分类
          */
@@ -195,18 +195,33 @@ public interface IContractView {
          * @param lists
          */
         void onImageList(List<ContentListBean> lists);
+        /**
+         * 发送成功
+         */
+        void onCommitSuccess();
+        /**
+         * 布置详情
+         * @param details
+         */
+        void onDetails(HomeworkAssignDetails details);
+        void onDetailsDeleteSuccess();
     }
 
-    /**
-     * 教学公用接口
-     */
-    interface ITeachingView extends IBaseView{
-        void onHomeworkType(List<TestPaperType.TypeBean> types);
+    interface IHomeworkCorrectView extends IBaseView{
         /**
-         * 获取学生成绩
+         * 作业批改列表
          * @param list
          */
-        void onGrade(List<Grade> list);
+        void onList(CorrectList list);
+        /**
+         * 删除作业批改
+         */
+        void onDeleteSuccess();
+        /**
+         * 发送 已批改作业
+         */
+        void onSendSuccess();
     }
+
 
 }

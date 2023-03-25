@@ -19,7 +19,7 @@ class AppFragment:BaseFragment() {
     }
 
     override fun initView() {
-        setTitle("应用")
+        setTitle(R.string.main_app_title)
 
         initData()
 

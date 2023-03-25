@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
@@ -23,16 +24,17 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
 
     private val mPresenter=TestPaperCorrectPresenter(this)
     private var mAdapter: TestPaperCorrectAdapter?=null
-    private var items= mutableListOf<TestPaperCorrect.CorrectBean>()
+    private var items= mutableListOf<CorrectBean>()
     private var pos=0
+    private var grade=1
 
-    override fun onList(bean: TestPaperCorrect) {
+    override fun onList(bean: CorrectList) {
         setPageNumber(bean.total)
         items= bean.list
         mAdapter?.setNewData(items)
     }
     override fun onDeleteSuccess() {
-        showToast("删除成功")
+        showToast(R.string.delete_success)
         mAdapter?.remove(pos)
     }
     override fun onSendSuccess() {
@@ -76,7 +78,7 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                             startActivity(intent)
                         }
                         else{
-                            showToast("未批改完成")
+                            showToast(R.string.teaching_testpaper_correct_undone)
                         }
                     }
                     R.id.tv_data->{
@@ -88,12 +90,12 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                             startActivity(intent)
                         }
                         else{
-                            showToast("未批改完成")
+                            showToast(R.string.teaching_testpaper_correct_undone)
                         }
                     }
                     R.id.iv_delete->{
                         pos=position
-                        deletePaperCorrect()
+                        deleteCorrect()
                     }
                     R.id.tv_student->{
                         if (item.sendStatus==2){
@@ -121,8 +123,8 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
     /**
      * 删除批改
      */
-    private fun deletePaperCorrect(){
-        CommonDialog(requireActivity()).setContent("确定删除？").builder().setDialogClickListener(object :
+    private fun deleteCorrect(){
+        CommonDialog(requireActivity()).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
@@ -130,6 +132,14 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                 mPresenter.deleteCorrect(items[pos].id)
             }
         })
+    }
+
+    /**
+     * 刷新年级
+     */
+    fun changeGrade(grade:Int){
+        this.grade=grade
+        fetchData()
     }
 
     override fun onRefreshData() {
@@ -140,6 +150,8 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         val map=HashMap<String,Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
+        map["taskType"]=2
+        map["grade"]=grade
         mPresenter.getList(map)
     }
 

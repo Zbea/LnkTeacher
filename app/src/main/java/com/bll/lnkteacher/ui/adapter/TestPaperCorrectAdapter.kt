@@ -5,20 +5,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.R.id.*
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class TestPaperCorrectAdapter(layoutResId: Int, data: List<TestPaperCorrect.CorrectBean>?) : BaseQuickAdapter<TestPaperCorrect.CorrectBean, BaseViewHolder>(layoutResId, data) {
+class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: TestPaperCorrect.CorrectBean) {
+    override fun convert(helper: BaseViewHolder, item: CorrectBean) {
         when(item.type){
-            1-> helper.setText(tv_exam_type,"班群单考")
-            2->helper.setText(tv_exam_type,"校群联考")
-            else->helper.setText(tv_exam_type,"际群联考")
+            1-> helper.setText(tv_exam_type,R.string.teaching_testpaper_group_class)
+            2->helper.setText(tv_exam_type,R.string.teaching_testpaper_group_school)
+            else->helper.setText(tv_exam_type,R.string.teaching_testpaper_group_area)
         }
-        helper.setText(tv_date_create,"布置时间  "+ DateUtils.longToStringWeek(item.time*1000))
+        helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time*1000))
         helper.setText(tv_group_name,item.name)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
@@ -33,13 +34,13 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<TestPaperCorrect.Corr
 
     }
 
-    class ClassAdapter(layoutResId: Int,data: MutableList<TestPaperCorrect.ClassBean>?) : BaseQuickAdapter<TestPaperCorrect.ClassBean, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: TestPaperCorrect.ClassBean) {
+    class ClassAdapter(layoutResId: Int,data: MutableList<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
             helper.apply {
                 setText(tv_type,item.examName)
                 setText(tv_class_name,item.name)
-                setText(tv_number,"${item.totalStudent}人")
-                setText(tv_receive_number,"${item.totalSubmitStudent}人")
+                setText(tv_number,"${item.totalStudent}")
+                setText(tv_receive_number,"${item.totalSubmitStudent}")
                 setVisible(tv_save,item.status==2)
                 addOnClickListener(ll_content, tv_save)
             }

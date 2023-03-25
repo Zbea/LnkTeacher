@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,24 +18,23 @@
         android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal"
         android:gravity="center_vertical|right"
-        >
+        tools:ignore="RtlHardcoded">
         <TextView
             android:id="@+id/tv_class_name"
             android:layout_width="162dp"
             android:layout_height="match_parent"
-            android:drawableRight="@mipmap/icon_arrow_down"
             android:drawablePadding="@dimen/dp_10"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:gravity="center_vertical"
-            android:text="班级选择"
+            android:text="@string/classgroup_selector_str"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
+            app:drawableRightCompat="@mipmap/icon_arrow_down" />
 
         <TextView
-            android:id="@+id/tv_send"
+            android:id="@+id/tv_commit"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_40"
@@ -41,7 +42,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:gravity="center"
-            android:text="发送"
+            android:text="@string/send"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
 

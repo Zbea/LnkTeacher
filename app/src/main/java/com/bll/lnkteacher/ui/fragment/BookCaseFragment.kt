@@ -13,7 +13,7 @@ class BookCaseFragment: BaseFragment() {
     }
 
     override fun initView() {
-        setTitle("书架")
+        setTitle(R.string.main_bookcase_title)
     }
 
     override fun lazyLoad() {

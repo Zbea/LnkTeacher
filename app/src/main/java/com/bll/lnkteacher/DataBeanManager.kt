@@ -18,25 +18,27 @@ object DataBeanManager {
     var grades= mutableListOf<Grade>()
 
     private val listTitle = arrayOf(
-        "首页",
-        "教义",
-        "班群",
-        "教学",
-        "笔记",
-        "书架",
-        "应用"
+        R.string.main_home_title,
+        R.string.main_textbook_title,
+        R.string.main_classgroup_title,
+        R.string.main_teaching_title,
+        R.string.main_note_title,
+        R.string.main_bookcase_title,
+        R.string.main_app_title
     )
     val textbookType = arrayOf(
-        "我的课本",
-        "我的课辅",
-        "参考教材",
-        "往期教材"
+        mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
+        mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_oldteaching)
     )
+
     var teachingStrs = arrayOf(
-        "作业布置",
-        "作业批改",
-        "考卷发放",
-        "考卷批改"
+        mContext.getString(R.string.teaching_tab_homework_assign),mContext.getString(R.string.teaching_tab_homework_correct),
+        mContext.getString(R.string.teaching_tab_testpaper_assign),mContext.getString(R.string.teaching_tab_testpaper_correct)
+    )
+
+    var groupStrs = arrayOf(
+        mContext.getString(R.string.group_tab_class),mContext.getString(R.string.group_tab_school),
+        mContext.getString(R.string.group_tab_area)
     )
 
     val popClassGroups:MutableList<PopupBean>
@@ -90,43 +92,43 @@ object DataBeanManager {
             icon = mContext.getDrawable(R.mipmap.icon_main_sy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
             checked = true
-            name = listTitle[0]
+            name = mContext.getString(listTitle[0])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_jy)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_jy_check)
             checked = false
-            name = listTitle[1]
+            name = mContext.getString(listTitle[1])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_group_nor)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_group_check)
             checked = false
-            name = listTitle[2]
+            name = mContext.getString(listTitle[2])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_jx)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_jx_check)
             checked = false
-            name = listTitle[3]
+            name = mContext.getString(listTitle[3])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_bj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
             checked = false
-            name = listTitle[4]
+            name = mContext.getString(listTitle[4])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_sj)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
             checked = false
-            name = listTitle[5]
+            name = mContext.getString(listTitle[5])
         })
         list.add(MainListBean().apply {
             icon = mContext.getDrawable(R.mipmap.icon_main_app)
             icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
             checked = false
-            name = listTitle[6]
+            name = mContext.getString(listTitle[6])
         })
         return list
     }
@@ -155,15 +157,15 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<BaseTypeBean>()
             list.add(BaseTypeBean().apply {
-                name = "我的日记"
+                name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
             list.add(BaseTypeBean().apply {
-                name = "金句彩段"
+                name = mContext.getString(R.string.note_tab_article)
                 typeId = 1
             })
             list.add(BaseTypeBean().apply {
-                name = "典型题型"
+                name = mContext.getString(R.string.note_tab_topic)
                 typeId = 2
             })
             return list
@@ -193,12 +195,12 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<ModuleBean>()
             list.add(ModuleBean().apply {
-                name = "横格本"
+                name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_6
             })
             list.add(ModuleBean().apply {
-                name = "方格本"
+                name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_7
             })
@@ -210,32 +212,32 @@ object DataBeanManager {
         get() {
             val list= mutableListOf<ModuleBean>()
             list.add(ModuleBean().apply {
-                name = "空白本"
+                name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
             })
             list.add(ModuleBean().apply {
-                name = "横格本"
+                name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
             })
             list.add(ModuleBean().apply {
-                name = "方格本"
+                name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
             })
             list.add(ModuleBean().apply {
-                name = "英语本"
+                name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
             })
             list.add(ModuleBean().apply {
-                name = "田字本"
+                name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
             })
             list.add(ModuleBean().apply {
-                name = "五线谱"
+                name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
             })

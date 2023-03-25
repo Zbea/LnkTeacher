@@ -29,7 +29,7 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context) {
         for (item in classs){
             datas.add(HomeworkClass().apply {
                 className=item.name
-                classId=item.classNum.toString()
+                classId=item.classId
             })
         }
 
@@ -54,6 +54,7 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context) {
                 }
                 R.id.cb_commit->{
                     item.isCommit=!item.isCommit
+                    item.submitStatus=if (item.isCommit) 0 else 1
                     mAdapter?.notifyDataSetChanged()
                 }
             }

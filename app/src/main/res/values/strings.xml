@@ -1,14 +1,108 @@
 <resources>
     <string name="app_name">墨之屏教学系统</string>
     <string name="authority">com.bll.lnkteacher</string>
+    <string name="request_success">请求成功</string>
+    <string name="login_timeout">连接超时,请重新登陆</string>
     <string name="net_work_error">检查网络是否连接</string>
     <string name="connect_server_timeout">无法连接到服务器</string>
     <string name="parse_data_error">解析数据错误</string>
     <string name="connect_error">未连接到服务器</string>
     <string name="on_server_error">服务器开小差，请重试</string>
 
-    <string name="user_tip">请输入4-12位数字、字母的用户名</string>
-    <string name="psw_tip">请输入6-20数字、字母的密码</string>
+    <string name="user_tip">请输入4–12位数字、字母的用户名</string>
+    <string name="psw_tip">请输入6–20数字、字母的密码</string>
     <string name="phone_tip">请正确输入11位手机号码</string>
+
+    <string name="grade_selector">年级选择</string>
+    <string name="page_up_string">上一页</string>
+    <string name="page_down_string">下一页</string>
+
+    <string name="receive">收到</string>
+    <string name="send">发送</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确认</string>
+    <string name="rename">重命名</string>
+    <string name="delete_success">删除成功</string>
+    <string name="is_delete_tips">确定删除？</string>
+    <string name="out_success">退出成功</string>
+    <string name="dissolve_success">解散成功</string>
+    <string name="details">详情</string>
+
+    <string name="main_home_title">首页</string>
+    <string name="main_textbook_title">教义</string>
+    <string name="main_classgroup_title">班群</string>
+    <string name="main_classgroup_fragment_title">群管理</string>
+    <string name="main_teaching_title">教学</string>
+    <string name="main_note_title">笔记</string>
+    <string name="main_bookcase_title">书架</string>
+    <string name="main_app_title">应用</string>
+
+    <string name="textbook_tab_text">我的课本</string>
+    <string name="textbook_tab_course">我的课辅</string>
+    <string name="textbook_tab_teaching">参考教材</string>
+    <string name="textbook_tab_oldteaching">往期教材</string>
+
+    <string name="teaching_tab_homework_assign">作业布置</string>
+    <string name="teaching_tab_homework_correct">作业批改</string>
+    <string name="teaching_tab_testpaper_assign">考卷发放</string>
+    <string name="teaching_tab_testpaper_correct">考卷批改</string>
+
+    <string name="note_tab_diary">我的日记</string>
+    <string name="note_tab_article">金句彩段</string>
+    <string name="note_tab_topic">典型题型</string>
+    <string name="note_type_hgb">横格本</string>
+    <string name="note_type_fgb">方格本</string>
+    <string name="note_type_kbb">空白本</string>
+    <string name="note_type_yyb">英语本</string>
+    <string name="note_type_tzb">田字本</string>
+    <string name="note_type_wxp">五线谱</string>
+
+    <string name="group_tab_class">班群</string>
+    <string name="group_tab_school">校群</string>
+    <string name="group_tab_area">际群</string>
+
+    <string name="main_button_classes">排课表</string>
+    <string name="main_button_message">信息</string>
+    <string name="main_button_teaching">教学计划</string>
+    <string name="main_button_textbook">我的课本</string>
+    <string name="main_button_note">笔记</string>
+
+    <string name="textbook_is_delete_tips">确认删除该教材？</string>
+
+    <string name="classgroup_selector_str">班群选择</string>
+    <string name="classgroup_create_success">创建班群成功</string>
+    <string name="classgroup_dissolve_success">解散班群成功</string>
+    <string name="classgroup_edit_success">修改班群成功</string>
+    <string name="classgroup_is_dissolve_tips">确定解散班群？</string>
+    <string name="group_is_out_tips">确定退出群？</string>
+    <string name="group_is_dissolve_tips">确定解散群？</string>
+    <string name="classgroup_kick_success">踢出学生成功</string>
+    <string name="classgroup_set_job_success">设置学生班级职务成功</string>
+    <string name="classgroup_is_kick_tips">确认踢出该学生？</string>
+    <string name="classgroup_set_job">设置职务</string>
+
+    <string name="note_create_dialog_title">新建笔记本</string>
+    <string name="note_create_dialog_hint">输入笔记本名称</string>
+
+    <string name="teaching_pop_assign_details">布置详情</string>
+    <string name="teaching_pop_create_book">新增作业本</string>
+    <string name="teaching_pop_create_reel">新增作业卷</string>
+    <string name="teaching_pop_create_testpaper">新增考试卷</string>
+    <string name="teaching_book">作业本</string>
+    <string name="teaching_reel">作业卷</string>
+    <string name="teaching_assign_time">布置时间</string>
+    <string name="teaching_assign_success">布置成功</string>
+    <string name="teaching_correct_success">批改成功</string>
+    <string name="teaching_testpaper_correct_undone">考卷未改完</string>
+    <string name="teaching_testpaper_group_class">班群单考</string>
+    <string name="teaching_testpaper_group_school">校群联考</string>
+    <string name="teaching_testpaper_group_area">际群联考</string>
+    <string name="teaching_testpaper_analyse">考卷分析</string>
+    <string name="teaching_testpaper_score">成绩统计</string>
+    <string name="teaching_testpaper_send">发送学生</string>
+    <string name="toast_delete_assign_details">删除成功</string>
+
+    <string name="teaching_homework_start_date">布置时间</string>
+    <string name="teaching_homework_end_date">上交时间</string>
 
 </resources>

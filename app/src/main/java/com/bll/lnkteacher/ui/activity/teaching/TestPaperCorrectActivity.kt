@@ -12,7 +12,7 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
@@ -30,7 +30,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     private var id=0
     private val mUploadPresenter=FileUploadPresenter(this)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this)
-    private var mClassBean: TestPaperCorrect.ClassBean?=null
+    private var mClassBean: CorrectClassBean?=null
     private var userItems= mutableListOf<TestPaperCorrectClass.UserBean>()
 
     private var mAdapter:TestPaperCorrectUserAdapter?=null
@@ -72,7 +72,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     override fun onGrade(list: MutableList<TestPaperGrade>?) {
     }
     override fun onCorrectSuccess() {
-        showToast(userItems[posUser].name+"批改成功")
+        showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
         userItems[posUser].score=getScoreInput()
         userItems[posUser].submitUrl=url
         mAdapter?.notifyDataSetChanged()
@@ -87,7 +87,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     override fun initData() {
         id=intent.flags
-        mClassBean=intent.getBundleExtra("bundle").getSerializable("classBean") as TestPaperCorrect.ClassBean
+        mClassBean=intent.getBundleExtra("bundle").getSerializable("classBean") as CorrectClassBean
 
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
@@ -96,7 +96,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         elik=iv_image.pwInterFace
         elik?.setPWEnabled(false)
 
-        setPageTitle("考卷批改  ${mClassBean?.examName}  ${mClassBean?.name}")
+        setPageTitle("${getString(R.string.teaching_tab_testpaper_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
 
         initRecyclerView()
 

@@ -100,8 +100,16 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SToast.showText(s)
     }
 
+    fun showToast(strId:Int){
+        SToast.showText(strId)
+    }
+
     fun showLog(s:String){
         Log.d("debug",s)
+    }
+
+    fun showLog(resId:Int){
+        Log.d("debug",getString(resId))
     }
 
     /**
@@ -143,6 +151,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         tv_title?.text = pageTitle
     }
 
+    fun setTitle(titleResId: Int) {
+        tv_title?.text = getString(titleResId)
+    }
+
     fun showSearch(isShow:Boolean) {
         if (isShow){
             showView(tv_search)
@@ -151,6 +163,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             disMissView(tv_search)
         }
     }
+
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
@@ -288,7 +301,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun login() {
         if (mView==null||activity==null)return
-        SToast.showText("连接超时,请重新登陆")
+        SToast.showText(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
         Handler().postDelayed(Runnable {
@@ -296,6 +309,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
         }, 500)
     }
+
     override fun hideLoading() {
         if (mView==null||activity==null)return
         mDialog?.dismiss()
@@ -308,8 +322,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         SToast.showText( msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
+        showLog(R.string.connect_server_timeout)
     }
     override fun onComplete() {
+        showLog(R.string.request_success)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

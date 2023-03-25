@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
@@ -58,14 +59,8 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     }
 
     override fun initView() {
-        setTitle("群管理")
+        setTitle(R.string.main_classgroup_fragment_title)
         showView(iv_create)
-
-//        groupPops.add(PopWindowBean(0, "创建校群", true))
-//        groupPops.add(PopWindowBean(1, "加入校群", false))
-//
-//        areaPops.add(PopWindowBean(0, "创建际群", true))
-//        areaPops.add(PopWindowBean(1, "加入际群", false))
 
         classGroupFragment = ClassGroupFragment()
         groupFragment = GroupFragment().newInstance(2)
@@ -77,7 +72,7 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
             when (lastPosition) {
                 0 -> {
                     ClassGroupCreateDialog(requireContext()).builder()
-                        ?.setOnDialogClickListener {
+                        .setOnDialogClickListener {
                             mGroupPresenter.createClassGroup(it)
                         }
                 }
@@ -109,7 +104,7 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
      * 设置tab
      */
     private fun initTab() {
-        val strs= mutableListOf("班群","校群","际群")
+        val strs=DataBeanManager.groupStrs
         for (i in strs.indices){
             rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
         }
@@ -162,7 +157,7 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     private fun showPopView(pops:MutableList<PopupBean>) {
 
         PopupRadioList(requireContext(), pops, iv_manager,  10).builder()
-            ?.setOnSelectListener { item ->
+            .setOnSelectListener { item ->
                 when (item.id) {
                     0 -> createGroup(if (lastPosition==1) 2 else 1)
                     1 -> addGroup(if (lastPosition==1) 2 else 1)

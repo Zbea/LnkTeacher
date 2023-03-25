@@ -8,12 +8,12 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.KeyboardUtils
 
 
-class NotebookAddDialog(private val context: Context, val title: String, val name:String, val nameHint:String) {
+class NotebookAddDialog(private val context: Context, val title: String, val name:String, private val nameHint:String) {
 
 
     fun builder(): NotebookAddDialog {
-        var dialog= Dialog(context)
-        dialog?.setContentView(R.layout.dialog_notebook_add)
+        val dialog= Dialog(context)
+        dialog.setContentView(R.layout.dialog_notebook_add)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 

@@ -21,7 +21,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
                 return false
             }
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                if (tBaseResult.data?.list.isNullOrEmpty())
+                if (tBaseResult.data?.list?.isNotEmpty() == true)
                     view.onClassList(tBaseResult.data?.list)
             }
         }, false)
@@ -37,7 +37,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
             }
 
             override fun success(tBaseResult: BaseResult<MutableList<Group>>) {
-                if (tBaseResult.data.isNullOrEmpty())
+                if (tBaseResult.data?.isNotEmpty() == true)
                     view.onGroupList(tBaseResult.data)
             }
         }, false)
@@ -53,7 +53,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<Grade>>) {
-                if (tBaseResult.data.isNullOrEmpty())
+                if (tBaseResult.data?.isNotEmpty() == true)
                     view.onList(tBaseResult.data)
             }
 

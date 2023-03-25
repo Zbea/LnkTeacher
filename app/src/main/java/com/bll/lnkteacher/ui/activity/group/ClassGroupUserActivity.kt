@@ -7,8 +7,8 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupUserPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserAdapter
@@ -27,20 +27,20 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
     private var job=""
 
     override fun onUserList(users: MutableList<ClassGroupUser>) {
-        if (!users.isNullOrEmpty()){
+        if (users.isNotEmpty()){
             this.users= users
             mAdapter?.setNewData(users)
         }
     }
 
     override fun onOutSuccess() {
-        showToast("踢出该学生成功")
+        showToast(R.string.classgroup_kick_success)
         users.removeAt(position)
         mAdapter?.notifyDataSetChanged()
     }
 
     override fun onEditSuccess() {
-        showToast("设置学生班级职务成功")
+        showToast(R.string.classgroup_set_job_success)
         users[position].job=job
         mAdapter?.notifyDataSetChanged()
     }
@@ -56,7 +56,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
     }
 
     override fun initView() {
-        setPageTitle("详情")
+        setPageTitle(R.string.details)
         showView(tv_class)
 
         tv_class.text= DataBeanManager.classGroups[index].name
@@ -86,7 +86,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
      * 踢出学生
      */
     private fun outDialog(){
-        CommonDialog(this).setContent("确认踢出该学生？").builder().setDialogClickListener(object :
+        CommonDialog(this).setContent(R.string.classgroup_is_kick_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }
@@ -100,7 +100,7 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
      * 休息学生职务
      */
     private fun setChangeJob(){
-        InputContentDialog(this,"设置职务").builder()?.setOnDialogClickListener{
+        InputContentDialog(this,getString(R.string.classgroup_set_job)).builder().setOnDialogClickListener{
             job=it
             mPresenter.editUser(users[position].id,job)
         }

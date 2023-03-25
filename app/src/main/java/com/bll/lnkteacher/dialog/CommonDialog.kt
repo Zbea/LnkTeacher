@@ -13,6 +13,7 @@ class CommonDialog(private val context: Context) {
     private var titleStr = ""
     private var isTitle = false
     private var contentStr = "" //提示文案
+    private var contentStrId = 0
     private var cancelStr = "取消" //取消文案
     private var okStr = "确认" //确认文案
 
@@ -23,6 +24,11 @@ class CommonDialog(private val context: Context) {
 
     fun setContent(content: String): CommonDialog {
         this.contentStr = content
+        return this
+    }
+
+    fun setContent(strId: Int): CommonDialog {
+        contentStrId = strId
         return this
     }
 
@@ -58,6 +64,7 @@ class CommonDialog(private val context: Context) {
             contentTv.minHeight = 220
         }
         if (contentStr.isNotEmpty()) contentTv.text = contentStr
+        if (contentStrId!=0) contentTv.setText(contentStrId)
         if (cancelStr.isNotEmpty()) cancelTv.text = cancelStr
         if (okStr.isNotEmpty()) tvOk.text = okStr
 

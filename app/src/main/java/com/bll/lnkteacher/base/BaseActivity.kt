@@ -162,6 +162,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         tv_title?.text = pageTitle
     }
 
+    fun setPageTitle(titleId: Int) {
+        tv_title?.setText(titleId)
+    }
+
     /**
      * 显示view
      */
@@ -268,9 +272,18 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         SToast.showText(s)
     }
 
+    fun showToast(resId:Int){
+        SToast.showText(resId)
+    }
+
     fun showLog(s:String){
         Log.d("debug",s)
     }
+
+    fun showLog(resId:Int){
+        Log.d("debug",getString(resId))
+    }
+
 
 
     /**
@@ -346,7 +359,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText("连接超时,请重新登陆")
+        SToast.showText(R.string.login_timeout)
         SPUtil.putString("token", "")
         SPUtil.removeObj("user")
 
@@ -369,10 +382,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
-        showLog("服务器连接失败")
+        showLog(R.string.connect_server_timeout)
     }
     override fun onComplete() {
-        showLog("请求完成")
+        showLog(R.string.request_success)
     }
 
     override fun onPause() {

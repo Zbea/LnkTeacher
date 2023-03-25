@@ -29,7 +29,7 @@ class TextbookFragment : BaseFragment() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()
-    private var textBook = "我的课本"//用来区分课本类型
+    private var textBook = ""//用来区分课本类型
     private var position = 0
     private var book: Book? = null
 
@@ -41,7 +41,7 @@ class TextbookFragment : BaseFragment() {
         pageSize=12
 
         EventBus.getDefault().register(this)
-        setTitle("教义")
+        setTitle(R.string.main_textbook_title)
         showSearch(true)
 
         initTab()
@@ -59,7 +59,8 @@ class TextbookFragment : BaseFragment() {
 
     //设置头部索引
     private fun initTab() {
-        var tabStrs = DataBeanManager.textbookType
+        val tabStrs = DataBeanManager.textbookType
+        textBook=tabStrs[0]
         for (i in tabStrs.indices) {
             rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
         }
@@ -96,7 +97,7 @@ class TextbookFragment : BaseFragment() {
     private fun onLongClick(): Boolean {
         BookManageDialog(requireActivity(), book!!).builder()
             .setOnDialogClickListener {
-                CommonDialog(requireActivity()).setContent("确认删除该教材？").builder()
+                CommonDialog(requireActivity()).setContent(R.string.textbook_is_delete_tips).builder()
                     .setDialogClickListener(object :
                         CommonDialog.OnDialogClickListener {
                         override fun cancel() {

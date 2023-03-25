@@ -25,7 +25,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     private var className=""//班群名称
 
     override fun onCreateSuccess() {
-        showToast("创建班群成功")
+        showToast(R.string.classgroup_create_success)
         mGroupPresenter.getClassList()
     }
 
@@ -39,13 +39,13 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     }
 
     override fun onEditSuccess() {
-        showToast("修改班群名成功")
+        showToast(R.string.classgroup_edit_success)
         classGroups[position].name=className
         mAdapter?.notifyDataSetChanged()
     }
 
     override fun onDissolveSuccess() {
-        showToast("解散班群成功")
+        showToast(R.string.classgroup_dissolve_success)
         classGroups.removeAt(position)
         mAdapter?.notifyDataSetChanged()
     }
@@ -98,7 +98,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
      * 解散班群
      */
     private fun dissolveGroup(){
-        CommonDialog(requireActivity()).setContent("确定解散班群？").builder()
+        CommonDialog(requireActivity()).setContent(R.string.classgroup_is_dissolve_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
@@ -112,18 +112,16 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
      * 修改班群名
      */
     private fun editGroup(){
-        NotebookAddDialog(requireContext(), "重命名", classGroups[position].name, "").builder()
-            ?.setOnDialogClickListener {
+        NotebookAddDialog(requireContext(), getString(R.string.rename), classGroups[position].name, "").builder()
+            .setOnDialogClickListener {
                 className=it
                 mGroupPresenter.editClassGroup(classGroups[position].classId,className)
             }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden){
-            refreshData()
-        }
+    override fun onRefreshData() {
+        refreshData()
     }
+
 
 }

@@ -34,7 +34,7 @@ class GroupCreateDialog(val context: Context,val type:Int) {
         }
         btn_ok.setOnClickListener {
             val name=et_name.text.toString()
-            if (!name.isNullOrEmpty())
+            if (name.isNotEmpty())
             {
                 dialog.dismiss()
                 listener?.onClick(name,classIds.toIntArray())

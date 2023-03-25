@@ -79,7 +79,7 @@
             android:layout_height="match_parent"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/black" />
 
 
@@ -90,7 +90,7 @@
             android:layout_marginStart="@dimen/dp_90"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="确定"
+            android:text="@string/ok"
             android:textColor="@color/black" />
 
     </LinearLayout>

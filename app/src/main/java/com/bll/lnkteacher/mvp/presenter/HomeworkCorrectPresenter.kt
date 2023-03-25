@@ -7,7 +7,7 @@ import com.bll.lnkteacher.net.*
 /**
  * 考卷批改
  */
-class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BasePresenter<IContractView.ITestPaperCorrectView>(view) {
+class HomeworkCorrectPresenter(view: IContractView.IHomeworkCorrectView):BasePresenter<IContractView.IHomeworkCorrectView>(view) {
 
     fun getList(map:HashMap<String,Any>) {
         val type = RetrofitManager.service.getPaperCorrectList(map)

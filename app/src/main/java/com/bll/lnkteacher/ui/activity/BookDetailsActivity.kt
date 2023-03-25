@@ -45,20 +45,19 @@ class BookDetailsActivity:BaseActivity() {
         val id=intent.getIntExtra("book_id",0)
         book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
         page=book?.pageIndex!!
-        if (book==null) return
+
         val cataLogFilePath =FileAddress().getPathBookCatalog(book?.bookPath!!)
         val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
         catalogMsg=Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
         if (catalogMsg==null) return
-
         for (item in catalogMsg?.contents!!)
         {
-            var catalogParentBean=CatalogParentBean()
+            val catalogParentBean=CatalogParentBean()
             catalogParentBean.title=item.title
             catalogParentBean.pageNumber=item.pageNumber
             catalogParentBean.picName=item.picName
             for (ite in item.subItems){
-                var catalogChildBean= CatalogChildBean()
+                val catalogChildBean= CatalogChildBean()
                 catalogChildBean.title=ite.title
                 catalogChildBean.pageNumber=ite.pageNumber
                 catalogChildBean.picName=ite.picName

@@ -3,7 +3,7 @@ package com.bll.lnkteacher.mvp.presenter
 import android.util.Pair
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGroupType
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -18,11 +18,11 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
     fun getType(map: HashMap<String, Any>) {
 
         val type = RetrofitManager.service.getPaperType(map)
-        doRequest(type, object : Callback<TestPaperType>(view) {
-            override fun failed(tBaseResult: BaseResult<TestPaperType>): Boolean {
+        doRequest(type, object : Callback<TypeList>(view) {
+            override fun failed(tBaseResult: BaseResult<TypeList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<TestPaperType>) {
+            override fun success(tBaseResult: BaseResult<TypeList>) {
                 if (tBaseResult.data!=null){
                     view.onType(tBaseResult.data)
                 }

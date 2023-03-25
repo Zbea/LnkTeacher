@@ -6,7 +6,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
@@ -23,7 +23,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
     private var popClasss= mutableListOf<PopupBean>()
     private var mAdapter: TestPaperGradeAdapter?=null
     private var datas= mutableListOf<TestPaperGrade>()
-    private var testPaperCorrect: TestPaperCorrect.CorrectBean?=null
+    private var correctBean: CorrectBean?=null
 
 
     override fun onImageList(list: MutableList<ContentListBean>?) {
@@ -45,13 +45,13 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
     }
 
     override fun initData() {
-        testPaperCorrect=intent.getBundleExtra("bundle").get("paperCorrect") as TestPaperCorrect.CorrectBean
+        correctBean=intent.getBundleExtra("bundle").get("paperCorrect") as CorrectBean
 
-        for (item in testPaperCorrect?.examList!!){
+        for (item in correctBean?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
 
-        mPresenter.getPaperGrade(testPaperCorrect?.id!!)
+        mPresenter.getPaperGrade(correctBean?.id!!)
     }
 
     override fun initView() {

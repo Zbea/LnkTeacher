@@ -5,9 +5,9 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.model.group.GroupUser
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.GroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.GroupUserAdapter
@@ -68,7 +68,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     }
 
     override fun initView() {
-        setPageTitle("详情")
+        setPageTitle(R.string.details)
 
         if (pops.size>0){
             tv_class.text= pops[position].name

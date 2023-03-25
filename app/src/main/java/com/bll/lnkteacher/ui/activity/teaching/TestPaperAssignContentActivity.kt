@@ -10,7 +10,8 @@ import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperType
+import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
@@ -21,14 +22,14 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     private val presenter=TestPaperAssignPresenter(this)
     private var mAdapter: TestPaperAssignContentAdapter? = null
-    private var id=0
+    private var typeBean:TypeBean?=null
     private var items = mutableListOf<ContentListBean>()
     private var popGroupNames= mutableListOf<PopupBean>()
     private var popGroups= mutableListOf<PopupBean>()
     private var type=1 //班群校群id
     private var subtype=0 //选中群id
 
-    override fun onType(testPaperType: TestPaperType?) {
+    override fun onType(typeList: TypeList?) {
     }
     override fun onTypeSuccess() {
     }
@@ -45,14 +46,14 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         ImageDialog(this,images).builder()
     }
     override fun onDeleteSuccess() {
-        showToast("删除成功")
+        showToast(R.string.delete_success)
         items.removeAll(getCheckedItems())
         mAdapter?.setNewData(items)
     }
     override fun onGroupTypes() {
     }
     override fun onSendSuccess() {
-        showToast("布置成功")
+        showToast(R.string.teaching_assign_success)
         finish()
     }
 
@@ -62,12 +63,12 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     override fun initData() {
         pageSize=12
-        id=intent.flags
+        typeBean= intent.getBundleExtra("bundle").getSerializable("type") as TypeBean
         fetchData()
 
-        popGroupNames.add(PopupBean(1,"班群单考",true))
-        popGroupNames.add(PopupBean(2,"校群联考",false))
-        popGroupNames.add(PopupBean(3,"际群联考",false))
+        popGroupNames.add(PopupBean(1,getString(R.string.teaching_testpaper_group_class),true))
+        popGroupNames.add(PopupBean(2,getString(R.string.teaching_testpaper_group_school),false))
+        popGroupNames.add(PopupBean(3,getString(R.string.teaching_testpaper_group_area),false))
         tv_group_name.text=popGroupNames[0].name
         popGroups=DataBeanManager.popClassGroups
         if (popGroups.size>0){
@@ -79,7 +80,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     override fun initView() {
-        setPageTitle(intent.getStringExtra("title"))
+        setPageTitle(typeBean?.name.toString())
         showView(tv_send,iv_manager)
         iv_manager.setImageResource(R.mipmap.icon_notebook_delete)
 
@@ -109,7 +110,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
 
         iv_manager.setOnClickListener {
-            CommonDialog(this).setContent("确定删除选中？").builder().setDialogClickListener(object :
+            CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
@@ -126,7 +127,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
 
         tv_send.setOnClickListener {
-            if (getCheckedItems().size>0){
+            if (getCheckedItems().size>0&&subtype!=0){
                 val ids= mutableListOf<Int>()
                 for (item in getCheckedItems()){
                     ids.add(item.taskId)
@@ -135,6 +136,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 map["type"]=type
                 map["groupId"]=subtype
                 map["ids"]=ids.toIntArray()
+                map["grade"]=typeBean?.grade!!
                 presenter.sendPapers(map)
             }
         }
@@ -155,7 +157,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     private fun selectorName() {
         PopupRadioList(this, popGroupNames, tv_group_name,  5).builder()
-            ?.setOnSelectListener { item ->
+            .setOnSelectListener { item ->
                 type=item.id
                 tv_group_name.text = item.name
                 popGroups = when(item.id){
@@ -176,7 +178,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     private fun selectorGroup() {
         PopupRadioList(this, popGroups, tv_group,  5).builder()
-         ?.setOnSelectListener { item ->
+         .setOnSelectListener { item ->
              tv_group.text = item.name
              subtype=item.id
         }
@@ -186,7 +188,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         val map=HashMap<String,Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["commonTypeId"] = id
+        map["commonTypeId"] = typeBean?.id!!
         presenter.getPaperList(map)
     }
 

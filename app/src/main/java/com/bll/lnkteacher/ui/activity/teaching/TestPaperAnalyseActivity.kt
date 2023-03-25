@@ -7,7 +7,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrect
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
@@ -20,7 +20,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     private val mPresenter= TestPaperCorrectDetailsPresenter(this)
     private var index=0//当前学生的作业下标
-    private var testPaperCorrect: TestPaperCorrect.CorrectBean?=null
+    private var correctList: CorrectBean?=null
     private var popScores= mutableListOf<PopupBean>()
     private var popScoresDown= mutableListOf<PopupBean>()
     private val popClasss= mutableListOf<PopupBean>()
@@ -49,7 +49,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     }
 
     override fun initData() {
-        testPaperCorrect=intent.getBundleExtra("bundle").get("paperCorrect") as TestPaperCorrect.CorrectBean
+        correctList=intent.getBundleExtra("bundle").get("paperCorrect") as CorrectBean
         val scores= DataBeanManager.scoreList
         for (i in scores.indices)
         {
@@ -58,15 +58,15 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             popScoresDown.add(popupBean)
         }
 
-        for (item in testPaperCorrect?.examList!!){
+        for (item in correctList?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
 
-        mPresenter.getPaperImages(testPaperCorrect?.examList!![0].taskId)
+        mPresenter.getPaperImages(correctList?.examList!![0].taskId)
     }
 
     override fun initView() {
-        setPageTitle("考卷分析")
+        setPageTitle(R.string.teaching_testpaper_analyse)
         showView(tv_class)
 
         tv_class.text=popClasss[0].name

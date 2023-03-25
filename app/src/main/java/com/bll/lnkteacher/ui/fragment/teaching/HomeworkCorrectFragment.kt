@@ -1,76 +1,122 @@
 package com.bll.lnkteacher.ui.fragment.teaching
 
-import android.content.Intent
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.mvp.model.homework.HomeworkCorrect
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
+import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
+import com.bll.lnkteacher.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
-class HomeworkCorrectFragment:BaseFragment() {
+class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
 
+    private var mPresenter=HomeworkCorrectPresenter(this)
     private var mAdapter:HomeworkCorrectAdapter?=null
     private var position=0
-    private var homeworks= mutableListOf<HomeworkCorrect>()
+    private var items= mutableListOf<CorrectBean>()
+    private var grade=1
+
+    override fun onList(list: CorrectList) {
+        setPageNumber(list.total)
+        items= list.list
+        mAdapter?.setNewData(items)
+    }
+    override fun onDeleteSuccess() {
+        showToast(R.string.delete_success)
+        mAdapter?.remove(position)
+    }
+    override fun onSendSuccess() {
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching_list
     }
 
     override fun initView() {
+        pageSize=3
         initRecyclerView()
     }
 
     override fun lazyLoad() {
+        fetchData()
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
 
-        val homeworkCorrect=
-            HomeworkCorrect()
-        homeworkCorrect.id=0
-        homeworkCorrect.type="家庭作业本"
-        homeworkCorrect.createDate=System.currentTimeMillis()
-        homeworkCorrect.commitDate=System.currentTimeMillis()
-        homeworkCorrect.content="语文作业第1、3、5页"
-
-        val lists= mutableListOf<HomeworkCorrect.ListBean>()
-
-        for (i in 0..3){
-            val list= HomeworkCorrect().ListBean()
-            list.className="三年$i 班"
-            list.number=50
-            list.receiveNumber=46
-            lists.add(list)
-        }
-        homeworkCorrect.lists=lists
-        homeworks.add(homeworkCorrect)
-        homeworks.add(homeworkCorrect)
-        homeworks.add(homeworkCorrect)
-
-        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.weight=1f
-        layoutParams.setMargins(DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),0)
-        rv_list.layoutParams=layoutParams
+        val layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        layoutParams.weight = 1f
+        layoutParams.setMargins(
+            DP2PX.dip2px(activity, 40f),
+            DP2PX.dip2px(activity, 40f),
+            DP2PX.dip2px(activity, 40f),
+            0
+        )
+        rv_list.layoutParams = layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = HomeworkCorrectAdapter(R.layout.item_teaching_homework_correct, homeworks).apply {
+        mAdapter = HomeworkCorrectAdapter(R.layout.item_teaching_homework_correct, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity,30f)))
-            setOnChildClickListener { view, parentPosition, position ->
-                this@HomeworkCorrectFragment.position = parentPosition
-                startActivity(Intent(activity, HomeworkCorrectActivity::class.java))
+            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity, 30f)))
+            setOnItemChildClickListener { adapter, view, position ->
+                val item = items[position]
+                when (view.id) {
+                    R.id.iv_delete -> {
+                        this@HomeworkCorrectFragment.position = position
+                        deleteCorrect()
+                    }
+                    R.id.tv_student -> {
+                        if (item.sendStatus == 2) {
+                            mPresenter.sendGroup(item.id)
+                        }
+                    }
+                }
             }
+
         }
+    }
 
 
+    /**
+     * 删除批改
+     */
+    private fun deleteCorrect(){
+        CommonDialog(requireActivity()).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                mPresenter.deleteCorrect(items[position].id)
+            }
+        })
+    }
+
+    fun changeGrade(grade:Int){
+        this.grade=grade
+        fetchData()
+    }
+
+    override fun onRefreshData() {
+        fetchData()
+    }
+
+    override fun fetchData() {
+        val map=HashMap<String,Any>()
+        map["page"] = pageIndex
+        map["size"] = pageSize
+        map["taskType"]=1
+        map["grade"]=1
+        mPresenter.getList(map)
     }
 
 }

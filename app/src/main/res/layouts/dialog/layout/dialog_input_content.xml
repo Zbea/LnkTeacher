@@ -34,7 +34,7 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="取消"
+            android:text="@string/cancel"
             android:textColor="@color/black" />
 
         <View
@@ -49,7 +49,7 @@
             android:layout_weight="1"
             android:textSize="@dimen/sp_22"
             android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="确定"
+            android:text="@string/ok"
             android:textColor="@color/black" />
 
     </LinearLayout>

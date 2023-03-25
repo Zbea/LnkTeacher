@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/sp_18"
         android:textColor="@color/black"
         />
 
@@ -20,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textSize="@dimen/sp_18"
         android:gravity="center"
-        android:textSize="@dimen/sp_16"
         android:textColor="@color/black"
         />
 

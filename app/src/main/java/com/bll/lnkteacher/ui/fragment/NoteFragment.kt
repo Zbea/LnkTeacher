@@ -64,7 +64,7 @@ class NoteFragment : BaseFragment() {
 
         EventBus.getDefault().register(this)
 
-        setTitle("笔记")
+        setTitle(R.string.main_note_title)
         showView(iv_manager)
 
         bindClick()

@@ -5,52 +5,92 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails.DetailsBean
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 
-class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<HomeworkAssignDetails>) {
 
+class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<DetailsBean>) {
 
+    private var dialog:Dialog?=null
+    private var mAdapter:ListAdapter?=null
+    private var position=0
     fun builder(): HomeworkAssignDetailsDialog {
 
-        val dialog = Dialog(mContext)
-        dialog.setContentView(R.layout.dialog_homework_assign_details)
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+        dialog = Dialog(mContext)
+        dialog?.setContentView(R.layout.dialog_homework_assign_details)
+        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.show()
 
-        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
-        val mAdapter= ListAdapter(R.layout.item_homework_assign_details, items)
-        rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
-        rvList.adapter = mAdapter
+        val rvList= dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        mAdapter= ListAdapter(R.layout.item_homework_assign_details, items)
+        rvList?.layoutManager = LinearLayoutManager(mContext)//创建布局管理
+        rvList?.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
-
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            if (view.id==R.id.iv_delete){
+                this.position=position
+                onDialogClickListener?.onDelete(items[position].id)
+            }
+        }
         return this
     }
 
-    class ListAdapter(layoutResId: Int, data: List<HomeworkAssignDetails>) : BaseQuickAdapter<HomeworkAssignDetails, BaseViewHolder>(layoutResId, data) {
+    fun show(){
+        dialog?.show()
+    }
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkAssignDetails) {
-            helper.setText(R.id.tv_homework_type,item.typeName)
-            helper.setText(R.id.tv_message,item.content)
-            helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date))
+    fun dismiss(){
+        dialog?.dismiss()
+    }
 
-            var rvList=helper.getView<RecyclerView>(R.id.rv_list)
-            var mAdapter= MyAdapter(R.layout.item_homework_assign_details_classgroup, item.list)
+    fun refreshList(){
+        mAdapter?.remove(position)
+    }
+
+    var onDialogClickListener: OnDialogClickListener? = null
+
+    fun interface OnDialogClickListener {
+        fun onDelete(id:Int)
+    }
+
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+        this.onDialogClickListener = onDialogClickListener
+    }
+
+    class ListAdapter(layoutResId: Int, data: List<DetailsBean>) : BaseQuickAdapter<DetailsBean, BaseViewHolder>(layoutResId, data) {
+
+        override fun convert(helper: BaseViewHolder, item: DetailsBean) {
+            helper.setText(R.id.tv_homework_type,item.name)
+            helper.setText(R.id.tv_message,item.info)
+            helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.time*1000))
+
+            val selects= mutableListOf<HomeworkClassSelect>()
+            val jsonArray=JsonParser().parse(item.classInfo).asJsonArray
+            for (json in jsonArray){
+                selects.add(Gson().fromJson(json,HomeworkClassSelect::class.java))
+            }
+
+            val rvList=helper.getView<RecyclerView>(R.id.rv_list)
+            val mAdapter= MyAdapter(R.layout.item_homework_assign_details_classgroup, selects)
             rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
             rvList.adapter = mAdapter
-            mAdapter?.bindToRecyclerView(rvList)
+            mAdapter.bindToRecyclerView(rvList)
+
+            helper.addOnClickListener(R.id.iv_delete)
 
         }
 
 
-        class MyAdapter(layoutResId: Int, data: List<HomeworkClass>?) : BaseQuickAdapter<HomeworkClass, BaseViewHolder>(layoutResId, data) {
+        class MyAdapter(layoutResId: Int, data: List<HomeworkClassSelect>?) : BaseQuickAdapter<HomeworkClassSelect, BaseViewHolder>(layoutResId, data) {
 
-            override fun convert(helper: BaseViewHolder, item: HomeworkClass) {
-                helper.setText(R.id.tv_class_name,item.className)
-                helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYearNoHour(item.date))
+            override fun convert(helper: BaseViewHolder, item: HomeworkClassSelect) {
+                helper.setText(R.id.tv_class_name,item.name)
+                helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYearNoHour(item.time*1000))
             }
 
         }

@@ -15,7 +15,6 @@
         android:layout_marginStart="33dp"
         android:textColor="@color/black"
         android:textSize="36sp"
-        android:text="标题"
         />
 
 
@@ -45,7 +44,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         android:gravity="center_vertical"
-        android:text="年级选择"
+        android:text="@string/grade_selector"
         android:visibility="gone"
         android:background="@drawable/bg_gary_arch"
         />
