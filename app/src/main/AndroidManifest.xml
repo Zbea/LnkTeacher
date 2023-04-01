@@ -32,10 +32,13 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
-    <permission  android:name="android.permission.INSTALL_PACKAGES"/>
+    <permission  android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ReservedSystemPermission" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <permission  android:name="android.permission.WRITE_SECURE_SETTINGS"/>
-    <permission  android:name="android.permission.WRITE_SETTINGS"/>
+    <permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ReservedSystemPermission" />
+    <permission  android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ReservedSystemPermission" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -72,7 +75,6 @@
             </activity>
         <activity android:name=".ui.activity.DateActivity" />
         <activity android:name=".ui.activity.DateEventActivity" />
-        <activity android:name="com.bll.lnkteacher.ui.activity.BookCaseTypeActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.BookStoreActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.BookDetailsActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MessageListActivity"/>
@@ -80,7 +82,6 @@
         <activity android:name="com.bll.lnkteacher.ui.activity.MainTeachingPlanActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.NoteTypeManagerActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.NoteDrawingActivity"/>
-        <activity android:name="com.bll.lnkteacher.ui.activity.BookCollectActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />

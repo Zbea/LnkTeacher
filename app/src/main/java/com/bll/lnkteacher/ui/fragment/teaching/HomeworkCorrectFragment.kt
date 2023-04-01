@@ -1,5 +1,7 @@
 package com.bll.lnkteacher.ui.fragment.teaching
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +12,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IHomeworkCorrectView
+import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -80,6 +83,20 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                             mPresenter.sendGroup(item.id)
                         }
                     }
+                }
+            }
+            setOnChildClickListener { view,parentPos, position ->
+                if (view.id==R.id.ll_content){
+                    val intent= Intent(requireActivity(), HomeworkCorrectActivity::class.java)
+                    val bundle= Bundle()
+                    bundle.putSerializable("classBean",items[parentPos].examList[position])
+                    intent.putExtra("bundle",bundle)
+                    intent.putExtra("subType",items[parentPos].subType)
+                    intent.flags=items[parentPos].id
+                    startActivity(intent)
+                }
+                if (view.id==R.id.tv_save){
+                    mPresenter.sendClass(items[parentPos].examList[position].examChangeId)
                 }
             }
 

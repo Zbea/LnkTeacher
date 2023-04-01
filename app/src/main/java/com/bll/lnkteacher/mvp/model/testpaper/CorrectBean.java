@@ -13,4 +13,5 @@ public class CorrectBean implements Serializable {
     public long time;
     public int sendStatus;//2为已批改完成
     public List<CorrectClassBean> examList;
+    public int subType;
 }

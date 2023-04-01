@@ -15,12 +15,13 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
         helper.setText(R.id.tv_title,item.title)
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time*1000))
+        helper.setVisible(R.id.tv_student,item.subType!=3)
         var rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         val mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type,item.examList)
         rvList.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
-        mAdapter.setOnItemClickListener { adapter, view, position ->
+        mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(view,helper.adapterPosition,position)
         }
 
@@ -36,6 +37,9 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
             helper.setText(R.id.tv_receive_number,"${item.totalSubmitStudent}")
             helper.setVisible(R.id.tv_end_date,true)
             helper.setText(R.id.tv_end_date,DateUtils.longToStringWeek(item.endTime*1000))
+
+            helper.setVisible(R.id.tv_save,item.status==2&&item.totalSubmitStudent>0)
+            helper.addOnClickListener(R.id.ll_content, R.id.tv_save)
         }
 
     }

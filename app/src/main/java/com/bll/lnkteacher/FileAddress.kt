@@ -4,6 +4,7 @@ import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PICTURE_FILES
 import com.bll.lnkteacher.Constants.Companion.CATALOG_TXT
 import com.bll.lnkteacher.Constants.Companion.DATE_PATH
+import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.ZIP_PATH
@@ -82,6 +83,11 @@ class FileAddress {
     fun getPathTestPaper(paperCorrectId: Int?,classId: Int?,userId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/paperCorrectId$paperCorrectId/classId$classId/userId$userId"
     }
-
+    /**
+     * 批改学生作业保存地址
+     */
+    fun getPathHomework(paperCorrectId: Int?,classId: Int?,userId:Int):String{
+        return "$HOMEWORK_PATH/$mUserId/homeworkCorrectId$paperCorrectId/classId$classId/userId$userId"
+    }
 
 }

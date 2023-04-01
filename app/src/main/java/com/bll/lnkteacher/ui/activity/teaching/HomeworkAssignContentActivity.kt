@@ -108,7 +108,10 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
      */
     private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClass>){
         val selects= mutableListOf<HomeworkClassSelect>()
+        var isCommit=false
         for (ite in homeClasss){
+            if (ite.date>0)
+                isCommit=true
             selects.add(HomeworkClassSelect().apply {
                 classId=ite.classId
                 submitStatus=ite.submitStatus
@@ -128,6 +131,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
         map["name"]=typeBean?.name!!
         map["ids"]=ids.toIntArray()
         map["grade"]=typeBean?.grade!!
+        map["showStatus"]=if (isCommit) 0 else 1
         mPresenter.commitHomeworkReel(map)
     }
 

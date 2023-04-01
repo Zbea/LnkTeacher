@@ -90,8 +90,11 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
+                for (item in items){
+                    item.isCheck=false
+                }
                 val item =items[position]
-                item.isCheck=!item.isCheck
+                item.isCheck=true
                 notifyDataSetChanged()
             }
             setOnItemChildClickListener { adapter, view, position ->

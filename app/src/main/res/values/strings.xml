@@ -27,6 +27,9 @@
     <string name="out_success">退出成功</string>
     <string name="dissolve_success">解散成功</string>
     <string name="details">详情</string>
+    <string name="save">保存</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
 
     <string name="main_home_title">首页</string>
     <string name="main_textbook_title">教义</string>

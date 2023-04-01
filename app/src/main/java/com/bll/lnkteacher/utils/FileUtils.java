@@ -152,9 +152,9 @@ public class FileUtils {
         File file = new File(path);
         File[] tempList = file.listFiles();
         if (tempList==null) return null;
-        for (int i = 0; i < tempList.length; i++) {
-            if (tempList[i].isFile()) {
-                files.add(tempList[i]);
+        for (File value : tempList) {
+            if (value.isFile()) {
+                files.add(value);
             }
         }
 //        //文件排序

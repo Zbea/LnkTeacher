@@ -49,7 +49,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     override fun onImageList(lists: MutableList<ContentListBean>?) {
     }
     override fun onCommitSuccess() {
-        showLog(R.string.teaching_assign_success)
+        showToast(R.string.teaching_assign_success)
     }
 
     override fun onDetails(details: HomeworkAssignDetails) {
@@ -120,7 +120,10 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
      */
     private fun commitHomework(item:TypeBean, contentStr:String,homeClasss:List<HomeworkClass>){
         val selects= mutableListOf<HomeworkClassSelect>()
+        var isCommit=false
         for (ite in homeClasss){
+            if (ite.date>0)
+                isCommit=true
             selects.add(HomeworkClassSelect().apply {
                 classId=ite.classId
                 submitStatus=ite.submitStatus
@@ -133,6 +136,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["examList"]=selects
         map["name"]=item.name
         map["grade"]=grade
+        map["showStatus"]=if (isCommit) 0 else 1
         mPresenter.commitHomework(map)
     }
 

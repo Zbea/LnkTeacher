@@ -38,6 +38,7 @@ class Constants{
         val BOOK_PATH = MyApplication.mContext.getExternalFilesDir("BookFile").path
 
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper").path
+        val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework").path
 
         val CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val BOOK_PICTURE_FILES = "contents" //图片资源的最确路径

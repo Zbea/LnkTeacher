@@ -41,7 +41,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
-                setVisible(tv_save,item.status==2)
+                setVisible(tv_save,item.status==2&&item.totalSubmitStudent>0)
                 addOnClickListener(ll_content, tv_save)
             }
         }

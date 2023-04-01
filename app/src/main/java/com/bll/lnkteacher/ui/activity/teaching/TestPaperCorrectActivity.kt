@@ -47,6 +47,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         map["studentTaskId"]=userItems[posUser].studentTaskId
         map["score"]=getScoreInput()
         map["submitUrl"]=url
+        map["status"]=2
         mPresenter.commitPaperStudent(map)
     }
 
@@ -75,9 +76,11 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
         userItems[posUser].score=getScoreInput()
         userItems[posUser].submitUrl=url
+        userItems[posUser].status=2
         mAdapter?.notifyDataSetChanged()
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
+        elik?.setPWEnabled(false)
     }
 
 
@@ -187,8 +190,8 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         }
         else{
             currentImages=userItem.studentUrl.split(",").toTypedArray()
-            loadPapers()
             elik?.setPWEnabled(true)
+            loadPapers()
         }
 
     }
@@ -215,21 +218,19 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         }
         tv_page.text="${posImage+1}/${getImageSize()}"
 
-        if (userItems[posUser].submitUrl.isEmpty()){
-            val drawPath = getPathDrawStr(posImage+1)
-            elik?.setLoadFilePath(drawPath, true)
-            elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-                override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-                }
+        val drawPath = getPathDrawStr(posImage+1)
+        elik?.setLoadFilePath(drawPath, true)
+        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
+            }
 
-                override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-                }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
+            }
 
-                override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                    elik?.saveBitmap(true) {}
-                }
-            })
-        }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik?.saveBitmap(true) {}
+            }
+        })
     }
 
     /**
@@ -239,18 +240,23 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         showLoading()
         val file = File(getPath())
         val files = FileUtils.getFiles(file.path)
-        if (files == null) {
+        if (files.isNullOrEmpty()) {
             val imageDownLoad = ImageDownLoadUtils(this, currentImages, file.path)
             imageDownLoad.startDownload()
             imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                 override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
                     hideLoading()
-                    setContentImage()
+                    runOnUiThread {
+                        setContentImage()
+                    }
                 }
                 override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
                     imageDownLoad.reloadImage()
                 }
             })
+        }
+        else{
+            setContentImage()
         }
     }
 
