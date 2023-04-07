@@ -5,6 +5,7 @@ import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.Grade;
+import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.group.Group;
@@ -69,6 +70,7 @@ public interface IContractView {
         void onCreateClassGroupSuccess();
         void onCreateGroupSuccess();
         void onAddSuccess();
+        void onGradeList(List<Grade> grades);
     }
 
     //班群学生
@@ -92,7 +94,7 @@ public interface IContractView {
     interface IMainView extends IBaseView{
         void onClassList(List<ClassGroup> classGroups);
         void onGroupList(List<Group> groups);
-        void onList(List<Grade> grades);
+        void onGradeList(List<Grade> grades);
     }
 
     //考卷布置
@@ -221,6 +223,12 @@ public interface IContractView {
          * 发送 已批改作业
          */
         void onSendSuccess();
+    }
+
+    interface IMessageView extends IBaseView{
+        void onList(Message message);
+        void onSend();
+        void onDeleteSuccess();
     }
 
 

@@ -17,6 +17,8 @@
     <string name="page_up_string">上一页</string>
     <string name="page_down_string">下一页</string>
 
+    <string name="toast_selector_message">请选择要删除的消息</string>
+
     <string name="receive">收到</string>
     <string name="send">发送</string>
     <string name="cancel">取消</string>
@@ -103,7 +105,8 @@
     <string name="teaching_testpaper_analyse">考卷分析</string>
     <string name="teaching_testpaper_score">成绩统计</string>
     <string name="teaching_testpaper_send">发送学生</string>
-    <string name="toast_delete_assign_details">删除成功</string>
+    <string name="toast_delete_success">删除成功</string>
+    <string name="toast_send_success">发送成功</string>
 
     <string name="teaching_homework_start_date">布置时间</string>
     <string name="teaching_homework_end_date">上交时间</string>

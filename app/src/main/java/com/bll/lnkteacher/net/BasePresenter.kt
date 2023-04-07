@@ -22,16 +22,17 @@ abstract class BasePresenter<T : IBaseView>(private val view: T) : IBasePresente
         return view
     }
 
-    protected fun <V> doRequest(observable: Observable<BaseResult<V>>?, observer: Observer<BaseResult<V>>) {
+    protected fun <V> doRequest(observable: Observable<BaseResult<V>>?, observer: Callback<V>) {
         if (observable == null) {
             return
         }
         doRequest(observable, observer, true)
     }
 
-     fun <V> doRequest(observable: Observable<BaseResult<V>>?,
-                       observer: Observer<BaseResult<V>>,
-                       showLoading: Boolean) {
+     fun <V> doRequest(
+         observable: Observable<BaseResult<V>>?,
+         observer: Callback<V>,
+         showLoading: Boolean) {
         if (observable == null) {
             return
         }

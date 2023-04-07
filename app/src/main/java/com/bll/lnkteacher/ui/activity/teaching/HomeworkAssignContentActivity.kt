@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.ac_homework_assgin_content.*
 
 class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssignView {
 
+    private var grade=0
     private val mPresenter=HomeworkAssignPresenter(this)
     private var mAdapter:TestPaperAssignContentAdapter?=null
     private var items= mutableListOf<ContentListBean>()//列表数据
@@ -60,6 +61,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
     override fun initData() {
         pageSize=12
         typeBean= intent.getBundleExtra("bundle").getSerializable("homeworkType") as TypeBean
+        grade=typeBean?.grade!!
         fetchData()
     }
 
@@ -85,7 +87,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
 
         tv_class_name.setOnClickListener {
             if (selectDialog==null){
-                selectDialog=HomeworkPublishClassGroupSelectDialog(this).builder()
+                selectDialog=HomeworkPublishClassGroupSelectDialog(this, grade).builder()
                 selectDialog?.setOnDialogClickListener {
                     selectClasss= it
                 }

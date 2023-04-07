@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.media.MediaPlayer
+import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.FileAddress
@@ -302,7 +303,9 @@ class HomeworkCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDeta
                 }
                 paths.add(mergePathStr)
             }
-            mUploadPresenter.upload(paths)
+            Handler().postDelayed({
+                mUploadPresenter.upload(paths)
+            },500)
         }
     }
 

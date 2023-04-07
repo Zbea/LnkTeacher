@@ -20,7 +20,7 @@
         android:id="@+id/tv_class_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="5dp"
         android:lines="1"
         android:textColor="@color/black_20"
         android:textSize="@dimen/sp_18"

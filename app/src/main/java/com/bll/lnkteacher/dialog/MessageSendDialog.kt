@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -17,7 +17,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 class MessageSendDialog(private val context: Context) {
 
     private var dialog: Dialog?=null
-    private var items= mutableListOf<ClassGroup>()
+    private var ids= mutableListOf<Int>()
 
     fun builder(): MessageSendDialog? {
         dialog= Dialog(context)
@@ -35,26 +35,26 @@ class MessageSendDialog(private val context: Context) {
         rvList?.layoutManager=GridLayoutManager(context,3)
         rvList?.adapter=mAdapter
         mAdapter.bindToRecyclerView(rvList)
-        rvList?.addItemDecoration(SpaceItemDeco(0, 0, 0, 30))
+        rvList?.addItemDecoration(SpaceGridItemDeco(3,  30))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val item=groups[position]
             item.isCheck=!item.isCheck
-            if (item.isCheck){
-                items.add(item)
-            }
-            else{
-                items.remove(item)
-            }
             mAdapter.notifyDataSetChanged()
         }
 
         tvCancel?.setOnClickListener { dismiss() }
         tvOK?.setOnClickListener {
             val contentStr=et_content?.text.toString()
-            if (contentStr.isNotEmpty()&&items.size>0)
+            for (item in mAdapter.data){
+                if (item.isCheck){
+                    ids.add(item.classId)
+                }
+            }
+
+            if (contentStr.isNotEmpty()&&ids.size>0)
             {
                 dismiss()
-                listener?.onSend(contentStr,items)
+                listener?.onSend(contentStr,ids)
             }
         }
 
@@ -72,7 +72,7 @@ class MessageSendDialog(private val context: Context) {
     private var listener: OnClickListener? = null
 
     fun interface OnClickListener {
-        fun onSend(contentStr:String,courses:List<ClassGroup>)
+        fun onSend(contentStr:String,ids:List<Int>)
     }
 
     fun setOnClickListener(listener: OnClickListener?) {

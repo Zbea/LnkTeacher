@@ -18,6 +18,7 @@ import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TestPaperCorrectFragment
+import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
@@ -54,10 +55,10 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
         DataBeanManager.schoolGroups=schools
         DataBeanManager.areaGroups=areas
     }
-    override fun onList(grades: MutableList<Grade>) {
+    override fun onGradeList(grades: MutableList<Grade>) {
         DataBeanManager.grades=grades
-        grade=DataBeanManager.popupGrades[0].id
-        tv_grade.text=DataBeanManager.popupGrades[0].name
+        grade=DataBeanManager.popupGrades[grade-1].id
+        tv_grade.text=DataBeanManager.popupGrades[grade-1].name
     }
 
 
@@ -69,6 +70,8 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
     override fun initView() {
         setTitle(R.string.main_teaching_title)
         showView(iv_manager,tv_grade)
+
+        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -106,8 +109,8 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
     //初始化数据
     private fun initData() {
         if (DataBeanManager.popupGrades.size>0){
-            grade=DataBeanManager.popupGrades[0].id
-            tv_grade.text=DataBeanManager.popupGrades[0].name
+            grade=DataBeanManager.popupGrades[grade-1].id
+            tv_grade.text=DataBeanManager.popupGrades[grade-1].name
         }
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book), false))
@@ -199,6 +202,7 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
             gradePopup?.setOnSelectListener { item ->
                     tv_grade.text=item.name
                     grade=item.id
+                    SPUtil.putInt("grade",grade)
                     homeworkAssignFragment?.changeGrade(grade)
                     testPaperAssignFragment?.changeGrade(grade)
                     homeworkCorrectFragment?.changeGrade(grade)

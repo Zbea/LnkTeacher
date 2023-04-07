@@ -41,10 +41,20 @@ object DataBeanManager {
         mContext.getString(R.string.group_tab_area)
     )
 
+    fun getGradeClassGroups(grade:Int):MutableList<PopupBean>{
+        val popClasss= mutableListOf<PopupBean>()
+        for (item in classGroups){
+            if (item.grade==grade){
+                popClasss.add(PopupBean(item.classId, item.name, false))
+            }
+        }
+        return popClasss
+    }
+
     val popClassGroups:MutableList<PopupBean>
         get(){
             val popClasss= mutableListOf<PopupBean>()
-            for (i in 0 until classGroups.size){
+            for (i in classGroups.indices){
                 val item=classGroups[i]
                 popClasss.add(PopupBean(item.classId, item.name, i == 0))
             }
@@ -133,25 +143,6 @@ object DataBeanManager {
         return list
     }
 
-
-    val message: MutableList<MessageBean>
-        get() {
-            val list= mutableListOf<MessageBean>()
-            val classGroups: MutableList<ClassGroup> = ArrayList()
-            val classGroup = ClassGroup()
-            classGroup.name = "三年一班"
-            classGroups.add(classGroup)
-            classGroups.add(classGroup)
-            classGroups.add(classGroup)
-            val messageBean = MessageBean()
-            messageBean.createTime = System.currentTimeMillis()
-            messageBean.content = "写语文作业第7、8题"
-            messageBean.classGroups = classGroups
-            list.add(messageBean)
-            list.add(messageBean)
-            list.add(messageBean)
-            return list
-        }
 
     val noteBook: MutableList<BaseTypeBean>
         get() {

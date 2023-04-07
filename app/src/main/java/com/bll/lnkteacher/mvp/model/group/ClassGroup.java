@@ -20,6 +20,7 @@ public class ClassGroup implements Serializable {
     public int provinceId;
     public String city;
     public int cityId;
+    public int grade;
 
     public boolean isCheck;
 

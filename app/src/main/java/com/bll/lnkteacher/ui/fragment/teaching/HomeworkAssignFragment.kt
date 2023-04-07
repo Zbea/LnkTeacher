@@ -21,6 +21,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
@@ -71,6 +72,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     }
 
     override fun initView() {
+        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         pageSize=9
         initRecyclerView()
     }
@@ -105,7 +107,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
 
                 }
                 else{
-                    HomeworkPublishDialog(requireContext()).builder().setOnDialogClickListener{
+                    HomeworkPublishDialog(requireContext(),grade).builder().setOnDialogClickListener{
                             contentStr,homeClasss->
                         commitHomework(item,contentStr,homeClasss)
                     }

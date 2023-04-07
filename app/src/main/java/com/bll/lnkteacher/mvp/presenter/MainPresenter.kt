@@ -54,7 +54,7 @@ class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView
             }
             override fun success(tBaseResult: BaseResult<List<Grade>>) {
                 if (tBaseResult.data?.isNotEmpty() == true)
-                    view.onList(tBaseResult.data)
+                    view.onGradeList(tBaseResult.data)
             }
 
         }, false)

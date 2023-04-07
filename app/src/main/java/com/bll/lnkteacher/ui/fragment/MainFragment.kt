@@ -9,6 +9,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.CLASSGROUP_EVENT
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.DATE_EVENT
+import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
@@ -19,12 +20,11 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
-import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.Grade
-import com.bll.lnkteacher.mvp.model.Notebook
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.presenter.MainPresenter
+import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
 import com.bll.lnkteacher.ui.adapter.BookAdapter
@@ -41,14 +41,16 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Date
 
 
 /**
  * 首页
  */
-class MainFragment : BaseFragment() ,IContractView.IMainView {
+class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMessageView{
 
     private var mainPresenter=MainPresenter(this)
+    private var mMessagePresenter=MessagePresenter(this)
     private var mBookAdapter: BookAdapter? = null
     private var textbooks= mutableListOf<Book>()
     private var mTeachingAdapter: MainClassGroupAdapter? = null
@@ -56,6 +58,18 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
 
     private var notes= mutableListOf<Notebook>()
     private var mainNoteAdapter: MainNoteAdapter? = null
+    private var messages= mutableListOf<MessageBean>()
+    private var mMessageAdapter:MainMessageAdapter?=null
+
+    override fun onList(message: Message) {
+        messages=message.list
+        mMessageAdapter?.setNewData(messages)
+    }
+    override fun onSend() {
+    }
+    override fun onDeleteSuccess() {
+    }
+
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -77,7 +91,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         DataBeanManager.schoolGroups=schools
         DataBeanManager.areaGroups=areas
     }
-    override fun onList(grades: MutableList<Grade>) {
+    override fun onGradeList(grades: MutableList<Grade>) {
         DataBeanManager.grades=grades
     }
 
@@ -108,6 +122,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         mainPresenter.getClassGroups()
         mainPresenter.getGroups()
         mainPresenter.getGrades()
+        findMessages()
     }
 
     @SuppressLint("WrongConstant")
@@ -157,13 +172,10 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         GlideUtils.setImageNoCacheUrl(activity,path,iv_image)
     }
 
-
-
     //消息相关处理
     private fun initMessageView() {
-        val messages = DataBeanManager.message
         rv_main_message.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        MainMessageAdapter(R.layout.item_main_message, messages).apply {
+        mMessageAdapter=MainMessageAdapter(R.layout.item_main_message, null).apply {
             rv_main_message.adapter = this
             bindToRecyclerView(rv_main_message)
         }
@@ -243,6 +255,14 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         mainNoteAdapter?.setNewData(notes)
     }
 
+    private fun findMessages(){
+        val map=HashMap<String,Any>()
+        map["page"]=1
+        map["size"]=4
+        map["type"]=1
+        mMessagePresenter.getList(map,false)
+    }
+
 
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -265,6 +285,9 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
         if (msgFlag== TEXT_BOOK_EVENT){
             findTextBook()
         }
+        if (msgFlag== MESSAGE_EVENT){
+            findMessages()
+        }
     }
 
 
@@ -276,5 +299,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView {
     override fun onRefreshData() {
         lazyLoad()
     }
+
+
 
 }

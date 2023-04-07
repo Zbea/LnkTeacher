@@ -110,18 +110,6 @@ interface APIService{
     fun buyBooks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
-     * 应用列表
-     */
-    @GET("applications")
-    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppBean>>
-
-    /**
-     * 下载软件
-     */
-    @GET("applications/{id}/download")
-    fun downloadApk(@Path("id") id:String): Observable<BaseResult<AppBean>>
-
-    /**
      * 创建班群
      */
     @POST("class/create")
@@ -303,4 +291,19 @@ interface APIService{
     fun deleteAssignDetails(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 
+    /**
+     * 发送信息
+     */
+    @POST("message/inform/insertTeacher")
+    fun sendMessage(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 删除消息
+     */
+    @POST("message/inform/delete")
+    fun deleteMessages(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 消息列表
+     */
+    @GET("message/inform/list")
+    fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
 }

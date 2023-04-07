@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -8,10 +9,11 @@ import com.bll.lnkteacher.net.*
 class GroupManagerPresenter(view: IContractView.IGroupManagerView) : BasePresenter<IContractView.IGroupManagerView>(view) {
 
 
-    fun createClassGroup(name: String) {
+    fun createClassGroup(name: String,grade:Int) {
 
         val body = RequestUtils.getBody(
-            Pair.create("name", name)
+            Pair.create("name", name),
+            Pair.create("grade", grade)
         )
         val createGroup = RetrofitManager.service.createClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view) {
@@ -66,6 +68,22 @@ class GroupManagerPresenter(view: IContractView.IGroupManagerView) : BasePresent
 
     }
 
+    fun getGrades() {
+
+        val editName = RetrofitManager.service.getCommonGrade()
+
+        doRequest(editName, object : Callback<List<Grade>>(view) {
+            override fun failed(tBaseResult: BaseResult<List<Grade>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<Grade>>) {
+                if (tBaseResult.data?.isNotEmpty() == true)
+                    view.onGradeList(tBaseResult.data)
+            }
+
+        }, false)
+
+    }
 
 
 }

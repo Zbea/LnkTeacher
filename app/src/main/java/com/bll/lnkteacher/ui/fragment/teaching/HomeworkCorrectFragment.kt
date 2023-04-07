@@ -36,6 +36,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         mAdapter?.remove(position)
     }
     override fun onSendSuccess() {
+        showToast(R.string.toast_send_success)
     }
 
     override fun getLayoutId(): Int {
@@ -132,7 +133,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         map["page"] = pageIndex
         map["size"] = pageSize
         map["taskType"]=1
-        map["grade"]=1
+        map["grade"]=grade
         mPresenter.getList(map)
     }
 

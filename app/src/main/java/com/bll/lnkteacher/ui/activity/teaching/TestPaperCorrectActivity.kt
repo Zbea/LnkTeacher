@@ -172,7 +172,9 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
                 }
                 paths.add(mergePathStr)
             }
-            mUploadPresenter.upload(paths)
+            Handler().postDelayed({
+                mUploadPresenter.upload(paths)
+            },500)
         }
     }
 

@@ -33,7 +33,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(true);
+        requestOptions.skipMemoryCache(false);
         requestOptions.transform(new RoundedCorners(round));
 
         Glide.with(mContext)
@@ -46,7 +46,7 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
+        requestOptions.skipMemoryCache(true);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
 
         Glide.with(mContext)

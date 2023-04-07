@@ -12,7 +12,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class HomeworkPublishClassGroupSelectDialog(val mContext: Context) {
+class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int) {
 
     private var dialog:Dialog?=null
     private var datas= mutableListOf<HomeworkClass>()
@@ -27,10 +27,12 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context) {
         val classs= DataBeanManager.classGroups
 
         for (item in classs){
-            datas.add(HomeworkClass().apply {
-                className=item.name
-                classId=item.classId
-            })
+            if (item.grade==grade){
+                datas.add(HomeworkClass().apply {
+                    className=item.name
+                    classId=item.classId
+                })
+            }
         }
 
         val rvList=dialog!!.findViewById<RecyclerView>(R.id.rv_list)

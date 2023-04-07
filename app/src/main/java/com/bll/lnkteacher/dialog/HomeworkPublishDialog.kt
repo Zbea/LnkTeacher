@@ -9,7 +9,7 @@ import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
 
-class HomeworkPublishDialog(val context: Context) {
+class HomeworkPublishDialog(val context: Context,val grade: Int) {
 
     private var selectDialog: HomeworkPublishClassGroupSelectDialog? = null
     private var selectClasss= mutableListOf<HomeworkClass>()
@@ -54,7 +54,7 @@ class HomeworkPublishDialog(val context: Context) {
      */
     private fun getSelectClass() {
         if (selectDialog == null) {
-            selectDialog = HomeworkPublishClassGroupSelectDialog(context).builder()
+            selectDialog = HomeworkPublishClassGroupSelectDialog(context,grade).builder()
             selectDialog?.setOnDialogClickListener {
                 selectClasss= it
             }

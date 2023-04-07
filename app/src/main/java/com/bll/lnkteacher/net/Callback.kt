@@ -8,22 +8,16 @@ import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 
-abstract class Callback<T> : Observer<BaseResult<T>> {
-
-    private var IBaseView: IBaseView
-
-    constructor(IBaseView: IBaseView) {
-        this.IBaseView = IBaseView
-    }
+abstract class Callback<T>(private var IBaseView: IBaseView) : Observer<BaseResult<T>> {
 
 
     override fun onSubscribe(@NonNull d: Disposable) {
-        IBaseView?.addSubscription(d)
+        IBaseView.addSubscription(d)
     }
 
     override fun onNext(@NonNull tBaseResult: BaseResult<T>) {
         if (!tBaseResult.error.isNullOrEmpty()) {
-            IBaseView?.fail(tBaseResult.error)
+            IBaseView.fail(tBaseResult.error)
             return
         }
         if (tBaseResult.code == 0) {
@@ -31,10 +25,10 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
         } else {
             when (tBaseResult.code) {
                 -10 -> {
-                    IBaseView?.login()
+                    IBaseView.login()
                 }
                 else -> {
-                    IBaseView?.fail(tBaseResult.msg)
+                    IBaseView.fail(tBaseResult.msg)
                     failed(tBaseResult)
                 }
             }
@@ -42,7 +36,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
     }
 
     override fun onComplete() {
-        IBaseView?.hideLoading()
+        IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {
@@ -59,7 +53,7 @@ abstract class Callback<T> : Observer<BaseResult<T>> {
             SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
         }else if(code==401)
         {
-            IBaseView?.login()
+            IBaseView.login()
         }
         else {
             SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))

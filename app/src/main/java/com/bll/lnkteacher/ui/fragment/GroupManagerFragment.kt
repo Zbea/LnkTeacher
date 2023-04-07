@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
@@ -9,6 +8,7 @@ import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.GroupAddDialog
 import com.bll.lnkteacher.dialog.GroupCreateDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.GroupManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -53,6 +53,10 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
         }
     }
 
+    override fun onGradeList(grades: MutableList<Grade>) {
+        DataBeanManager.grades=grades
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_group_manager
@@ -68,12 +72,12 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
 
         switchFragment(lastFragment, classGroupFragment)
 
-        iv_create.setOnClickListener { it: View? ->
+        iv_create.setOnClickListener {
             when (lastPosition) {
                 0 -> {
                     ClassGroupCreateDialog(requireContext()).builder()
-                        .setOnDialogClickListener {
-                            mGroupPresenter.createClassGroup(it)
+                        .setOnDialogClickListener {name,grade->
+                            mGroupPresenter.createClassGroup(name,grade)
                         }
                 }
                 1 -> {
@@ -98,6 +102,9 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     }
 
     override fun lazyLoad() {
+        if (DataBeanManager.grades.size==0){
+            mGroupPresenter.getGrades()
+        }
     }
 
     /**

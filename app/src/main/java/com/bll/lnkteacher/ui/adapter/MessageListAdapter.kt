@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.adapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -14,23 +13,28 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
 
         helper.setText(R.id.tv_content,item.content)
-        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.createTime))
+        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date))
         helper.setChecked(R.id.cb_check,item.isCheck)
 
-        var rvList=helper.getView<RecyclerView>(R.id.rv_list)
+        val classInfos=item.classInfo.split(",")
+
+        val rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext)
-        var mAdapter = MyAdapter(R.layout.item_message_classname, item.classGroups)
+        val mAdapter = MyAdapter(R.layout.item_message_classname, classInfos)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)
 
-
+        helper.setOnClickListener(R.id.cb_check) {
+            item.isCheck = !item.isCheck
+            notifyDataSetChanged()
+        }
     }
 
 
-    class MyAdapter(layoutResId: Int,data: List<ClassGroup>?) : BaseQuickAdapter<ClassGroup, BaseViewHolder>(layoutResId, data) {
+    class MyAdapter(layoutResId: Int,data: List<String>?) : BaseQuickAdapter<String, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: ClassGroup) {
-            helper.setText(R.id.tv_name,item.name)
+        override fun convert(helper: BaseViewHolder, item: String) {
+            helper.setText(R.id.tv_name,item)
         }
 
     }

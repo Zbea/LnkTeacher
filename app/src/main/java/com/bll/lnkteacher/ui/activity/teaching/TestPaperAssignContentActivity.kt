@@ -28,6 +28,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private var popGroups= mutableListOf<PopupBean>()
     private var type=1 //班群校群id
     private var subtype=0 //选中群id
+    private var grade=0
 
     override fun onType(typeList: TypeList?) {
     }
@@ -64,13 +65,14 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     override fun initData() {
         pageSize=12
         typeBean= intent.getBundleExtra("bundle").getSerializable("type") as TypeBean
+        grade=typeBean?.grade!!
         fetchData()
 
         popGroupNames.add(PopupBean(1,getString(R.string.teaching_testpaper_group_class),true))
         popGroupNames.add(PopupBean(2,getString(R.string.teaching_testpaper_group_school),false))
         popGroupNames.add(PopupBean(3,getString(R.string.teaching_testpaper_group_area),false))
         tv_group_name.text=popGroupNames[0].name
-        popGroups=DataBeanManager.popClassGroups
+        popGroups=DataBeanManager.getGradeClassGroups(grade)
         if (popGroups.size>0){
             tv_group.text=popGroups[0].name
             subtype=popGroups[0].id
@@ -165,7 +167,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 tv_group_name.text = item.name
                 popGroups = when(item.id){
                     1->{
-                        DataBeanManager.popClassGroups
+                        DataBeanManager.getGradeClassGroups(grade)
                     }
                     2->{
                         DataBeanManager.popSchoolGroups

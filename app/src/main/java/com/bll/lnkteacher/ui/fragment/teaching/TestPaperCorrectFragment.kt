@@ -38,6 +38,7 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         mAdapter?.remove(pos)
     }
     override fun onSendSuccess() {
+        showToast(R.string.toast_send_success)
     }
 
 
