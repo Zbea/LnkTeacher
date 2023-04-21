@@ -64,10 +64,10 @@ public interface IContractView {
         void onClassList(List<ClassGroup> list);
         void onEditSuccess();
         void onDissolveSuccess();
+        void onSendSuccess();
     }
     //群管理
     interface IGroupManagerView extends IBaseView{
-        void onCreateClassGroupSuccess();
         void onCreateGroupSuccess();
         void onAddSuccess();
         void onGradeList(List<Grade> grades);
@@ -81,6 +81,7 @@ public interface IContractView {
         void onOutSuccess();
         //修改学生职位成功
         void onEditSuccess();
+        void onStatusSuccess();
     }
 
     //校群

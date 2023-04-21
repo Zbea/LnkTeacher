@@ -30,10 +30,8 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
 
     }
     override fun getGroupUser(lists: MutableList<GroupUser>?) {
-        if (!lists.isNullOrEmpty()){
-            users=lists
-            mAdapter?.setNewData(users)
-        }
+        users=lists!!
+        mAdapter?.setNewData(users)
     }
 
     override fun layoutId(): Int {
@@ -53,7 +51,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         }
 
         for (i in 0 until groups.size){
-            var item=groups[i]
+            val item=groups[i]
             pops.add(
                 PopupBean(
                     item.id,

@@ -131,7 +131,11 @@ interface APIService{
      */
     @POST("class/disbandClass")
     fun dissolveClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 老师发送控制删除信息
+     */
+    @POST("delete/message/send")
+    fun sendClassGroupControl(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取班群学生列表
      */
@@ -142,7 +146,11 @@ interface APIService{
      */
     @POST("class/changeJob")
     fun changeJob(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 学生是否双通
+     */
+    @POST("class/enableSend")
+    fun changeStatus(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 班群学生踢出

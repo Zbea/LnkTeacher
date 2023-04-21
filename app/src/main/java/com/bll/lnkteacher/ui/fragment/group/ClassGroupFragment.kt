@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.NotebookAddDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -40,8 +40,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
     override fun onEditSuccess() {
         showToast(R.string.classgroup_edit_success)
-        classGroups[position].name=className
-        mAdapter?.notifyDataSetChanged()
+        mGroupPresenter.getClassList()
     }
 
     override fun onDissolveSuccess() {
@@ -50,13 +49,16 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
         mAdapter?.notifyDataSetChanged()
     }
 
+    override fun onSendSuccess() {
+        showToast(R.string.classgroup_send_control_success)
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_group
     }
 
     override fun initView() {
         initRecyclerView()
-
     }
     override fun lazyLoad() {
         mGroupPresenter.getClassList()
@@ -81,6 +83,9 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
                 R.id.tv_edit->{
                     editGroup()
                 }
+                R.id.tv_send->{
+                    sendGroup()
+                }
             }
 
         }
@@ -88,9 +93,29 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     }
 
     /**
+     * 创建班群
+     */
+    fun createClassGroup(){
+        ClassGroupCreateDialog(requireContext(),null).builder()
+            .setOnDialogClickListener {name,grade,job->
+                mGroupPresenter.createClassGroup(name,grade,job)
+            }
+    }
+
+    /**
+     * 修改班群名
+     */
+    private fun editGroup(){
+        ClassGroupCreateDialog(requireContext(), classGroups[position]).builder()
+            .setOnDialogClickListener {name,grade,job->
+                mGroupPresenter.editClassGroup(classGroups[position].classId,name,job,grade)
+            }
+    }
+
+    /**
      * 刷新列表
      */
-    fun refreshData(){
+    private fun refreshData(){
         lazyLoad()
     }
 
@@ -109,15 +134,19 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     }
 
     /**
-     * 修改班群名
+     * 老师控制学生删除
      */
-    private fun editGroup(){
-        NotebookAddDialog(requireContext(), getString(R.string.rename), classGroups[position].name, "").builder()
-            .setOnDialogClickListener {
-                className=it
-                mGroupPresenter.editClassGroup(classGroups[position].classId,className)
-            }
+    private fun sendGroup(){
+        CommonDialog(requireActivity()).setContent(R.string.classgroup_is_delete_book_tips).builder()
+            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    mGroupPresenter.sendClassGroupControl(classGroups[position].classId)
+                }
+            })
     }
+
 
     override fun onRefreshData() {
         refreshData()

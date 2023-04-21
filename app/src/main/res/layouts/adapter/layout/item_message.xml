@@ -30,6 +30,16 @@
             android:gravity="center"
             />
 
+    <TextView
+        android:id="@+id/tv_student_name"
+        android:layout_width="180dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="180dp"

@@ -267,26 +267,28 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == DATE_EVENT) {
-            initDateView()
-        }
-        if (msgFlag == COURSE_EVENT) {
-            initCourse()
-        }
-        if (msgFlag== NOTE_BOOK_MANAGER_EVENT){
-            findNotes() //用于删除笔记本后 刷新列表
-        }
-        if (msgFlag==NOTE_EVENT){
-            findNotes()
-        }
-        if (msgFlag== CLASSGROUP_EVENT){
-            findTeaching()
-        }
-        if (msgFlag== TEXT_BOOK_EVENT){
-            findTextBook()
-        }
-        if (msgFlag== MESSAGE_EVENT){
-            findMessages()
+        when (msgFlag) {
+            DATE_EVENT -> {
+                initDateView()
+            }
+            COURSE_EVENT -> {
+                initCourse()
+            }
+            NOTE_BOOK_MANAGER_EVENT -> {
+                findNotes() //用于删除笔记本后 刷新列表
+            }
+            NOTE_EVENT -> {
+                findNotes()
+            }
+            CLASSGROUP_EVENT -> {
+                findTeaching()
+            }
+            TEXT_BOOK_EVENT -> {
+                findTextBook()
+            }
+            MESSAGE_EVENT -> {
+                findMessages()
+            }
         }
     }
 

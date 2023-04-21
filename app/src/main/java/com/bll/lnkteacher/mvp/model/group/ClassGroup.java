@@ -21,7 +21,7 @@ public class ClassGroup implements Serializable {
     public String city;
     public int cityId;
     public int grade;
-
+    public int job;//老师职务1班主任0任课老师
     public boolean isCheck;
 
 

@@ -24,8 +24,8 @@ class InputContentDialog(val context: Context,val string: String) {
             dialog.dismiss()
         }
         btn_ok.setOnClickListener {
-            var content = name.text.toString()
-            if (!content.isNullOrEmpty()) {
+            val content = name.text.toString()
+            if (content.isNotEmpty()) {
                 dialog.dismiss()
                 listener?.onClick(content)
             }

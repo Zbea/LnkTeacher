@@ -5,7 +5,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.NotebookAddDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.BaseTypeBeanDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
@@ -95,7 +95,7 @@ class NoteTypeManagerActivity : BaseActivity() {
 
     //修改笔记本
     private fun editNoteBook(content:String){
-        NotebookAddDialog(this,"重命名",content,"请输入笔记本").builder()?.setOnDialogClickListener { string ->
+        InputContentDialog(this,content).builder().setOnDialogClickListener { string ->
             noteTypes[position].name = string
             BaseTypeBeanDaoManager.getInstance()
                 .insertOrReplace(noteTypes[position])

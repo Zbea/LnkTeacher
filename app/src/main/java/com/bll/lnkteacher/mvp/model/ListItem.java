@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 public class ListItem implements Serializable {
 
+    public int type;
+    public String desc;
+
     public int id;
     public String name;
     public int page;//目录页码

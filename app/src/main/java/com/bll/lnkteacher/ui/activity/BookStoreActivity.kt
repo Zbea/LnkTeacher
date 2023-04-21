@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.activity
 
+import android.os.Handler
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,12 +43,16 @@ class BookStoreActivity : BaseActivity(),
     private var provinceStr = ""
     private var gradeStr = ""
     private var typeStr = ""
+    private var semesterStr=""
+    private var courseId=0//科目
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: Book? = null
 
     private var popWindowGrade: PopupRadioList? = null
     private var popWindowProvince: PopupRadioList? = null
 
+    private var subjectList = mutableListOf<PopupBean>()
+    private var semesterList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var typeList = mutableListOf<String>()
@@ -71,6 +76,13 @@ class BookStoreActivity : BaseActivity(),
             )
         }
         gradeStr = gradeList[0].name
+
+        for (i in bookStoreType.subjectList.indices) {
+            val item=bookStoreType.subjectList[i]
+            subjectList.add(PopupBean(item.type, item.desc, i == 0))
+        }
+        courseId = subjectList[0].id
+
         initSelectorView()
         getDataBook()
     }
@@ -105,11 +117,17 @@ class BookStoreActivity : BaseActivity(),
         typeStr = typeList[0]
         typeList.removeAt(3)
 
+        semesterList=DataBeanManager.semesters
+        semesterStr= semesterList[0].name
+
         getData()
     }
 
     override fun initView() {
         setPageTitle("教材")
+        disMissView(tv_course)
+        showView(tv_province,tv_grade,tv_semester)
+
         initRecyclerView()
         initTab()
     }
@@ -127,6 +145,7 @@ class BookStoreActivity : BaseActivity(),
         map["area"] = provinceStr
         map["grade"] = gradeStr
         map["type"] = typeStr
+        map["semester"]=semesterStr
         presenter.getTextBooks(map)
     }
 
@@ -136,6 +155,8 @@ class BookStoreActivity : BaseActivity(),
         map["page"] = pageIndex
         map["size"] = pageSize
         map["grade"] = gradeStr
+        map["semester"]=semesterStr
+        map["subjectName"]=courseId
         presenter.getTextBookCks(map)
     }
 
@@ -145,39 +166,51 @@ class BookStoreActivity : BaseActivity(),
     private fun initSelectorView() {
         tv_province.text = provinceList[0].name
         tv_grade.text = gradeList[0].name
+        tv_semester.text = semesterStr
+        tv_course.text = subjectList[0].name
 
         tv_grade.setOnClickListener {
-            if (popWindowGrade == null) {
-                popWindowGrade = PopupRadioList(this, gradeList, tv_grade, tv_grade.width,5).builder()
-                popWindowGrade?.setOnSelectListener { item ->
-                    gradeStr = item.name
-                    tv_grade.text = gradeStr
-                    pageIndex = 1
-                    setFetchData()
-                }
-            } else {
-                popWindowGrade?.show()
+            PopupRadioList(this, gradeList, tv_grade, tv_grade.width,5).builder()
+               .setOnSelectListener { item ->
+                gradeStr = item.name
+                tv_grade.text = gradeStr
+                pageIndex = 1
+                fetchData()
             }
         }
 
         tv_province.setOnClickListener {
-            if (popWindowProvince == null) {
-                popWindowProvince = PopupRadioList(this, provinceList, tv_province,tv_province.width, 5).builder()
-                popWindowProvince?.setOnSelectListener { item ->
-                    provinceStr = item.name
-                    tv_province.text = item.name
-                    pageIndex = 1
-                    setFetchData()
-                }
-            } else {
-                popWindowProvince?.show()
+            PopupRadioList(this, provinceList, tv_province,tv_province.width, 5).builder()
+             .setOnSelectListener { item ->
+                provinceStr = item.name
+                tv_province.text = item.name
+                pageIndex = 1
+                fetchData()
             }
         }
+
+        tv_semester.setOnClickListener {
+            PopupRadioList(this, semesterList, tv_semester, tv_semester.width, 5).builder()
+                .setOnSelectListener { item ->
+                    semesterStr = item.name
+                    tv_semester.text = item.name
+                    pageIndex = 1
+                    fetchData()
+                }
+        }
+
+        tv_course.setOnClickListener {
+            PopupRadioList(this, subjectList, tv_course, tv_course.width, 5).builder()
+                .setOnSelectListener { item ->
+                    courseId = item.id
+                    tv_course.text = item.name
+                    pageIndex = 1
+                    fetchData()
+                }
+        }
+
     }
 
-    private fun setFetchData() {
-
-    }
 
     //设置tab分类
     private fun initTab() {
@@ -197,10 +230,21 @@ class BookStoreActivity : BaseActivity(),
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            when (i) {
+                0 -> {
+                    disMissView(tv_course)
+                }
+                1 -> {
+                    disMissView(tv_course)
+                }
+                else -> {
+                    showView(tv_course)
+                }
+            }
             typeId = i
-            typeStr = typeList[i]
+            typeStr = typeList[typeId]
             pageIndex = 1
-            setFetchData()
+            fetchData()
         }
 
     }
@@ -306,18 +350,22 @@ class BookStoreActivity : BaseActivity(),
         ZipUtils.unzip(targetFileStr, fileName, object : ZipUtils.ZipCallback {
             override fun onFinish(success: Boolean) {
                 if (success) {
-                    showToast("${book.bookName}下载完成")
-                    book?.loadSate = 2
-                    book?.category = 0
-                    book?.textBookType = typeStr
-                    book?.time = System.currentTimeMillis()//下载时间用于排序
-                    book?.bookPath = FileAddress().getPathBook(fileName)
+                    book.loadSate = 2
+                    book.category = 0
+                    book.textBookType = typeStr
+                    book.time = System.currentTimeMillis()//下载时间用于排序
+                    book.bookPath = FileAddress().getPathBook(fileName)
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
+
+                    Handler().postDelayed({
+                        showToast("${book.bookName}下载完成")
+                    },500)
+
                 } else {
                     showToast("${book.bookName}解压失败")
                 }

@@ -4,12 +4,12 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.GroupAddDialog
 import com.bll.lnkteacher.dialog.GroupCreateDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.GroupManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.group.ClassGroupFragment
@@ -31,9 +31,6 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
     private var groupPops = mutableListOf<PopupBean>()
     private var areaPops = mutableListOf<PopupBean>()
 
-    override fun onCreateClassGroupSuccess() {
-        classGroupFragment?.refreshData()
-    }
 
     override fun onCreateGroupSuccess() {
         if (lastPosition==1){
@@ -75,10 +72,7 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
         iv_create.setOnClickListener {
             when (lastPosition) {
                 0 -> {
-                    ClassGroupCreateDialog(requireContext()).builder()
-                        .setOnDialogClickListener {name,grade->
-                            mGroupPresenter.createClassGroup(name,grade)
-                        }
+                    classGroupFragment?.createClassGroup()
                 }
                 1 -> {
                     createGroup(2)

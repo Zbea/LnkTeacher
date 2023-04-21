@@ -41,6 +41,10 @@ object DataBeanManager {
         mContext.getString(R.string.group_tab_area)
     )
 
+    var groupJobs = arrayOf(
+        mContext.getString(R.string.classGroup_teacher),mContext.getString(R.string.classGroup_headteacher)
+    )
+
     fun getGradeClassGroups(grade:Int):MutableList<PopupBean>{
         val popClasss= mutableListOf<PopupBean>()
         for (item in classGroups){
@@ -232,6 +236,15 @@ object DataBeanManager {
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
             })
+            return list
+        }
+
+    //学期选择
+    val semesters: MutableList<PopupBean>
+        get() {
+            val list = mutableListOf<PopupBean>()
+            list.add(PopupBean(0, mContext.getString(R.string.semester_last),true))
+            list.add(PopupBean(1,mContext.getString(R.string.semester_next),false))
             return list
         }
 

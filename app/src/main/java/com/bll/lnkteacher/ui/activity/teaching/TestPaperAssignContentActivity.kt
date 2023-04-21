@@ -161,7 +161,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
 
     private fun selectorName() {
-        PopupRadioList(this, popGroupNames, tv_group_name,  5).builder()
+        PopupRadioList(this, popGroupNames, tv_group_name,tv_group_name.width,  5).builder()
             .setOnSelectListener { item ->
                 type=item.id
                 tv_group_name.text = item.name
@@ -182,7 +182,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     private fun selectorGroup() {
-        PopupRadioList(this, popGroups, tv_group,  5).builder()
+        PopupRadioList(this, popGroups, tv_group,tv_group.width,  5).builder()
          .setOnSelectListener { item ->
              tv_group.text = item.name
              subtype=item.id

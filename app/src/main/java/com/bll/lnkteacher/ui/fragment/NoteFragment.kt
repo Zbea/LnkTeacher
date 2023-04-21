@@ -10,8 +10,8 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
-import com.bll.lnkteacher.dialog.NotebookAddDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BaseTypeBeanDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
@@ -55,8 +55,8 @@ class NoteFragment : BaseFragment() {
     override fun initView() {
         pageSize=10
 
-        popupBeans.add(PopupBean(0, "笔记本管理", false))
-        popupBeans.add(PopupBean(1, "新建笔记本", true))
+        popupBeans.add(PopupBean(0, "笔记本管理", true))
+        popupBeans.add(PopupBean(1, "新建笔记本", false))
         popupBeans.add(PopupBean(2, "新建笔记", false))
 
         popWindowMoreBeans.add(PopupBean(0, "重命名", true))
@@ -192,8 +192,8 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记
     private fun createNotebook() {
-        var note = Notebook()
-        NotebookAddDialog(requireContext(), "新建笔记本", "", "请输入笔记标题").builder()
+        val note = Notebook()
+        InputContentDialog(requireContext(),  "请输入笔记本").builder()
             .setOnDialogClickListener { string ->
                 note.title = string
                 note.createDate = System.currentTimeMillis()
@@ -208,8 +208,8 @@ class NoteFragment : BaseFragment() {
 
     //修改笔记
     private fun editNotebook(content: String) {
-        NotebookAddDialog(requireContext(), "重命名", content, "请输入笔记标题").builder()
-            ?.setOnDialogClickListener { string ->
+        InputContentDialog(requireContext(), content).builder()
+            .setOnDialogClickListener { string ->
                 noteBooks[position].title = string
                 mAdapter?.notifyDataSetChanged()
                 NotebookDaoManager.getInstance().insertOrReplace(noteBooks[position])
@@ -266,7 +266,7 @@ class NoteFragment : BaseFragment() {
 
     //新建笔记分类
     private fun addNoteBookType() {
-        NotebookAddDialog(requireContext(), "新建笔记分类", "", "输入笔记分类").builder()
+        InputContentDialog(requireContext(),  "请输入笔记本分类").builder()
             .setOnDialogClickListener { string ->
                 var noteBook = BaseTypeBean()
                 noteBook.name = string

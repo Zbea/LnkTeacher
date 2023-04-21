@@ -17,6 +17,12 @@
     <string name="page_up_string">上一页</string>
     <string name="page_down_string">下一页</string>
 
+    <string name="semester_last">上学期</string>
+    <string name="semester_next">下学期</string>
+
+    <string name="classGroup_headteacher">班主任</string>
+    <string name="classGroup_teacher">任课老师</string>
+
     <string name="toast_selector_message">请选择要删除的消息</string>
 
     <string name="receive">收到</string>
@@ -45,7 +51,7 @@
     <string name="textbook_tab_text">我的课本</string>
     <string name="textbook_tab_course">我的课辅</string>
     <string name="textbook_tab_teaching">参考教材</string>
-    <string name="textbook_tab_oldteaching">往期教材</string>
+    <string name="textbook_tab_oldteaching">讲义</string>
 
     <string name="teaching_tab_homework_assign">作业布置</string>
     <string name="teaching_tab_homework_correct">作业批改</string>
@@ -77,8 +83,10 @@
     <string name="classgroup_selector_str">班群选择</string>
     <string name="classgroup_create_success">创建班群成功</string>
     <string name="classgroup_dissolve_success">解散班群成功</string>
+    <string name="classgroup_send_control_success">发送移除控制指令成功</string>
     <string name="classgroup_edit_success">修改班群成功</string>
     <string name="classgroup_is_dissolve_tips">确定解散班群？</string>
+    <string name="classgroup_is_delete_book_tips">确定发送学生移除控制指令？</string>
     <string name="group_is_out_tips">确定退出群？</string>
     <string name="group_is_dissolve_tips">确定解散群？</string>
     <string name="classgroup_kick_success">踢出学生成功</string>

@@ -27,10 +27,8 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
     private var job=""
 
     override fun onUserList(users: MutableList<ClassGroupUser>) {
-        if (users.isNotEmpty()){
-            this.users= users
-            mAdapter?.setNewData(users)
-        }
+        this.users= users
+        mAdapter?.setNewData(users)
     }
 
     override fun onOutSuccess() {
@@ -42,6 +40,12 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
     override fun onEditSuccess() {
         showToast(R.string.classgroup_set_job_success)
         users[position].job=job
+        mAdapter?.notifyDataSetChanged()
+    }
+
+    override fun onStatusSuccess() {
+        val status=users[position].status
+        users[position].status=if (status==0) 1 else 0
         mAdapter?.notifyDataSetChanged()
     }
 
@@ -68,11 +72,17 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
-            if (view.id==R.id.tv_out){
-                outDialog()
-            }
-            if (view.id==R.id.tv_job){
-                setChangeJob()
+            when (view.id) {
+                R.id.tv_out -> {
+                    outDialog()
+                }
+                R.id.tv_job -> {
+                    setChangeJob()
+                }
+                R.id.iv_check -> {
+                    val status=if (users[position].status==1) 0 else 1
+                    mPresenter.editStatus(users[position].classId,users[position].studentId,status)
+                }
             }
         }
 

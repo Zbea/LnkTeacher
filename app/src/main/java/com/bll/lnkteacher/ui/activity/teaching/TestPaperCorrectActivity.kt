@@ -104,10 +104,9 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         initRecyclerView()
 
         et_score.doAfterTextChanged {
-            if (getScoreInput()>0){
-                Handler().postDelayed(Runnable {
-                    commitPapers(posUser)
-                },500)
+            if (getScoreInput()>0&& userItems[posUser].status==1){
+                showLoading()
+                commitPapers()
             }
         }
 
@@ -149,33 +148,29 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     /**
      * 提交学生考卷
      */
-    private fun commitPapers(pos:Int){
-        val item=userItems[pos]
-        if (getScoreInput()>0 && item.status==1){
-            showLoading()
-            val paths= mutableListOf<String>()
-            //手写,图片合图
-            for (i in currentImages?.indices!!){
-                val index=i+1
-                val masterImage="${getPath()}/${index}.png"//原图
-                val drawPath = getPathDrawStr(index).replace("tch","png")
-                val mergePath = getPath()//合并后的路径
-                val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
+    private fun commitPapers(){
+        val paths= mutableListOf<String>()
+        //手写,图片合图
+        for (i in currentImages?.indices!!){
+            val index=i+1
+            val masterImage="${getPath()}/${index}.png"//原图
+            val drawPath = getPathDrawStr(index).replace("tch","png")
+            val mergePath = getPath()//合并后的路径
+            val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
 
-                val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap != null) {
-                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
-                } else {
-                    BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
-                }
-                paths.add(mergePathStr)
+            val oldBitmap = BitmapFactory.decodeFile(masterImage)
+            val drawBitmap = BitmapFactory.decodeFile(drawPath)
+            if (drawBitmap != null) {
+                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
+            } else {
+                BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
             }
-            Handler().postDelayed({
-                mUploadPresenter.upload(paths)
-            },500)
+            paths.add(mergePathStr)
         }
+        Handler().postDelayed({
+            mUploadPresenter.upload(paths)
+        },500)
     }
 
     /**

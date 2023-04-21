@@ -64,5 +64,23 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
         }, true)
     }
 
+    fun editStatus(classId: Int,studentId:Int, status: Int) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("classId", classId),
+            Pair.create("studentId", studentId),
+            Pair.create("status", status)
+        )
+        val change = RetrofitManager.service.changeStatus(body)
+        doRequest(change, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onStatusSuccess()
+            }
+        }, true)
+    }
 
 }

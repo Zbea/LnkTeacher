@@ -13,8 +13,12 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
 
         helper.setText(R.id.tv_content,item.content)
-        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date))
+        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date*1000))
         helper.setChecked(R.id.cb_check,item.isCheck)
+        helper.setVisible(R.id.cb_check,item.sendType==1)
+        helper.setGone(R.id.tv_student_name,item.sendType==2)
+        helper.setGone(R.id.rv_list,item.sendType==1)
+        helper.setText(R.id.tv_student_name,item.teacherName)
 
         val classInfos=item.classInfo.split(",")
 
@@ -22,7 +26,7 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
         rvList.layoutManager = LinearLayoutManager(mContext)
         val mAdapter = MyAdapter(R.layout.item_message_classname, classInfos)
         rvList.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
+        mAdapter.bindToRecyclerView(rvList)
 
         helper.setOnClickListener(R.id.cb_check) {
             item.isCheck = !item.isCheck

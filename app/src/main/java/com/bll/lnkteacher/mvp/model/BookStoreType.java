@@ -8,4 +8,5 @@ import java.util.Map;
  */
 public class BookStoreType {
     public List<String> grade;
+    public List<ListItem> subjectList;//科目
 }

@@ -9,24 +9,6 @@ import com.bll.lnkteacher.net.*
 class GroupManagerPresenter(view: IContractView.IGroupManagerView) : BasePresenter<IContractView.IGroupManagerView>(view) {
 
 
-    fun createClassGroup(name: String,grade:Int) {
-
-        val body = RequestUtils.getBody(
-            Pair.create("name", name),
-            Pair.create("grade", grade)
-        )
-        val createGroup = RetrofitManager.service.createClassGroup(body)
-        doRequest(createGroup, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCreateClassGroupSuccess()
-            }
-        }, true)
-
-    }
-
 
     fun createGroup(name: String, type: Int, classId: IntArray) {
 

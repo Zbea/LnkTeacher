@@ -19,7 +19,7 @@ class ClassGroupUserAdapter(layoutResId: Int, data: List<ClassGroupUser>?) : Bas
             setText(R.id.tv_job,item.job)
             setImageResource(R.id.iv_check,if (item.status==1) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
 
-            addOnClickListener(R.id.tv_out,R.id.tv_job)
+            addOnClickListener(R.id.tv_out,R.id.tv_job,R.id.iv_check)
         }
     }
 

@@ -6,13 +6,19 @@ import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class ClassGroupCreateDialog(val context: Context) {
+class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
 
     private var grade=0
+    private var job=0
     private var gradePopup:PopupRadioList?=null
+    private var popupJob:PopupRadioList?=null
     private var tv_grade:TextView?=null
+    private var tv_job:TextView?=null
+    private var jobBeans= mutableListOf<PopupBean>()
 
     fun builder(): ClassGroupCreateDialog {
 
@@ -24,9 +30,28 @@ class ClassGroupCreateDialog(val context: Context) {
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         tv_grade = dialog.findViewById(R.id.tv_grade)
+        tv_job = dialog.findViewById(R.id.tv_job)
+
+        btn_ok.text=if (classGroup==null) "确定" else "修改"
+
+        for (i in DataBeanManager.groupJobs.indices){
+            jobBeans.add(PopupBean(i,DataBeanManager.groupJobs[i],if (classGroup==null)i==0 else i==classGroup?.job))
+        }
+
+        if (classGroup!=null)
+        {
+            grade=classGroup?.grade!!
+            et_name.setText(classGroup?.name)
+            tv_grade?.text=DataBeanManager.grades[grade-1].desc
+            tv_job?.text=if (classGroup?.job==1) context.getString(R.string.classGroup_headteacher) else context.getString(R.string.classGroup_teacher)
+        }
 
         tv_grade?.setOnClickListener {
             showPopGradeView()
+        }
+
+        tv_job?.setOnClickListener {
+            showPopJobView()
         }
 
         btn_cancel.setOnClickListener {
@@ -37,7 +62,7 @@ class ClassGroupCreateDialog(val context: Context) {
             if (name.isNotEmpty()&&grade>0)
             {
                 dialog.dismiss()
-                listener?.onClick(name,grade)
+                listener?.onClick(name,grade,job)
             }
         }
 
@@ -45,6 +70,20 @@ class ClassGroupCreateDialog(val context: Context) {
             KeyboardUtils.hideSoftKeyboard(context)
         }
         return this
+    }
+
+    private fun showPopJobView() {
+        if (popupJob==null){
+            popupJob= PopupRadioList(context, jobBeans, tv_job!!,tv_job?.width!!,  5).builder()
+            popupJob?.setOnSelectListener { item ->
+                tv_job?.text=item.name
+                job=item.id
+            }
+        }
+        else{
+            popupJob?.show()
+        }
+
     }
 
     private fun showPopGradeView() {
@@ -64,7 +103,7 @@ class ClassGroupCreateDialog(val context: Context) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(str: String,grade:Int)
+        fun onClick(str: String,grade:Int,job:Int)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {
