@@ -22,8 +22,6 @@ import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.Group
-import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
@@ -47,9 +45,9 @@ import java.util.Date
 /**
  * 首页
  */
-class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMessageView{
+class MainFragment : BaseFragment(),IContractView.IMessageView{
 
-    private var mainPresenter=MainPresenter(this)
+
     private var mMessagePresenter=MessagePresenter(this)
     private var mBookAdapter: BookAdapter? = null
     private var textbooks= mutableListOf<Book>()
@@ -68,31 +66,6 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
     override fun onSend() {
     }
     override fun onDeleteSuccess() {
-    }
-
-
-    override fun onClassList(groups: MutableList<ClassGroup>) {
-        DataBeanManager.classGroups=groups
-        classGroups=groups
-        mTeachingAdapter?.setNewData(classGroups)
-    }
-
-    override fun onGroupList(groups: MutableList<Group>) {
-        val schools= mutableListOf<Group>()
-        val areas= mutableListOf<Group>()
-        for (item in groups){
-            if (item.type==2){
-                schools.add(item)
-            }
-            else{
-                areas.add(item)
-            }
-        }
-        DataBeanManager.schoolGroups=schools
-        DataBeanManager.areaGroups=areas
-    }
-    override fun onGradeList(grades: MutableList<Grade>) {
-        DataBeanManager.grades=grades
     }
 
     override fun getLayoutId(): Int {
@@ -119,10 +92,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
     }
 
     override fun lazyLoad() {
-        mainPresenter.getClassGroups()
-        mainPresenter.getGroups()
-        mainPresenter.getGrades()
         findMessages()
+        fetchCommonData()
     }
 
     @SuppressLint("WrongConstant")
@@ -198,7 +169,7 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
         mTeachingAdapter = MainClassGroupAdapter(R.layout.item_main_classgroup, null)
         rv_main_teaching.adapter = mTeachingAdapter
         mTeachingAdapter?.bindToRecyclerView(rv_main_teaching)
-        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(3, 15))
+        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(3, 25))
         mTeachingAdapter?.setOnItemClickListener { _, _, position ->
             val intent = Intent(activity, MainTeachingPlanActivity::class.java)
             val bundle = Bundle()
@@ -219,8 +190,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
         mainNoteAdapter?.setEmptyView(R.layout.common_empty)
         mainNoteAdapter?.setOnItemClickListener { adapter, view, position ->
             //跳转手绘
-            var intent=Intent(activity, NoteDrawingActivity::class.java)
-            var bundle= Bundle()
+            val intent=Intent(activity, NoteDrawingActivity::class.java)
+            val bundle= Bundle()
             bundle.putSerializable("note",notes[position])
             intent.putExtra("notes",bundle)
             startActivity(intent)
@@ -302,6 +273,8 @@ class MainFragment : BaseFragment() ,IContractView.IMainView ,IContractView.IMes
         lazyLoad()
     }
 
-
+    override fun onClassGroupEvent() {
+        findTeaching()
+    }
 
 }

@@ -58,7 +58,6 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
         showView(iv_manager, tv_send)
         iv_manager.setImageResource(R.mipmap.icon_notebook_delete)
 
-
         iv_manager.setOnClickListener {
             val datas=mAdapter?.data
             val ids= mutableListOf<Int>()

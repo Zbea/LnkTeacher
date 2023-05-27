@@ -79,7 +79,7 @@ class TextbookFragment : BaseFragment() {
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity, 33f), 38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var intent = Intent(activity, BookDetailsActivity::class.java)
+            val intent = Intent(activity, BookDetailsActivity::class.java)
             intent.putExtra("book_id", books[position].bookId)
             startActivity(intent)
         }

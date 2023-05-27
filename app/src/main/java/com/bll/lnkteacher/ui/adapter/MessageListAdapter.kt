@@ -15,9 +15,9 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
         helper.setText(R.id.tv_content,item.content)
         helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date*1000))
         helper.setChecked(R.id.cb_check,item.isCheck)
-        helper.setVisible(R.id.cb_check,item.sendType==1)
+        helper.setVisible(R.id.cb_check,item.sendType==0)
         helper.setGone(R.id.tv_student_name,item.sendType==2)
-        helper.setGone(R.id.rv_list,item.sendType==1)
+        helper.setGone(R.id.rv_list,item.sendType==0)
         helper.setText(R.id.tv_student_name,item.teacherName)
 
         val classInfos=item.classInfo.split(",")

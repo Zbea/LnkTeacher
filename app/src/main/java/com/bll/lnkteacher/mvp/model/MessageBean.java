@@ -13,7 +13,7 @@ public class MessageBean {
     public long date;
     public String classInfo;
     public String teacherName;
-    public int sendType;//1老师发 2学生发
+    public int sendType;//0老师发 2学生发
     public boolean isCheck;
 
 }

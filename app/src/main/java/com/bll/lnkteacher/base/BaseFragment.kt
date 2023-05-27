@@ -11,9 +11,15 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
+import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.presenter.ICommonPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity
@@ -29,7 +35,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, IBaseView,  IContractView.ICommonView{
+
+    var mCommonPresenter= ICommonPresenter(this)
 
     /**
      * 视图是否加载完毕
@@ -50,6 +58,32 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+
+    override fun onClassList(groups: MutableList<ClassGroup>) {
+        DataBeanManager.classGroups=groups
+        onClassGroupEvent()
+    }
+
+    override fun onGroupList(groups: MutableList<Group>) {
+        val schools= mutableListOf<Group>()
+        val areas= mutableListOf<Group>()
+        for (item in groups){
+            if (item.type==2){
+                schools.add(item)
+            }
+            else{
+                areas.add(item)
+            }
+        }
+        DataBeanManager.schoolGroups=schools
+        DataBeanManager.areaGroups=areas
+        onGroupEvent()
+    }
+    override fun onGradeList(grades: MutableList<Grade>) {
+        DataBeanManager.grades=grades
+        onGradeEvent()
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -78,9 +112,6 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         mDialog = ProgressDialog(activity)
         lazyLoadDataIfPrepared()
     }
-
-
-
 
     private fun lazyLoadDataIfPrepared() {
         if (userVisibleHint && isViewPrepare && !hasLoadData) {
@@ -351,18 +382,41 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         }
     }
 
+    fun fetchCommonData(){
+        mCommonPresenter.getClassGroups()
+        mCommonPresenter.getGroups()
+        if (DataBeanManager.grades.size==0)
+            mCommonPresenter.getGrades()
+    }
+
     /**
      * 每次翻页，刷新数据
      */
     open fun onRefreshData(){
-
     }
 
     /**
      * 网络请求数据
      */
     open fun fetchData(){
+    }
 
+    /**
+     * 刷新请求年级事件
+     */
+    open fun onGradeEvent(){
+    }
+
+    /**
+     * 班级事件
+     */
+    open fun onClassGroupEvent(){
+    }
+
+    /**
+     * 群事件
+     */
+    open fun onGroupEvent(){
     }
 
 }

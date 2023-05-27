@@ -7,6 +7,8 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.GroupAddDialog
+import com.bll.lnkteacher.dialog.GroupCreateDialog
 import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.model.group.GroupUser
 import com.bll.lnkteacher.mvp.presenter.GroupPresenter
@@ -36,28 +38,24 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
         return fragment
     }
 
-    override fun onGroupList(lists: MutableList<Group>?) {
-        groups.clear()
-        if (!lists.isNullOrEmpty()){
-            for (item in lists){
-                if (item.type==index){
-                    groups.add(item)
-                }
-            }
-            mAdapter?.setNewData(groups)
-            //更新全局设置
-            if (index==1){
-                DataBeanManager.schoolGroups=groups
-            }
-            else{
-                DataBeanManager.areaGroups=groups
-            }
-        }
+    override fun onCreateGroupSuccess() {
+        mCommonPresenter.getGroups()
     }
+
+    override fun onAddSuccess() {
+        mCommonPresenter.getGroups()
+    }
+
     override fun onQuitSuccess() {
         showToast(if (groups[position].selfStatus==2) R.string.out_success else R.string.dissolve_success)
         groups.removeAt(position)
         mAdapter?.notifyDataSetChanged()
+        if (index==2){
+            DataBeanManager.schoolGroups=groups
+        }
+        else{
+            DataBeanManager.areaGroups=groups
+        }
     }
     override fun getGroupUser(users: MutableList<GroupUser>?) {
     }
@@ -94,15 +92,35 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
             }
         }
 
+        onGroupEvent()
     }
+
     override fun lazyLoad() {
-        groupPresenter.getGroups(false)
+        fetchCommonData()
+    }
+
+    fun createGroup(type:Int){
+        GroupCreateDialog(requireContext(),type).builder()?.setOnDialogClickListener{ str, classIds->
+            groupPresenter.createGroup(str,type,classIds)
+        }
     }
 
     /**
-     * 刷新列表
+     * 加入校群、际群
      */
-    fun refreshData(){
+    fun addGroup(type: Int){
+        GroupAddDialog(requireContext(),type).builder()?.setOnDialogClickListener { str, classIds ->
+            groupPresenter.addGroup(str, type, classIds)
+        }
+    }
+
+    override fun onGroupEvent() {
+        groups= if (index==2)DataBeanManager.schoolGroups else DataBeanManager.areaGroups
+        mAdapter?.setNewData(groups)
+    }
+
+    override fun onRefreshData() {
+        super.onRefreshData()
         lazyLoad()
     }
 

@@ -583,7 +583,7 @@ class MainCourseActivity : BaseActivity() {
 
             //删除已经存在了的
             if (selectLists.size > 0) {
-                var it = selectLists.iterator()
+                val it = selectLists.iterator()
                 while (it.hasNext()) {
                     if (it.next().viewId == id) {
                         it.remove()
@@ -611,7 +611,7 @@ class MainCourseActivity : BaseActivity() {
                 }
                 //删除已经存在了的
                 if (selectLists.size > 0) {
-                    var it = selectLists.iterator()
+                    val it = selectLists.iterator()
                     while (it.hasNext()) {
                         if (it.next().viewId == v.id) {
                             it.remove()

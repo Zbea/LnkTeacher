@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -24,20 +23,6 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 view.onCreateSuccess()
             }
         }, true)
-
-    }
-
-    fun getClassList() {
-
-        val list = RetrofitManager.service.getListClassGroup()
-        doRequest(list, object : Callback<ClassGroupList>(view) {
-            override fun failed(tBaseResult: BaseResult<ClassGroupList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                view.onClassList(tBaseResult?.data?.list)
-            }
-        }, false)
 
     }
 

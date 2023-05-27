@@ -58,7 +58,7 @@ class DateEventActivity:BaseActivity() {
     private fun setContentView(){
         tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date(nowLong))
 
-        var path=FileAddress().getPathDate(DateUtils.longToStringCalender(nowLong))+"/draw.tch"
+        val path=FileAddress().getPathDate(DateUtils.longToStringCalender(nowLong))+"/draw.tch"
         elik?.setPWEnabled(true)
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {

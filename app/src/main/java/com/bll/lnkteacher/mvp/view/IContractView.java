@@ -61,16 +61,9 @@ public interface IContractView {
     //班群
     interface IClassGroupView extends IBaseView{
         void onCreateSuccess();
-        void onClassList(List<ClassGroup> list);
         void onEditSuccess();
         void onDissolveSuccess();
         void onSendSuccess();
-    }
-    //群管理
-    interface IGroupManagerView extends IBaseView{
-        void onCreateGroupSuccess();
-        void onAddSuccess();
-        void onGradeList(List<Grade> grades);
     }
 
     //班群学生
@@ -86,13 +79,14 @@ public interface IContractView {
 
     //校群
     interface IGroupView extends IBaseView{
-        void onGroupList(List<Group> groups);
+        void onCreateGroupSuccess();
+        void onAddSuccess();
         void onQuitSuccess();
         void getGroupUser(List<GroupUser> users);
     }
 
     //主页
-    interface IMainView extends IBaseView{
+    interface ICommonView extends IBaseView{
         void onClassList(List<ClassGroup> classGroups);
         void onGroupList(List<Group> groups);
         void onGradeList(List<Grade> grades);

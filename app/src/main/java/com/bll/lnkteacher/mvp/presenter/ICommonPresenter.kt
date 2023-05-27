@@ -10,7 +10,7 @@ import com.bll.lnkteacher.net.Callback
 import com.bll.lnkteacher.net.RetrofitManager
 
 
-class MainPresenter(view: IContractView.IMainView) : BasePresenter<IContractView.IMainView>(view) {
+class ICommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContractView.ICommonView>(view) {
 
 
     fun getClassGroups() {

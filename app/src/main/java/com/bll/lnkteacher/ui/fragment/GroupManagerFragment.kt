@@ -4,22 +4,12 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.GroupAddDialog
-import com.bll.lnkteacher.dialog.GroupCreateDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.Grade
-import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.presenter.GroupManagerPresenter
-import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.group.ClassGroupFragment
 import com.bll.lnkteacher.ui.fragment.group.GroupFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
-class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
-
-    private val mGroupPresenter=GroupManagerPresenter(this)
+class GroupManagerFragment:BaseFragment() {
 
     private var classGroupFragment: ClassGroupFragment? = null
     private var groupFragment: GroupFragment? = null
@@ -27,32 +17,6 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
-
-    private var groupPops = mutableListOf<PopupBean>()
-    private var areaPops = mutableListOf<PopupBean>()
-
-
-    override fun onCreateGroupSuccess() {
-        if (lastPosition==1){
-            groupFragment?.refreshData()
-        }
-        else{
-            areaFragment?.refreshData()
-        }
-    }
-
-    override fun onAddSuccess() {
-        if (lastPosition==1){
-            groupFragment?.refreshData()
-        }
-        else{
-            areaFragment?.refreshData()
-        }
-    }
-
-    override fun onGradeList(grades: MutableList<Grade>) {
-        DataBeanManager.grades=grades
-    }
 
 
     override fun getLayoutId(): Int {
@@ -75,30 +39,27 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
                     classGroupFragment?.createClassGroup()
                 }
                 1 -> {
-                    createGroup(2)
+                    groupFragment?.createGroup(2)
                 }
                 else -> {
-                    createGroup(1)
+                    areaFragment?.createGroup(1)
                 }
             }
         }
 
         iv_add.setOnClickListener {
             if (lastPosition==1){
-                addGroup(2)
+                groupFragment?.addGroup(2)
             }
             else{
-                addGroup( 1)
+                areaFragment?.addGroup( 1)
             }
         }
-
         initTab()
     }
 
     override fun lazyLoad() {
-        if (DataBeanManager.grades.size==0){
-            mGroupPresenter.getGrades()
-        }
+        fetchCommonData()
     }
 
     /**
@@ -154,34 +115,9 @@ class GroupManagerFragment:BaseFragment(),IContractView.IGroupManagerView {
         }
     }
 
-    //顶部弹出pop选择框
-    private fun showPopView(pops:MutableList<PopupBean>) {
-
-        PopupRadioList(requireContext(), pops, iv_manager,  10).builder()
-            .setOnSelectListener { item ->
-                when (item.id) {
-                    0 -> createGroup(if (lastPosition==1) 2 else 1)
-                    1 -> addGroup(if (lastPosition==1) 2 else 1)
-                }
-            }
-    }
-
-    /**
-     * 创建校群、际群
-     */
-    private fun createGroup(type:Int){
-        GroupCreateDialog(requireContext(),type).builder()?.setOnDialogClickListener{ str, classIds->
-            mGroupPresenter.createGroup(str,type,classIds)
-        }
-    }
-
-    /**
-     * 加入校群、际群
-     */
-    private fun addGroup(type: Int){
-        GroupAddDialog(requireContext(),type).builder()?.setOnDialogClickListener { str, classIds ->
-            mGroupPresenter.addGroup(str, type, classIds)
-        }
+    override fun onRefreshData() {
+        super.onRefreshData()
+        lazyLoad()
     }
 
 }

@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.model.group.GroupUser
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
@@ -9,18 +8,43 @@ import com.bll.lnkteacher.net.*
 
 class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractView.IGroupView>(view) {
 
-    fun getGroups(boolean: Boolean) {
+    fun createGroup(name: String, type: Int, classId: IntArray) {
 
-        val list = RetrofitManager.service.getGroupList()
-        doRequest(list, object : Callback<MutableList<Group>>(view) {
-            override fun failed(tBaseResult: BaseResult<MutableList<Group>>): Boolean {
+        val body = RequestUtils.getBody(
+            Pair.create("schoolName", name),
+            Pair.create("type", type),
+            Pair.create("selClassList", classId)
+        )
+        val createGroup = RetrofitManager.service.createGroup(body)
+        doRequest(createGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
 
-            override fun success(tBaseResult: BaseResult<MutableList<Group>>) {
-                view.onGroupList(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCreateGroupSuccess()
             }
-        }, boolean)
+        }, true)
+
+    }
+
+    fun addGroup(name: String, type: Int, classId: IntArray) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("schoolName", name),
+            Pair.create("type", type),
+            Pair.create("selClassList", classId)
+        )
+        val addGroup = RetrofitManager.service.addGroup(body)
+        doRequest(addGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onAddSuccess()
+            }
+        }, true)
 
     }
 

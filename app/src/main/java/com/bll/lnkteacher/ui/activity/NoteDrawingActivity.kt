@@ -28,8 +28,6 @@ class NoteDrawingActivity : BaseActivity() {
     private var noteContents = mutableListOf<NoteContent>() //所有内容
     private var page = 0//页码
 
-
-
     override fun layoutId(): Int {
         return R.layout.ac_note_draw_details
     }
@@ -101,7 +99,7 @@ class NoteDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        var list= mutableListOf<ListItem>()
+        val list= mutableListOf<ListItem>()
         for (item in noteContents){
             val listItem= ListItem()
             listItem.name=item.title

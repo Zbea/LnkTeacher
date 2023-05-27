@@ -12,7 +12,7 @@ class GroupAdapter(layoutResId: Int, data: List<Group>?) : BaseQuickAdapter<Grou
         helper.setText(R.id.tv_name,item.schoolName)
         helper.setText(R.id.tv_teacher,item.teacherName)
         helper.setText(R.id.tv_date,DateUtils.longToStringDataNoHour(item.extraTime))
-        helper.setText(R.id.tv_number,item.totalUser.toString()+"人")
+        helper.setText(R.id.tv_number,item.totalGroup.toString()+"个班")
         helper.setText(R.id.tv_out,if (item.selfStatus==1) "解散" else "退出")
 
         helper.addOnClickListener(R.id.tv_out,R.id.tv_details)

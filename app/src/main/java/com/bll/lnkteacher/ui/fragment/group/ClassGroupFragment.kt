@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment.group
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
@@ -15,6 +16,7 @@ import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_group.*
+import org.greenrobot.eventbus.EventBus
 
 class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
@@ -22,31 +24,23 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     private var classGroups= mutableListOf<ClassGroup>()
     private var mAdapter:ClassGroupAdapter?=null
     private var position=0
-    private var className=""//班群名称
 
     override fun onCreateSuccess() {
         showToast(R.string.classgroup_create_success)
-        mGroupPresenter.getClassList()
-    }
-
-    override fun onClassList(list: MutableList<ClassGroup>?) {
-        if (list != null) {
-            classGroups=list
-            mAdapter?.setNewData(classGroups)
-            //更新全局班群
-            DataBeanManager.classGroups=classGroups
-        }
+        mCommonPresenter.getClassGroups()
     }
 
     override fun onEditSuccess() {
         showToast(R.string.classgroup_edit_success)
-        mGroupPresenter.getClassList()
+        mCommonPresenter.getClassGroups()
     }
 
     override fun onDissolveSuccess() {
         showToast(R.string.classgroup_dissolve_success)
         classGroups.removeAt(position)
         mAdapter?.notifyDataSetChanged()
+        DataBeanManager.classGroups=classGroups
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
     override fun onSendSuccess() {
@@ -59,9 +53,10 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
     override fun initView() {
         initRecyclerView()
+        onClassGroupEvent()
     }
     override fun lazyLoad() {
-        mGroupPresenter.getClassList()
+        fetchCommonData()
     }
 
     private fun initRecyclerView(){
@@ -113,13 +108,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     }
 
     /**
-     * 刷新列表
-     */
-    private fun refreshData(){
-        lazyLoad()
-    }
-
-    /**
      * 解散班群
      */
     private fun dissolveGroup(){
@@ -147,10 +135,16 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
             })
     }
 
-
-    override fun onRefreshData() {
-        refreshData()
+    override fun onClassGroupEvent() {
+        classGroups=DataBeanManager.classGroups
+        mAdapter?.setNewData(classGroups)
+        //更新全局班群
+        DataBeanManager.classGroups=classGroups
     }
 
+    override fun onRefreshData() {
+        super.onRefreshData()
+        lazyLoad()
+    }
 
 }

@@ -30,7 +30,12 @@ class MessageSendDialog(private val context: Context) {
         val et_content = dialog?.findViewById<EditText>(R.id.et_content)
         val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
 
-        val groups=DataBeanManager.classGroups
+        val groups= mutableListOf<ClassGroup>()
+        for (item in DataBeanManager.classGroups){
+            if (item.studentCount>0){
+                groups.add(item)
+            }
+        }
         val mAdapter=MyAdapter(R.layout.item_message_classgroup,groups)
         rvList?.layoutManager=GridLayoutManager(context,3)
         rvList?.adapter=mAdapter
@@ -44,6 +49,7 @@ class MessageSendDialog(private val context: Context) {
 
         tvCancel?.setOnClickListener { dismiss() }
         tvOK?.setOnClickListener {
+            ids.clear()
             val contentStr=et_content?.text.toString()
             for (item in mAdapter.data){
                 if (item.isCheck){

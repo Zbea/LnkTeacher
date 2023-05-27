@@ -7,13 +7,8 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.mvp.presenter.MainPresenter
-import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TestPaperAssignFragment
@@ -22,9 +17,8 @@ import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
-class TeachingFragment : BaseFragment(),IContractView.IMainView {
+class TeachingFragment : BaseFragment(){
 
-    private var mainPresenter= MainPresenter(this)
     private var homeworkAssignFragment: HomeworkAssignFragment? = null
     private var homeworkCorrectFragment: HomeworkCorrectFragment? = null
     private var testPaperAssignFragment: TestPaperAssignFragment? = null
@@ -37,31 +31,6 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
     private var homeworkPopBeans = mutableListOf<PopupBean>()
     private var grade=1
 
-    override fun onClassList(groups: MutableList<ClassGroup>) {
-        DataBeanManager.classGroups=groups
-    }
-
-    override fun onGroupList(groups: MutableList<Group>) {
-        val schools= mutableListOf<Group>()
-        val areas= mutableListOf<Group>()
-        for (item in groups){
-            if (item.type==2){
-                schools.add(item)
-            }
-            else{
-                areas.add(item)
-            }
-        }
-        DataBeanManager.schoolGroups=schools
-        DataBeanManager.areaGroups=areas
-    }
-    override fun onGradeList(grades: MutableList<Grade>) {
-        DataBeanManager.grades=grades
-        grade=DataBeanManager.popupGrades[grade-1].id
-        tv_grade.text=DataBeanManager.popupGrades[grade-1].name
-    }
-
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching
@@ -70,8 +39,6 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
     override fun initView() {
         setTitle(R.string.main_teaching_title)
         showView(iv_manager,tv_grade)
-
-        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -97,17 +64,12 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
     }
 
     override fun lazyLoad() {
-        if (DataBeanManager.grades.size==0){
-            mainPresenter.getGrades()
-        }
-        if (DataBeanManager.classGroups.size==0){
-            mainPresenter.getClassGroups()
-            mainPresenter.getGroups()
-        }
+        fetchCommonData()
     }
 
     //初始化数据
     private fun initData() {
+        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         if (DataBeanManager.popupGrades.size>0){
             grade=DataBeanManager.popupGrades[grade-1].id
             tv_grade.text=DataBeanManager.popupGrades[grade-1].name
@@ -246,5 +208,14 @@ class TeachingFragment : BaseFragment(),IContractView.IMainView {
             }
     }
 
+    override fun onGradeEvent() {
+        grade=DataBeanManager.popupGrades[grade-1].id
+        tv_grade.text=DataBeanManager.popupGrades[grade-1].name
+    }
+
+    override fun onRefreshData() {
+        super.onRefreshData()
+        lazyLoad()
+    }
 
 }

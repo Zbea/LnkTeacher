@@ -6,7 +6,6 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.model.group.GroupUser
 import com.bll.lnkteacher.mvp.presenter.GroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -24,10 +23,11 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     private var pops= mutableListOf<PopupBean>()
     private var position=0
 
-    override fun onGroupList(groups: MutableList<Group>?) {
+    override fun onCreateGroupSuccess() {
+    }
+    override fun onAddSuccess() {
     }
     override fun onQuitSuccess() {
-
     }
     override fun getGroupUser(lists: MutableList<GroupUser>?) {
         users=lists!!
