@@ -31,12 +31,12 @@ class NoteModuleAddDialog(private val context: Context, private val type: Int) {
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
         val datas=if (type==0) DataBeanManager.noteModuleDiary else DataBeanManager.noteModuleBook
-        var rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
+        val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rvList?.layoutManager =GridLayoutManager(context,if (type==0) 2 else 3)//创建布局管理
-        var mAdapter = MyAdapter(R.layout.item_note_module, datas)
+        val mAdapter = MyAdapter(R.layout.item_note_module, datas)
         rvList?.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rvList)
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
+        mAdapter.bindToRecyclerView(rvList)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
             dismiss()
             listener?.onClick(datas[position])
         }

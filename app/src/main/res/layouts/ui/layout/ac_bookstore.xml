@@ -40,9 +40,9 @@
 
             <TextView
                 android:id="@+id/tv_province"
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="@dimen/dp_50"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
                 android:background="@drawable/bg_gary_arch"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:gravity="center"
@@ -50,14 +50,13 @@
                 android:paddingEnd="@dimen/dp_15"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
-                android:visibility="gone"
                 />
 
             <TextView
                 android:id="@+id/tv_course"
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="@dimen/dp_50"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
                 android:background="@drawable/bg_gary_arch"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:gravity="center"
@@ -65,28 +64,26 @@
                 android:paddingEnd="@dimen/dp_15"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
-                android:visibility="gone"
                 />
 
             <TextView
                 android:id="@+id/tv_grade"
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="@dimen/dp_50"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
                 android:background="@drawable/bg_gary_arch"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:gravity="center"
                 android:paddingStart="@dimen/dp_15"
                 android:paddingEnd="@dimen/dp_15"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:visibility="gone" />
+                android:textSize="@dimen/sp_22" />
 
             <TextView
                 android:id="@+id/tv_semester"
-                android:layout_width="170dp"
+                android:layout_width="160dp"
                 android:layout_height="@dimen/dp_50"
-                android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginEnd="@dimen/dp_30"
                 android:background="@drawable/bg_gary_arch"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:gravity="center"
@@ -94,7 +91,6 @@
                 android:paddingEnd="@dimen/dp_15"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
-                android:visibility="gone"
                 />
 
         </LinearLayout>

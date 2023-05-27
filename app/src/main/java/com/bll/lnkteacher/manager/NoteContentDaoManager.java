@@ -64,8 +64,8 @@ public class NoteContentDaoManager {
         return noteDao.queryBuilder().where(whereUser).orderDesc(NoteContentDao.Properties.Id).build().list();
     }
 
-    public List<NoteContent> queryAll(int type, long notebookId) {
-        WhereCondition whereCondition=NoteContentDao.Properties.Type.eq(type);
+    public List<NoteContent> queryAll(String type, long notebookId) {
+        WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
         List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         return list;
@@ -75,8 +75,8 @@ public class NoteContentDaoManager {
         noteDao.delete(noteContent);
     }
 
-    public void deleteType(int type,long notebookId){
-        WhereCondition whereCondition=NoteContentDao.Properties.Type.eq(type);
+    public void deleteType(String type,long notebookId){
+        WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
         List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         noteDao.deleteInTx(list);

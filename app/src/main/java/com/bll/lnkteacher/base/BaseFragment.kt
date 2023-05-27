@@ -247,6 +247,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         return radioButton
     }
 
+    fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == check
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(activity, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，

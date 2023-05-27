@@ -66,8 +66,15 @@ class FileAddress {
     /**
      * 笔记保存地址
      */
-    fun getPathNote(typeId: Int?,noteBookId: Long?,index:Int):String{
-        return "$NOTE_PATH/$mUserId/$typeId/$noteBookId/$index"
+    fun getPathNote(typeStr: String?,noteBookStr: String?,date:Long):String{
+        return "$NOTE_PATH/$mUserId/$typeStr/$noteBookStr/$date"
+    }
+
+    /**
+     * 笔记保存地址
+     */
+    fun getPathNote(typeStr: String?,noteBookStr: String?):String{
+        return "$NOTE_PATH/$mUserId/$typeStr/$noteBookStr"
     }
 
     /**

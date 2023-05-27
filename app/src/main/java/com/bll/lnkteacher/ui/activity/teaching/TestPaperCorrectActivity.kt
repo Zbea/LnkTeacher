@@ -157,20 +157,19 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             val drawPath = getPathDrawStr(index).replace("tch","png")
             val mergePath = getPath()//合并后的路径
             val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
-
-            val oldBitmap = BitmapFactory.decodeFile(masterImage)
-            val drawBitmap = BitmapFactory.decodeFile(drawPath)
-            if (drawBitmap != null) {
-                val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
-            } else {
-                BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
-            }
+            Thread(Runnable {
+                val oldBitmap = BitmapFactory.decodeFile(masterImage)
+                val drawBitmap = BitmapFactory.decodeFile(drawPath)
+                if (drawBitmap != null) {
+                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
+                }
+            }).start()
             paths.add(mergePathStr)
         }
         Handler().postDelayed({
             mUploadPresenter.upload(paths)
-        },500)
+        },1000)
     }
 
     /**

@@ -26,7 +26,6 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 
@@ -48,9 +47,6 @@ class BookStoreActivity : BaseActivity(),
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: Book? = null
 
-    private var popWindowGrade: PopupRadioList? = null
-    private var popWindowProvince: PopupRadioList? = null
-
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
     private var provinceList = mutableListOf<PopupBean>()
@@ -68,11 +64,7 @@ class BookStoreActivity : BaseActivity(),
         if (bookStoreType?.grade.isNullOrEmpty()) return
         for (i in bookStoreType?.grade?.indices!!) {
             gradeList.add(
-                PopupBean(
-                    i,
-                    bookStoreType?.grade[i],
-                    i == 0
-                )
+                PopupBean(i, bookStoreType?.grade[i], i == 0)
             )
         }
         gradeStr = gradeList[0].name
@@ -100,19 +92,16 @@ class BookStoreActivity : BaseActivity(),
 
     override fun initData() {
         pageSize=12
+        provinceStr = mUser?.addr!!.split(",")[0]
         //获取地区分类
         val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
         val cityBean = Gson().fromJson(citysStr, CityBean::class.java)
         for (i in cityBean.provinces.indices) {
             provinceList.add(
-                PopupBean(
-                    i,
-                    cityBean.provinces[i].provinceName,
-                    i == 0
-                )
+                PopupBean(i, cityBean.provinces[i].provinceName, cityBean.provinces[i].provinceName == provinceStr)
             )
         }
-        provinceStr = provinceList[0].name
+
         typeList = DataBeanManager.textbookType.toMutableList()
         typeStr = typeList[0]
         typeList.removeAt(3)
@@ -125,8 +114,6 @@ class BookStoreActivity : BaseActivity(),
 
     override fun initView() {
         setPageTitle("教材")
-        disMissView(tv_course)
-        showView(tv_province,tv_grade,tv_semester)
 
         initRecyclerView()
         initTab()
@@ -145,6 +132,7 @@ class BookStoreActivity : BaseActivity(),
         map["area"] = provinceStr
         map["grade"] = gradeStr
         map["type"] = typeStr
+        map["subjectName"]=courseId
         map["semester"]=semesterStr
         presenter.getTextBooks(map)
     }
@@ -215,12 +203,12 @@ class BookStoreActivity : BaseActivity(),
     //设置tab分类
     private fun initTab() {
         for (i in typeList.indices) {
-            var radioButton =
+            val radioButton =
                 layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
             radioButton.id = i
             radioButton.text = typeList[i]
             radioButton.isChecked = i == 0
-            var layoutParams = RadioGroup.LayoutParams(
+            val layoutParams = RadioGroup.LayoutParams(
                 RadioGroup.LayoutParams.WRAP_CONTENT,
                 DP2PX.dip2px(this, 45f)
             )
@@ -230,17 +218,6 @@ class BookStoreActivity : BaseActivity(),
         }
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    disMissView(tv_course)
-                }
-                1 -> {
-                    disMissView(tv_course)
-                }
-                else -> {
-                    showView(tv_course)
-                }
-            }
             typeId = i
             typeStr = typeList[typeId]
             pageIndex = 1
@@ -297,11 +274,6 @@ class BookStoreActivity : BaseActivity(),
 
         val fileName = book?.bookId.toString()//文件名
         val targetFileStr = FileAddress().getPathZip(fileName)
-        val targetFile = File(targetFileStr)
-        if (targetFile.exists()) {
-            targetFile.delete()
-        }
-
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
@@ -418,11 +390,9 @@ class BookStoreActivity : BaseActivity(),
     override fun fetchData() {
         when (typeId) {
             0, 1 -> {
-                showView(tv_province)
                 getDataBook()
             }
             else -> {
-                disMissView(tv_province)
                 getDataBookCk()
             }
         }

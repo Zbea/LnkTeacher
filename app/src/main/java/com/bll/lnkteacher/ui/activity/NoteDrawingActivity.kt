@@ -22,7 +22,7 @@ class NoteDrawingActivity : BaseActivity() {
 
     private var elik:EinkPWInterface?=null
 
-    private var type = 0
+    private var typeStr = ""
     private var noteBook: Notebook? = null
     private var noteContent: NoteContent? = null//当前内容
     private var noteContents = mutableListOf<NoteContent>() //所有内容
@@ -35,11 +35,11 @@ class NoteDrawingActivity : BaseActivity() {
     }
 
     override fun initData() {
-        var bundle = intent.getBundleExtra("bundle")
+        val bundle = intent.getBundleExtra("bundle")
         noteBook = bundle?.getSerializable("note") as Notebook
-        type = noteBook?.type!!
+        typeStr = noteBook?.typeStr.toString()
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(type,noteBook?.id!!)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,noteBook?.id!!)
 
         if (noteContents.size > 0) {
             noteContent = noteContents[noteContents.size - 1]
@@ -58,8 +58,8 @@ class NoteDrawingActivity : BaseActivity() {
         changeContent()
 
         tv_title.setOnClickListener {
-            var title=tv_title.text.toString()
-            InputContentDialog(this,title).builder()?.setOnDialogClickListener { string ->
+            val title=tv_title.text.toString()
+            InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
                 tv_title.text = string
                 noteContent?.title = string
                 noteContents[page-1].title = string
@@ -92,11 +92,6 @@ class NoteDrawingActivity : BaseActivity() {
             showCatalog()
         }
 
-
-        iv_btn.setOnClickListener {
-
-        }
-
     }
 
 
@@ -118,7 +113,7 @@ class NoteDrawingActivity : BaseActivity() {
             }
 
         }
-        DrawingCatalogDialog(this,list).builder()?.
+        DrawingCatalogDialog(this,list).builder().
         setOnDialogClickListener { position ->
             page = noteContents[position].page
             changeContent()
@@ -152,21 +147,19 @@ class NoteDrawingActivity : BaseActivity() {
     //创建新的作业内容
     private fun newNoteContent() {
 
-        val path=FileAddress().getPathNote(type,noteBook?.id,noteContents.size)
-        val pathName = DateUtils.longToString(System.currentTimeMillis())
+        val date=System.currentTimeMillis()
+        val path=FileAddress().getPathNote(typeStr,noteBook?.title,date)
+        val pathName = DateUtils.longToString(date)
 
         noteContent = NoteContent()
-        noteContent?.date = System.currentTimeMillis()
-        noteContent?.type=type
+        noteContent?.date = date
+        noteContent?.typeStr=typeStr
         noteContent?.notebookId = noteBook?.id
         noteContent?.resId = noteBook?.contentResId
-
         noteContent?.title="未命名${noteContents.size+1}"
-        noteContent?.folderPath=path
         noteContent?.filePath = "$path/$pathName.tch"
         noteContent?.pathName=pathName
         noteContent?.page = noteContents.size
-
         page = noteContents.size
 
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)

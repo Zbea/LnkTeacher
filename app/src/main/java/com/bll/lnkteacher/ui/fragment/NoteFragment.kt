@@ -1,52 +1,50 @@
 package com.bll.lnkteacher.ui.fragment
 
+import PopupClick
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.manager.BaseTypeBeanDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
+import com.bll.lnkteacher.manager.NoteTypeBeanDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
-import com.bll.lnkteacher.mvp.model.BaseTypeBean
+import com.bll.lnkteacher.mvp.model.NoteTypeBean
 import com.bll.lnkteacher.mvp.model.Notebook
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.activity.NoteDrawingActivity
 import com.bll.lnkteacher.ui.activity.NoteTypeManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
-import com.bll.lnkteacher.ui.adapter.NoteTypeAdapter
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 /**
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var popWindowList: PopupRadioList? = null
+    private var popWindowList: PopupClick? = null
     private var popupBeans = mutableListOf<PopupBean>()
     private var popWindowMoreBeans = mutableListOf<PopupBean>()
-    private var noteTypes = mutableListOf<BaseTypeBean>()
+    private var noteTypes = mutableListOf<NoteTypeBean>()
     private var noteBooks = mutableListOf<Notebook>()
-    private var type = 0 //当前笔记本类型
     private var mAdapter: NoteAdapter? = null
-    private var mAdapterType: NoteTypeAdapter? = null
     private var position = 0 //当前笔记标记
-    private var resId = ""
     private var positionType = 0//当前笔记本标记
-    private var isDown = false //是否向下打开
-
+    private var typeStr=""
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -67,7 +65,9 @@ class NoteFragment : BaseFragment() {
         setTitle(R.string.main_note_title)
         showView(iv_manager)
 
-        bindClick()
+        iv_manager?.setOnClickListener {
+            setTopSelectView()
+        }
 
         initTab()
 
@@ -100,90 +100,41 @@ class NoteFragment : BaseFragment() {
         }
     }
 
-    //设置头部索引
-    private fun initTab() {
-
-        rv_type.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
-        mAdapterType = NoteTypeAdapter(R.layout.item_note_type, noteTypes)
-        rv_type.adapter = mAdapterType
-        mAdapterType?.bindToRecyclerView(rv_type)
-        mAdapterType?.setOnItemClickListener { adapter, view, position ->
-            noteTypes[positionType].isCheck = false
-            positionType = position
-            noteTypes[positionType].isCheck = true
-            mAdapterType?.notifyDataSetChanged()
-
-            type = noteTypes[positionType].typeId
-            pageIndex = 1
-            pageCount = 1
-            fetchData()
-
-        }
-
-    }
-
-    private fun bindClick() {
-
-        iv_manager?.setOnClickListener {
-            setTopSelectView()
-        }
-
-        iv_down.setOnClickListener {
-            if (isDown) {
-                isDown = false
-                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_down)
-            } else {
-                isDown = true
-                iv_down.setImageResource(R.mipmap.icon_bookstore_arrow_up)
-            }
-            findTabs()
-        }
-
-    }
-
     /**
      * tab数据设置
      */
     private fun findTabs() {
-
         noteTypes = DataBeanManager.noteBook
-        noteTypes.addAll(BaseTypeBeanDaoManager.getInstance().queryAll())
-        setAllCheckFalse(noteTypes)
-
-        //删除tab后当前下标超出
-        if (noteTypes.size <= positionType) {
-            positionType = 0
+        noteTypes.addAll(NoteTypeBeanDaoManager.getInstance().queryAll())
+        if (positionType>noteTypes.size){
+            positionType=0
         }
-
-        //不展开 下标超过4
-        if (!isDown && positionType > 4) {
-            positionType = 0
-        }
-
-        noteTypes[positionType].isCheck = true
-        if (!isDown && noteTypes.size > 5) {
-            noteTypes = noteTypes.subList(0, 5)
-        }
-
-        mAdapterType?.setNewData(noteTypes)
-        type = noteTypes[positionType].typeId
+        typeStr = noteTypes[positionType].name
+        initTab()
         fetchData()
     }
 
-
-    //设置所有数据为不选中
-    private fun setAllCheckFalse(tabs: List<BaseTypeBean>) {
-        for (item in tabs) {
-            item.isCheck = false
+    //设置头部索引
+    private fun initTab() {
+        rg_group.removeAllViews()
+        for (i in noteTypes.indices) {
+            rg_group.addView(getRadioButton(i,positionType, noteTypes[i].name, noteTypes.size - 1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, id ->
+            positionType=id
+            typeStr=noteTypes[positionType].name
+            pageIndex=1
+            fetchData()
         }
     }
+
 
     /**
      * 跳转笔记写作
      */
     private fun gotoIntent(note: Notebook) {
-        var intent = Intent(activity, NoteDrawingActivity::class.java)
-        var bundle = Bundle()
+        val intent = Intent(activity, NoteDrawingActivity::class.java)
+        val bundle = Bundle()
         bundle.putSerializable("note", note)
         intent.putExtra("bundle", bundle)
         startActivity(intent)
@@ -191,13 +142,17 @@ class NoteFragment : BaseFragment() {
 
 
     //新建笔记
-    private fun createNotebook() {
+    private fun createNotebook(resId:String) {
         val note = Notebook()
         InputContentDialog(requireContext(),  "请输入笔记本").builder()
             .setOnDialogClickListener { string ->
+                if (NotebookDaoManager.getInstance().isExist(typeStr,string)){
+                    showToast(R.string.toast_existed)
+                    return@setOnDialogClickListener
+                }
                 note.title = string
                 note.createDate = System.currentTimeMillis()
-                note.type = type
+                note.typeStr = typeStr
                 note.contentResId = resId
                 if (noteBooks.size == 10)
                     pageIndex += 1
@@ -231,8 +186,10 @@ class NoteFragment : BaseFragment() {
                     //删除笔记本
                     NotebookDaoManager.getInstance().deleteBean(note)
                     //删除笔记本中的所有笔记
-                    NoteContentDaoManager.getInstance().deleteType(note.type, note.id)
+                    NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.id)
                     EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+                    val path= FileAddress().getPathNote(note.typeStr,note.title)
+                    FileUtils.deleteFile(File(path))
                 }
 
             })
@@ -242,16 +199,15 @@ class NoteFragment : BaseFragment() {
     //顶部弹出选择
     private fun setTopSelectView() {
         if (popWindowList == null) {
-            popWindowList = PopupRadioList(requireActivity(), popupBeans, iv_manager, 20).builder()
+            popWindowList = PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder()
             popWindowList?.setOnSelectListener { item ->
                 when (item.id) {
                     0 -> startActivity(Intent(activity, NoteTypeManagerActivity::class.java))
                     1 -> addNoteBookType()
                     else -> {
-                        NoteModuleAddDialog(requireContext(), type).builder()
+                        NoteModuleAddDialog(requireContext(), if (typeStr=="我的日记") 0 else 1).builder()
                             ?.setOnDialogClickListener { moduleBean ->
-                                resId = ToolUtils.getImageResStr(activity, moduleBean.resContentId)
-                                createNotebook()
+                                createNotebook(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                             }
                     }
 
@@ -268,12 +224,18 @@ class NoteFragment : BaseFragment() {
     private fun addNoteBookType() {
         InputContentDialog(requireContext(),  "请输入笔记本分类").builder()
             .setOnDialogClickListener { string ->
-                var noteBook = BaseTypeBean()
-                noteBook.name = string
-                noteBook.typeId = noteTypes.size
-                noteTypes.add(noteBook)
-                BaseTypeBeanDaoManager.getInstance().insertOrReplace(noteBook)
-                mAdapterType?.notifyDataSetChanged()
+                if (NoteTypeBeanDaoManager.getInstance().isExist(string)){
+                    showToast(R.string.toast_existed)
+                }
+                else{
+                    val noteBook = NoteTypeBean()
+                    noteBook.name = string
+                    noteBook.typeId = System.currentTimeMillis().toInt()
+                    noteTypes.add(noteBook)
+                    NoteTypeBeanDaoManager.getInstance().insertOrReplace(noteBook)
+                    initTab()
+                }
+
             }
     }
 
@@ -295,8 +257,8 @@ class NoteFragment : BaseFragment() {
     }
 
     override fun fetchData() {
-        noteBooks = NotebookDaoManager.getInstance().queryAll(type, pageIndex, 10)
-        val total = NotebookDaoManager.getInstance().queryAll(type)
+        noteBooks = NotebookDaoManager.getInstance().queryAll(typeStr, pageIndex, 10)
+        val total = NotebookDaoManager.getInstance().queryAll(typeStr)
         setPageNumber(total.size)
         mAdapter?.setNewData(noteBooks)
     }

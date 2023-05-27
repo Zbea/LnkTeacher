@@ -55,9 +55,10 @@ class GroupCreateDialog(val context: Context,val type:Int) {
         if (popWindow==null)
         {
             popWindow= PopupCheckList(context, pops, view,  5).builder()
-            popWindow  ?.setOnSelectListener { items ->
+            popWindow?.setOnSelectListener { items ->
                 for (item in items) {
-                    classIds.add(item.id)
+                    if (!classIds.contains(item.id))
+                        classIds.add(item.id)
                 }
             }
         }

@@ -21,18 +21,17 @@ public class Notebook implements Serializable {
     public Long id;
     public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
     public String title;
-    public int type;//笔记分类id
+    public String typeStr;//笔记分类id
     public long createDate; //创建时间
     public String dateStr;
     public String contentResId; //笔记内容背景id
-
-    @Generated(hash = 1034488404)
-    public Notebook(Long id, long userId, String title, int type, long createDate,
-            String dateStr, String contentResId) {
+    @Generated(hash = 937666008)
+    public Notebook(Long id, long userId, String title, String typeStr,
+            long createDate, String dateStr, String contentResId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
-        this.type = type;
+        this.typeStr = typeStr;
         this.createDate = createDate;
         this.dateStr = dateStr;
         this.contentResId = contentResId;
@@ -58,11 +57,11 @@ public class Notebook implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getType() {
-        return this.type;
+    public String getTypeStr() {
+        return this.typeStr;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
     public long getCreateDate() {
         return this.createDate;
@@ -82,5 +81,7 @@ public class Notebook implements Serializable {
     public void setContentResId(String contentResId) {
         this.contentResId = contentResId;
     }
+
+
 
 }

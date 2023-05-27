@@ -38,9 +38,9 @@ class PopupCheckList(val context:Context, val list:MutableList<PopupBean>, val v
             }
         }
 
-        var rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
+        val rvList=popView.findViewById<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        var mAdapter = MAdapter(R.layout.item_popwindow_list, list)
+        val mAdapter = MAdapter(R.layout.item_popwindow_list, list)
         rvList.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
         mAdapter.setOnItemClickListener { adapter, view, position ->
@@ -49,7 +49,7 @@ class PopupCheckList(val context:Context, val list:MutableList<PopupBean>, val v
         }
 
         mPopupWindow?.setOnDismissListener {
-            var checkList= mutableListOf<PopupBean>()
+            val checkList= mutableListOf<PopupBean>()
             for (item in list){
                 if (item.isCheck)
                     checkList.add(item)

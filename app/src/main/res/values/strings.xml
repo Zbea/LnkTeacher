@@ -13,6 +13,7 @@
     <string name="psw_tip">请输入6–20数字、字母的密码</string>
     <string name="phone_tip">请正确输入11位手机号码</string>
 
+    <string name="toast_existed">已存在</string>
     <string name="grade_selector">年级选择</string>
     <string name="page_up_string">上一页</string>
     <string name="page_down_string">下一页</string>

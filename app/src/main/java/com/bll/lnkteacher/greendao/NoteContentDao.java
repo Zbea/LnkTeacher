@@ -26,15 +26,14 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
+        public final static Property TypeStr = new Property(2, String.class, "typeStr", false, "TYPE_STR");
         public final static Property NotebookId = new Property(3, long.class, "notebookId", false, "NOTEBOOK_ID");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
-        public final static Property FolderPath = new Property(7, String.class, "folderPath", false, "FOLDER_PATH");
-        public final static Property FilePath = new Property(8, String.class, "filePath", false, "FILE_PATH");
-        public final static Property PathName = new Property(9, String.class, "pathName", false, "PATH_NAME");
-        public final static Property Page = new Property(10, int.class, "page", false, "PAGE");
+        public final static Property FilePath = new Property(7, String.class, "filePath", false, "FILE_PATH");
+        public final static Property PathName = new Property(8, String.class, "pathName", false, "PATH_NAME");
+        public final static Property Page = new Property(9, int.class, "page", false, "PAGE");
     }
 
 
@@ -52,15 +51,14 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"NOTE_CONTENT\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
+                "\"TYPE_STR\" TEXT," + // 2: typeStr
                 "\"NOTEBOOK_ID\" INTEGER NOT NULL ," + // 3: notebookId
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"TITLE\" TEXT," + // 5: title
                 "\"RES_ID\" TEXT," + // 6: resId
-                "\"FOLDER_PATH\" TEXT," + // 7: folderPath
-                "\"FILE_PATH\" TEXT," + // 8: filePath
-                "\"PATH_NAME\" TEXT," + // 9: pathName
-                "\"PAGE\" INTEGER NOT NULL );"); // 10: page
+                "\"FILE_PATH\" TEXT," + // 7: filePath
+                "\"PATH_NAME\" TEXT," + // 8: pathName
+                "\"PAGE\" INTEGER NOT NULL );"); // 9: page
     }
 
     /** Drops the underlying database table. */
@@ -78,7 +76,11 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getType());
+ 
+        String typeStr = entity.getTypeStr();
+        if (typeStr != null) {
+            stmt.bindString(3, typeStr);
+        }
         stmt.bindLong(4, entity.getNotebookId());
         stmt.bindLong(5, entity.getDate());
  
@@ -92,21 +94,16 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
             stmt.bindString(7, resId);
         }
  
-        String folderPath = entity.getFolderPath();
-        if (folderPath != null) {
-            stmt.bindString(8, folderPath);
-        }
- 
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(9, filePath);
+            stmt.bindString(8, filePath);
         }
  
         String pathName = entity.getPathName();
         if (pathName != null) {
-            stmt.bindString(10, pathName);
+            stmt.bindString(9, pathName);
         }
-        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(10, entity.getPage());
     }
 
     @Override
@@ -118,7 +115,11 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getType());
+ 
+        String typeStr = entity.getTypeStr();
+        if (typeStr != null) {
+            stmt.bindString(3, typeStr);
+        }
         stmt.bindLong(4, entity.getNotebookId());
         stmt.bindLong(5, entity.getDate());
  
@@ -132,21 +133,16 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
             stmt.bindString(7, resId);
         }
  
-        String folderPath = entity.getFolderPath();
-        if (folderPath != null) {
-            stmt.bindString(8, folderPath);
-        }
- 
         String filePath = entity.getFilePath();
         if (filePath != null) {
-            stmt.bindString(9, filePath);
+            stmt.bindString(8, filePath);
         }
  
         String pathName = entity.getPathName();
         if (pathName != null) {
-            stmt.bindString(10, pathName);
+            stmt.bindString(9, pathName);
         }
-        stmt.bindLong(11, entity.getPage());
+        stmt.bindLong(10, entity.getPage());
     }
 
     @Override
@@ -159,15 +155,14 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         NoteContent entity = new NoteContent( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
-            cursor.getInt(offset + 2), // type
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // typeStr
             cursor.getLong(offset + 3), // notebookId
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // folderPath
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // filePath
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // pathName
-            cursor.getInt(offset + 10) // page
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // filePath
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // pathName
+            cursor.getInt(offset + 9) // page
         );
         return entity;
     }
@@ -176,15 +171,14 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
     public void readEntity(Cursor cursor, NoteContent entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
-        entity.setType(cursor.getInt(offset + 2));
+        entity.setTypeStr(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setNotebookId(cursor.getLong(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setFolderPath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setFilePath(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setPathName(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPage(cursor.getInt(offset + 10));
+        entity.setFilePath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setPathName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setPage(cursor.getInt(offset + 9));
      }
     
     @Override
