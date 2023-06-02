@@ -67,7 +67,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 return false
             }
             override fun success(tBaseResult: BaseResult<AssignContent>) {
-                if (tBaseResult.data!=null){
+                if (!tBaseResult.data?.list.isNullOrEmpty()){
                     view.onImageList(tBaseResult.data?.list)
                 }
             }

@@ -36,9 +36,8 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
         items= homeworkContent.list
         mAdapter?.setNewData(items)
     }
-    override fun onImageList(lists: MutableList<ContentListBean>?) {
+    override fun onImageList(lists: MutableList<ContentListBean>) {
         val images= mutableListOf<String>()
-        if (lists.isNullOrEmpty())return
         for (item in lists){
             images.add(item.url)
         }

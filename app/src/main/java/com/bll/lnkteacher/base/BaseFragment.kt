@@ -13,6 +13,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.Grade
 import com.bll.lnkteacher.mvp.model.User
@@ -58,6 +59,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var grade=1
+    private var gradePopup: PopupRadioList?=null
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -81,7 +84,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
     override fun onGradeList(grades: MutableList<Grade>) {
         DataBeanManager.grades=grades
-        onGradeEvent()
+        grade=DataBeanManager.popupGrades[grade-1].id
+        tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
     }
 
 
@@ -175,6 +179,16 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
                 fetchData()
             }
         }
+
+        tv_fragment_grade?.setOnClickListener{
+            showPopGradeView()
+        }
+
+        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
+        if (DataBeanManager.popupGrades.size>0){
+            grade=DataBeanManager.popupGrades[grade-1].id
+            tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
+        }
     }
 
 
@@ -263,12 +277,12 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        var radioButton =
+        val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
         radioButton.id = i
         radioButton.isChecked = i == 0
-        var layoutParams = RadioGroup.LayoutParams(
+        val layoutParams = RadioGroup.LayoutParams(
             RadioGroup.LayoutParams.WRAP_CONTENT,
             DP2PX.dip2px(activity, 45f))
 
@@ -292,6 +306,24 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         radioButton.layoutParams = layoutParams
 
         return radioButton
+    }
+
+    /**
+     * 年级选择
+     */
+    private fun showPopGradeView() {
+        if (gradePopup==null){
+            gradePopup= PopupRadioList(requireActivity(), DataBeanManager.popupGrades, tv_fragment_grade,tv_fragment_grade.width,  5).builder()
+            gradePopup?.setOnSelectListener { item ->
+                tv_fragment_grade?.text=item.name
+                grade=item.id
+                SPUtil.putInt("grade",grade)
+                onGradeEvent()
+            }
+        }
+        else{
+            gradePopup?.show()
+        }
     }
 
 

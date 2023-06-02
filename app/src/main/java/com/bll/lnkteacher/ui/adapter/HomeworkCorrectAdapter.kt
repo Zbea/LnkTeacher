@@ -16,7 +16,7 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
         helper.setText(R.id.tv_title,item.title)
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time*1000))
         helper.setVisible(R.id.tv_student,item.subType!=3)
-        var rvList=helper.getView<RecyclerView>(R.id.rv_list)
+        val rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         val mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type,item.examList)
         rvList.adapter = mAdapter

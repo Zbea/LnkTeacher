@@ -372,7 +372,7 @@ class BookStoreActivity : BaseActivity(),
 
             val iterator = entries.iterator();
             while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<Long, BaseDownloadTask>
+                val entry = iterator.next() as Map.Entry<*, *>
                 val entity = entry.value
                 if (task == entity) {
                     iterator.remove()

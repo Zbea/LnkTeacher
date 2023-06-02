@@ -24,7 +24,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     private var mAdapter:HomeworkCorrectAdapter?=null
     private var position=0
     private var items= mutableListOf<CorrectBean>()
-    private var grade=1
 
     override fun onList(list: CorrectList) {
         setPageNumber(list.total)

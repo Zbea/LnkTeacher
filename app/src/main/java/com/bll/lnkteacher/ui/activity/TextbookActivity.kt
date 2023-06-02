@@ -19,7 +19,7 @@ class TextbookActivity:BaseActivity() {
     override fun initData() {
 
         for (i in 0..6){
-            var book= Book()
+            val book= Book()
             book.bookName= "数学$i"
             items.add(book)
         }

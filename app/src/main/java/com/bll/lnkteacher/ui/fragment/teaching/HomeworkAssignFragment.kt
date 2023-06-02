@@ -31,7 +31,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var mAdapter:HomeworkAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var position=0
-    private var grade=1//年级
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
 
     override fun onTypeList(list:  TypeList) {

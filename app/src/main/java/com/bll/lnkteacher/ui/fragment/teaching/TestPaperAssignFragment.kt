@@ -26,7 +26,6 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     private var mAdapter: TestPaperAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var addTypeStr=""
-    private var grade=1//年级
 
     override fun onType(typeList: TypeList) {
         setPageNumber(typeList.total)

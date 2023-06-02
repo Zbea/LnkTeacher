@@ -52,7 +52,7 @@ class MainTeachingPlanActivity:DateActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var dateBean=dates[position]
+            val dateBean=dates[position]
             if (dateBean.time>0){
                 MainTeachingPlanDialog(this,classGroup?.classId!!,dateBean.time).builder()
                     ?.setOnClickListener{
@@ -109,14 +109,14 @@ class MainTeachingPlanActivity:DateActivity() {
 
     private fun move(){
         MainTeachingMoveDialog(this,classGroup?.classId!!).builder()
-            ?.setOnDialogClickListener{
+            .setOnDialogClickListener{
                 getDates()
         }
     }
 
     private fun delete(){
         MainTeachingDeleteDialog(this,classGroup?.classId!!).builder()
-            ?.setOnDialogClickListener{
+            .setOnDialogClickListener{
                 getDates()
         }
     }

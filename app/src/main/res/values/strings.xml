@@ -52,7 +52,7 @@
     <string name="textbook_tab_text">我的课本</string>
     <string name="textbook_tab_course">我的课辅</string>
     <string name="textbook_tab_teaching">参考教材</string>
-    <string name="textbook_tab_oldteaching">讲义</string>
+    <string name="textbook_tab_handouts">讲义</string>
 
     <string name="teaching_tab_homework_assign">作业布置</string>
     <string name="teaching_tab_homework_correct">作业批改</string>

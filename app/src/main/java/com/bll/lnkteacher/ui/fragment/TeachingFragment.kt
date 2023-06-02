@@ -6,7 +6,6 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
@@ -23,13 +22,11 @@ class TeachingFragment : BaseFragment(){
     private var homeworkCorrectFragment: HomeworkCorrectFragment? = null
     private var testPaperAssignFragment: TestPaperAssignFragment? = null
     private var testPaperCorrectFragment: TestPaperCorrectFragment? = null
-    private var gradePopup:PopupRadioList?=null
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
     private var homeworkPopBeans = mutableListOf<PopupBean>()
-    private var grade=1
 
 
     override fun getLayoutId(): Int {
@@ -38,7 +35,7 @@ class TeachingFragment : BaseFragment(){
 
     override fun initView() {
         setTitle(R.string.main_teaching_title)
-        showView(iv_manager,tv_grade)
+        showView(iv_manager,tv_fragment_grade)
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -55,9 +52,6 @@ class TeachingFragment : BaseFragment(){
                 showPopView()
             }
         }
-        tv_grade.setOnClickListener {
-            showPopGradeView()
-        }
 
         initData()
         initTab()
@@ -71,8 +65,7 @@ class TeachingFragment : BaseFragment(){
     private fun initData() {
         grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         if (DataBeanManager.popupGrades.size>0){
-            grade=DataBeanManager.popupGrades[grade-1].id
-            tv_grade.text=DataBeanManager.popupGrades[grade-1].name
+            onGradeEvent()
         }
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book), false))
@@ -91,24 +84,24 @@ class TeachingFragment : BaseFragment(){
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
-                    showView(iv_manager,tv_grade)
+                    showView(iv_manager,tv_fragment_grade)
                     iv_manager.setImageResource(R.mipmap.icon_manager)
                     switchFragment(lastFragment, homeworkAssignFragment)
                 }
 
                 1 -> {
-                    disMissView(iv_manager,tv_grade)
+                    disMissView(iv_manager,tv_fragment_grade)
                     switchFragment(lastFragment, homeworkCorrectFragment)
                 }
 
                 2 -> {
-                    showView(iv_manager,tv_grade)
+                    showView(iv_manager,tv_fragment_grade)
                     iv_manager.setImageResource(R.mipmap.icon_add)
                     switchFragment(lastFragment, testPaperAssignFragment)
                 }
 
                 3 -> {
-                    disMissView(iv_manager,tv_grade)
+                    disMissView(iv_manager,tv_fragment_grade)
                     switchFragment(lastFragment, testPaperCorrectFragment)
                 }
 
@@ -157,26 +150,6 @@ class TeachingFragment : BaseFragment(){
             }
     }
 
-    //顶部弹出年级选择框
-    private fun showPopGradeView() {
-        if (gradePopup==null){
-            gradePopup= PopupRadioList(requireActivity(), DataBeanManager.popupGrades, tv_grade,tv_grade.width,  10).builder()
-            gradePopup?.setOnSelectListener { item ->
-                    tv_grade.text=item.name
-                    grade=item.id
-                    SPUtil.putInt("grade",grade)
-                    homeworkAssignFragment?.changeGrade(grade)
-                    testPaperAssignFragment?.changeGrade(grade)
-                    homeworkCorrectFragment?.changeGrade(grade)
-                    testPaperCorrectFragment?.changeGrade(grade)
-                }
-        }
-        else{
-            gradePopup?.show()
-        }
-
-    }
-
     /**
      * 新增作业本
      */
@@ -209,8 +182,10 @@ class TeachingFragment : BaseFragment(){
     }
 
     override fun onGradeEvent() {
-        grade=DataBeanManager.popupGrades[grade-1].id
-        tv_grade.text=DataBeanManager.popupGrades[grade-1].name
+        homeworkAssignFragment?.changeGrade(grade)
+        testPaperAssignFragment?.changeGrade(grade)
+        homeworkCorrectFragment?.changeGrade(grade)
+        testPaperCorrectFragment?.changeGrade(grade)
     }
 
     override fun onRefreshData() {

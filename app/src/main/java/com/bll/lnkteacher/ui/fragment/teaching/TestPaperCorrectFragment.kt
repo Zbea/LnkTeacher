@@ -26,7 +26,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
     private var mAdapter: TestPaperCorrectAdapter?=null
     private var items= mutableListOf<CorrectBean>()
     private var pos=0
-    private var grade=1
 
     override fun onList(bean: CorrectList) {
         setPageNumber(bean.total)

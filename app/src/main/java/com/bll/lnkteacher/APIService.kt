@@ -314,4 +314,9 @@ interface APIService{
      */
     @GET("message/inform/list")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
+    /**
+     * 我的讲义
+     */
+    @GET("message/inform/list")
+    fun getHandouts(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HandoutsList>>
 }

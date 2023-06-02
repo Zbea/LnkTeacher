@@ -81,7 +81,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
      */
     private fun showClassGroup(){
         PopupRadioList(this, popClasss, tv_class,tv_class.width,  5).builder()
-        ?.setOnSelectListener { item->
+        .setOnSelectListener { item->
             tv_class.text=item.name
             val items= mutableListOf<TestPaperGrade>()
             for (ite in datas){
