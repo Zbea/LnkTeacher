@@ -96,14 +96,14 @@ class BookDetailsActivity:BaseActivity() {
 
         }
 
-        btn_page_up.setOnClickListener {
+        iv_page_up.setOnClickListener {
             if (page>1){
                 page-=1
                 updateScreen()
             }
         }
 
-        btn_page_down.setOnClickListener {
+        iv_page_down.setOnClickListener {
             if(page<count){
                 page+=1
                 updateScreen()
@@ -123,10 +123,7 @@ class BookDetailsActivity:BaseActivity() {
     private fun loadPicture(index: Int,elik:EinkPWInterface,view:ImageView) {
         val showFile = getIndexFile(index)
         if (showFile!=null){
-            book?.pageUrl=showFile?.path //设置当前页面路径
-            if (index>1){
-                book?.pageUpUrl=getIndexFile(index-1)?.path
-            }
+            book?.pageUrl=showFile.path //设置当前页面路径
 
             GlideUtils.setImageFile(this,showFile,view)
 

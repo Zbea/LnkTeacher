@@ -21,19 +21,19 @@ public class Book {
     @Unique
     public int bookId;
     public String imageUrl;
-    public String subjectName;//课目
+    public int subjectName;//课目
     public String createdAt;
     public String bookDesc;//描述
-    public String semester;//学期
+    public int semester;//学期
     public String area;//地区
     public String bookName;//书名
     public int price;//书的价格
-    public String grade; //年级
+    public int grade; //年级
     public String bookVersion;//版本
     public String version;//版本
     public String supply ;  //官方
     public int category;//0教材1古籍2自然科学3社会科学4思维科学5运动才艺
-    @SerializedName("type")
+    public int type;
     public String textBookType;  //教材类别
     public int status;
     @SerializedName("bodyUrl")
@@ -41,20 +41,18 @@ public class Book {
     public String bookPath;  //book书的路径
     public Long time;//观看时间
     public int pageIndex=0;//当前页
-    public String pageUpUrl;//上一页路径
     public String pageUrl;//当前页路径
     @Transient
     public int loadSate=0;//0未下载 1正下载 2已下载
     @Transient
     public int buyStatus;
-
-    @Generated(hash = 891982223)
-    public Book(Long id, long userId, int bookId, String imageUrl,
-            String subjectName, String createdAt, String bookDesc, String semester,
-            String area, String bookName, int price, String grade,
-            String bookVersion, String version, String supply, int category,
+    @Generated(hash = 2101682676)
+    public Book(Long id, long userId, int bookId, String imageUrl, int subjectName,
+            String createdAt, String bookDesc, int semester, String area,
+            String bookName, int price, int grade, String bookVersion,
+            String version, String supply, int category, int type,
             String textBookType, int status, String downloadUrl, String bookPath,
-            Long time, int pageIndex, String pageUpUrl, String pageUrl) {
+            Long time, int pageIndex, String pageUrl) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -71,13 +69,13 @@ public class Book {
         this.version = version;
         this.supply = supply;
         this.category = category;
+        this.type = type;
         this.textBookType = textBookType;
         this.status = status;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
         this.time = time;
         this.pageIndex = pageIndex;
-        this.pageUpUrl = pageUpUrl;
         this.pageUrl = pageUrl;
     }
     @Generated(hash = 1839243756)
@@ -107,10 +105,10 @@ public class Book {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    public String getSubjectName() {
+    public int getSubjectName() {
         return this.subjectName;
     }
-    public void setSubjectName(String subjectName) {
+    public void setSubjectName(int subjectName) {
         this.subjectName = subjectName;
     }
     public String getCreatedAt() {
@@ -125,10 +123,10 @@ public class Book {
     public void setBookDesc(String bookDesc) {
         this.bookDesc = bookDesc;
     }
-    public String getSemester() {
+    public int getSemester() {
         return this.semester;
     }
-    public void setSemester(String semester) {
+    public void setSemester(int semester) {
         this.semester = semester;
     }
     public String getArea() {
@@ -149,10 +147,10 @@ public class Book {
     public void setPrice(int price) {
         this.price = price;
     }
-    public String getGrade() {
+    public int getGrade() {
         return this.grade;
     }
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
     public String getBookVersion() {
@@ -160,6 +158,12 @@ public class Book {
     }
     public void setBookVersion(String bookVersion) {
         this.bookVersion = bookVersion;
+    }
+    public String getVersion() {
+        return this.version;
+    }
+    public void setVersion(String version) {
+        this.version = version;
     }
     public String getSupply() {
         return this.supply;
@@ -172,6 +176,12 @@ public class Book {
     }
     public void setCategory(int category) {
         this.category = category;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
     public String getTextBookType() {
         return this.textBookType;
@@ -209,23 +219,13 @@ public class Book {
     public void setPageIndex(int pageIndex) {
         this.pageIndex = pageIndex;
     }
-    public String getPageUpUrl() {
-        return this.pageUpUrl;
-    }
-    public void setPageUpUrl(String pageUpUrl) {
-        this.pageUpUrl = pageUpUrl;
-    }
     public String getPageUrl() {
         return this.pageUrl;
     }
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
     }
-    public String getVersion() {
-        return this.version;
-    }
-    public void setVersion(String version) {
-        this.version = version;
-    }
+
+  
 
 }

@@ -37,20 +37,20 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         rv_list?.layoutManager = LinearLayoutManager(context)
 
         if (type==0){
-            var mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ListItem>)
+            val mAdapter= CatalogAdapter(R.layout.item_catalog_parent, list as List<ListItem>)
             rv_list?.adapter = mAdapter
-            mAdapter?.bindToRecyclerView(rv_list)
-            mAdapter?.setOnItemClickListener  { adapter, view, position ->
+            mAdapter.bindToRecyclerView(rv_list)
+            mAdapter.setOnItemClickListener  { adapter, view, position ->
                 dismiss()
                 if (listener!=null)
                     listener?.onClick(position)
             }
         }
         else{
-            var mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
+            val mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
             rv_list?.adapter = mAdapter
-            mAdapter?.bindToRecyclerView(rv_list)
-            mAdapter?.setOnCatalogClickListener(object : BookCatalogAdapter.OnCatalogClickListener {
+            mAdapter.bindToRecyclerView(rv_list)
+            mAdapter.setOnCatalogClickListener(object : BookCatalogAdapter.OnCatalogClickListener {
                 override fun onParentClick(page: Int) {
                     dismiss()
                     if (listener!=null)

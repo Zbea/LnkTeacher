@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.Book
 
@@ -24,7 +25,7 @@ class BookManageDialog(val context: Context, val book:Book){
         val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)
         val ll_delete=dialog.findViewById<LinearLayout>(R.id.ll_delete)
 
-        tv_name.text=book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
+        tv_name.text=book.bookName+if (book.semester==0) "" else "-"+ DataBeanManager.semesters[book.semester-1]
 
         iv_close.setOnClickListener {
             dialog.dismiss()

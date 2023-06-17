@@ -34,7 +34,7 @@ class NoteDrawingActivity : BaseActivity() {
 
     override fun initData() {
         val bundle = intent.getBundleExtra("bundle")
-        noteBook = bundle?.getSerializable("note") as Notebook
+        noteBook = bundle?.getSerializable("noteBundle") as Notebook
         typeStr = noteBook?.typeStr.toString()
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,noteBook?.id!!)
@@ -66,7 +66,7 @@ class NoteDrawingActivity : BaseActivity() {
         }
 
 
-        btn_page_down.setOnClickListener {
+        iv_page_down.setOnClickListener {
             val total=noteContents.size-1
             when(page){
                 total->{
@@ -79,7 +79,7 @@ class NoteDrawingActivity : BaseActivity() {
             changeContent()
         }
 
-        btn_page_up.setOnClickListener {
+        iv_page_up.setOnClickListener {
             if (page>0){
                 page-=1
                 changeContent()

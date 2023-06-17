@@ -135,8 +135,8 @@ class NoteFragment : BaseFragment() {
     private fun gotoIntent(note: Notebook) {
         val intent = Intent(activity, NoteDrawingActivity::class.java)
         val bundle = Bundle()
-        bundle.putSerializable("note", note)
-        intent.putExtra("bundle", bundle)
+        bundle.putSerializable("noteBundle",note)
+        intent.putExtra("bundle",bundle)
         startActivity(intent)
     }
 

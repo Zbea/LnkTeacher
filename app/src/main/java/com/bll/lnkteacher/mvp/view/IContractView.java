@@ -4,9 +4,11 @@ import com.bll.lnkteacher.mvp.model.AccountList;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
+import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.Grade;
 import com.bll.lnkteacher.mvp.model.HandoutsList;
 import com.bll.lnkteacher.mvp.model.Message;
+import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.group.Group;
@@ -43,6 +45,7 @@ public interface IContractView {
     interface IAccountInfoView extends IBaseView {
         void onLogout();
         void onEditNameSuccess();
+        void onEditSchool();
     }
 
     //钱包页面回调
@@ -90,7 +93,11 @@ public interface IContractView {
     interface ICommonView extends IBaseView{
         void onClassList(List<ClassGroup> classGroups);
         void onGroupList(List<Group> groups);
-        void onGradeList(List<Grade> grades);
+        void onCommon(CommonData commonData);
+    }
+
+    interface ISchoolView extends IBaseView{
+        void onListSchools(List<SchoolBean> list);
     }
 
     //考卷布置

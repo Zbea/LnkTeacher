@@ -1,15 +1,18 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.content.Intent
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.mvp.model.AreaBean
 import com.bll.lnkteacher.mvp.model.MainListBean
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
+import com.bll.lnkteacher.utils.FileUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_main.*
 
 class MainActivity : BaseActivity() {
@@ -32,6 +35,9 @@ class MainActivity : BaseActivity() {
     }
 
     override fun initData() {
+        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
+        val type= object : TypeToken<List<AreaBean>>() {}.type
+        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
         mData= DataBeanManager.getIndexData()
     }
 
@@ -107,13 +113,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return if (event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
-            true
-        } else {
-            super.dispatchKeyEvent(event)
-        }
-    }
+//    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+//        return if (event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
+//            true
+//        } else {
+//            super.dispatchKeyEvent(event)
+//        }
+//    }
 
 
 }

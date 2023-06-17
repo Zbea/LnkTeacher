@@ -3,9 +3,8 @@
     android:id="@+id/ll_click"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:gravity="center_vertical"
-    android:background="@drawable/bg_line_bottom" >
+    android:layout_height="45dp"
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/tv_name"
@@ -15,24 +14,14 @@
         android:ellipsize="end"
         android:layout_weight="1"
         android:textSize="20sp"
-        android:layout_marginStart="@dimen/dp_10"
         android:textColor="@color/black"/>
 
     <TextView
         android:id="@+id/tv_page"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:gravity="center"
-        android:text="1"
+        android:layout_marginStart="@dimen/dp_20"
         android:textSize="20sp"
         android:textColor="@color/black"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="28dp"
-        android:visibility="gone"
-        android:layout_marginRight="@dimen/dp_10"
-        android:src="@mipmap/icon_arrow_right"/>
 
 </LinearLayout>

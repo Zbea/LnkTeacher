@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="1020dp" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/dp_45"/>
 
     <ImageView
         android:id="@+id/iv_close"

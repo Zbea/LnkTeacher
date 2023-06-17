@@ -8,6 +8,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.BookManageDialog
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.HandoutsList
@@ -144,7 +145,9 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
             bindToRecyclerView(rv_handouts)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-
+                val item=handoutsBeans[position]
+                val images=item.paths.split(",")
+                ImageDialog(requireActivity(),images).builder()
             }
         }
     }

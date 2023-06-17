@@ -26,9 +26,13 @@ interface APIService{
     /**
      * 公共年级接口
      */
-    @GET("task/typeGrades")
-    fun getCommonGrade(): Observable<BaseResult<List<Grade>>>
-
+    @GET("userTypes")
+    fun getCommonGrade(): Observable<BaseResult<CommonData>>
+    /**
+     * 获取学校列表
+     */
+    @GET("school/list")
+    fun getCommonSchool(): Observable<BaseResult<MutableList<SchoolBean>>>
     /**
      * 用户登录 "/login"
      */
@@ -66,6 +70,11 @@ interface APIService{
      */
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 修改学校信息
+     */
+    @POST("accounts/changeAddress")
+    fun editSchool(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 退出登录 "/accounts/logout"
      */
@@ -317,6 +326,6 @@ interface APIService{
     /**
      * 我的讲义
      */
-    @GET("message/inform/list")
+    @GET("teaching/list")
     fun getHandouts(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HandoutsList>>
 }

@@ -12,16 +12,17 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.BookDetailsDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
-import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
@@ -41,8 +42,9 @@ class BookStoreActivity : BaseActivity(),
 
     private var provinceStr = ""
     private var gradeStr = ""
+    private var gradeId=0
     private var typeStr = ""
-    private var semesterStr=""
+    private var semester=0
     private var courseId=0//科目
     private var bookDetailsDialog: BookDetailsDialog? = null
     private var mBook: Book? = null
@@ -64,10 +66,10 @@ class BookStoreActivity : BaseActivity(),
         if (bookStoreType?.grade.isNullOrEmpty()) return
         for (i in bookStoreType?.grade?.indices!!) {
             gradeList.add(
-                PopupBean(i, bookStoreType?.grade[i], i == 0)
+                PopupBean(i, bookStoreType.grade[i], i == 0)
             )
         }
-        gradeStr = gradeList[0].name
+        gradeId= gradeList[0].id
 
         for (i in bookStoreType.subjectList.indices) {
             val item=bookStoreType.subjectList[i]
@@ -92,14 +94,10 @@ class BookStoreActivity : BaseActivity(),
 
     override fun initData() {
         pageSize=12
-        provinceStr = mUser?.addr!!.split(",")[0]
-        //获取地区分类
-        val citysStr = FileUtils.readFileContent(resources.assets.open("city.json"))
-        val cityBean = Gson().fromJson(citysStr, CityBean::class.java)
-        for (i in cityBean.provinces.indices) {
-            provinceList.add(
-                PopupBean(i, cityBean.provinces[i].provinceName, cityBean.provinces[i].provinceName == provinceStr)
-            )
+
+        provinceStr = mUser?.schoolProvince!!
+        for (i in DataBeanManager.provinces.indices){
+            provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
         }
 
         typeList = DataBeanManager.textbookType.toMutableList()
@@ -107,9 +105,9 @@ class BookStoreActivity : BaseActivity(),
         typeList.removeAt(3)
 
         semesterList=DataBeanManager.semesters
-        semesterStr= semesterList[0].name
+        semester= semesterList[0].id
 
-        getData()
+        presenter.getBookType()
     }
 
     override fun initView() {
@@ -119,21 +117,16 @@ class BookStoreActivity : BaseActivity(),
         initTab()
     }
 
-    //获取数据
-    private fun getData() {
-        presenter.getBookType()
-    }
-
     //获取教材
     private fun getDataBook() {
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
         map["area"] = provinceStr
-        map["grade"] = gradeStr
-        map["type"] = typeStr
+        map["grade"] = gradeId
+        map["type"] = typeId
         map["subjectName"]=courseId
-        map["semester"]=semesterStr
+        map["semester"]=semester
         presenter.getTextBooks(map)
     }
 
@@ -142,8 +135,8 @@ class BookStoreActivity : BaseActivity(),
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["grade"] = gradeStr
-        map["semester"]=semesterStr
+        map["grade"] = gradeId
+        map["semester"]=semester
         map["subjectName"]=courseId
         presenter.getTextBookCks(map)
     }
@@ -154,14 +147,14 @@ class BookStoreActivity : BaseActivity(),
     private fun initSelectorView() {
         tv_province.text = provinceList[0].name
         tv_grade.text = gradeList[0].name
-        tv_semester.text = semesterStr
+        tv_semester.text = DataBeanManager.semesters[semester-1].name
         tv_course.text = subjectList[0].name
 
         tv_grade.setOnClickListener {
             PopupRadioList(this, gradeList, tv_grade, tv_grade.width,5).builder()
                .setOnSelectListener { item ->
-                gradeStr = item.name
-                tv_grade.text = gradeStr
+                gradeId = item.id
+                tv_grade.text = item.name
                 pageIndex = 1
                 fetchData()
             }
@@ -180,7 +173,6 @@ class BookStoreActivity : BaseActivity(),
         tv_semester.setOnClickListener {
             PopupRadioList(this, semesterList, tv_semester, tv_semester.width, 5).builder()
                 .setOnSelectListener { item ->
-                    semesterStr = item.name
                     tv_semester.text = item.name
                     pageIndex = 1
                     fetchData()
@@ -366,7 +358,7 @@ class BookStoreActivity : BaseActivity(),
      */
     private fun deleteDoneTask(task: BaseDownloadTask?) {
 
-        if (mDownMapPool != null && mDownMapPool.isNotEmpty()) {
+        if (mDownMapPool.isNotEmpty()) {
             //拿出map中的键值对
             val entries = mDownMapPool.entries
 

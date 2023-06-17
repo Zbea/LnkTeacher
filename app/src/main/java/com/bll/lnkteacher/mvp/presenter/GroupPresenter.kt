@@ -68,14 +68,15 @@ class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractVi
 
     fun getGroupUsers(id: Int) {
         val map=HashMap<String,Any>()
-        map.put("id",id)
+        map["id"] = id
         val users = RetrofitManager.service.checkGroupUser(map)
         doRequest(users, object : Callback<List<GroupUser>>(view) {
             override fun failed(tBaseResult: BaseResult<List<GroupUser>>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<GroupUser>>) {
-                view.getGroupUser(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.getGroupUser(tBaseResult.data)
             }
         }, true)
 

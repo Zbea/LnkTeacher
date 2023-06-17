@@ -14,7 +14,7 @@ public class HandoutsList {
         public int id;
         public String title;
         public String url;
-        public String[] paths;
+        public String paths;
         public int grade;
     }
 

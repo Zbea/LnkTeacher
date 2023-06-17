@@ -1,6 +1,6 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.Grade
+import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -44,17 +44,17 @@ class ICommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContrac
 
     }
 
-    fun getGrades() {
+    fun getCommon() {
 
         val editName = RetrofitManager.service.getCommonGrade()
 
-        doRequest(editName, object : Callback<List<Grade>>(view) {
-            override fun failed(tBaseResult: BaseResult<List<Grade>>): Boolean {
+        doRequest(editName, object : Callback<CommonData>(view) {
+            override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<List<Grade>>) {
-                if (tBaseResult.data?.isNotEmpty() == true)
-                    view.onGradeList(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<CommonData>) {
+                if (tBaseResult.data!=null)
+                    view.onCommon(tBaseResult.data)
             }
 
         }, false)

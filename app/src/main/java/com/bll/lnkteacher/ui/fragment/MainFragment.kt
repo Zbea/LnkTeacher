@@ -79,7 +79,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
 
         onClickView()
 
-        initDateView()
         initMessageView()
         initTextBookView()
         initTeachingView()
@@ -94,6 +93,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     override fun lazyLoad() {
         findMessages()
         fetchCommonData()
+        initDateView()
     }
 
     @SuppressLint("WrongConstant")
@@ -137,7 +137,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
 
     //日历相关内容设置
     private fun initDateView() {
-
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
         val path=FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
         GlideUtils.setImageNoCacheUrl(activity,path,iv_image)
@@ -192,8 +191,8 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
             //跳转手绘
             val intent=Intent(activity, NoteDrawingActivity::class.java)
             val bundle= Bundle()
-            bundle.putSerializable("note",notes[position])
-            intent.putExtra("notes",bundle)
+            bundle.putSerializable("noteBundle",notes[position])
+            intent.putExtra("bundle",bundle)
             startActivity(intent)
         }
 

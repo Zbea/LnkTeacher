@@ -41,18 +41,18 @@
     <string name="pause">暂停</string>
 
     <string name="main_home_title">首页</string>
-    <string name="main_textbook_title">教义</string>
+    <string name="main_textbook_title">教学</string>
     <string name="main_classgroup_title">班群</string>
     <string name="main_classgroup_fragment_title">群管理</string>
-    <string name="main_teaching_title">教学</string>
+    <string name="main_teaching_title">作业</string>
     <string name="main_note_title">笔记</string>
     <string name="main_bookcase_title">书架</string>
     <string name="main_app_title">应用</string>
 
     <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">我的课辅</string>
-    <string name="textbook_tab_teaching">参考教材</string>
-    <string name="textbook_tab_handouts">讲义</string>
+    <string name="textbook_tab_course">我的教辅</string>
+    <string name="textbook_tab_teaching">教学教育</string>
+    <string name="textbook_tab_handouts">授课讲义</string>
 
     <string name="teaching_tab_homework_assign">作业布置</string>
     <string name="teaching_tab_homework_correct">作业批改</string>

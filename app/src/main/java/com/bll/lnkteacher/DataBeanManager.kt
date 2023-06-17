@@ -16,6 +16,8 @@ object DataBeanManager {
     var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
 
     var grades= mutableListOf<Grade>()
+    var courses= mutableListOf<ListItem>()
+    var provinces= mutableListOf<AreaBean>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,
@@ -28,7 +30,7 @@ object DataBeanManager {
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
-        mContext.getString(R.string.textbook_tab_teaching),mContext.getString(R.string.textbook_tab_handouts)
+        mContext.getString(R.string.textbook_tab_teaching), mContext.getString(R.string.textbook_tab_handouts)
     )
 
     var teachingStrs = arrayOf(
@@ -155,14 +157,6 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_tab_diary)
                 typeId = 0
             })
-            list.add(NoteTypeBean().apply {
-                name = mContext.getString(R.string.note_tab_article)
-                typeId = 1
-            })
-            list.add(NoteTypeBean().apply {
-                name = mContext.getString(R.string.note_tab_topic)
-                typeId = 2
-            })
             return list
         }
 
@@ -243,8 +237,8 @@ object DataBeanManager {
     val semesters: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
-            list.add(PopupBean(0, mContext.getString(R.string.semester_last),true))
-            list.add(PopupBean(1,mContext.getString(R.string.semester_next),false))
+            list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))
+            list.add(PopupBean(2,mContext.getString(R.string.semester_next),false))
             return list
         }
 

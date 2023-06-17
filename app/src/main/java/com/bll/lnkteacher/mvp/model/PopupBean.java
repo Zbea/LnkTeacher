@@ -11,6 +11,11 @@ public class PopupBean {
     public PopupBean() {
     }
 
+    public PopupBean(int id, String name) {
+        this.id=id;
+        this.name = name;
+    }
+
     public PopupBean(int id, String name, boolean isCheck) {
         this.id=id;
         this.name = name;

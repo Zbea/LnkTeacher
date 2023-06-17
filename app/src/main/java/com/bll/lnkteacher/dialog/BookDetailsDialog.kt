@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.utils.GlideUtils
@@ -32,11 +33,16 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
             GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-            tv_book_name?.text = book.bookName+if (book.semester.isNullOrEmpty()) "" else "-"+book.semester
+            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.semesters[book.semester-1]
             tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-            tv_course?.text = "课目： " + book.subjectName
             tv_version?.text = "出版社： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
             tv_info?.text = "简介： " + book.bookDesc
+
+            if (book.subjectName==0){
+                tv_course.visibility=View.GONE
+            }else{
+                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1]
+            }
 
             if (book.buyStatus == 1) {
                 btn_ok?.text = "点击下载"

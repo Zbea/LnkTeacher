@@ -7,7 +7,7 @@ import com.bll.lnkteacher.net.*
 
 class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
 
-    fun register(map:HashMap<String,String>) {
+    fun register(map:HashMap<String,Any>) {
 
         val body = RequestUtils.getBody(map)
 

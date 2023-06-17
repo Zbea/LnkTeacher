@@ -82,20 +82,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             setStatusBarColor(ContextCompat.getColor(this, R.color.white))
         }
 
-        val decorView = window.decorView
-        // Hide both the navigation bar and the status bar.
-        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-        // a general rule, you should design your app to hide the status bar whenever you
-        // hide the navigation bar.
-        // Hide both the navigation bar and the status bar.
-        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
-        // a general rule, you should design your app to hide the status bar whenever you
-        // hide the navigation bar.
-//        val uiOptions = (0
-//                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide naviagtion,and whow again when touch
-//                or View.SYSTEM_UI_FLAG_FULLSCREEN)
-//        decorView.systemUiVisibility = uiOptions
-
         mDialog = ProgressDialog(this)
         initData()
         initView()

@@ -15,7 +15,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.ProgressDialog
-import com.bll.lnkteacher.mvp.model.Grade
+import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
@@ -82,12 +82,17 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         DataBeanManager.areaGroups=areas
         onGroupEvent()
     }
-    override fun onGradeList(grades: MutableList<Grade>) {
-        DataBeanManager.grades=grades
-        grade=DataBeanManager.popupGrades[grade-1].id
-        tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
-    }
 
+    override fun onCommon(commonData: CommonData) {
+        if (commonData.grade.isNotEmpty())
+        {
+            DataBeanManager.grades=commonData.grade
+            grade=DataBeanManager.popupGrades[grade-1].id
+            tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
+        }
+        if (commonData.subject.isNotEmpty())
+            DataBeanManager.courses=commonData.subject
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (null != mView) {
@@ -418,7 +423,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         mCommonPresenter.getClassGroups()
         mCommonPresenter.getGroups()
         if (DataBeanManager.grades.size==0)
-            mCommonPresenter.getGrades()
+            mCommonPresenter.getCommon()
     }
 
     /**
