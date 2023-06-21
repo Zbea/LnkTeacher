@@ -10,7 +10,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DrawingCatalogDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
-import com.bll.lnkteacher.mvp.model.ListItem
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.NoteContent
 import com.bll.lnkteacher.mvp.model.Notebook
 import com.bll.lnkteacher.utils.DateUtils
@@ -99,15 +99,15 @@ class NoteDrawingActivity : BaseActivity() {
      */
     private fun showCatalog(){
         var titleStr=""
-        val list= mutableListOf<ListItem>()
+        val list= mutableListOf<ItemList>()
         for (item in noteContents){
-            val listItem= ListItem()
-            listItem.name=item.title
-            listItem.page=item.page
+            val itemList= ItemList()
+            itemList.name=item.title
+            itemList.page=item.page
             if (titleStr != item.title)
             {
                 titleStr=item.title
-                list.add(listItem)
+                list.add(itemList)
             }
 
         }

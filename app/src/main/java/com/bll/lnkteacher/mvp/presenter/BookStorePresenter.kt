@@ -9,6 +9,27 @@ import com.bll.lnkteacher.net.*
 class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<IContractView.IBookStoreView>(view) {
 
     /**
+     * 书籍
+     */
+    fun getBooks(map: HashMap<String,Any>) {
+
+        val books = RetrofitManager.service.getBooks(map)
+
+        doRequest(books, object : Callback<BookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<BookStore>) {
+                if (tBaseResult.data!=null)
+                    view.onBook(tBaseResult.data)
+            }
+
+        }, true)
+
+    }
+
+    /**
      * 教材
      */
     fun getTextBooks(map: HashMap<String,Any>) {
@@ -30,11 +51,31 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
     }
 
     /**
+     * 作业
+     */
+    fun getHomeworkBooks(map: HashMap<String,Any>) {
+
+        val books = RetrofitManager.service.getHomewrokBooks(map)
+
+        doRequest(books, object : Callback<BookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<BookStore>) {
+                view.onBook(tBaseResult.data)
+            }
+
+        }, true)
+
+    }
+
+    /**
      * 参考教材
      */
-    fun getTextBookCks(map: HashMap<String,Any>) {
+    fun getTeachingBooks(map: HashMap<String,Any>) {
 
-        val books = RetrofitManager.service.getTextBookCKs(map)
+        val books = RetrofitManager.service.getTeachingBooks(map)
 
         doRequest(books, object : Callback<BookStore>(view) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {

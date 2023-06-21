@@ -29,8 +29,10 @@ import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_fragment_title.tv_title
 import kotlinx.android.synthetic.main.common_page_number.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
@@ -84,14 +86,16 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     }
 
     override fun onCommon(commonData: CommonData) {
-        if (commonData.grade.isNotEmpty())
+        if (!commonData.grade.isNullOrEmpty())
         {
             DataBeanManager.grades=commonData.grade
             grade=DataBeanManager.popupGrades[grade-1].id
-            tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
+            tv_grade?.text=DataBeanManager.popupGrades[grade-1].name
         }
-        if (commonData.subject.isNotEmpty())
+        if (!commonData.subject.isNullOrEmpty())
             DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -115,6 +119,7 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
         isViewPrepare = true
         initCommonTitle()
         initView()
@@ -185,14 +190,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             }
         }
 
-        tv_fragment_grade?.setOnClickListener{
+        tv_grade?.setOnClickListener{
             showPopGradeView()
         }
 
         grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         if (DataBeanManager.popupGrades.size>0){
             grade=DataBeanManager.popupGrades[grade-1].id
-            tv_fragment_grade?.text=DataBeanManager.popupGrades[grade-1].name
+            tv_grade?.text=DataBeanManager.popupGrades[grade-1].name
         }
     }
 
@@ -207,20 +212,10 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
 
     fun showSearch(isShow:Boolean) {
         if (isShow){
-            showView(tv_search)
+            showView(ll_search)
         }
         else{
-            disMissView(tv_search)
-        }
-    }
-
-
-    fun showBackView(isShow:Boolean) {
-        if (isShow){
-            showView(iv_back)
-        }
-        else{
-            disMissView(iv_back)
+            disMissView(ll_search)
         }
     }
 
@@ -318,9 +313,9 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     private fun showPopGradeView() {
         if (gradePopup==null){
-            gradePopup= PopupRadioList(requireActivity(), DataBeanManager.popupGrades, tv_fragment_grade,tv_fragment_grade.width,  5).builder()
+            gradePopup= PopupRadioList(requireActivity(), DataBeanManager.popupGrades, tv_grade,tv_grade.width,  5).builder()
             gradePopup?.setOnSelectListener { item ->
-                tv_fragment_grade?.text=item.name
+                tv_grade?.text=item.name
                 grade=item.id
                 SPUtil.putInt("grade",grade)
                 onGradeEvent()
@@ -426,6 +421,18 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
             mCommonPresenter.getCommon()
     }
 
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(msgFlag: String) {
+        onEventBusMessage(msgFlag)
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
+    }
+
     /**
      * 每次翻页，刷新数据
      */
@@ -454,6 +461,11 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      * 群事件
      */
     open fun onGroupEvent(){
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

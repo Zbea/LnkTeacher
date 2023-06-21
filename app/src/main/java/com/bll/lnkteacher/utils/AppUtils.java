@@ -307,8 +307,7 @@ public class AppUtils {
                 {
                     AppBean myAppInfo = new AppBean();
                     myAppInfo.appId=4+i;
-                    String appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
-                    myAppInfo.appName=appName;
+                    myAppInfo.appName= packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.packageName=packageInfo.packageName;
                     if (packageInfo.applicationInfo.loadIcon(packageManager) == null) {
                         continue;

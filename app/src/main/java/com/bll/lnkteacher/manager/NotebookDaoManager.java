@@ -53,11 +53,6 @@ public class NotebookDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public long getInsertId(){
-        List<Notebook> queryList = dao.queryBuilder().build().list();
-        return queryList.get(queryList.size()-1).id;
-    }
-
     public List<Notebook> queryAll() {
         return dao.queryBuilder().where(whereUser).orderDesc(NotebookDao.Properties.CreateDate).build().list();
     }

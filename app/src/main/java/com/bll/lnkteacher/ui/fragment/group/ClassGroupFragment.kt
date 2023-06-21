@@ -138,8 +138,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     override fun onClassGroupEvent() {
         classGroups=DataBeanManager.classGroups
         mAdapter?.setNewData(classGroups)
-        //更新全局班群
-        DataBeanManager.classGroups=classGroups
     }
 
     override fun onRefreshData() {

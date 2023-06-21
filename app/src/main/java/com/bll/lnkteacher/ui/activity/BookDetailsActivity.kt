@@ -43,10 +43,10 @@ class BookDetailsActivity:BaseActivity() {
 
     override fun initData() {
         val id=intent.getIntExtra("book_id",0)
-        book = BookGreenDaoManager.getInstance().queryBookByBookID(id)
+        book = BookGreenDaoManager.getInstance().queryTextBookByBookID(id)
         page=book?.pageIndex!!
 
-        val cataLogFilePath =FileAddress().getPathBookCatalog(book?.bookPath!!)
+        val cataLogFilePath =FileAddress().getPathTextBookCatalog(book?.bookPath!!)
         val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
         catalogMsg=Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
         if (catalogMsg==null) return
@@ -146,7 +146,7 @@ class BookDetailsActivity:BaseActivity() {
 
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
-        val path=FileAddress().getPathBookPicture(book?.bookPath!!)
+        val path=FileAddress().getPathTextBookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path,".jpg")
         if (listFiles.size==0)
             return null

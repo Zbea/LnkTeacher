@@ -35,7 +35,7 @@ class TeachingFragment : BaseFragment(){
 
     override fun initView() {
         setTitle(R.string.main_teaching_title)
-        showView(iv_manager,tv_fragment_grade)
+        showView(iv_manager,tv_grade)
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -84,24 +84,24 @@ class TeachingFragment : BaseFragment(){
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
-                    showView(iv_manager,tv_fragment_grade)
+                    showView(iv_manager,tv_grade)
                     iv_manager.setImageResource(R.mipmap.icon_manager)
                     switchFragment(lastFragment, homeworkAssignFragment)
                 }
 
                 1 -> {
-                    disMissView(iv_manager,tv_fragment_grade)
+                    disMissView(iv_manager,tv_grade)
                     switchFragment(lastFragment, homeworkCorrectFragment)
                 }
 
                 2 -> {
-                    showView(iv_manager,tv_fragment_grade)
+                    showView(iv_manager,tv_grade)
                     iv_manager.setImageResource(R.mipmap.icon_add)
                     switchFragment(lastFragment, testPaperAssignFragment)
                 }
 
                 3 -> {
-                    disMissView(iv_manager,tv_fragment_grade)
+                    disMissView(iv_manager,tv_grade)
                     switchFragment(lastFragment, testPaperCorrectFragment)
                 }
 

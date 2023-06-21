@@ -15,7 +15,7 @@ import com.bll.lnkteacher.mvp.model.HandoutsList
 import com.bll.lnkteacher.mvp.presenter.HandoutsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.BookDetailsActivity
-import com.bll.lnkteacher.ui.activity.BookStoreActivity
+import com.bll.lnkteacher.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -26,8 +26,6 @@ import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
@@ -54,13 +52,11 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
 
     override fun initView() {
         pageSize=12
-
-        EventBus.getDefault().register(this)
         setTitle(R.string.main_textbook_title)
         showSearch(true)
 
-        tv_search?.setOnClickListener {
-            startActivity(Intent(activity, BookStoreActivity::class.java))
+        ll_search?.setOnClickListener {
+            startActivity(Intent(activity, BookStoreTypeActivity::class.java))
         }
 
         initTab()
@@ -85,13 +81,13 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
             tabId=id
             textBook = tabStrs[id]
             pageIndex=1
-            if (tabId==3){
-                showView(rv_handouts,tv_fragment_grade)
+            if (tabId==5){
+                showView(rv_handouts,tv_grade)
                 disMissView(rv_list)
             }
             else{
                 showView(rv_list)
-                disMissView(rv_handouts,tv_fragment_grade)
+                disMissView(rv_handouts,tv_grade)
             }
             fetchData()
         }
@@ -121,7 +117,7 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
     private fun onLongClick(): Boolean {
         BookManageDialog(requireActivity(), book!!).builder()
             .setOnDialogClickListener {
-                CommonDialog(requireActivity()).setContent(R.string.textbook_is_delete_tips).builder()
+                CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
                     .setDialogClickListener(object :
                         CommonDialog.OnDialogClickListener {
                         override fun cancel() {
@@ -152,10 +148,8 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
         }
     }
 
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
+        super.onEventBusMessage(msgFlag)
         if (msgFlag == TEXT_BOOK_EVENT) {
             fetchData()
         }
@@ -166,13 +160,8 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
         fetchCommonData()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
     override fun fetchData() {
-        if (tabId==3){
+        if (tabId==5){
             val map=HashMap<String,Any>()
             map["page"] = pageIndex
             map["size"] = pageSize
@@ -180,8 +169,8 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
             mPresenter.getList(map)
         }
         else{
-            books = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook, pageIndex, 9)
-            val total = BookGreenDaoManager.getInstance().queryAllTextBook(0, textBook)
+            books = BookGreenDaoManager.getInstance().queryAllTextBook( textBook, pageIndex, 9)
+            val total = BookGreenDaoManager.getInstance().queryAllTextBook( textBook)
             setPageNumber(total.size)
             mAdapter?.setNewData(books)
         }

@@ -75,7 +75,7 @@
             </activity>
         <activity android:name=".ui.activity.DateActivity" />
         <activity android:name=".ui.activity.DateEventActivity" />
-        <activity android:name="com.bll.lnkteacher.ui.activity.BookStoreActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.book.TextBookStoreActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.BookDetailsActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MessageListActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MainCourseActivity"/>
@@ -93,11 +93,16 @@
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name="com.bll.lnkteacher.ui.activity.book.BookTypeListActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name="com.bll.lnkteacher.ui.activity.group.GroupUserActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name="com.bll.lnkteacher.ui.activity.TextbookActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.AppCenterActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.book.BookStoreTypeActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.book.BookStoreActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

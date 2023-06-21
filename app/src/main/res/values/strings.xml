@@ -13,6 +13,7 @@
     <string name="psw_tip">请输入6–20数字、字母的密码</string>
     <string name="phone_tip">请正确输入11位手机号码</string>
 
+    <string name="toast_downloaded">已下载</string>
     <string name="toast_existed">已存在</string>
     <string name="grade_selector">年级选择</string>
     <string name="page_up_string">上一页</string>
@@ -25,6 +26,7 @@
     <string name="classGroup_teacher">任课老师</string>
 
     <string name="toast_selector_message">请选择要删除的消息</string>
+    <string name="toast_download_install">正在下载安装</string>
 
     <string name="receive">收到</string>
     <string name="send">发送</string>
@@ -39,6 +41,8 @@
     <string name="save">保存</string>
     <string name="play">播放</string>
     <string name="pause">暂停</string>
+    <string name="buy">购买</string>
+    <string name="download">下载</string>
 
     <string name="main_home_title">首页</string>
     <string name="main_textbook_title">教学</string>
@@ -50,7 +54,9 @@
     <string name="main_app_title">应用</string>
 
     <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">我的教辅</string>
+    <string name="textbook_tab_course">解析课本</string>
+    <string name="textbook_tab_homework">我的题卷本</string>
+    <string name="textbook_tab_homework_other">参考题卷本</string>
     <string name="textbook_tab_teaching">教学教育</string>
     <string name="textbook_tab_handouts">授课讲义</string>
 
@@ -59,9 +65,7 @@
     <string name="teaching_tab_testpaper_assign">考卷发放</string>
     <string name="teaching_tab_testpaper_correct">考卷批改</string>
 
-    <string name="note_tab_diary">我的日记</string>
-    <string name="note_tab_article">金句彩段</string>
-    <string name="note_tab_topic">典型题型</string>
+    <string name="note_tab_diary">我的密本</string>
     <string name="note_type_hgb">横格本</string>
     <string name="note_type_fgb">方格本</string>
     <string name="note_type_kbb">空白本</string>
@@ -79,7 +83,7 @@
     <string name="main_button_textbook">我的课本</string>
     <string name="main_button_note">笔记</string>
 
-    <string name="textbook_is_delete_tips">确认删除该教材？</string>
+    <string name="toast_is_delete_tips">确认删除？</string>
 
     <string name="classgroup_selector_str">班群选择</string>
     <string name="classgroup_create_success">创建班群成功</string>
@@ -119,5 +123,32 @@
 
     <string name="teaching_homework_start_date">布置时间</string>
     <string name="teaching_homework_end_date">上交时间</string>
+
+    <string name="book_my">我的阅读</string>
+    <string name="book_type_title">分类展示</string>
+    <string name="book_tab_gj">古籍</string>
+    <string name="book_tab_zrkx">自然科学</string>
+    <string name="book_tab_shkx">社会科学</string>
+    <string name="book_tab_sxkx">思维科学</string>
+
+    <string name="book_tab_sjcc">诗经楚辞</string>
+    <string name="book_tab_tssc">唐诗宋词</string>
+    <string name="book_tab_gdjd">古代经典</string>
+    <string name="book_tab_sdmz">四大名著</string>
+    <string name="book_tab_zgkj">中国科技</string>
+    <string name="book_tab_xssw">小说散文</string>
+    <string name="book_tab_wgyz">外国原著</string>
+    <string name="book_tab_lsdl">历史地理</string>
+    <string name="book_tab_zzjj">政治经济</string>
+    <string name="book_tab_jszl">军事战略</string>
+    <string name="book_tab_kxjs">科学技术</string>
+    <string name="book_tab_ydcy">运动才艺</string>
+
+    <string name="book_download_fail">下载失败</string>
+    <string name="book_download_success">下载成功</string>
+    <string name="book_decompression_fail">解压失败</string>
+
+    <string name="download_official_str">官方</string>
+    <string name="download_thirdParty_str">第三方</string>
 
 </resources>

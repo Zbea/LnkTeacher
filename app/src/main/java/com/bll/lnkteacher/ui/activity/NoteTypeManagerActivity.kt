@@ -73,7 +73,7 @@ class NoteTypeManagerActivity : BaseActivity() {
 
     //删除
     private fun setDeleteView(){
-        CommonDialog(this).setContent("确定要删除该条笔记本？").builder()
+        CommonDialog(this).setContent("确定删除？").builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

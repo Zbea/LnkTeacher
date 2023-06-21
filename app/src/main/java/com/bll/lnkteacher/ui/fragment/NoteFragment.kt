@@ -28,8 +28,6 @@ import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
@@ -59,8 +57,6 @@ class NoteFragment : BaseFragment() {
 
         popWindowMoreBeans.add(PopupBean(0, "重命名", true))
         popWindowMoreBeans.add(PopupBean(1, "删除", false))
-
-        EventBus.getDefault().register(this)
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
@@ -239,22 +235,18 @@ class NoteFragment : BaseFragment() {
             }
     }
 
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
-        if (msgFlag == NOTE_BOOK_MANAGER_EVENT) {
-            findTabs()
-        }
-        if (msgFlag == NOTE_EVENT) {
-            fetchData()
+    override fun onEventBusMessage(msgFlag: String) {
+        super.onEventBusMessage(msgFlag)
+        when(msgFlag){
+            NOTE_BOOK_MANAGER_EVENT->{
+                findTabs()
+            }
+            NOTE_EVENT->{
+                fetchData()
+            }
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
 
     override fun fetchData() {
         noteBooks = NotebookDaoManager.getInstance().queryAll(typeStr, pageIndex, 10)

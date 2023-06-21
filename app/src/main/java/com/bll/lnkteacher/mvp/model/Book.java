@@ -8,6 +8,8 @@ import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
+import java.util.Objects;
+
 /**
  * 书籍
  */
@@ -17,66 +19,72 @@ public class Book {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
-    @Unique
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public int bookId;
+    public int bookPlusId;
     public String imageUrl;
-    public int subjectName;//课目
-    public String createdAt;
-    public String bookDesc;//描述
-    public int semester;//学期
-    public String area;//地区
     public String bookName;//书名
     public int price;//书的价格
+    public int category;//0教材1古籍2自然科学3社会科学4思维科学5运动才艺
+    public int type;//类别
+    public String subType;//子类
+    public String bookDesc;//描述
+    public int semester;//学期
+    public int subjectName;//课目
+    public String area;//地区
     public int grade; //年级
     public String bookVersion;//版本
     public String version;//版本
     public String supply ;  //官方
-    public int category;//0教材1古籍2自然科学3社会科学4思维科学5运动才艺
-    public int type;
     public String textBookType;  //教材类别
-    public int status;
+    public String bookType;//书架所有分类
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
-    public Long time;//观看时间
-    public int pageIndex=0;//当前页
+    public String bookDrawPath;  //book书的手写路径
+    public long time;//观看时间
+    public int pageIndex;//当前页
     public String pageUrl;//当前页路径
+    public boolean isLook;//是否已经打开
     @Transient
-    public int loadSate=0;//0未下载 1正下载 2已下载
+    public int loadSate;//0未下载 1正下载 2已下载
     @Transient
-    public int buyStatus;
-    @Generated(hash = 2101682676)
-    public Book(Long id, long userId, int bookId, String imageUrl, int subjectName,
-            String createdAt, String bookDesc, int semester, String area,
-            String bookName, int price, int grade, String bookVersion,
-            String version, String supply, int category, int type,
-            String textBookType, int status, String downloadUrl, String bookPath,
-            Long time, int pageIndex, String pageUrl) {
+    public int buyStatus;//购买状态1
+    @Generated(hash = 1796331101)
+    public Book(Long id, long userId, int bookId, int bookPlusId, String imageUrl,
+            String bookName, int price, int category, int type, String subType,
+            String bookDesc, int semester, int subjectName, String area, int grade,
+            String bookVersion, String version, String supply, String textBookType,
+            String bookType, String downloadUrl, String bookPath,
+            String bookDrawPath, long time, int pageIndex, String pageUrl,
+            boolean isLook) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.bookPlusId = bookPlusId;
         this.imageUrl = imageUrl;
-        this.subjectName = subjectName;
-        this.createdAt = createdAt;
-        this.bookDesc = bookDesc;
-        this.semester = semester;
-        this.area = area;
         this.bookName = bookName;
         this.price = price;
+        this.category = category;
+        this.type = type;
+        this.subType = subType;
+        this.bookDesc = bookDesc;
+        this.semester = semester;
+        this.subjectName = subjectName;
+        this.area = area;
         this.grade = grade;
         this.bookVersion = bookVersion;
         this.version = version;
         this.supply = supply;
-        this.category = category;
-        this.type = type;
         this.textBookType = textBookType;
-        this.status = status;
+        this.bookType = bookType;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
+        this.bookDrawPath = bookDrawPath;
         this.time = time;
         this.pageIndex = pageIndex;
         this.pageUrl = pageUrl;
+        this.isLook = isLook;
     }
     @Generated(hash = 1839243756)
     public Book() {
@@ -99,23 +107,47 @@ public class Book {
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
+    public int getBookPlusId() {
+        return this.bookPlusId;
+    }
+    public void setBookPlusId(int bookPlusId) {
+        this.bookPlusId = bookPlusId;
+    }
     public String getImageUrl() {
         return this.imageUrl;
     }
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    public int getSubjectName() {
-        return this.subjectName;
+    public String getBookName() {
+        return this.bookName;
     }
-    public void setSubjectName(int subjectName) {
-        this.subjectName = subjectName;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
-    public String getCreatedAt() {
-        return this.createdAt;
+    public int getPrice() {
+        return this.price;
     }
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setPrice(int price) {
+        this.price = price;
+    }
+    public int getCategory() {
+        return this.category;
+    }
+    public void setCategory(int category) {
+        this.category = category;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public String getSubType() {
+        return this.subType;
+    }
+    public void setSubType(String subType) {
+        this.subType = subType;
     }
     public String getBookDesc() {
         return this.bookDesc;
@@ -129,23 +161,17 @@ public class Book {
     public void setSemester(int semester) {
         this.semester = semester;
     }
+    public int getSubjectName() {
+        return this.subjectName;
+    }
+    public void setSubjectName(int subjectName) {
+        this.subjectName = subjectName;
+    }
     public String getArea() {
         return this.area;
     }
     public void setArea(String area) {
         this.area = area;
-    }
-    public String getBookName() {
-        return this.bookName;
-    }
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-    public int getPrice() {
-        return this.price;
-    }
-    public void setPrice(int price) {
-        this.price = price;
     }
     public int getGrade() {
         return this.grade;
@@ -171,29 +197,17 @@ public class Book {
     public void setSupply(String supply) {
         this.supply = supply;
     }
-    public int getCategory() {
-        return this.category;
-    }
-    public void setCategory(int category) {
-        this.category = category;
-    }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
     public String getTextBookType() {
         return this.textBookType;
     }
     public void setTextBookType(String textBookType) {
         this.textBookType = textBookType;
     }
-    public int getStatus() {
-        return this.status;
+    public String getBookType() {
+        return this.bookType;
     }
-    public void setStatus(int status) {
-        this.status = status;
+    public void setBookType(String bookType) {
+        this.bookType = bookType;
     }
     public String getDownloadUrl() {
         return this.downloadUrl;
@@ -207,10 +221,16 @@ public class Book {
     public void setBookPath(String bookPath) {
         this.bookPath = bookPath;
     }
-    public Long getTime() {
+    public String getBookDrawPath() {
+        return this.bookDrawPath;
+    }
+    public void setBookDrawPath(String bookDrawPath) {
+        this.bookDrawPath = bookDrawPath;
+    }
+    public long getTime() {
         return this.time;
     }
-    public void setTime(Long time) {
+    public void setTime(long time) {
         this.time = time;
     }
     public int getPageIndex() {
@@ -225,7 +245,12 @@ public class Book {
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
     }
+    public boolean getIsLook() {
+        return this.isLook;
+    }
+    public void setIsLook(boolean isLook) {
+        this.isLook = isLook;
+    }
 
-  
 
 }

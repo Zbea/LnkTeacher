@@ -2,6 +2,7 @@ package com.bll.lnkteacher.mvp.view;
 
 import com.bll.lnkteacher.mvp.model.AccountList;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
+import com.bll.lnkteacher.mvp.model.AppList;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CommonData;
@@ -236,6 +237,12 @@ public interface IContractView {
 
     interface IHandoutsView extends IBaseView{
         void onList(HandoutsList list);
+    }
+
+    //应用
+    interface IAPPView extends IBaseView {
+        void onAppList(AppList appBean);
+        void buySuccess();
     }
 
 }

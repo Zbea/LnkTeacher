@@ -7,6 +7,6 @@ import java.util.Map;
  * 教材分类
  */
 public class BookStoreType {
-    public List<String> grade;
-    public List<ListItem> subjectList;//科目
+    public List<ItemList> type;//除开教材分类
+    public Map<String,List<String>> subType ;//书籍分类
 }

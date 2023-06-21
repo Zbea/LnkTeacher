@@ -1,12 +1,13 @@
 package com.bll.lnkteacher
 
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
-import com.bll.lnkteacher.Constants.Companion.BOOK_PICTURE_FILES
-import com.bll.lnkteacher.Constants.Companion.CATALOG_TXT
 import com.bll.lnkteacher.Constants.Companion.DATE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
+import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_CATALOG_TXT
+import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PATH
+import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PICTURE_FILES
 import com.bll.lnkteacher.Constants.Companion.ZIP_PATH
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.SPUtil
@@ -18,23 +19,28 @@ class FileAddress {
 
     /**
      * 书籍地址
-     * ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/mUserId/fileName
+     * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/$fileName"
+        return "$BOOK_PATH/$fileName"
     }
-
+    fun getPathTextBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+    }
+    fun getPathTextBookDraw(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}draw"
+    }
     /**
      * 书籍目录地址
      */
-    fun getPathBookCatalog(path:String):String{
-        return path + File.separator + CATALOG_TXT
+    fun getPathTextBookCatalog(path:String):String{
+        return path + File.separator + TEXTBOOK_CATALOG_TXT
     }
     /**
      * 书籍图片地址
      */
-    fun getPathBookPicture(path:String):String{
-        return path + File.separator + BOOK_PICTURE_FILES
+    fun getPathTextBookPicture(path:String):String{
+        return path + File.separator + TEXTBOOK_PICTURE_FILES
     }
     /**
      * zip保存地址

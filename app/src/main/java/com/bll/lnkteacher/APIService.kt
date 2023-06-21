@@ -111,7 +111,18 @@ interface APIService{
      * 教材参考列表
      */
     @GET("book/list")
-    fun getTextBookCKs(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getHomewrokBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
+     * 教材参考列表
+     */
+    @GET("book/list")
+    fun getTeachingBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    /**
+     * 书城列表
+     */
+    @GET("book/plus/list")
+    fun getBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+
     /**
      * 购买书籍
      */
@@ -328,4 +339,16 @@ interface APIService{
      */
     @GET("teaching/list")
     fun getHandouts(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HandoutsList>>
+
+    /**
+     * 应用列表
+     */
+    @GET("application/list")
+    fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
+
+    /**
+     * 购买apk
+     */
+    @POST("buy/book/createOrder")
+    fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 }

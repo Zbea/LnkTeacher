@@ -11,7 +11,6 @@ class AppListAdapter(layoutResId: Int, data: List<AppBean>?) : BaseQuickAdapter<
         helper.apply {
             setText(R.id.tv_name,item.appName)
             setImageDrawable(R.id.iv_image,item.image)
-            addOnClickListener(R.id.iv_image)
         }
     }
 

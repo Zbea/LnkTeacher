@@ -16,7 +16,8 @@ object DataBeanManager {
     var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
 
     var grades= mutableListOf<Grade>()
-    var courses= mutableListOf<ListItem>()
+    var typeGrades= mutableListOf<Grade>()
+    var courses= mutableListOf<ItemList>()
     var provinces= mutableListOf<AreaBean>()
 
     private val listTitle = arrayOf(
@@ -30,6 +31,7 @@ object DataBeanManager {
     )
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),mContext.getString(R.string.textbook_tab_course),
+        mContext.getString(R.string.textbook_tab_homework),mContext.getString(R.string.textbook_tab_homework_other),
         mContext.getString(R.string.textbook_tab_teaching), mContext.getString(R.string.textbook_tab_handouts)
     )
 
@@ -47,6 +49,13 @@ object DataBeanManager {
         mContext.getString(R.string.classGroup_teacher),mContext.getString(R.string.classGroup_headteacher)
     )
 
+    val bookType = arrayOf(
+        "诗经楚辞", "唐诗宋词", "古代经典",
+        "四大名著", "中国科技", "小说散文",
+        "外国原著", "历史地理", "政治经济",
+        "军事战略", "科学技术", "运动才艺"
+    )
+
     fun getGradeClassGroups(grade:Int):MutableList<PopupBean>{
         val popClasss= mutableListOf<PopupBean>()
         for (item in classGroups){
@@ -56,6 +65,7 @@ object DataBeanManager {
         }
         return popClasss
     }
+
 
     val popClassGroups:MutableList<PopupBean>
         get(){
@@ -92,6 +102,24 @@ object DataBeanManager {
             val list= mutableListOf<PopupBean>()
             for (i in grades.indices){
                 list.add(PopupBean(grades[i].type, grades[i].desc, i == 0))
+            }
+            return list
+        }
+
+    val popupTypeGrades: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in typeGrades.indices){
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
+            }
+            return list
+        }
+
+    val popupCourses: MutableList<PopupBean>
+        get() {
+            val list= mutableListOf<PopupBean>()
+            for (i in courses.indices){
+                list.add(PopupBean(courses[i].type, courses[i].desc, i == 0))
             }
             return list
         }
@@ -242,4 +270,14 @@ object DataBeanManager {
             return list
         }
 
+    val bookStoreTypes: MutableList<ItemList>
+        get() {
+            val list = mutableListOf<ItemList>()
+            list.add(ItemList(1, mContext.getString(R.string.book_tab_gj)))
+            list.add(ItemList(2, mContext.getString(R.string.book_tab_zrkx)))
+            list.add(ItemList(3, mContext.getString(R.string.book_tab_shkx)))
+            list.add(ItemList(4, mContext.getString(R.string.book_tab_sxkx)))
+            list.add(ItemList(5, mContext.getString(R.string.book_tab_ydcy)))
+            return list
+        }
 }

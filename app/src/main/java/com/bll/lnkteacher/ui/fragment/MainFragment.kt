@@ -34,9 +34,6 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
@@ -46,7 +43,6 @@ import java.util.Date
  * 首页
  */
 class MainFragment : BaseFragment(),IContractView.IMessageView{
-
 
     private var mMessagePresenter=MessagePresenter(this)
     private var mBookAdapter: BookAdapter? = null
@@ -73,31 +69,8 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     }
 
     override fun initView() {
-        EventBus.getDefault().register(this)
         setTitle(R.string.main_home_title)
-        showSearch(false)
 
-        onClickView()
-
-        initMessageView()
-        initTextBookView()
-        initTeachingView()
-        initCourse()
-        initNote()
-
-        findNotes()
-        findTeaching()
-        findTextBook()
-    }
-
-    override fun lazyLoad() {
-        findMessages()
-        fetchCommonData()
-        initDateView()
-    }
-
-    @SuppressLint("WrongConstant")
-    private fun onClickView() {
         ll_date.setOnClickListener {
             startActivity(Intent(activity, DateActivity::class.java))
         }
@@ -117,7 +90,23 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
             )
         }
 
+        initMessageView()
+        initTextBookView()
+        initTeachingView()
+        initCourse()
+        initNote()
+
+        findNotes()
+        onClassGroupEvent()
+        findTextBook()
     }
+
+    override fun lazyLoad() {
+        findMessages()
+        fetchCommonData()
+        initDateView()
+    }
+
 
     //课程表相关处理
     @SuppressLint("WrongConstant")
@@ -202,16 +191,8 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
      * 查找课本
      */
     private fun findTextBook(){
-        textbooks=BookGreenDaoManager.getInstance().queryAllTextBook(0,getString(R.string.textbook_tab_text))
+        textbooks=BookGreenDaoManager.getInstance().queryAllTextBook(getString(R.string.textbook_tab_text))
         mBookAdapter?.setNewData(textbooks)
-    }
-
-    /**
-     * 查找教学
-     */
-    private fun findTeaching(){
-        classGroups=DataBeanManager.classGroups
-        mTeachingAdapter?.setNewData(classGroups)
     }
 
     /**
@@ -233,10 +214,8 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
         mMessagePresenter.getList(map,false)
     }
 
-
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+    override fun onEventBusMessage(msgFlag: String) {
+        super.onEventBusMessage(msgFlag)
         when (msgFlag) {
             DATE_EVENT -> {
                 initDateView()
@@ -244,14 +223,11 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
             COURSE_EVENT -> {
                 initCourse()
             }
-            NOTE_BOOK_MANAGER_EVENT -> {
-                findNotes() //用于删除笔记本后 刷新列表
-            }
-            NOTE_EVENT -> {
+            NOTE_EVENT,NOTE_BOOK_MANAGER_EVENT -> {
                 findNotes()
             }
             CLASSGROUP_EVENT -> {
-                findTeaching()
+                onClassGroupEvent()
             }
             TEXT_BOOK_EVENT -> {
                 findTextBook()
@@ -263,17 +239,13 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
-
     override fun onRefreshData() {
         lazyLoad()
     }
 
     override fun onClassGroupEvent() {
-        findTeaching()
+        classGroups=DataBeanManager.classGroups
+        mTeachingAdapter?.setNewData(classGroups)
     }
 
 }

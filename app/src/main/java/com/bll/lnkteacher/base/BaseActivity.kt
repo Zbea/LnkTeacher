@@ -16,6 +16,8 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -29,10 +31,7 @@ import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity
-import com.bll.lnkteacher.utils.ActivityManager
-import com.bll.lnkteacher.utils.KeyboardUtils
-import com.bll.lnkteacher.utils.SPUtil
-import com.bll.lnkteacher.utils.SToast
+import com.bll.lnkteacher.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_page_number.*
@@ -136,10 +135,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     fun showSearchView(isShow:Boolean) {
        if (isShow){
-            showView(tv_search)
+            showView(ll_search)
         }
         else{
-            disMissView(tv_search)
+            disMissView(ll_search)
         }
     }
 
@@ -208,6 +207,22 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
     }
+    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(this, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected fun setStatusBarColor(statusColor: Int) {
