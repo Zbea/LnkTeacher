@@ -11,8 +11,8 @@ import com.bll.lnkteacher.dialog.DrawingCatalogDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.NoteContent
-import com.bll.lnkteacher.mvp.model.Notebook
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_note_draw_details.*
@@ -23,7 +23,7 @@ class NoteDrawingActivity : BaseActivity() {
     private var elik:EinkPWInterface?=null
 
     private var typeStr = ""
-    private var noteBook: Notebook? = null
+    private var note: Note? = null
     private var noteContent: NoteContent? = null//当前内容
     private var noteContents = mutableListOf<NoteContent>() //所有内容
     private var page = 0//页码
@@ -34,10 +34,10 @@ class NoteDrawingActivity : BaseActivity() {
 
     override fun initData() {
         val bundle = intent.getBundleExtra("bundle")
-        noteBook = bundle?.getSerializable("noteBundle") as Notebook
-        typeStr = noteBook?.typeStr.toString()
+        note = bundle?.getSerializable("noteBundle") as Note
+        typeStr = note?.typeStr.toString()
 
-        noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,noteBook?.id!!)
+        noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr,note?.id!!)
 
         if (noteContents.size > 0) {
             noteContent = noteContents[noteContents.size - 1]
@@ -51,7 +51,7 @@ class NoteDrawingActivity : BaseActivity() {
 
     override fun initView() {
 
-        v_content.setImageResource(ToolUtils.getImageResId(this,noteBook?.contentResId))//设置背景
+        v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
         elik = v_content.pwInterFace
         changeContent()
 
@@ -146,14 +146,14 @@ class NoteDrawingActivity : BaseActivity() {
     private fun newNoteContent() {
 
         val date=System.currentTimeMillis()
-        val path=FileAddress().getPathNote(typeStr,noteBook?.title,date)
+        val path=FileAddress().getPathNote(typeStr,note?.title,date)
         val pathName = DateUtils.longToString(date)
 
         noteContent = NoteContent()
         noteContent?.date = date
         noteContent?.typeStr=typeStr
-        noteContent?.notebookId = noteBook?.id
-        noteContent?.resId = noteBook?.contentResId
+        noteContent?.noteId = note?.id
+        noteContent?.resId = note?.contentResId
         noteContent?.title="未命名${noteContents.size+1}"
         noteContent?.filePath = "$path/$pathName.tch"
         noteContent?.pathName=pathName

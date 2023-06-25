@@ -80,7 +80,7 @@
         <activity android:name="com.bll.lnkteacher.ui.activity.MessageListActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MainCourseActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MainTeachingPlanActivity"/>
-        <activity android:name="com.bll.lnkteacher.ui.activity.NoteTypeManagerActivity"/>
+        <activity android:name="com.bll.lnkteacher.ui.activity.NotebookManagerActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.NoteDrawingActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.WalletActivity"
             android:theme="@style/activityCustom"

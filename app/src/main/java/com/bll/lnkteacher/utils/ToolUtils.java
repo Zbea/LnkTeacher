@@ -8,6 +8,15 @@ import java.util.regex.Pattern;
 
 public class ToolUtils {
 
+    /**
+     * 得到唯一id
+     * @return
+     */
+    public static int getDateId(){
+        long date=System.currentTimeMillis()/1000;
+        return Long.valueOf(date).intValue();
+    }
+
     public static String getImagesStr(List<String> images){
         String url="";
         for (int i = 0; i < images.size(); i++) {

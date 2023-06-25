@@ -163,8 +163,7 @@ public class DateUtils {
     String getNowDate()
     {
         Date date = new Date();
-        String nowDate = new SimpleDateFormat("yyyy年MM月dd日").format(date);
-        return nowDate;
+        return new SimpleDateFormat("yyyy年MM月dd日").format(date);
     }
 
     //返回当前年份

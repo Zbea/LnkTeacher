@@ -23,13 +23,13 @@ class AccountLoginActivity:BaseActivity(),
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
-        SPUtil.putString("token",token)
+        SPUtil.putString("tokenTeacher",token)
         presenter.accounts()
     }
 
     override fun getAccount(user: User?) {
         user?.token=token
-        SPUtil.putObj("user",user!!)
+        SPUtil.putObj("userTeacher",user!!)
         startActivity(Intent(this,MainActivity::class.java))
         finish()
     }
@@ -66,10 +66,10 @@ class AccountLoginActivity:BaseActivity(),
 
         btn_login.setOnClickListener {
 
-            var account = ed_user.text.toString()
-            var password = MD5Utils.digest(ed_psw.text.toString())
+            val account = ed_user.text.toString()
+            val password = MD5Utils.digest(ed_psw.text.toString())
 
-            var map=HashMap<String,Any>()
+            val map=HashMap<String,Any>()
             map ["account"]=account
             map ["password"]=password
             map ["role"]= 1
@@ -78,9 +78,9 @@ class AccountLoginActivity:BaseActivity(),
 
         }
 
-        val tokenStr=SPUtil.getString("token")
+        val tokenStr=SPUtil.getString("tokenTeacher")
 
-        if (!tokenStr.isNullOrEmpty() && mUser!=null)
+        if (tokenStr.isNotEmpty() && mUser!=null)
         {
             startActivity(Intent(this,MainActivity::class.java))
             finish()

@@ -45,8 +45,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
+    var mUser=SPUtil.getObj("userTeacher",User::class.java)
+    var mUserId=SPUtil.getObj("userTeacher",User::class.java)?.accountId
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据

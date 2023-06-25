@@ -62,7 +62,6 @@ class AppFragment:BaseFragment() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        super.onEventBusMessage(msgFlag)
         when(msgFlag){
             Constants.APP_EVENT->{
                 initData()

@@ -15,7 +15,7 @@ import java.io.File
 
 class FileAddress {
 
-    val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
+    val mUserId=SPUtil.getObj("userTeacher", User::class.java)?.accountId.toString()
 
     /**
      * 书籍地址

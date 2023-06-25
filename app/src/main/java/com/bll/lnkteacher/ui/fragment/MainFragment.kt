@@ -19,7 +19,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.manager.NotebookDaoManager
+import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.MessagePresenter
@@ -50,7 +50,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     private var mTeachingAdapter: MainClassGroupAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
 
-    private var notes= mutableListOf<Notebook>()
+    private var notes= mutableListOf<Note>()
     private var mainNoteAdapter: MainNoteAdapter? = null
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
@@ -170,19 +170,12 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
 
     //笔记
     private fun initNote(){
-
         mainNoteAdapter = MainNoteAdapter(R.layout.item_main_note, notes)
         rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_main_note.adapter = mainNoteAdapter
         mainNoteAdapter?.bindToRecyclerView(rv_main_note)
-        mainNoteAdapter?.setEmptyView(R.layout.common_empty)
         mainNoteAdapter?.setOnItemClickListener { adapter, view, position ->
-            //跳转手绘
-            val intent=Intent(activity, NoteDrawingActivity::class.java)
-            val bundle= Bundle()
-            bundle.putSerializable("noteBundle",notes[position])
-            intent.putExtra("bundle",bundle)
-            startActivity(intent)
+            gotoNote(notes[position])
         }
 
     }
@@ -199,9 +192,9 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
      * 查找笔记
      */
     private fun findNotes(){
-        notes= NotebookDaoManager.getInstance().queryAll()
-        if (notes.size>6){
-            notes=notes.subList(0,6)
+        notes= NoteDaoManager.getInstance().queryAll()
+        if (notes.size>15){
+            notes=notes.subList(0,15)
         }
         mainNoteAdapter?.setNewData(notes)
     }
@@ -215,7 +208,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        super.onEventBusMessage(msgFlag)
         when (msgFlag) {
             DATE_EVENT -> {
                 initDateView()

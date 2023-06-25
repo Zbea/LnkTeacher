@@ -7,7 +7,6 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.BookManageDialog
-import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
@@ -110,28 +109,27 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
                 this.position = position
                 book = books[position]
                 onLongClick()
+                true
             }
     }
 
     //长按显示课本管理
-    private fun onLongClick(): Boolean {
-        BookManageDialog(requireActivity(), book!!).builder()
-            .setOnDialogClickListener {
-                CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
-                    .setDialogClickListener(object :
-                        CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                            FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
-                            books.remove(book)
-                            mAdapter?.notifyDataSetChanged()
-                            EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                        }
-                    })
-            }
-        return true
+    private fun onLongClick() {
+        val type=if (tabId==2||tabId==3) 2 else 1
+        BookManageDialog(requireActivity(), book!!,type).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
+                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
+                    FileUtils.deleteFile(File(book?.bookDrawPath))
+                    books.remove(book)
+                    mAdapter?.notifyDataSetChanged()
+                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                }
+                override fun onSet() {
+
+                }
+            })
     }
 
     private fun initRecyclerHandouts(){
@@ -149,7 +147,6 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        super.onEventBusMessage(msgFlag)
         if (msgFlag == TEXT_BOOK_EVENT) {
             fetchData()
         }

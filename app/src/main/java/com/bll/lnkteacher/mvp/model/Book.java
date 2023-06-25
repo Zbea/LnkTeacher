@@ -19,7 +19,7 @@ public class Book {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
     public int bookId;
     public int bookPlusId;
     public String imageUrl;

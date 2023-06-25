@@ -19,7 +19,7 @@ class MessageSendDialog(private val context: Context) {
     private var dialog: Dialog?=null
     private var ids= mutableListOf<Int>()
 
-    fun builder(): MessageSendDialog? {
+    fun builder(): MessageSendDialog {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_message_send)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)

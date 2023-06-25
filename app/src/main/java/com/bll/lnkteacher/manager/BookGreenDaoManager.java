@@ -11,6 +11,7 @@ import com.bll.lnkteacher.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by ly on 2021/1/19 17:52
@@ -29,7 +30,7 @@ public class BookGreenDaoManager {
 
     private BookDao bookDao;  //book表
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
     WhereCondition whereUser= BookDao.Properties.UserId.eq(userId);
 
 

@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_line_bottom"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10">
+    android:paddingTop="@dimen/dp_5"
+    android:paddingBottom="@dimen/dp_5">
 
     <TextView
         android:id="@+id/tv_title"
@@ -18,7 +18,7 @@
         android:lines="1"
         android:ellipsize="end"
         android:textSize="@dimen/sp_20"
-        android:text="标题"/>
+        />
 
     <TextView
         android:id="@+id/tv_date"

@@ -10,6 +10,7 @@ import com.bll.lnkteacher.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NotebookDaoManager {
 
@@ -22,16 +23,17 @@ public class NotebookDaoManager {
      */
     private static NotebookDaoManager mDbController;
 
+
     private NotebookDao dao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
     private WhereCondition whereUser= NotebookDao.Properties.UserId.eq(userId);
 
     /**
      * 构造初始化
      */
     public NotebookDaoManager() {
-        mDaoSession=MyApplication.Companion.getMDaoSession();
+        mDaoSession = MyApplication.Companion.getMDaoSession();
         dao = mDaoSession.getNotebookDao();
     }
 
@@ -54,38 +56,23 @@ public class NotebookDaoManager {
     }
 
     public List<Notebook> queryAll() {
-        return dao.queryBuilder().where(whereUser).orderDesc(NotebookDao.Properties.CreateDate).build().list();
+        return dao.queryBuilder().where(whereUser)
+                .orderAsc(NotebookDao.Properties.Date).build().list();
     }
 
     /**
+     * 是否存在这个分类
+     * @param title
      * @return
      */
-    public List<Notebook> queryAll(String type) {
-        WhereCondition whereCondition=NotebookDao.Properties.TypeStr.eq(type);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookDao.Properties.CreateDate).build().list();
-    }
-
-    /**
-     * @return
-     */
-    public List<Notebook> queryAll(String type,int page, int pageSize) {
-        WhereCondition whereCondition=NotebookDao.Properties.TypeStr.eq(type);
-        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NotebookDao.Properties.CreateDate)
-                .offset((page-1)*pageSize).limit(pageSize).build().list();
-    }
-
-    /**
-     * 是否存在笔记
-     * @return
-     */
-    public Boolean isExist(String typeStr,String title){
-        WhereCondition whereCondition1=NotebookDao.Properties.TypeStr.eq(typeStr);
-        WhereCondition whereCondition2= NotebookDao.Properties.Title.eq(title);
-        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).unique()!=null;
+    public Boolean isExist(String title){
+        WhereCondition whereUser1= NotebookDao.Properties.Title.eq(title);
+        return dao.queryBuilder().where(whereUser,whereUser1).unique()!=null;
     }
 
     public void deleteBean(Notebook bean){
         dao.delete(bean);
     }
+
 
 }

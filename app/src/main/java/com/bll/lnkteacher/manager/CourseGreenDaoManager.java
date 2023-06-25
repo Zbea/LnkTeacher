@@ -14,6 +14,7 @@ import com.bll.lnkteacher.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class CourseGreenDaoManager {
@@ -29,7 +30,7 @@ public class CourseGreenDaoManager {
 
     private CourseBeanDao courseDao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
 
     /**
      * 构造初始化

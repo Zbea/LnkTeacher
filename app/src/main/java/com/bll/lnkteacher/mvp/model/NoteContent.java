@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class NoteContent implements Serializable {
@@ -16,23 +17,22 @@ public class NoteContent implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String typeStr;//分类
-    public long notebookId;//笔记本id
+    public long noteId;//笔记本id
     public long date;//创建时间
     public String title;
     public String resId;//背景id
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 985597769)
-    public NoteContent(Long id, long userId, String typeStr, long notebookId,
-            long date, String title, String resId, String filePath, String pathName,
-            int page) {
+    @Generated(hash = 1759040734)
+    public NoteContent(Long id, long userId, String typeStr, long noteId, long date, String title,
+            String resId, String filePath, String pathName, int page) {
         this.id = id;
         this.userId = userId;
         this.typeStr = typeStr;
-        this.notebookId = notebookId;
+        this.noteId = noteId;
         this.date = date;
         this.title = title;
         this.resId = resId;
@@ -61,11 +61,11 @@ public class NoteContent implements Serializable {
     public void setTypeStr(String typeStr) {
         this.typeStr = typeStr;
     }
-    public long getNotebookId() {
-        return this.notebookId;
+    public long getNoteId() {
+        return this.noteId;
     }
-    public void setNotebookId(long notebookId) {
-        this.notebookId = notebookId;
+    public void setNoteId(long noteId) {
+        this.noteId = noteId;
     }
     public long getDate() {
         return this.date;
@@ -103,8 +103,6 @@ public class NoteContent implements Serializable {
     public void setPage(int page) {
         this.page = page;
     }
-
-
     
     
 }

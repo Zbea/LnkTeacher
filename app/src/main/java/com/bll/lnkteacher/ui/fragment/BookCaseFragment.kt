@@ -147,7 +147,6 @@ class BookCaseFragment: BaseFragment() {
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        super.onEventBusMessage(msgFlag)
         if (msgFlag == Constants.BOOK_EVENT) {
             findBook()
         }

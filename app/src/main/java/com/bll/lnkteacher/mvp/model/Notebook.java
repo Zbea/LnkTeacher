@@ -1,40 +1,31 @@
 package com.bll.lnkteacher.mvp.model;
 
-
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
+import org.greenrobot.greendao.annotation.Generated;
 
-import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
-public class Notebook implements Serializable {
-    @Transient
-    private static final long serialVersionUID = 1L;
+public class Notebook {
 
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= SPUtil.INSTANCE.getObj("user",User.class).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+    public int typeId;
     public String title;
-    public String typeStr;//笔记分类id
-    public long createDate; //创建时间
-    public String dateStr;
-    public String contentResId; //笔记内容背景id
-    @Generated(hash = 937666008)
-    public Notebook(Long id, long userId, String title, String typeStr,
-            long createDate, String dateStr, String contentResId) {
+    public long date;
+    @Generated(hash = 270609839)
+    public Notebook(Long id, long userId, int typeId, String title, long date) {
         this.id = id;
         this.userId = userId;
+        this.typeId = typeId;
         this.title = title;
-        this.typeStr = typeStr;
-        this.createDate = createDate;
-        this.dateStr = dateStr;
-        this.contentResId = contentResId;
+        this.date = date;
     }
     @Generated(hash = 1348176405)
     public Notebook() {
@@ -51,37 +42,23 @@ public class Notebook implements Serializable {
     public void setUserId(long userId) {
         this.userId = userId;
     }
+    public int getTypeId() {
+        return this.typeId;
+    }
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
     public String getTitle() {
         return this.title;
     }
     public void setTitle(String title) {
         this.title = title;
     }
-    public String getTypeStr() {
-        return this.typeStr;
+    public long getDate() {
+        return this.date;
     }
-    public void setTypeStr(String typeStr) {
-        this.typeStr = typeStr;
+    public void setDate(long date) {
+        this.date = date;
     }
-    public long getCreateDate() {
-        return this.createDate;
-    }
-    public void setCreateDate(long createDate) {
-        this.createDate = createDate;
-    }
-    public String getDateStr() {
-        return this.dateStr;
-    }
-    public void setDateStr(String dateStr) {
-        this.dateStr = dateStr;
-    }
-    public String getContentResId() {
-        return this.contentResId;
-    }
-    public void setContentResId(String contentResId) {
-        this.contentResId = contentResId;
-    }
-
-
-
+   
 }

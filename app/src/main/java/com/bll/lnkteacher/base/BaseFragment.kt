@@ -11,11 +11,14 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.ProgressDialog
+import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
@@ -24,6 +27,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity
+import com.bll.lnkteacher.ui.activity.NoteDrawingActivity
 import com.bll.lnkteacher.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -55,8 +59,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
+    var mUser=SPUtil.getObj("userTeacher",User::class.java)
+    var mUserId=SPUtil.getObj("userTeacher",User::class.java)?.accountId
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -324,6 +328,21 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         else{
             gradePopup?.show()
         }
+    }
+
+    /**
+     * 跳转笔记写作
+     */
+    fun gotoNote(note: Note) {
+        note.date=System.currentTimeMillis()
+        NoteDaoManager.getInstance().insertOrReplace(note)
+        EventBus.getDefault().post(Constants.NOTE_EVENT)
+
+        val intent = Intent(activity, NoteDrawingActivity::class.java)
+        val bundle = Bundle()
+        bundle.putSerializable("noteBundle",note)
+        intent.putExtra("bundle",bundle)
+        startActivity(intent)
     }
 
 

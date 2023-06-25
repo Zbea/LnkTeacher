@@ -3,16 +3,14 @@ package com.bll.lnkteacher.manager;
 import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.DateEventDao;
-import com.bll.lnkteacher.greendao.NotebookDao;
-import com.bll.lnkteacher.mvp.model.Date;
 import com.bll.lnkteacher.mvp.model.DateEvent;
-import com.bll.lnkteacher.mvp.model.Notebook;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DateEventDaoManager {
 
@@ -27,7 +25,7 @@ public class DateEventDaoManager {
 
     private DateEventDao dao;
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
     private WhereCondition whereUser= DateEventDao.Properties.UserId.eq(userId);
 
     /**

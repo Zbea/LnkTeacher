@@ -21,7 +21,7 @@ class ICommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContrac
                 return false
             }
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                if (tBaseResult.data?.list?.isNotEmpty() == true)
+                if (!tBaseResult.data?.list.isNullOrEmpty())
                     view.onClassList(tBaseResult.data?.list)
             }
         }, false)
@@ -37,7 +37,7 @@ class ICommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContrac
             }
 
             override fun success(tBaseResult: BaseResult<MutableList<Group>>) {
-                if (tBaseResult.data?.isNotEmpty() == true)
+                if (!tBaseResult.data.isNullOrEmpty())
                     view.onGroupList(tBaseResult.data)
             }
         }, false)

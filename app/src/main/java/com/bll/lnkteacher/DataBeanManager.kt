@@ -178,12 +178,12 @@ object DataBeanManager {
     }
 
 
-    val noteBook: MutableList<NoteTypeBean>
+    val notebooks: MutableList<Notebook>
         get() {
-            val list= mutableListOf<NoteTypeBean>()
-            list.add(NoteTypeBean().apply {
-                name = mContext.getString(R.string.note_tab_diary)
-                typeId = 0
+            val list= mutableListOf<Notebook>()
+            list.add(Notebook().apply {
+                title = mContext.getString(R.string.note_tab_diary)
+                typeId=0
             })
             return list
         }

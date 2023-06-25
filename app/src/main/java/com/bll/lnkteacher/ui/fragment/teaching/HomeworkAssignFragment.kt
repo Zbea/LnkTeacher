@@ -94,7 +94,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(requireActivity(),50f)))
-            setOnItemClickListener { adapter, view, position ->
+            setOnItemClickListener { _, _, position ->
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]
                 if(item.subType==1){

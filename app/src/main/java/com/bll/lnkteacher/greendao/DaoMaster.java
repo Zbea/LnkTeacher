@@ -24,8 +24,8 @@ public class DaoMaster extends AbstractDaoMaster {
         BookDao.createTable(db, ifNotExists);
         CourseBeanDao.createTable(db, ifNotExists);
         DateEventDao.createTable(db, ifNotExists);
+        NoteDao.createTable(db, ifNotExists);
         NoteContentDao.createTable(db, ifNotExists);
-        NoteTypeBeanDao.createTable(db, ifNotExists);
         NotebookDao.createTable(db, ifNotExists);
     }
 
@@ -34,8 +34,8 @@ public class DaoMaster extends AbstractDaoMaster {
         BookDao.dropTable(db, ifExists);
         CourseBeanDao.dropTable(db, ifExists);
         DateEventDao.dropTable(db, ifExists);
+        NoteDao.dropTable(db, ifExists);
         NoteContentDao.dropTable(db, ifExists);
-        NoteTypeBeanDao.dropTable(db, ifExists);
         NotebookDao.dropTable(db, ifExists);
     }
 
@@ -58,8 +58,8 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(BookDao.class);
         registerDaoClass(CourseBeanDao.class);
         registerDaoClass(DateEventDao.class);
+        registerDaoClass(NoteDao.class);
         registerDaoClass(NoteContentDao.class);
-        registerDaoClass(NoteTypeBeanDao.class);
         registerDaoClass(NotebookDao.class);
     }
 

@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model;
 
+
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -13,8 +14,7 @@ import java.util.Objects;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class DateEvent implements Serializable {
-
+public class Note implements Serializable {
     @Transient
     private static final long serialVersionUID = 1L;
 
@@ -22,23 +22,23 @@ public class DateEvent implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    public String content;
-    public long date;//当天日期
-    public int week;//当天星期 2星期一 8星期日
-    public int classId;//班级id
+    public String title;
+    public String typeStr;//笔记分类id
+    public long date; //创建时间
+    public String contentResId; //笔记内容背景id
 
-    @Generated(hash = 730171961)
-    public DateEvent(Long id, long userId, String content, long date, int week,
-            int classId) {
+    @Generated(hash = 1405516646)
+    public Note(Long id, long userId, String title, String typeStr, long date,
+            String contentResId) {
         this.id = id;
         this.userId = userId;
-        this.content = content;
+        this.title = title;
+        this.typeStr = typeStr;
         this.date = date;
-        this.week = week;
-        this.classId = classId;
+        this.contentResId = contentResId;
     }
-    @Generated(hash = 1511002217)
-    public DateEvent() {
+    @Generated(hash = 1272611929)
+    public Note() {
     }
     public Long getId() {
         return this.id;
@@ -52,11 +52,17 @@ public class DateEvent implements Serializable {
     public void setUserId(long userId) {
         this.userId = userId;
     }
-    public String getContent() {
-        return this.content;
+    public String getTitle() {
+        return this.title;
     }
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getTypeStr() {
+        return this.typeStr;
+    }
+    public void setTypeStr(String typeStr) {
+        this.typeStr = typeStr;
     }
     public long getDate() {
         return this.date;
@@ -64,17 +70,11 @@ public class DateEvent implements Serializable {
     public void setDate(long date) {
         this.date = date;
     }
-    public int getWeek() {
-        return this.week;
+    public String getContentResId() {
+        return this.contentResId;
     }
-    public void setWeek(int week) {
-        this.week = week;
-    }
-    public int getClassId() {
-        return this.classId;
-    }
-    public void setClassId(int classId) {
-        this.classId = classId;
+    public void setContentResId(String contentResId) {
+        this.contentResId = contentResId;
     }
 
 }

@@ -10,6 +10,7 @@ import com.bll.lnkteacher.utils.SPUtil;
 import org.greenrobot.greendao.query.WhereCondition;
 
 import java.util.List;
+import java.util.Objects;
 
 public class NoteContentDaoManager {
 
@@ -24,9 +25,9 @@ public class NoteContentDaoManager {
     private static NoteContentDaoManager mDbController;
 
 
-    private NoteContentDao noteDao;  //note表
+    private NoteContentDao dao;  //note表
 
-    private long userId= SPUtil.INSTANCE.getObj("user", User.class).accountId;
+    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
     private WhereCondition whereUser= NoteContentDao.Properties.UserId.eq(userId);
 
     /**
@@ -34,7 +35,7 @@ public class NoteContentDaoManager {
      */
     public NoteContentDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-        noteDao = mDaoSession.getNoteContentDao(); //note表
+        dao = mDaoSession.getNoteContentDao(); //note表
     }
 
     /**
@@ -52,34 +53,38 @@ public class NoteContentDaoManager {
     }
 
     public void insertOrReplaceNote(NoteContent bean) {
-        noteDao.insertOrReplace(bean);
+        dao.insertOrReplace(bean);
     }
 
     public long getInsertId(){
-        List<NoteContent> queryList = noteDao.queryBuilder().build().list();
+        List<NoteContent> queryList = dao.queryBuilder().build().list();
         return queryList.get(queryList.size()-1).id;
     }
 
-    public List<NoteContent> queryAll(){
-        return noteDao.queryBuilder().where(whereUser).orderDesc(NoteContentDao.Properties.Id).build().list();
+
+    public List<NoteContent> queryAll(String type, long noteId) {
+        WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
+        WhereCondition whereCondition1=NoteContentDao.Properties.NoteId.eq(noteId);
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
-    public List<NoteContent> queryAll(String type, long notebookId) {
-        WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
-        List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
-        return list;
+    public void editNotes(String type, long noteId,String editType){
+        List<NoteContent> noteContents=queryAll(type,noteId);
+        for (NoteContent noteContent: noteContents) {
+            noteContent.typeStr=editType;
+        }
+        dao.insertOrReplaceInTx(noteContents);
     }
 
     public void deleteNote(NoteContent noteContent){
-        noteDao.delete(noteContent);
+        dao.delete(noteContent);
     }
 
-    public void deleteType(String type,long notebookId){
+    public void deleteType(String type,long noteId){
         WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NotebookId.eq(notebookId);
-        List<NoteContent> list = noteDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
-        noteDao.deleteInTx(list);
+        WhereCondition whereCondition1=NoteContentDao.Properties.NoteId.eq(noteId);
+        List<NoteContent> list = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        dao.deleteInTx(list);
     }
 
 }
