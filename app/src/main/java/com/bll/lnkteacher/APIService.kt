@@ -111,11 +111,11 @@ interface APIService{
      * 教材参考列表
      */
     @GET("book/list")
-    fun getHomewrokBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
     /**
      * 教材参考列表
      */
-    @GET("book/list")
+    @GET("book/lib/list")
     fun getTeachingBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
     /**
      * 书城列表
@@ -214,6 +214,11 @@ interface APIService{
      */
     @GET("common/type/list")
     fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TypeList>>
+    /**
+     * 删除分类
+     */
+    @POST("common/type/delete")
+    fun deletePaperType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 添加考卷分类成功
      */

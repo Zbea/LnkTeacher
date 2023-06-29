@@ -54,7 +54,7 @@ public class FileDownManager {
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
         auth = "Authorization";
-        token = SPUtil.INSTANCE.getString("token");
+        token = SPUtil.INSTANCE.getString("tokenTeacher");
         Log.d("debug"," download url = "+url);
         BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url).addHeader(auth, token).setPath(path).setListener(new FileDownloadListener() {
 

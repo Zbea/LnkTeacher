@@ -25,7 +25,6 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
     private var datas= mutableListOf<TestPaperGrade>()
     private var correctBean: CorrectBean?=null
 
-
     override fun onImageList(list: MutableList<ContentListBean>?) {
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {

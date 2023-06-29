@@ -32,25 +32,23 @@ public class BookDao extends AbstractDao<Book, Long> {
         public final static Property BookName = new Property(5, String.class, "bookName", false, "BOOK_NAME");
         public final static Property Price = new Property(6, int.class, "price", false, "PRICE");
         public final static Property Category = new Property(7, int.class, "category", false, "CATEGORY");
-        public final static Property Type = new Property(8, int.class, "type", false, "TYPE");
-        public final static Property SubType = new Property(9, String.class, "subType", false, "SUB_TYPE");
+        public final static Property TypeId = new Property(8, int.class, "typeId", false, "TYPE_ID");
+        public final static Property SubtypeStr = new Property(9, String.class, "subtypeStr", false, "SUBTYPE_STR");
         public final static Property BookDesc = new Property(10, String.class, "bookDesc", false, "BOOK_DESC");
         public final static Property Semester = new Property(11, int.class, "semester", false, "SEMESTER");
         public final static Property SubjectName = new Property(12, int.class, "subjectName", false, "SUBJECT_NAME");
         public final static Property Area = new Property(13, String.class, "area", false, "AREA");
         public final static Property Grade = new Property(14, int.class, "grade", false, "GRADE");
-        public final static Property BookVersion = new Property(15, String.class, "bookVersion", false, "BOOK_VERSION");
-        public final static Property Version = new Property(16, String.class, "version", false, "VERSION");
-        public final static Property Supply = new Property(17, String.class, "supply", false, "SUPPLY");
-        public final static Property TextBookType = new Property(18, String.class, "textBookType", false, "TEXT_BOOK_TYPE");
-        public final static Property BookType = new Property(19, String.class, "bookType", false, "BOOK_TYPE");
-        public final static Property DownloadUrl = new Property(20, String.class, "downloadUrl", false, "DOWNLOAD_URL");
-        public final static Property BookPath = new Property(21, String.class, "bookPath", false, "BOOK_PATH");
-        public final static Property BookDrawPath = new Property(22, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
-        public final static Property Time = new Property(23, long.class, "time", false, "TIME");
-        public final static Property PageIndex = new Property(24, int.class, "pageIndex", false, "PAGE_INDEX");
-        public final static Property PageUrl = new Property(25, String.class, "pageUrl", false, "PAGE_URL");
-        public final static Property IsLook = new Property(26, boolean.class, "isLook", false, "IS_LOOK");
+        public final static Property Version = new Property(15, String.class, "version", false, "VERSION");
+        public final static Property Supply = new Property(16, String.class, "supply", false, "SUPPLY");
+        public final static Property DownloadUrl = new Property(17, String.class, "downloadUrl", false, "DOWNLOAD_URL");
+        public final static Property BookPath = new Property(18, String.class, "bookPath", false, "BOOK_PATH");
+        public final static Property BookDrawPath = new Property(19, String.class, "bookDrawPath", false, "BOOK_DRAW_PATH");
+        public final static Property Time = new Property(20, long.class, "time", false, "TIME");
+        public final static Property PageIndex = new Property(21, int.class, "pageIndex", false, "PAGE_INDEX");
+        public final static Property PageUrl = new Property(22, String.class, "pageUrl", false, "PAGE_URL");
+        public final static Property IsLook = new Property(23, boolean.class, "isLook", false, "IS_LOOK");
+        public final static Property IsHomework = new Property(24, boolean.class, "isHomework", false, "IS_HOMEWORK");
     }
 
 
@@ -74,25 +72,23 @@ public class BookDao extends AbstractDao<Book, Long> {
                 "\"BOOK_NAME\" TEXT," + // 5: bookName
                 "\"PRICE\" INTEGER NOT NULL ," + // 6: price
                 "\"CATEGORY\" INTEGER NOT NULL ," + // 7: category
-                "\"TYPE\" INTEGER NOT NULL ," + // 8: type
-                "\"SUB_TYPE\" TEXT," + // 9: subType
+                "\"TYPE_ID\" INTEGER NOT NULL ," + // 8: typeId
+                "\"SUBTYPE_STR\" TEXT," + // 9: subtypeStr
                 "\"BOOK_DESC\" TEXT," + // 10: bookDesc
                 "\"SEMESTER\" INTEGER NOT NULL ," + // 11: semester
                 "\"SUBJECT_NAME\" INTEGER NOT NULL ," + // 12: subjectName
                 "\"AREA\" TEXT," + // 13: area
                 "\"GRADE\" INTEGER NOT NULL ," + // 14: grade
-                "\"BOOK_VERSION\" TEXT," + // 15: bookVersion
-                "\"VERSION\" TEXT," + // 16: version
-                "\"SUPPLY\" TEXT," + // 17: supply
-                "\"TEXT_BOOK_TYPE\" TEXT," + // 18: textBookType
-                "\"BOOK_TYPE\" TEXT," + // 19: bookType
-                "\"DOWNLOAD_URL\" TEXT," + // 20: downloadUrl
-                "\"BOOK_PATH\" TEXT," + // 21: bookPath
-                "\"BOOK_DRAW_PATH\" TEXT," + // 22: bookDrawPath
-                "\"TIME\" INTEGER NOT NULL ," + // 23: time
-                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 24: pageIndex
-                "\"PAGE_URL\" TEXT," + // 25: pageUrl
-                "\"IS_LOOK\" INTEGER NOT NULL );"); // 26: isLook
+                "\"VERSION\" TEXT," + // 15: version
+                "\"SUPPLY\" TEXT," + // 16: supply
+                "\"DOWNLOAD_URL\" TEXT," + // 17: downloadUrl
+                "\"BOOK_PATH\" TEXT," + // 18: bookPath
+                "\"BOOK_DRAW_PATH\" TEXT," + // 19: bookDrawPath
+                "\"TIME\" INTEGER NOT NULL ," + // 20: time
+                "\"PAGE_INDEX\" INTEGER NOT NULL ," + // 21: pageIndex
+                "\"PAGE_URL\" TEXT," + // 22: pageUrl
+                "\"IS_LOOK\" INTEGER NOT NULL ," + // 23: isLook
+                "\"IS_HOMEWORK\" INTEGER NOT NULL );"); // 24: isHomework
     }
 
     /** Drops the underlying database table. */
@@ -124,11 +120,11 @@ public class BookDao extends AbstractDao<Book, Long> {
         }
         stmt.bindLong(7, entity.getPrice());
         stmt.bindLong(8, entity.getCategory());
-        stmt.bindLong(9, entity.getType());
+        stmt.bindLong(9, entity.getTypeId());
  
-        String subType = entity.getSubType();
-        if (subType != null) {
-            stmt.bindString(10, subType);
+        String subtypeStr = entity.getSubtypeStr();
+        if (subtypeStr != null) {
+            stmt.bindString(10, subtypeStr);
         }
  
         String bookDesc = entity.getBookDesc();
@@ -144,53 +140,39 @@ public class BookDao extends AbstractDao<Book, Long> {
         }
         stmt.bindLong(15, entity.getGrade());
  
-        String bookVersion = entity.getBookVersion();
-        if (bookVersion != null) {
-            stmt.bindString(16, bookVersion);
-        }
- 
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(17, version);
+            stmt.bindString(16, version);
         }
  
         String supply = entity.getSupply();
         if (supply != null) {
-            stmt.bindString(18, supply);
-        }
- 
-        String textBookType = entity.getTextBookType();
-        if (textBookType != null) {
-            stmt.bindString(19, textBookType);
-        }
- 
-        String bookType = entity.getBookType();
-        if (bookType != null) {
-            stmt.bindString(20, bookType);
+            stmt.bindString(17, supply);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(21, downloadUrl);
+            stmt.bindString(18, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(22, bookPath);
+            stmt.bindString(19, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(23, bookDrawPath);
+            stmt.bindString(20, bookDrawPath);
         }
-        stmt.bindLong(24, entity.getTime());
-        stmt.bindLong(25, entity.getPageIndex());
+        stmt.bindLong(21, entity.getTime());
+        stmt.bindLong(22, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(26, pageUrl);
+            stmt.bindString(23, pageUrl);
         }
-        stmt.bindLong(27, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(24, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(25, entity.getIsHomework() ? 1L: 0L);
     }
 
     @Override
@@ -216,11 +198,11 @@ public class BookDao extends AbstractDao<Book, Long> {
         }
         stmt.bindLong(7, entity.getPrice());
         stmt.bindLong(8, entity.getCategory());
-        stmt.bindLong(9, entity.getType());
+        stmt.bindLong(9, entity.getTypeId());
  
-        String subType = entity.getSubType();
-        if (subType != null) {
-            stmt.bindString(10, subType);
+        String subtypeStr = entity.getSubtypeStr();
+        if (subtypeStr != null) {
+            stmt.bindString(10, subtypeStr);
         }
  
         String bookDesc = entity.getBookDesc();
@@ -236,53 +218,39 @@ public class BookDao extends AbstractDao<Book, Long> {
         }
         stmt.bindLong(15, entity.getGrade());
  
-        String bookVersion = entity.getBookVersion();
-        if (bookVersion != null) {
-            stmt.bindString(16, bookVersion);
-        }
- 
         String version = entity.getVersion();
         if (version != null) {
-            stmt.bindString(17, version);
+            stmt.bindString(16, version);
         }
  
         String supply = entity.getSupply();
         if (supply != null) {
-            stmt.bindString(18, supply);
-        }
- 
-        String textBookType = entity.getTextBookType();
-        if (textBookType != null) {
-            stmt.bindString(19, textBookType);
-        }
- 
-        String bookType = entity.getBookType();
-        if (bookType != null) {
-            stmt.bindString(20, bookType);
+            stmt.bindString(17, supply);
         }
  
         String downloadUrl = entity.getDownloadUrl();
         if (downloadUrl != null) {
-            stmt.bindString(21, downloadUrl);
+            stmt.bindString(18, downloadUrl);
         }
  
         String bookPath = entity.getBookPath();
         if (bookPath != null) {
-            stmt.bindString(22, bookPath);
+            stmt.bindString(19, bookPath);
         }
  
         String bookDrawPath = entity.getBookDrawPath();
         if (bookDrawPath != null) {
-            stmt.bindString(23, bookDrawPath);
+            stmt.bindString(20, bookDrawPath);
         }
-        stmt.bindLong(24, entity.getTime());
-        stmt.bindLong(25, entity.getPageIndex());
+        stmt.bindLong(21, entity.getTime());
+        stmt.bindLong(22, entity.getPageIndex());
  
         String pageUrl = entity.getPageUrl();
         if (pageUrl != null) {
-            stmt.bindString(26, pageUrl);
+            stmt.bindString(23, pageUrl);
         }
-        stmt.bindLong(27, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(24, entity.getIsLook() ? 1L: 0L);
+        stmt.bindLong(25, entity.getIsHomework() ? 1L: 0L);
     }
 
     @Override
@@ -301,25 +269,23 @@ public class BookDao extends AbstractDao<Book, Long> {
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // bookName
             cursor.getInt(offset + 6), // price
             cursor.getInt(offset + 7), // category
-            cursor.getInt(offset + 8), // type
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // subType
+            cursor.getInt(offset + 8), // typeId
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // subtypeStr
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // bookDesc
             cursor.getInt(offset + 11), // semester
             cursor.getInt(offset + 12), // subjectName
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // area
             cursor.getInt(offset + 14), // grade
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // bookVersion
-            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // version
-            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // supply
-            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // textBookType
-            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // bookType
-            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // downloadUrl
-            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // bookPath
-            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // bookDrawPath
-            cursor.getLong(offset + 23), // time
-            cursor.getInt(offset + 24), // pageIndex
-            cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25), // pageUrl
-            cursor.getShort(offset + 26) != 0 // isLook
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // version
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // supply
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // downloadUrl
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // bookPath
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // bookDrawPath
+            cursor.getLong(offset + 20), // time
+            cursor.getInt(offset + 21), // pageIndex
+            cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22), // pageUrl
+            cursor.getShort(offset + 23) != 0, // isLook
+            cursor.getShort(offset + 24) != 0 // isHomework
         );
         return entity;
     }
@@ -334,25 +300,23 @@ public class BookDao extends AbstractDao<Book, Long> {
         entity.setBookName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setPrice(cursor.getInt(offset + 6));
         entity.setCategory(cursor.getInt(offset + 7));
-        entity.setType(cursor.getInt(offset + 8));
-        entity.setSubType(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setTypeId(cursor.getInt(offset + 8));
+        entity.setSubtypeStr(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setBookDesc(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setSemester(cursor.getInt(offset + 11));
         entity.setSubjectName(cursor.getInt(offset + 12));
         entity.setArea(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setGrade(cursor.getInt(offset + 14));
-        entity.setBookVersion(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
-        entity.setVersion(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
-        entity.setSupply(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
-        entity.setTextBookType(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
-        entity.setBookType(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
-        entity.setDownloadUrl(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
-        entity.setBookPath(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
-        entity.setBookDrawPath(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
-        entity.setTime(cursor.getLong(offset + 23));
-        entity.setPageIndex(cursor.getInt(offset + 24));
-        entity.setPageUrl(cursor.isNull(offset + 25) ? null : cursor.getString(offset + 25));
-        entity.setIsLook(cursor.getShort(offset + 26) != 0);
+        entity.setVersion(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setSupply(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setDownloadUrl(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setBookPath(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setBookDrawPath(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setTime(cursor.getLong(offset + 20));
+        entity.setPageIndex(cursor.getInt(offset + 21));
+        entity.setPageUrl(cursor.isNull(offset + 22) ? null : cursor.getString(offset + 22));
+        entity.setIsLook(cursor.getShort(offset + 23) != 0);
+        entity.setIsHomework(cursor.getShort(offset + 24) != 0);
      }
     
     @Override

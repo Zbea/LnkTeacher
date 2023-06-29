@@ -1,14 +1,14 @@
-package com.bll.lnkteacher.utils;
+package com.bll.lnkteacher.utils.zip;
 
 import com.bll.lnkteacher.FileAddress;
 import com.bll.lnkteacher.utils.zip.IZipCallback;
 import com.bll.lnkteacher.utils.zip.ZipManager;
 
+import net.lingala.zip4j.util.Zip4jUtil;
+
 import java.io.File;
 
-/**
- * Created by ly on 2021/1/20 16:20
- */
+
 public class ZipUtils {
 
     /**
@@ -17,7 +17,7 @@ public class ZipUtils {
      * @param fileName 压缩文件名称
      * @param callback
      */
-    public static void zip(String targetStr, String fileName, ZipCallback callback){
+    public static void zip(String targetStr, String fileName, IZipCallback callback){
 
         if(!new File(targetStr).exists()){
             callback.onError("目标文件不存在");
@@ -31,38 +31,28 @@ public class ZipUtils {
     /**
      *
      * @param targetZipFilePath  原Zip文件的的绝对文件路径
-    * @param fileName  解压出来的文件夹名字
+     * @param fileTargetPath  解压出来地址
      * @param callback
      */
-    public static void unzip(String targetZipFilePath, String fileName, ZipCallback callback){
+    public static void unzip(String targetZipFilePath, String fileTargetPath, IZipCallback callback){
 
-        File targetFile = new File(targetZipFilePath);//验证目标是否存在
-        if(!targetFile.exists()){
-            callback.onError("目标Zip不存在");
+        if (!Zip4jUtil.isStringNotNullAndNotEmpty(targetZipFilePath) || !Zip4jUtil.isStringNotNullAndNotEmpty(fileTargetPath)) {
+            if (callback != null) callback.onError("路径不能为空");
             return;
         }
 
-        String fileTargetName=new FileAddress().getPathBookUnzip(fileName);
+        if(!new File(targetZipFilePath).exists()){
+            if (callback != null) callback.onError("目标Zip不存在");
+            return;
+        }
 
-        File unZipFile = new File(fileTargetName);
-
+        File unZipFile = new File(fileTargetPath);
         if(unZipFile.exists()){
             unZipFile.delete();
         }else {
             unZipFile.mkdir();
         }
-
         //开始解压
-        ZipManager.unzip(targetZipFilePath,fileTargetName,callback);
-    }
-
-    public interface ZipCallback extends IZipCallback {
-
-        /**
-         * 错误
-         *
-         * @param msg
-         */
-        void onError(String msg);
+        ZipManager.unzip(targetZipFilePath,fileTargetPath,callback);
     }
 }

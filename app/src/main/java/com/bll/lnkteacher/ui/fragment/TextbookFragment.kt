@@ -11,7 +11,7 @@ import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.HandoutsList
-import com.bll.lnkteacher.mvp.presenter.HandoutsPresenter
+import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.BookDetailsActivity
 import com.bll.lnkteacher.ui.activity.book.BookStoreTypeActivity
@@ -27,22 +27,28 @@ import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
+class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
 
-    private val mPresenter=HandoutsPresenter(this)
+    private val mPresenter=TextbookPresenter(this)
     private var mAdapter: BookAdapter? = null
     private var mHandoutsAdapter:HandoutsAdapter?=null
     private var books = mutableListOf<Book>()
     private var textBook = ""//用来区分课本类型
     private var tabId=0
     private var position = 0
-    private var book: Book? = null
     private var handoutsBeans= mutableListOf<HandoutsList.HandoutsBean>()
 
-    override fun onList(list: HandoutsList) {
+    override fun onHandoutsList(list: HandoutsList) {
         setPageNumber(list.total)
         handoutsBeans = list.list
         mHandoutsAdapter?.setNewData(handoutsBeans)
+    }
+
+    override fun onAddHomeworkBook() {
+        showToast("设置题卷本成功")
+        books[position].isHomework=true
+        mAdapter?.notifyItemChanged(position)
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
     }
 
     override fun getLayoutId(): Int {
@@ -100,36 +106,24 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity, 33f), 38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val intent = Intent(activity, BookDetailsActivity::class.java)
-            intent.putExtra("book_id", books[position].bookId)
-            startActivity(intent)
+            val book=books[position]
+            //教学教育跳转阅读器
+            if (tabId==4){
+                gotoBookDetails(book)
+            }
+            else{
+                val intent = Intent(activity, BookDetailsActivity::class.java)
+                intent.putExtra("book_id", book.bookId)
+                intent.putExtra("book_type", book.typeId)
+                startActivity(intent)
+            }
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this.position = position
-                book = books[position]
-                onLongClick()
+                onLongClick(books[position])
                 true
             }
-    }
-
-    //长按显示课本管理
-    private fun onLongClick() {
-        val type=if (tabId==2||tabId==3) 2 else 1
-        BookManageDialog(requireActivity(), book!!,type).builder()
-            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
-                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    FileUtils.deleteFile(File(book?.bookPath))//删除下载的书籍资源
-                    FileUtils.deleteFile(File(book?.bookDrawPath))
-                    books.remove(book)
-                    mAdapter?.notifyDataSetChanged()
-                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                }
-                override fun onSet() {
-
-                }
-            })
     }
 
     private fun initRecyclerHandouts(){
@@ -145,6 +139,34 @@ class TextbookFragment : BaseFragment() ,IContractView.IHandoutsView{
             }
         }
     }
+
+    //长按显示课本管理
+    private fun onLongClick(book: Book) {
+        //题卷本可以设置为作业
+        val type=if (tabId==2||tabId==3) 2 else 1
+        BookManageDialog(requireActivity(), book,type).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
+                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    mAdapter?.remove(position)
+                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
+                }
+                override fun onSet() {
+                    if (!book.isHomework){
+                        val map=HashMap<String,Any>()
+                        map["name"]=book.bookName
+                        map["type"]=2
+                        map["subType"]=4//题卷本
+                        map["grade"]=grade
+                        map["bookId"]=book.bookId
+                        mPresenter.addType(map)
+                    }
+                }
+            })
+    }
+
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == TEXT_BOOK_EVENT) {

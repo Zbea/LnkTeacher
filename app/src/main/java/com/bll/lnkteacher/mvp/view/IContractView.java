@@ -6,7 +6,6 @@ import com.bll.lnkteacher.mvp.model.AppList;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CommonData;
-import com.bll.lnkteacher.mvp.model.Grade;
 import com.bll.lnkteacher.mvp.model.HandoutsList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
@@ -192,6 +191,10 @@ public interface IContractView {
          */
         void onAddSuccess();
         /**
+         * 删除分类
+         */
+        void onDeleteSuccess();
+        /**
          * 获取作业卷内容列表
          * @param homeworkContent
          */
@@ -235,8 +238,9 @@ public interface IContractView {
         void onDeleteSuccess();
     }
 
-    interface IHandoutsView extends IBaseView{
-        void onList(HandoutsList list);
+    interface ITextbookView extends IBaseView{
+        void onHandoutsList(HandoutsList list);
+        void onAddHomeworkBook();
     }
 
     //应用

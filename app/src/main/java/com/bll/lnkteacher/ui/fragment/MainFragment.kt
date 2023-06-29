@@ -85,7 +85,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
 
         ll_course.setOnClickListener {
             val courseType = SPUtil.getInt("courseType")
-            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .putExtra("courseType", courseType)
             )
         }
@@ -144,15 +144,20 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     //我的课本
     private fun initTextBookView() {
         rv_main_book.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mBookAdapter = BookAdapter(R.layout.item_main_book, textbooks)
+        mBookAdapter = BookAdapter(R.layout.item_main_book, null)
         rv_main_book.adapter = mBookAdapter
         mBookAdapter?.bindToRecyclerView(rv_main_book)
+        mBookAdapter?.setOnItemClickListener { adapter, view, position ->
+            val intent = Intent(activity, BookDetailsActivity::class.java)
+            intent.putExtra("book_id", textbooks[position].bookId)
+            intent.putExtra("book_type", textbooks[position].typeId)
+            startActivity(intent)
+        }
 
     }
 
     //教学进度
     private fun initTeachingView() {
-
         rv_main_teaching.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mTeachingAdapter = MainClassGroupAdapter(R.layout.item_main_classgroup, null)
         rv_main_teaching.adapter = mTeachingAdapter

@@ -24,11 +24,16 @@ class FileAddress {
     fun getPathBook(fileName: String):String{
         return "$BOOK_PATH/$fileName"
     }
+
+    fun getPathBookDraw(fileName: String):String{
+        return "/storage/emulated/0/Android/data/com.geniatech.knote.reader/files/note/$fileName"
+    }
+
     fun getPathTextBook(fileName: String):String{
         return "$TEXTBOOK_PATH/$mUserId/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}draw"
+        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
     }
     /**
      * 书籍目录地址
@@ -48,18 +53,6 @@ class FileAddress {
      */
     fun getPathZip(fileName:String):String{
         return ZIP_PATH+File.separator + fileName + ".zip"
-    }
-
-    /**
-     * 书籍zip解压地址
-     * ///storage/emulated/0/Android/data/yourPackageName/files/BookFile/mUserId/fileName
-     */
-    fun getPathBookUnzip(fileName:String):String{
-        val unzipTargetFile = File(BOOK_PATH, mUserId)
-        if (!unzipTargetFile.exists()) {
-            unzipTargetFile.mkdir()
-        }
-        return unzipTargetFile.path + File.separator + fileName
     }
 
     /**

@@ -34,7 +34,6 @@ import java.io.File
 class NoteFragment : BaseFragment() {
     private var popWindowList: PopupClick? = null
     private var popupBeans = mutableListOf<PopupBean>()
-    private var popWindowMoreBeans = mutableListOf<PopupBean>()
     private var notebooks = mutableListOf<Notebook>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
@@ -52,9 +51,6 @@ class NoteFragment : BaseFragment() {
         popupBeans.add(PopupBean(0, "笔记本管理", true))
         popupBeans.add(PopupBean(1, "新建笔记本", false))
         popupBeans.add(PopupBean(2, "新建笔记", false))
-
-        popWindowMoreBeans.add(PopupBean(0, "重命名", true))
-        popWindowMoreBeans.add(PopupBean(1, "删除", false))
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)

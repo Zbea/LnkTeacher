@@ -27,7 +27,7 @@ class BookManageDialog(val context: Context, val book:Book,val type:Int){
         val ll_delete=dialog.findViewById<LinearLayout>(R.id.ll_delete)
         val ll_set=dialog.findViewById<LinearLayout>(R.id.ll_set)
 
-        tv_name.text=book.bookName+if (book.semester==0) "" else "-"+ DataBeanManager.semesters[book.semester-1]
+        tv_name.text=book.bookName+if (book.semester==0) "" else "-"+ DataBeanManager.popupSemesters[book.semester-1].name
 
         if (type==1){
             ll_set.visibility= View.INVISIBLE

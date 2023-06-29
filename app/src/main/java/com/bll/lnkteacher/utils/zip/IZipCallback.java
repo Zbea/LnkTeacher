@@ -2,9 +2,6 @@ package com.bll.lnkteacher.utils.zip;
 
 /**
  * function:压缩回调
- *
- * <p>
- * Created by Leo on 2018/1/16.
  */
 public interface IZipCallback {
     /**
@@ -22,7 +19,13 @@ public interface IZipCallback {
     /**
      * 完成
      *
-     * @param success 是否成功
      */
-    void onFinish(boolean success);
+    void onFinish();
+
+    /**
+     * 错误
+     *
+     * @param msg
+     */
+    void onError(String msg);
 }

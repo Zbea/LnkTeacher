@@ -361,8 +361,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
     override fun login() {
         SToast.showText(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
+        SPUtil.putString("tokenTeacher", "")
+        SPUtil.removeObj("userTeacher")
 
         Handler().postDelayed(Runnable {
             startActivity(Intent(this, AccountLoginActivity::class.java))

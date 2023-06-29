@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity.book
 
-import android.annotation.SuppressLint
 import android.os.Handler
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,10 +10,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.BookDetailsDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.BookStore
-import com.bll.lnkteacher.mvp.model.BookStoreType
-import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -25,9 +21,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.io.File
 import java.text.DecimalFormat
 
 /**
@@ -36,7 +30,7 @@ import java.text.DecimalFormat
 class BookStoreActivity : BaseActivity(),
     IContractView.IBookStoreView {
 
-    private var typeStr=""
+    private var tabStr=""
     private var type=0
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val presenter = BookStorePresenter(this)
@@ -44,13 +38,11 @@ class BookStoreActivity : BaseActivity(),
     private var mAdapter: BookStoreAdapter? = null
     private var grade = 0
     private var subTypeStr = ""//子类
+    private var subType=0
     private var bookDetailsDialog: BookDetailsDialog? = null
-    private var mBook: Book? = null
-
-    private var popWindowGrade: PopupRadioList? = null
-
+    private var position=0
     private var gradeList = mutableListOf<PopupBean>()
-    private var typeList = mutableListOf<String>()
+    private var subTypeList = mutableListOf<ItemList>()
     private var bookNameStr=""
 
     override fun onBook(bookStore: BookStore) {
@@ -61,10 +53,11 @@ class BookStoreActivity : BaseActivity(),
 
     override fun onType(bookStoreType: BookStoreType) {
         //子分类
-        val types = bookStoreType.subType[typeStr]
+        val types = bookStoreType.subType[tabStr]
         if (types?.size!! >0){
-            typeList=types
-            subTypeStr=types[0]
+            subTypeList=types
+            subTypeStr=types[0].desc
+            subType=types[0].type
             initTab()
         }
 
@@ -72,9 +65,9 @@ class BookStoreActivity : BaseActivity(),
     }
 
     override fun buyBookSuccess() {
-        mBook?.buyStatus=1
+        books[position].buyStatus=1
         bookDetailsDialog?.setChangeStatus()
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.notifyItemChanged(position)
     }
 
 
@@ -85,7 +78,7 @@ class BookStoreActivity : BaseActivity(),
     override fun initData() {
         pageSize=12
         type = intent.flags
-        typeStr=DataBeanManager.bookStoreTypes[type-1].name
+        tabStr=DataBeanManager.bookStoreTypes[type-1].name
         gradeList=DataBeanManager.popupTypeGrades
         if (gradeList.size>0){
             grade = gradeList[0].id
@@ -96,7 +89,7 @@ class BookStoreActivity : BaseActivity(),
 
 
     override fun initView() {
-        setPageTitle(typeStr)
+        setPageTitle(tabStr)
         showView(tv_grade,ll_search)
 
         initRecyclerView()
@@ -114,18 +107,13 @@ class BookStoreActivity : BaseActivity(),
      * 设置分类选择
      */
     private fun initSelectorView() {
-
         tv_grade.text = gradeList[0].name
         tv_grade.setOnClickListener {
-            if (popWindowGrade == null) {
-                popWindowGrade = PopupRadioList(this, gradeList, tv_grade, 5).builder()
-                popWindowGrade?.setOnSelectListener { item ->
-                    grade = item.id
-                    tv_grade.text = item.name
-                    typeFindData()
-                }
-            } else {
-                popWindowGrade?.show()
+            PopupRadioList(this, gradeList, tv_grade, 5).builder()
+            .setOnSelectListener { item ->
+                grade = item.id
+                tv_grade.text = item.name
+                typeFindData()
             }
         }
 
@@ -142,18 +130,15 @@ class BookStoreActivity : BaseActivity(),
 
 
     //设置tab分类
-    @SuppressLint("InflateParams")
     private fun initTab() {
-
-        for (i in typeList.indices) {
-            rg_group.addView(getRadioButton(i,typeList[i],typeList.size-1))
+        for (i in subTypeList.indices) {
+            rg_group.addView(getRadioButton(i,subTypeList[i].desc,subTypeList.size-1))
         }
-
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            subTypeStr = typeList[i]
+            subTypeStr = subTypeList[i].desc
+            subType=subTypeList[i].type
             typeFindData()
         }
-
     }
 
     private fun initRecyclerView() {
@@ -164,8 +149,8 @@ class BookStoreActivity : BaseActivity(),
         mAdapter?.setEmptyView(R.layout.common_book_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            mBook = books[position]
-            showBookDetails(mBook!!)
+            this.position=position
+            showBookDetails(books[position])
         }
     }
 
@@ -174,7 +159,6 @@ class BookStoreActivity : BaseActivity(),
      * 展示书籍详情
      */
     private fun showBookDetails(book: Book) {
-
         bookDetailsDialog = BookDetailsDialog(this, book)
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
@@ -205,10 +189,6 @@ class BookStoreActivity : BaseActivity(),
         val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
         val fileName = MD5Utils.convertMD5(book.bookId.toString())+formatStr//文件名
         val targetFileStr = FileAddress().getPathBook(fileName)
-        val targetFile = File(targetFileStr)
-        if (targetFile.exists()) {
-            targetFile.delete()
-        }
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -223,20 +203,20 @@ class BookStoreActivity : BaseActivity(),
                                 totalBytes.toDouble() / (1024 * 1024),
                                 "0.0"
                             ) + "M"
-                            if (bookDetailsDialog != null)
-                                bookDetailsDialog?.setUnClickBtn(s)
+                            bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
                     book.apply {
-                        bookType = when (typeStr) {
+                        loadSate = 2
+                        category=1
+                        typeId = this@BookStoreActivity.type
+                        subtypeStr = when (tabStr) {
                             "思维科学", "自然科学" -> {
                                 "科学技术"
                             }
@@ -247,12 +227,10 @@ class BookStoreActivity : BaseActivity(),
                                 subTypeStr
                             }
                         }
-                        loadSate = 2
-                        category = type
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
-                        val drawName=MD5Utils.convertMD5(MD5Utils.convertMD5(book.bookId.toString()))
-                        bookDrawPath="/storage/emulated/0/Android/data/com.geniatech.knote.reader/files/note/$drawName"
+                        val drawName=MD5Utils.convertMD5(book.bookId.toString())
+                        bookDrawPath=FileAddress().getPathBookDraw(drawName)
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
@@ -270,6 +248,7 @@ class BookStoreActivity : BaseActivity(),
                     hideLoading()
                     showToast(book.bookName+getString(R.string.book_download_fail))
                     deleteDoneTask(task)
+                    bookDetailsDialog?.setChangeStatus()
                 }
             })
         return download
@@ -314,17 +293,11 @@ class BookStoreActivity : BaseActivity(),
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        if (bookNameStr.isEmpty()){
-            map["grade"] = grade
-            map["type"] = type
-            map["subType"] = subTypeStr
-        }
-        else{
-            map["grade"] = grade
-            map["subType"] = subTypeStr
-            map["type"] = type
+        map["grade"] = grade
+        map["type"] = type
+        map["subType"] = subType
+        if (bookNameStr.isNotEmpty())
             map["bookName"] = bookNameStr
-        }
         presenter.getBooks(map)
     }
 

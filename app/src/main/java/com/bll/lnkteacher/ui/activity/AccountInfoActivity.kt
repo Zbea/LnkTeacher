@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Handler
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -27,12 +26,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     private var schools= mutableListOf<SchoolBean>()
 
     override fun onLogout() {
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
-        Handler().postDelayed(Runnable {
-            startActivity(Intent(this, AccountLoginActivity::class.java))
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
     }
 
     override fun onEditNameSuccess() {
@@ -47,7 +40,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         mUser?.schoolCity=schoolBean?.city
         mUser?.schoolArea=schoolBean?.area
         mUser?.schoolName=schoolBean?.schoolName
-        tv_province.text = schoolBean?.province
+        tv_province_str.text = schoolBean?.province
         tv_city.text = schoolBean?.city
         tv_school.text = schoolBean?.schoolName
         tv_area.text = schoolBean?.area
@@ -75,7 +68,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             tv_name.text = nickname
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
             tv_course.text=subjectName
-            tv_province.text = schoolProvince
+            tv_province_str.text = schoolProvince
             tv_city.text = schoolCity
             tv_school.text = schoolName
             tv_area.text = schoolArea
@@ -99,12 +92,10 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
                 override fun cancel() {
                 }
                 override fun ok() {
-                    SPUtil.putString("token", "")
-                    SPUtil.removeObj("user")
-                    Handler().postDelayed(Runnable {
-                        startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
-                        ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-                    }, 500)
+                    SPUtil.putString("tokenTeacher", "")
+                    SPUtil.removeObj("userTeacher")
+                    startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
+                    ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
                 }
             })
         }
@@ -139,7 +130,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
 
     override fun onDestroy() {
         super.onDestroy()
-        mUser?.let { SPUtil.putObj("user", it) }
+        mUser?.let { SPUtil.putObj("userTeacher", it) }
     }
 
 }

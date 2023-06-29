@@ -31,6 +31,8 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
     }
     override fun onAddSuccess() {
     }
+    override fun onDeleteSuccess() {
+    }
     override fun onList(homeworkContent: AssignContent) {
         setPageNumber(homeworkContent.total)
         items= homeworkContent.list

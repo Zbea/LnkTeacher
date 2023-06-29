@@ -17,9 +17,6 @@ import java.util.TimerTask;
 
 /**
  * function:ZIP 压缩工具管理器
- *
- * <p>
- * Created by Leo on 2018/1/16.
  */
 public final class ZipManager {
     private ZipManager() {}
@@ -50,7 +47,7 @@ public final class ZipManager {
                     ZipLog.debug("onProgress: percentDone=" + msg.arg1);
                     break;
                 case WHAT_FINISH:
-                    ((IZipCallback) msg.obj).onFinish(true);
+                    ((IZipCallback) msg.obj).onFinish();
                     ZipLog.debug("onFinish: success=true");
                     break;
             }
@@ -77,10 +74,6 @@ public final class ZipManager {
      * @param callback            压缩进度回调
      */
     public static void zip(String targetPath, String destinationFilePath, String password, IZipCallback callback) {
-        if (!Zip4jUtil.isStringNotNullAndNotEmpty(targetPath) || !Zip4jUtil.isStringNotNullAndNotEmpty(destinationFilePath)) {
-            if (callback != null) callback.onFinish(false);
-            return;
-        }
         ZipLog.debug("zip: targetPath=" + targetPath + " , destinationFilePath=" + destinationFilePath + " , password=" + password);
         try {
             ZipParameters parameters = new ZipParameters();
@@ -90,7 +83,6 @@ public final class ZipManager {
                 parameters.setEncryptionMethod(EncryptionMethod.AES);
                 zipFile.setPassword(password.toCharArray());
             }
-            zipFile.setRunInThread(true);
             File targetFile = new File(targetPath);
             File[] files=targetFile.listFiles();
             for (File file :files){
@@ -102,7 +94,7 @@ public final class ZipManager {
             }
             timerMsg(callback, zipFile,"zip");
         } catch (Exception e) {
-            if (callback != null) callback.onFinish(false);
+            if (callback != null) callback.onError("压缩失败");
             ZipLog.debug("zip: Exception=" + e.getMessage());
         }
     }
@@ -128,15 +120,11 @@ public final class ZipManager {
      * @param callback              回调
      */
     public static void unzip(String targetZipFilePath, String destinationFolderPath, String password, final IZipCallback callback) {
-        if (!Zip4jUtil.isStringNotNullAndNotEmpty(targetZipFilePath) || !Zip4jUtil.isStringNotNullAndNotEmpty(destinationFolderPath)) {
-            if (callback != null) callback.onFinish(false);
-            return;
-        }
         ZipLog.debug("unzip: targetZipFilePath=" + targetZipFilePath + " , destinationFolderPath=" + destinationFolderPath + " , password=" + password);
         try {
             ZipFile zipFile = new ZipFile(targetZipFilePath);
             if (!zipFile.isValidZipFile()){
-                if (callback != null) callback.onFinish(false);
+                if (callback != null) callback.onError("文件格式不正确");
             }
             if (zipFile.isEncrypted() && Zip4jUtil.isStringNotNullAndNotEmpty(password)) {
                 zipFile.setPassword(password.toCharArray());
@@ -145,7 +133,7 @@ public final class ZipManager {
             zipFile.extractAll(destinationFolderPath);
             timerMsg(callback, zipFile,"unzip");
         } catch (Exception e) {
-            if (callback != null) callback.onFinish(false);
+            if (callback != null) callback.onError("解压失败");
             ZipLog.debug("unzip: Exception=" + e.getMessage());
         }
     }
@@ -162,14 +150,10 @@ public final class ZipManager {
                 mUIHandler.obtainMessage(WHAT_PROGRESS, progressMonitor.getPercentDone(), 0, callback).sendToTarget();
                 if (progressMonitor.getResult() == ProgressMonitor.Result.SUCCESS) {
                     mUIHandler.obtainMessage(WHAT_FINISH, callback).sendToTarget();
-//                    if (index.equals("unzip")){
-//                        zipFile.getFile().delete();
-//                    }
                     this.cancel();
                     timer.purge();
                 }
             }
         }, 0, 300);
     }
-
 }

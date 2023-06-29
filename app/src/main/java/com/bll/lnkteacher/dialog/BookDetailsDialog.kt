@@ -33,15 +33,15 @@ class BookDetailsDialog(private val context: Context, private val book: Book) {
 
             GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
 
-            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.semesters[book.semester-1]
+            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
             tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
-            tv_version?.text = "出版社： " + if (book.version.isNullOrEmpty()) book.bookVersion else book.version
+            tv_version?.text = "出版社： " + book.version
             tv_info?.text = "简介： " + book.bookDesc
 
             if (book.subjectName==0){
                 tv_course.visibility=View.GONE
             }else{
-                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1]
+                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1].desc
             }
 
             if (book.buyStatus == 1) {

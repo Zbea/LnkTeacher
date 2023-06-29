@@ -3,12 +3,7 @@ package com.bll.lnkteacher.utils.zip;
 import android.util.Log;
 
 
-/**
- * function:
- *
- * <p>
- * Created by Leo on 2018/1/16.
- */
+
 final class ZipLog {
     private static final String TAG = "debug";
 

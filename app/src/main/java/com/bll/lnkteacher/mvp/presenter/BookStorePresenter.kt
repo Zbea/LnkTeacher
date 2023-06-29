@@ -55,7 +55,7 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
      */
     fun getHomeworkBooks(map: HashMap<String,Any>) {
 
-        val books = RetrofitManager.service.getHomewrokBooks(map)
+        val books = RetrofitManager.service.getHomeworkBooks(map)
 
         doRequest(books, object : Callback<BookStore>(view) {
             override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
@@ -103,7 +103,8 @@ class BookStorePresenter(view: IContractView.IBookStoreView) : BasePresenter<ICo
             }
 
             override fun success(tBaseResult: BaseResult<BookStoreType>) {
-                view.onType(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onType(tBaseResult.data)
             }
 
         }, true)

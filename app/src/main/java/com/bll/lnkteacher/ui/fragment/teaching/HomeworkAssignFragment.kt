@@ -44,6 +44,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         }
         fetchData()
     }
+    override fun onDeleteSuccess() {
+
+    }
     override fun onList(homeworkContent: AssignContent?) {
     }
     override fun onImageList(lists: MutableList<ContentListBean>?) {
@@ -103,7 +106,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                     bundle.putSerializable("homeworkType",item)
                     intent.putExtra("bundle",bundle)
                     startActivity(intent)
-
                 }
                 else{
                     HomeworkPublishDialog(requireContext(),grade).builder().setOnDialogClickListener{

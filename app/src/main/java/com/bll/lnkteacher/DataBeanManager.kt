@@ -262,7 +262,7 @@ object DataBeanManager {
         }
 
     //学期选择
-    val semesters: MutableList<PopupBean>
+    val popupSemesters: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
             list.add(PopupBean(1, mContext.getString(R.string.semester_last),true))

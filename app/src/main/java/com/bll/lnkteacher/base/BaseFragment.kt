@@ -16,7 +16,9 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.ProgressDialog
+import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
+import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.User
@@ -345,6 +347,22 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
         startActivity(intent)
     }
 
+    /**
+     * 跳转阅读器
+     */
+    fun gotoBookDetails(bookBean: Book){
+        bookBean.isLook=true
+        bookBean.time=System.currentTimeMillis()
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", bookBean.bookPath)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
+        startActivity(intent)
+    }
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
@@ -400,8 +418,8 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     override fun login() {
         if (mView==null||activity==null)return
         SToast.showText(R.string.login_timeout)
-        SPUtil.putString("token", "")
-        SPUtil.removeObj("user")
+        SPUtil.putString("tokenTeacher", "")
+        SPUtil.removeObj("userTeacher")
         Handler().postDelayed(Runnable {
             startActivity(Intent(requireActivity(), AccountLoginActivity::class.java))
             ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)

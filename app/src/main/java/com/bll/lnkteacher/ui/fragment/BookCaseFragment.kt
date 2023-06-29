@@ -17,7 +17,6 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 /**
@@ -71,22 +70,7 @@ class BookCaseFragment: BaseFragment() {
         }
     }
 
-    /**
-     * 跳转阅读器
-     */
-    private fun gotoBookDetails(bookBean: Book){
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-        startActivity(intent)
-    }
+
 
     /**
      * 查找本地书籍

@@ -43,7 +43,8 @@ class BookDetailsActivity:BaseActivity() {
 
     override fun initData() {
         val id=intent.getIntExtra("book_id",0)
-        book = BookGreenDaoManager.getInstance().queryTextBookByBookID(id)
+        val type=intent.getIntExtra("book_type",0)
+        book = BookGreenDaoManager.getInstance().queryTextBookByBookID(type,id)
         page=book?.pageIndex!!
 
         val cataLogFilePath =FileAddress().getPathTextBookCatalog(book?.bookPath!!)

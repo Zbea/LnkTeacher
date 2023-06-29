@@ -42,7 +42,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
             runOnUiThread {
                 tv_xdmoney.text = "" + order.amount
                 mUser?.balance = order.amount
-                SPUtil.putObj("user",mUser!!)
+                SPUtil.putObj("userTeacher",mUser!!)
             }
         }
     }
