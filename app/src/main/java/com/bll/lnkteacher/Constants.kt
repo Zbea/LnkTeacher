@@ -35,6 +35,7 @@ class Constants {
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")?.path
         //解压的目录
         val BOOK_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Books"
+        val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")?.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
@@ -46,6 +47,8 @@ class Constants {
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
         //日历保存
         val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
+            //断点记录文件保存的文件夹
+            val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
 
         //eventbus通知标志
         const val DATE_EVENT = "DateEvent"

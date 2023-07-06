@@ -313,7 +313,7 @@ class TextBookStoreActivity : BaseActivity(),
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book?.bookId]) {
+                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
                             val s = getFormatNum(
                                 soFarBytes.toDouble() / (1024 * 1024),
@@ -335,8 +335,8 @@ class TextBookStoreActivity : BaseActivity(),
                     deleteDoneTask(task)
                     if (tabId==4){
                         val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-                        val fileName = MD5Utils.convertMD5(book.bookId.toString())
-                        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
+                        val md5Name = MD5Utils.convertMD5(book.bookId.toString())
+                        val targetFileStr = FileAddress().getPathBook(md5Name+formatStr)
                         book.apply {
                             id=null
                             loadSate = 2
@@ -345,7 +345,7 @@ class TextBookStoreActivity : BaseActivity(),
                             subtypeStr=tabStr
                             time = System.currentTimeMillis()
                             bookPath = targetFileStr
-                            bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                            bookDrawPath=FileAddress().getPathBookDraw(md5Name)
                         }
                         complete(book)
                     }

@@ -76,6 +76,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         if (popGroups.size>0){
             tv_group.text=popGroups[0].name
             subtype=popGroups[0].id
+            popGroups[0].isCheck=true
         }
 
         presenter.getGroupTypes()
@@ -178,6 +179,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 }
                 tv_group.text=popGroups[0].name
                 subtype=popGroups[0].id
+                popGroups[0].isCheck=true
             }
     }
 

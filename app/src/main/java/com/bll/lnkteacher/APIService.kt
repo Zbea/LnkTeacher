@@ -22,7 +22,11 @@ interface APIService{
     @Multipart
     @POST("file/manyUpload")
     fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
-
+    /**
+     * 获取下载token
+     */
+    @POST("file/token")
+    fun getQiniuToken(): Observable<BaseResult<String>>
     /**
      * 公共年级接口
      */
@@ -318,11 +322,10 @@ interface APIService{
     @GET("homework/info/list")
     fun assignHomeworkDetails(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkAssignDetails>>
     /**
-     * 发送作业卷
+     * 删除布置信息
      */
     @POST("homework/info/delete")
     fun deleteAssignDetails(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
 
     /**
      * 发送信息

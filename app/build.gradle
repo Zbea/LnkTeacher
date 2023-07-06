@@ -137,7 +137,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/net.lingala.zip4j/zip4j
     implementation("net.lingala.zip4j:zip4j:2.11.1")
-
+    implementation 'com.qiniu:qiniu-android-sdk:8.4.+'
 
 }
 

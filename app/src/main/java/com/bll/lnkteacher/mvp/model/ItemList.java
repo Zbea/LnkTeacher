@@ -2,7 +2,7 @@ package com.bll.lnkteacher.mvp.model;
 
 import java.io.Serializable;
 
-public class ItemList implements Serializable {
+public class ItemList implements Serializable ,Comparable<ItemList>{
 
     public int type;
     public String desc;
@@ -11,6 +11,7 @@ public class ItemList implements Serializable {
     public String name;
     public int page;//目录页码
     public boolean isCheck;
+    public String url;
 
     public ItemList() {
     }
@@ -20,4 +21,8 @@ public class ItemList implements Serializable {
         this.name = name;
     }
 
+    @Override
+    public int compareTo(ItemList itemList) {
+        return this.id-itemList.id;
+    }
 }

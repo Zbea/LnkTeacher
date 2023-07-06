@@ -187,8 +187,8 @@ class BookStoreActivity : BaseActivity(),
     private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
         showLoading()
         val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.convertMD5(book.bookId.toString())+formatStr//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName)
+        val fileName = MD5Utils.convertMD5(book.bookId.toString())//文件名
+        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -229,8 +229,7 @@ class BookStoreActivity : BaseActivity(),
                         }
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
-                        val drawName=MD5Utils.convertMD5(book.bookId.toString())
-                        bookDrawPath=FileAddress().getPathBookDraw(drawName)
+                        bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)

@@ -1,5 +1,6 @@
 package com.bll.lnkteacher
 
+import com.bll.lnkteacher.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
 import com.bll.lnkteacher.Constants.Companion.DATE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
@@ -24,9 +25,12 @@ class FileAddress {
     fun getPathBook(fileName: String):String{
         return "$BOOK_PATH/$fileName"
     }
-
+    /**
+     * 书籍手写地址
+     * /storage/emulated/0/Notes
+     */
     fun getPathBookDraw(fileName: String):String{
-        return "/storage/emulated/0/Android/data/com.geniatech.knote.reader/files/note/$fileName"
+        return "$BOOK_DRAW_PATH/$fileName"
     }
 
     fun getPathTextBook(fileName: String):String{

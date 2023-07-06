@@ -461,6 +461,14 @@ abstract class BaseFragment : Fragment(), EasyPermissions.PermissionCallbacks, I
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
+//        when(msgFlag){
+//            Constants.USER_EVENT->{
+//                mUser= SPUtil.getObj("userTeacher", User::class.java)
+//            }
+//            else->{
+//                onEventBusMessage(msgFlag)
+//            }
+//        }
         onEventBusMessage(msgFlag)
     }
 

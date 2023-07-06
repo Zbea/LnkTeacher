@@ -45,7 +45,7 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     }
 
     override fun onAddHomeworkBook() {
-        showToast("设置题卷本成功")
+        showToast("设置题卷本为作业成功")
         books[position].isHomework=true
         mAdapter?.notifyItemChanged(position)
         BookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
@@ -159,9 +159,12 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
                         map["name"]=book.bookName
                         map["type"]=2
                         map["subType"]=4//题卷本
-                        map["grade"]=grade
+                        map["grade"]=book.grade
                         map["bookId"]=book.bookId
                         mPresenter.addType(map)
+                    }
+                    else{
+                        showToast("已经设置为作业")
                     }
                 }
             })

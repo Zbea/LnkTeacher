@@ -9,8 +9,19 @@ import com.chad.library.adapter.base.BaseViewHolder
 class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : BaseQuickAdapter<MessageBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
-        val dateStr=if (item.sendType==2)"发送学生:"+item.teacherName+"   时间:"+DateUtils.longToStringWeek(item.date) else DateUtils.longToStringWeek(item.date)
+        when(item.sendType){
+            2->{
+                helper.setText(R.id.tv_message_source,"通知")
+            }
+            3->{
+                helper.setText(R.id.tv_message_source,"发送学生："+item.teacherName)
+            }
+            else->{
+                helper.setGone(R.id.tv_message_source,false)
+            }
+        }
+
         helper.setText(R.id.tv_message_content,item.content)
-        helper.setText(R.id.tv_message_time,dateStr)
+        helper.setText(R.id.tv_message_time,"时间："+DateUtils.longToStringWeek(item.date))
     }
 }

@@ -5,12 +5,12 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.media.MediaPlayer
-import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
@@ -25,9 +25,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_homework_work.*
 import java.io.File
 
-class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectDetailsView,
-    IFileUploadView {
-
+class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
     private var id = 0
     private var subType = 0
     private val mUploadPresenter = FileUploadPresenter(this)
@@ -44,14 +42,31 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     private var mediaPlayer: MediaPlayer? = null
 
     private var elik: EinkPWInterface? = null
+    private val commitItems = mutableListOf<ItemList>()
 
-    override fun onSuccess(urls: MutableList<String>?) {
-        url = ToolUtils.getImagesStr(urls)
-        val map = HashMap<String, Any>()
-        map["studentTaskId"] = userItems[posUser].studentTaskId
-        map["submitUrl"] = url
-        map["status"] = 2
-        mPresenter.commitPaperStudent(map)
+    override fun onToken(token: String) {
+        showLoading()
+        val commitPaths = mutableListOf<String>()
+        for (item in commitItems) {
+            commitPaths.add(item.url)
+        }
+        FileImageUploadManager(token, commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    url = ToolUtils.getImagesStr(urls)
+                    val map = HashMap<String, Any>()
+                    map["studentTaskId"] = userItems[posUser].studentTaskId
+                    map["submitUrl"] = url
+                    map["status"] = 2
+                    mPresenter.commitPaperStudent(map)
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("上传失败")
+                }
+            })
+        }
     }
 
     override fun onImageList(list: MutableList<ContentListBean>?) {
@@ -78,7 +93,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
         showToast(userItems[posUser].name + getString(R.string.teaching_correct_success))
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik?.setPWEnabled(false)
@@ -141,14 +156,45 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 mediaPlayer = MediaPlayer()
                 mediaPlayer?.setDataSource(recordPath)
                 mediaPlayer?.setOnCompletionListener {
-                    iv_play.setImageResource(R.mipmap.icon_record_play)
-                    tv_play.setText(R.string.play)
+                    changeMediaView(false)
                 }
                 mediaPlayer?.prepare()
                 mediaPlayer?.start()
-                iv_play.setImageResource(R.mipmap.icon_record_pause)
-                tv_play.setText(R.string.pause)
+                changeMediaView(true)
             }
+            else{
+                if (mediaPlayer?.isPlaying == true){
+                    mediaPlayer?.pause()
+                    changeMediaView(false)
+                }
+                else{
+                    mediaPlayer?.start()
+                    changeMediaView(true)
+                }
+            }
+        }
+    }
+
+    /**
+     * 更改播放view状态
+     */
+    private fun changeMediaView(boolean: Boolean){
+        if (boolean){
+            iv_play.setImageResource(R.mipmap.icon_record_pause)
+            tv_play.setText(R.string.pause)
+        }
+        else{
+            iv_play.setImageResource(R.mipmap.icon_record_play)
+            tv_play.setText(R.string.play)
+        }
+    }
+
+
+    private fun release(){
+        if (mediaPlayer!=null){
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
         }
     }
 
@@ -167,7 +213,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 posImage = 0
                 setContentView()
                 if (subType == 3) {
-                    releasePlayer()
+                    release()
                 }
             }
         }
@@ -187,7 +233,6 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 disMissView(tv_save)
                 setContentImage()
             } else {
-                elik?.setPWEnabled(true)
                 showView(tv_save)
                 currentImages = userItem.studentUrl.split(",").toTypedArray()
                 loadPapers()
@@ -207,10 +252,12 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
      * 设置学生提交图片展示
      */
     private fun setContentImage() {
+        hideLoading()
         //批改成功后删掉原来，加载提交后的图片
         if (userItems[posUser].status == 2) {
             GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), iv_image, 10)
         } else {
+            elik?.setPWEnabled(true)
             val masterImage = "${getPath()}/${posImage + 1}.png"//原图
             GlideUtils.setImageFile(this, File(masterImage), iv_image)
         }
@@ -243,7 +290,6 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
             imageDownLoad.startDownload()
             imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
                 override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    hideLoading()
                     runOnUiThread {
                         setContentImage()
                     }
@@ -284,7 +330,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
      * 提交学生考卷
      */
     private fun commitPapers() {
-        val paths = mutableListOf<String>()
+        commitItems.clear()
         //手写,图片合图
         for (i in currentImages?.indices!!) {
             val index = i + 1
@@ -292,35 +338,33 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
             val drawPath = getPathDrawStr(index).replace("tch", "png")
             val mergePath = getPath()//合并后的路径
             val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
-            Thread(Runnable {
+            Thread{
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
                 val drawBitmap = BitmapFactory.decodeFile(drawPath)
                 if (drawBitmap != null) {
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                     BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
                 }
-            }).start()
-            paths.add(mergePathStr)
-        }
-        Handler().postDelayed({
-            mUploadPresenter.upload(paths)
-        }, 1000)
+                else{
+                    BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
+                }
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = mergePathStr
+                })
+                if (commitItems.size==currentImages?.size){
+                    commitItems.sort()
+                    mUploadPresenter.getToken()
+                }
+            }.start()
 
-    }
-
-    /**
-     * 释放播放器
-     */
-    private fun releasePlayer() {
-        mediaPlayer?.run {
-            release()
-            null
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
-        releasePlayer()
+        release()
     }
 
 }

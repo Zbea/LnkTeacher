@@ -34,7 +34,6 @@ class MainTeachingPlanActivity:DateActivity() {
         pops.add(PopupBean(2, "教学删除", false))
     }
 
-
     override fun initView() {
         super.initView()
         setPageTitle("${classGroup?.name}  教学计划")

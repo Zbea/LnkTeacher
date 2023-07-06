@@ -35,7 +35,6 @@ public class ImageDownLoadUtils {
     public void startDownload() {
         if (urls == null || urls.length == 0)
             return;
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -85,9 +84,7 @@ public class ImageDownLoadUtils {
             file = new File(path, i + ".png");
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            }
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
         } catch (Exception e) {
             e.getStackTrace();
         } finally {

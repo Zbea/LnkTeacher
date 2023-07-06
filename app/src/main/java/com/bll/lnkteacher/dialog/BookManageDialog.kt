@@ -46,7 +46,7 @@ class BookManageDialog(val context: Context, val book:Book,val type:Int){
         }
 
         ll_set.setOnClickListener {
-            CommonDialog(context).setContent("确定设置为题卷本？").builder().setDialogClickListener(object :
+            CommonDialog(context).setContent("确定设置题卷本为作业？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

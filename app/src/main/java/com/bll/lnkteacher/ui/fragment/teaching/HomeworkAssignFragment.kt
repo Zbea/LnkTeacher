@@ -7,8 +7,10 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
+import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
@@ -45,7 +47,15 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         fetchData()
     }
     override fun onDeleteSuccess() {
-
+        showToast(R.string.delete_success)
+        val typeBean=types[position]
+        val homeworkBook=BookGreenDaoManager.getInstance().queryTextBookByBookID(6,typeBean.bookId)
+        if (homeworkBook!=null)
+        {
+            homeworkBook.isHomework=false
+            BookGreenDaoManager.getInstance().insertOrReplaceBook(homeworkBook)
+        }
+        mAdapter?.remove(position)
     }
     override fun onList(homeworkContent: AssignContent?) {
     }
@@ -114,8 +124,32 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                     }
                 }
             }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@HomeworkAssignFragment.position=position
+                if (types[position].subType==4){
+                    deleteHomeworkBook(types[position])
+                }
+                true
+            }
         }
 
+    }
+
+    /**
+     * 删除题卷本
+     */
+    private fun deleteHomeworkBook(item: TypeBean){
+        CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
+            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    val map=HashMap<String,Any>()
+                    map["id"]=item.id
+                    map["bookId"]=item.bookId
+                    mPresenter.deleteType(map)
+                }
+            })
     }
 
     /**
@@ -140,6 +174,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["name"]=item.name
         map["grade"]=grade
         map["showStatus"]=if (isCommit) 0 else 1
+        map["commonTypeId"]=item.id
         mPresenter.commitHomework(map)
     }
 

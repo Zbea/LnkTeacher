@@ -176,7 +176,7 @@ public interface IContractView {
 
     //文件上传
     interface IFileUploadView extends IBaseView{
-        void onSuccess(List<String> urls);
+        void onToken(String token);
     }
 
     //作业布置
