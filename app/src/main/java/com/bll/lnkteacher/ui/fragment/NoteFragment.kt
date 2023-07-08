@@ -145,8 +145,7 @@ class NoteFragment : BaseFragment() {
                 }
                 val note=notes[position]
                 //修改内容分类
-                NoteContentDaoManager.getInstance().editNotes(note.title,note.id,string)
-
+                NoteContentDaoManager.getInstance().editNotes(note.typeStr,note.id,string)
                 note.title = string
                 mAdapter?.notifyDataSetChanged()
                 NoteDaoManager.getInstance().insertOrReplace(note)

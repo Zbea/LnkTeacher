@@ -12,10 +12,18 @@
         >
 
         <ImageView
+            android:id="@+id/iv_erasure"
+            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_height="match_parent"
+            android:layout_marginStart="98dp"
+            android:scaleType="center"
+            android:src="@mipmap/icon_draw_erasure" />
+
+        <ImageView
             android:id="@+id/iv_page_up"
             android:layout_width="@dimen/drawing_bottom_height"
             android:layout_height="match_parent"
-            android:layout_marginStart="196dp"
+            android:layout_marginStart="44dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_page_up" />
 

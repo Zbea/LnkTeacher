@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk 28
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.bll.lnkteacher"
         minSdk 26
-        targetSdk 28
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         multiDexEnabled = true
@@ -46,19 +46,6 @@ android {
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs.add('-Xbootclasspath/p:app\\libs\\eink\\classes.jar')
-        }
-    }
-
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            Set<File> fileSet = options.bootstrapClasspath.getFiles()
-            List<File> newFileList =  new ArrayList<>();
-            //相对位置，根据存放的位置修改路径
-            newFileList.add(new File("./libs/eink/classes.jar"))
-            newFileList.addAll(fileSet)
-            options.bootstrapClasspath = files(
-                    newFileList.toArray()
-            )
         }
     }
 
@@ -117,10 +104,10 @@ dependencies {
 
     implementation 'com.haibin:calendarview:3.7.1'
     //gson
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.9'
     //数据库存储
     implementation 'org.greenrobot:greendao:3.3.0' // add library greendao
-    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v2.0.0'
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:2.2.1'
     //运行时权限
     implementation 'pub.devrel:easypermissions:1.2.0'
     //EventBus

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 class NoteDrawingActivity : BaseActivity() {
 
     private var elik:EinkPWInterface?=null
-
+    private var isErasure=false
     private var typeStr = ""
     private var note: Note? = null
     private var noteContent: NoteContent? = null//当前内容
@@ -88,6 +89,18 @@ class NoteDrawingActivity : BaseActivity() {
 
         iv_catalog.setOnClickListener {
             showCatalog()
+        }
+
+        iv_erasure.setOnClickListener {
+            isErasure=!isErasure
+            if (isErasure){
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
+                elik?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            }
+            else{
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
+                elik?.drawObjectType =PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
+            }
         }
 
     }

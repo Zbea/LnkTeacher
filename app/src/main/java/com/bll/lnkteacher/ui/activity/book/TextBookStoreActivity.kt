@@ -335,7 +335,7 @@ class TextBookStoreActivity : BaseActivity(),
                     deleteDoneTask(task)
                     if (tabId==4){
                         val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-                        val md5Name = MD5Utils.convertMD5(book.bookId.toString())
+                        val md5Name = MD5Utils.digest(book.bookId.toString())
                         val targetFileStr = FileAddress().getPathBook(md5Name+formatStr)
                         book.apply {
                             id=null

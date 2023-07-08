@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
+import android.view.PWDrawObjectHandler
 import android.widget.ImageView
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.FileAddress
@@ -36,6 +37,7 @@ class BookDetailsActivity:BaseActivity() {
     private var page = 1 //当前页码
 
     private var elik_a: EinkPWInterface?=null
+    private var isErasure=false
 
     override fun layoutId(): Int {
         return R.layout.ac_book_details
@@ -108,6 +110,18 @@ class BookDetailsActivity:BaseActivity() {
             if(page<count){
                 page+=1
                 updateScreen()
+            }
+        }
+
+        iv_erasure.setOnClickListener {
+            isErasure=!isErasure
+            if (isErasure){
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure_big)
+                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_CHOICERASE
+            }
+            else{
+                iv_erasure?.setImageResource(R.mipmap.icon_draw_erasure)
+                elik_a?.drawObjectType = PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN
             }
         }
     }

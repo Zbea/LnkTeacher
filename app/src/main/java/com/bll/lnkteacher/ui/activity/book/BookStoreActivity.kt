@@ -187,7 +187,7 @@ class BookStoreActivity : BaseActivity(),
     private fun downLoadStart(url: String,book: Book): BaseDownloadTask? {
         showLoading()
         val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.convertMD5(book.bookId.toString())//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
         val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
