@@ -69,4 +69,9 @@ class AppFragment:BaseFragment() {
         }
     }
 
+    override fun onRefreshData() {
+        super.onRefreshData()
+        initData()
+    }
+
 }

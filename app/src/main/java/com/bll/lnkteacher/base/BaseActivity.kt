@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.base
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
@@ -36,6 +37,9 @@ import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
@@ -76,9 +80,21 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         mSaveState=savedInstanceState
         setContentView(layoutId())
         initCommonTitle()
+        EventBus.getDefault().register(this)
+        setStatusBarColor(ContextCompat.getColor(this, R.color.white))
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.RECORD_AUDIO)){
+            EasyPermissions.requestPermissions(this,"请求权限",1,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.RECORD_AUDIO
+            )
         }
 
         mDialog = ProgressDialog(this)
@@ -396,6 +412,23 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     open fun fetchData(){
 
+    }
+
+    //更新数据
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(msgFlag: String) {
+        onEventBusMessage(msgFlag)
+    }
+
+    /**
+     * 收到eventbus事件处理
+     */
+    open fun onEventBusMessage(msgFlag: String){
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
 }

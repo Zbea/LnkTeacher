@@ -20,9 +20,9 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
 
     @SuppressLint("WrongConstant")
     override fun convert(helper: BaseViewHolder, item: Date) {
-        var tvDay = helper.getView<TextView>(R.id.tv_day)
-        var tvLunar=helper.getView<TextView>(R.id.tv_lunar)
-        var ivImage=helper.getView<ImageView>(R.id.iv_image)
+        val tvDay = helper.getView<TextView>(R.id.tv_day)
+        val tvLunar=helper.getView<TextView>(R.id.tv_lunar)
+        val ivImage=helper.getView<ImageView>(R.id.iv_image)
         tvDay.text = if (item.day == 0) "" else item.day.toString()
         if (item.isNow)
             tvDay.typeface = defaultFromStyle(BOLD)

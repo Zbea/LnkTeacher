@@ -273,8 +273,8 @@
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="120dp"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:background="@drawable/bg_btn_black_solid"
         android:text="注册"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_24" />
 </LinearLayout>

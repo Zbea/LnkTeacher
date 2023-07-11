@@ -2,6 +2,7 @@ package com.bll.lnkteacher.utils;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,14 +71,15 @@ public class SToast {
         if (toast == null) {
             toast = Toast.makeText(ctx, "----what is this", duration);
         }
-        TextView text = toast.getView().findViewById(android.R.id.message);
-        text.setTextColor(Color.WHITE);
-        text.setTextSize(20);
-        text.setPadding(30, 20, 30, 20);
-        toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
+        if (Build.VERSION.SDK_INT < 30) {
+            TextView text = toast.getView().findViewById(android.R.id.message);
+            text.setTextColor(Color.WHITE);
+            text.setTextSize(20);
+            text.setPadding(30, 20, 30, 20);
+            toast.getView().setBackground(ctx.getDrawable(R.drawable.bg_black_solid_10dp_corner));
+        }
         toast.setText(str);
         toast.setDuration(duration);
-//        toast.setGravity(Gravity.BOTTOM|Gravity.LEFT, 600, 400);
         toast.show();
     }
 

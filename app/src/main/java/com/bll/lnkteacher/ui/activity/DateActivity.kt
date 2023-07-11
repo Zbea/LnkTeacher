@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupDateSelector
@@ -21,6 +22,7 @@ open class DateActivity: BaseActivity() {
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
     var dates= mutableListOf<Date>()
+    private var position=0
 
     override fun layoutId(): Int {
         return R.layout.ac_date
@@ -39,7 +41,7 @@ open class DateActivity: BaseActivity() {
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2017,2018,2019,2020,2021,2022,2023,2024,2025,2026)
+            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
             if (yearPop==null){
                 yearPop=PopupDateSelector(this,tv_year,list,0).builder()
                 yearPop ?.setOnSelectorListener {
@@ -83,10 +85,11 @@ open class DateActivity: BaseActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            var dateBean=dates[position]
+            this.position=position
+            val dateBean=dates[position]
             if (dateBean.year!=0){
-                var intent = Intent(this, DateEventActivity::class.java)
-                var bundle = Bundle()
+                val intent = Intent(this, DateEventActivity::class.java)
+                val bundle = Bundle()
                 bundle.putSerializable("dateBean", dateBean)
                 intent.putExtra("bundle", bundle)
                 startActivity(intent)
@@ -186,5 +189,10 @@ open class DateActivity: BaseActivity() {
         return date
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag== Constants.DATE_EVENT){
+            mAdapter?.notifyItemChanged(position)
+        }
+    }
 
 }

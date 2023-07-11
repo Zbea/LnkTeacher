@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -13,7 +12,6 @@ import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
-import pub.devrel.easypermissions.EasyPermissions
 
 class AccountLoginActivity:BaseActivity(),
     IContractView.ILoginView {
@@ -44,17 +42,8 @@ class AccountLoginActivity:BaseActivity(),
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        EasyPermissions.requestPermissions(this,"请求权限",1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_CALENDAR,
-            Manifest.permission.READ_CALENDAR,
-            Manifest.permission.RECORD_AUDIO
-        )
-
         ed_user.setText("techerone")
         ed_psw.setText("123456")
-
 
         tv_register.setOnClickListener {
             startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)

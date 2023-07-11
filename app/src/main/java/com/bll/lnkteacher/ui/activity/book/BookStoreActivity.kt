@@ -163,7 +163,7 @@ class BookStoreActivity : BaseActivity(),
         bookDetailsDialog?.builder()
         bookDetailsDialog?.setOnClickListener {
             if (book.buyStatus==1){
-                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookPlusId)
                 if (localBook == null) {
                     val downloadTask = downLoadStart(book.downloadUrl,book)
                     mDownMapPool[book.bookId] = downloadTask!!
@@ -245,8 +245,8 @@ class BookStoreActivity : BaseActivity(),
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()
-                    showToast(book.bookName+getString(R.string.book_download_fail))
                     deleteDoneTask(task)
+                    showToast(book.bookName+getString(R.string.book_download_fail))
                     bookDetailsDialog?.setChangeStatus()
                 }
             })

@@ -27,7 +27,7 @@ class MainTeachingPlanActivity:DateActivity() {
 
     override fun initData() {
         super.initData()
-        classGroup = intent.getBundleExtra("bundle").getSerializable("classGroup") as ClassGroup
+        classGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
 
         pops.add(PopupBean(0, "教学移动", false))
         pops.add(PopupBean(1, "教学复制", false))

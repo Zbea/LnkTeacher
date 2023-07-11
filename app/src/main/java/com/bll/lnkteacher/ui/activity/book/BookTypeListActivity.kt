@@ -22,8 +22,6 @@ import kotlinx.android.synthetic.main.ac_book_type_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 /**
@@ -47,7 +45,6 @@ class BookTypeListActivity : BaseActivity() {
 
     override fun initView() {
         pageSize = 12
-        EventBus.getDefault().register(this)
 
         setPageTitle(R.string.book_type_title)
         showSearchView(true)
@@ -157,18 +154,13 @@ class BookTypeListActivity : BaseActivity() {
             })
     }
 
-    //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(msgFlag: String) {
+
+    override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == BOOK_EVENT) {
             fetchData()
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
-    }
 
     override fun fetchData() {
         hideKeyboard()

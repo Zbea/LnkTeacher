@@ -27,7 +27,7 @@ class DateEventActivity:BaseActivity() {
     }
 
     override fun initData() {
-        mDate = intent.getBundleExtra("bundle").getSerializable("dateBean") as Date
+        mDate = intent.getBundleExtra("bundle")?.getSerializable("dateBean") as Date
         nowLong=mDate?.time!!
     }
 
