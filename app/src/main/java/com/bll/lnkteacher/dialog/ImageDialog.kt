@@ -19,7 +19,7 @@ class ImageDialog(val context: Context, private val images:List<String>){
     fun builder(): ImageDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_image)
-        dialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
         ivImage=dialog.findViewById(R.id.iv_image)

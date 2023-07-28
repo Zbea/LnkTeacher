@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.Book
 
@@ -27,7 +26,7 @@ class BookManageDialog(val context: Context, val book:Book,val type:Int){
         val ll_delete=dialog.findViewById<LinearLayout>(R.id.ll_delete)
         val ll_set=dialog.findViewById<LinearLayout>(R.id.ll_set)
 
-        tv_name.text=book.bookName+if (book.semester==0) "" else "-"+ DataBeanManager.popupSemesters[book.semester-1].name
+        tv_name.text=book.bookName
 
         if (type==1){
             ll_set.visibility= View.INVISIBLE
@@ -70,7 +69,5 @@ class BookManageDialog(val context: Context, val book:Book,val type:Int){
     fun setOnDialogClickListener(onClickListener: OnDialogClickListener?) {
         this.onClickListener = onClickListener
     }
-
-
 
 }

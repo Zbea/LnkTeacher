@@ -37,6 +37,19 @@
             android:background="@drawable/bg_line_bottom"
             />
 
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_30"
+            android:text="@string/save"
+            android:textSize="@dimen/sp_20"
+            android:gravity="center"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:textColor="@color/black"
+
+            />
+
     </LinearLayout>
 
     <LinearLayout

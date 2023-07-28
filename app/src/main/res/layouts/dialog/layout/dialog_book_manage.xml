@@ -51,10 +51,10 @@
             >
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
-                android:src="@mipmap/icon_setting_move"/>
+                android:src="@mipmap/icon_setting_app"/>
 
             <TextView
                 android:layout_width="match_parent"
@@ -82,7 +82,7 @@
             >
 
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
                 android:src="@mipmap/icon_setting_delete"/>

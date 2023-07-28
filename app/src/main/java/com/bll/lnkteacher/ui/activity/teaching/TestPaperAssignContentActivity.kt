@@ -64,7 +64,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     override fun initData() {
         pageSize=12
-        typeBean= intent.getBundleExtra("bundle").getSerializable("type") as TypeBean
+        typeBean= intent.getBundleExtra("bundle")?.getSerializable("type") as TypeBean
         grade=typeBean?.grade!!
         fetchData()
 

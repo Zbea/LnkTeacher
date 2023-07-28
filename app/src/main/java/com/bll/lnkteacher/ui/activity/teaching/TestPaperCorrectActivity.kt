@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
 import android.view.EinkPWInterface
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -106,7 +105,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     override fun initData() {
         id=intent.flags
-        mClassBean=intent.getBundleExtra("bundle").getSerializable("classBean") as CorrectClassBean
+        mClassBean=intent.getBundleExtra("bundle")?.getSerializable("classBean") as CorrectClassBean
 
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
@@ -119,13 +118,6 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
         initRecyclerView()
 
-        et_score.doAfterTextChanged {
-            if (getScoreInput()>0&& userItems[posUser].status==1){
-                showLoading()
-                commitPapers()
-            }
-        }
-
         iv_up.setOnClickListener {
             if (posImage>0){
                 posImage-=1
@@ -136,6 +128,13 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             if (posImage< getImageSize()-1){
                 posImage+=1
                 setContentImage()
+            }
+        }
+
+        tv_save.setOnClickListener {
+            if (getScoreInput()>0&& userItems[posUser].status==1){
+                showLoading()
+                commitPapers()
             }
         }
     }
@@ -172,15 +171,18 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             val masterImage="${getPath()}/${index}.png"//原图
             val drawPath = getPathDrawStr(index).replace("tch","png")
             val mergePath = getPath()//合并后的路径
-            val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
+            var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
             Thread {
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap != null) {
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds=false
+                val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
+                if (drawBitmap!=null){
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                     BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
-                } else {
-                    BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
+                }
+                else{
+                    mergePathStr=masterImage
                 }
                 commitItems.add(ItemList().apply {
                     id = i
@@ -204,6 +206,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             currentImages=userItem.submitUrl.split(",").toTypedArray()
             et_score.setText(userItem.score.toString())
             setEditState(false)
+            disMissView(tv_save)
             elik?.setPWEnabled(false)
             setContentImage()
         }
@@ -226,7 +229,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
-        showLoading()
+        hideLoading()
         //批改成功后删掉原来，加载提交后的图片
         if (userItems[posUser].status==2){
             GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage) ,iv_image,10)

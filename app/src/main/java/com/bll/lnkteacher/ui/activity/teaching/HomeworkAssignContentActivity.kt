@@ -61,7 +61,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
 
     override fun initData() {
         pageSize=12
-        typeBean= intent.getBundleExtra("bundle").getSerializable("homeworkType") as TypeBean
+        typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
         grade=typeBean?.grade!!
         fetchData()
     }

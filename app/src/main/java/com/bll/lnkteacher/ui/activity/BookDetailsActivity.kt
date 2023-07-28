@@ -34,7 +34,7 @@ class BookDetailsActivity:BaseActivity() {
     private var childItems= mutableListOf<CatalogChildBean>()
 
     private var count = 1
-    private var page = 1 //当前页码
+    private var page = 0 //当前页码
 
     private var elik_a: EinkPWInterface?=null
     private var isErasure=false
@@ -93,7 +93,7 @@ class BookDetailsActivity:BaseActivity() {
         iv_catalog.setOnClickListener {
             DrawingCatalogDialog(this,catalogs,1).builder().
             setOnDialogClickListener { position ->
-                page = position
+                page = position-1
                 updateScreen()
             }
 
@@ -129,7 +129,7 @@ class BookDetailsActivity:BaseActivity() {
 
     //单屏翻页
     private fun updateScreen(){
-        tv_page.text="$page/$count"
+        tv_page.text="${page+1}/$count"
         loadPicture(page,elik_a!!,v_content_a)
     }
 
@@ -142,7 +142,7 @@ class BookDetailsActivity:BaseActivity() {
 
             GlideUtils.setImageFile(this,showFile,view)
 
-            val drawPath=showFile.path.replace(".jpg",".tch")
+            val drawPath=book?.bookDrawPath+"/${index+1}.tch"
             elik.setLoadFilePath(drawPath,true)
             elik.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
                 override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -162,10 +162,8 @@ class BookDetailsActivity:BaseActivity() {
     //获得图片地址
     private fun getIndexFile(index: Int): File? {
         val path=FileAddress().getPathTextBookPicture(book?.bookPath!!)
-        val listFiles = FileUtils.getFiles(path,".jpg")
-        if (listFiles.size==0)
-            return null
-        return listFiles[index - 1]
+        val listFiles = FileUtils.getFiles(path)
+        return if (listFiles!=null) listFiles[index] else null
     }
 
     override fun onDestroy() {

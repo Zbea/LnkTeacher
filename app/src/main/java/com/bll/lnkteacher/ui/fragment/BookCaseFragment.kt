@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.BookManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
@@ -64,7 +64,7 @@ class BookCaseFragment: BaseFragment() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@BookCaseFragment.position=position
-                delete()
+                onLongClick()
                 true
             }
         }
@@ -108,26 +108,26 @@ class BookCaseFragment: BaseFragment() {
 
 
     //删除书架书籍
-    private fun delete(){
-        CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                val book=books[position]
-                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                books.remove(book)
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                if (File(book.bookDrawPath).exists())
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                mAdapter?.notifyDataSetChanged()
+    private fun onLongClick(){
+        val book = books[position]
+        BookManageDialog(requireActivity(), book,1).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
+                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+                    books.remove(book)
+                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                    if (File(book.bookDrawPath).exists())
+                        FileUtils.deleteFile(File(book.bookDrawPath))
+                    mAdapter?.notifyDataSetChanged()
 
-                if (books.size==11)
-                {
-                    findBook()
+                    if (books.size==11)
+                    {
+                        findBook()
+                    }
                 }
-            }
-        })
+                override fun onSet() {
+                }
+            })
     }
 
     override fun onEventBusMessage(msgFlag: String) {

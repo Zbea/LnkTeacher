@@ -34,6 +34,7 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_main.*
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
@@ -111,7 +112,9 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     //课程表相关处理
     @SuppressLint("WrongConstant")
     private fun initCourse() {
-        GlideUtils.setImageNoCacheUrl(activity,Constants.SCREEN_PATH + "/course.png",iv_course)
+        val path=Constants.SCREEN_PATH + "/course.png"
+        if (File(path).exists())
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
 
         iv_course_more.setOnClickListener {
             CourseModuleDialog(requireActivity()).builder().setOnClickListener { type ->
@@ -128,7 +131,8 @@ class MainFragment : BaseFragment(),IContractView.IMessageView{
     private fun initDateView() {
         tv_date_today.text = SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date())
         val path=FileAddress().getPathDate(DateUtils.longToStringCalender(Date().time))+"/draw.png"
-        GlideUtils.setImageNoCacheUrl(activity,path,iv_image)
+        if (File(path).exists())
+            GlideUtils.setImageNoCacheUrl(activity,path,iv_image)
     }
 
     //消息相关处理

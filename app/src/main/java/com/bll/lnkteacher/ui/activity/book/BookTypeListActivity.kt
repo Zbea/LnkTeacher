@@ -8,7 +8,7 @@ import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.BookManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.ItemList
@@ -77,7 +77,7 @@ class BookTypeListActivity : BaseActivity() {
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                     pos = position
-                    delete()
+                    onLongClick()
                     true
                 }
         }
@@ -135,14 +135,11 @@ class BookTypeListActivity : BaseActivity() {
     }
 
     //删除书架书籍
-    private fun delete() {
-        CommonDialog(this).setContent(R.string.toast_is_delete_tips).builder()
-            .setDialogClickListener(object :
-                CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    val book = books[pos]
+    private fun onLongClick() {
+        val book = books[pos]
+        BookManageDialog(this, book,1).builder()
+            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
+                override fun onDelete() {
                     BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     if (File(book.bookDrawPath).exists())
@@ -150,6 +147,8 @@ class BookTypeListActivity : BaseActivity() {
                     books.remove(book)
                     mAdapter?.notifyDataSetChanged()
                     EventBus.getDefault().post(BOOK_EVENT)
+                }
+                override fun onSet() {
                 }
             })
     }

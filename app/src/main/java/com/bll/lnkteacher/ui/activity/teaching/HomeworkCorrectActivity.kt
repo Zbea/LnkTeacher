@@ -108,7 +108,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     override fun initData() {
         id = intent.flags
         mClassBean =
-            intent.getBundleExtra("bundle").getSerializable("classBean") as CorrectClassBean
+            intent.getBundleExtra("bundle")?.getSerializable("classBean") as CorrectClassBean
         subType = intent.getIntExtra("subType", 0)
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
@@ -337,16 +337,18 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
             val masterImage = "${getPath()}/${index}.png"//原图
             val drawPath = getPathDrawStr(index).replace("tch", "png")
             val mergePath = getPath()//合并后的路径
-            val mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
+            var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
             Thread{
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap != null) {
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds=false
+                val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
+                if (drawBitmap!=null){
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                     BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
                 }
                 else{
-                    BitmapUtils.saveBmpGallery(this, oldBitmap, mergePath, "merge${index}")
+                    mergePathStr=masterImage
                 }
                 commitItems.add(ItemList().apply {
                     id = i
@@ -354,7 +356,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 })
                 if (commitItems.size==currentImages?.size){
                     commitItems.sort()
-                    mUploadPresenter.getToken()
+//                    mUploadPresenter.getToken()
                 }
             }.start()
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">墨之屏教学本</string>
+    <string name="app_name">青蓝教师本</string>
     <string name="authority">com.bll.lnkteacher</string>
     <string name="request_success">请求成功</string>
     <string name="login_timeout">连接超时,请重新登陆</string>

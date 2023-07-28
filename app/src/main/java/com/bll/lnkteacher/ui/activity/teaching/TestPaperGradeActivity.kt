@@ -44,7 +44,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
     }
 
     override fun initData() {
-        correctBean=intent.getBundleExtra("bundle").get("paperCorrect") as CorrectBean
+        correctBean=intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
 
         for (item in correctBean?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
