@@ -44,19 +44,15 @@ public class FileDownManager {
         return this;
     }
 
-
-    public FileDownManager addHeader(String auth, String token) {
-        this.auth = auth;
-        this.token = token;
-        return this;
-    }
-
     //单任务下载
     public BaseDownloadTask startSingleTaskDownLoad(final SingleTaskCallBack singletaskCallBack) {
         auth = "Authorization";
         token = SPUtil.INSTANCE.getString("tokenTeacher");
         Log.d("debug"," download url = "+url);
-        BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url).addHeader(auth, token).setPath(path).setListener(new FileDownloadListener() {
+        BaseDownloadTask downloadTask =  FileDownloader.getImpl().create(url)
+                .addHeader("Accept-Encoding", "identity")
+                .addHeader(auth, token)
+                .setPath(path).setListener(new FileDownloadListener() {
 
             @Override
             protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {

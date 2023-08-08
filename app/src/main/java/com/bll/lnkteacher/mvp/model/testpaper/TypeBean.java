@@ -12,4 +12,5 @@ public class TypeBean implements Serializable {
     public int grade;
     public int type;//1考卷2作业本
     public int bookId;
+    public String bgResId;
 }

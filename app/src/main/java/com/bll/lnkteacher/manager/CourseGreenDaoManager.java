@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.bll.lnkteacher.MyApplication;
+import com.bll.lnkteacher.greendao.BookDao;
 import com.bll.lnkteacher.greendao.CourseBeanDao;
 import com.bll.lnkteacher.greendao.DaoMaster;
 import com.bll.lnkteacher.greendao.DaoSession;
@@ -22,15 +23,9 @@ public class CourseGreenDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static CourseGreenDaoManager mDbController;
-
-
-    private CourseBeanDao courseDao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+    private final CourseBeanDao courseDao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -51,6 +46,8 @@ public class CourseGreenDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        whereUser= CourseBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 
@@ -66,9 +63,8 @@ public class CourseGreenDaoManager {
 
     //根据Id 查询
     public CourseBean queryID(int id) {
-        WhereCondition whereCondition= CourseBeanDao.Properties.UserId.eq(userId);
         WhereCondition whereCondition1= CourseBeanDao.Properties.ViewId.eq(id);
-        return  courseDao.queryBuilder().where(whereCondition,whereCondition1).build().unique();
+        return  courseDao.queryBuilder().where(whereUser,whereCondition1).build().unique();
     }
 
     //删除

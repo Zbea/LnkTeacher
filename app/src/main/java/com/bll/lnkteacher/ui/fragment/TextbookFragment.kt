@@ -161,6 +161,7 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
                         map["subType"]=4//题卷本
                         map["grade"]=book.grade
                         map["bookId"]=book.bookId
+                        map["bgResId"]=book.imageUrl
                         mPresenter.addType(map)
                     }
                     else{

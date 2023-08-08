@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -187,6 +188,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["type"]=2
         map["subType"]=subType
         map["grade"]=grade
+        map["bgResId"]=DataBeanManager.getHomeworkCoverStr()
         mPresenter.addType(map)
     }
 

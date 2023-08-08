@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Point
 import android.graphics.Rect
+import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.FileAddress
@@ -134,7 +135,9 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         tv_save.setOnClickListener {
             if (getScoreInput()>0&& userItems[posUser].status==1){
                 showLoading()
-                commitPapers()
+                Handler().postDelayed({
+                    commitPapers()
+                },1000)
             }
         }
     }
@@ -174,9 +177,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
             Thread {
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds=false
-                val drawBitmap = BitmapFactory.decodeFile(drawPath,options)
+                val drawBitmap = BitmapFactory.decodeFile(drawPath)
                 if (drawBitmap!=null){
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
                     BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")

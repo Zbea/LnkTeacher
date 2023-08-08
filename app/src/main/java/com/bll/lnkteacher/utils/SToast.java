@@ -56,12 +56,7 @@ public class SToast {
     public static void showText(final CharSequence str, @IntRange(from = 0, to = 1) final int duration) {
         if (Thread.currentThread().getId() != 1) {
             // 在子线程
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    finalShow(str, duration);
-                }
-            });
+            handler.post(() -> finalShow(str, duration));
         } else {
             finalShow(str, duration);
         }

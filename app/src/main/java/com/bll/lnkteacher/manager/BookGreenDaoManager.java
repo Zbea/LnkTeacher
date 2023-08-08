@@ -22,16 +22,9 @@ public class BookGreenDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static BookGreenDaoManager mDbController;
-
-
-    private BookDao bookDao;  //book表
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    WhereCondition whereUser= BookDao.Properties.UserId.eq(userId);
+    private final BookDao bookDao;  //book表
+    static WhereCondition whereUser;
 
 
     /**
@@ -39,7 +32,6 @@ public class BookGreenDaoManager {
      */
     public BookGreenDaoManager() {
         mDaoSession = MyApplication.Companion.getMDaoSession();
-
         bookDao = mDaoSession.getBookDao(); //book表
     }
 
@@ -54,6 +46,8 @@ public class BookGreenDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        whereUser= BookDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

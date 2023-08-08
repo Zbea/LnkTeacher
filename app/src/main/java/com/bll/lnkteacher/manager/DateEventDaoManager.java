@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.manager;
 
 import com.bll.lnkteacher.MyApplication;
+import com.bll.lnkteacher.greendao.BookDao;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.DateEventDao;
 import com.bll.lnkteacher.mvp.model.DateEvent;
@@ -18,15 +19,9 @@ public class DateEventDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-    /**
-     *
-     */
     private static DateEventDaoManager mDbController;
-
-    private DateEventDao dao;
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    private WhereCondition whereUser= DateEventDao.Properties.UserId.eq(userId);
+    private final DateEventDao dao;
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -47,6 +42,8 @@ public class DateEventDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        whereUser= DateEventDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

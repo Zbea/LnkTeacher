@@ -4,6 +4,8 @@ import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.utils.ToolUtils
+import java.util.*
 
 object DataBeanManager {
 
@@ -206,6 +208,15 @@ object DataBeanManager {
             list.add(moduleBean3)
             return list
         }
+
+    /**
+     * 老师下发作业本随机得到背景图
+     */
+    fun getHomeworkCoverStr(): String {
+        val covers = homeworkCover
+        val index = Random().nextInt(covers.size)
+        return ToolUtils.getImageResStr(mContext, covers[index].resId)
+    }
 
     //日记内容选择
     val noteModuleDiary: MutableList<ModuleBean>

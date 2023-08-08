@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.manager;
 
 import com.bll.lnkteacher.MyApplication;
+import com.bll.lnkteacher.greendao.BookDao;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.NoteContentDao;
 import com.bll.lnkteacher.mvp.model.NoteContent;
@@ -18,17 +19,9 @@ public class NoteContentDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
-
-    /**
-     *
-     */
     private static NoteContentDaoManager mDbController;
-
-
-    private NoteContentDao dao;  //note表
-
-    private long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    private WhereCondition whereUser= NoteContentDao.Properties.UserId.eq(userId);
+    private final NoteContentDao dao;  //note表
+    private static WhereCondition whereUser;
 
     /**
      * 构造初始化
@@ -49,6 +42,8 @@ public class NoteContentDaoManager {
                 }
             }
         }
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        whereUser= NoteContentDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 
