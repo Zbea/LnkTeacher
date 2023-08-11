@@ -5,6 +5,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
@@ -15,6 +16,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
+import com.bll.lnkteacher.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -29,6 +31,8 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private var type=1 //班群校群id
     private var subtype=0 //选中群id
     private var grade=0
+    private var timeDialog:DateTimeSelectorDialog?=null
+    private var commitTime=0L
 
     override fun onType(typeList: TypeList?) {
     }
@@ -107,6 +111,19 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             }
         }
 
+        tv_time.setOnClickListener {
+            if (timeDialog==null){
+                timeDialog=DateTimeSelectorDialog(this)
+                timeDialog?.builder()?.setOnDateListener { timeStr, timeLong ->
+                    tv_time.text=DateUtils.longToStringNoYear(timeLong)
+                    commitTime=timeLong
+                }
+            }
+            else{
+                timeDialog?.show()
+            }
+        }
+
         tv_group_name.setOnClickListener {
             selectorName()
         }
@@ -133,7 +150,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
 
         tv_send.setOnClickListener {
-            if (getCheckedItems().size>0&&subtype!=0){
+            if (getCheckedItems().size>0&&subtype!=0&&commitTime>0){
                 val ids= mutableListOf<Int>()
                 for (item in getCheckedItems()){
                     ids.add(item.taskId)
@@ -143,6 +160,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 map["groupId"]=subtype
                 map["ids"]=ids.toIntArray()
                 map["grade"]=typeBean?.grade!!
+                map["endTime"]=commitTime
                 presenter.sendPapers(map)
             }
         }

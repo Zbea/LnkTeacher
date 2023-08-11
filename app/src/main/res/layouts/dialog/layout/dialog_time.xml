@@ -4,14 +4,14 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="@dimen/dp_40">
 
-    <DatePicker
-        android:id="@+id/dp_date"
-        android:layout_width="match_parent"
+    <TimePicker
+        android:id="@+id/tp_time"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"/>
+        android:timePickerMode="spinner" />
 
 
     <LinearLayout

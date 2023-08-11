@@ -42,7 +42,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:visibility="gone"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="班级选择"
             android:background="@drawable/bg_gary_arch"
             />
