@@ -59,7 +59,7 @@ class Constants {
         const val NOTE_EVENT = "NoteEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
         const val MESSAGE_EVENT = "MessageEvent"
-        const val APP_EVENT = "APPEvent"
+        const val APP_EVENT="AppEvent"
     }
 
 }

@@ -26,8 +26,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
+import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
@@ -42,6 +45,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import java.io.File
 import kotlin.math.ceil
 
 
@@ -54,6 +58,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
             supportFragmentManager.beginTransaction()
@@ -223,22 +228,64 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
     }
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
         radioButton.id = i
-        radioButton.isChecked = i == 0
+        radioButton.isChecked = isCheck
         val layoutParams = RadioGroup.LayoutParams(
             RadioGroup.LayoutParams.WRAP_CONTENT,
             DP2PX.dip2px(this, 45f))
 
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
+        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
         radioButton.layoutParams = layoutParams
 
         return radioButton
     }
 
+    /**
+     * 跳转阅读器
+     */
+    fun gotoBookDetails(bookBean: Book){
+        bookBean.isLook=true
+        bookBean.time=System.currentTimeMillis()
+        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
+
+//        val toolApps= AppDaoManager.getInstance().queryTool()
+//        val result = JSONArray()
+//        for (item in toolApps){
+//            val jsonObject = JSONObject()
+//            try {
+//                jsonObject.put("appName", item.appName)
+//                jsonObject.put("packageName", item.packageName)
+//            } catch (_: JSONException) {
+//            }
+//            result.put(jsonObject)
+//        }
+
+        val intent = Intent()
+        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
+        intent.setPackage("com.geniatech.knote.reader")
+        intent.putExtra("path", bookBean.bookPath)
+        intent.putExtra("key_book_id",bookBean.bookId.toString())
+        intent.putExtra("bookName", bookBean.bookName)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
+        startActivity(intent)
+    }
+
+    /**
+     * 删除书本
+     */
+    fun deleteBook(book: Book){
+        BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
+        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+        if (File(book.bookDrawPath).exists())
+            FileUtils.deleteFile(File(book.bookDrawPath))
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected fun setStatusBarColor(statusColor: Int) {

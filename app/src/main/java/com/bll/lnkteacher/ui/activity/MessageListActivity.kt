@@ -1,5 +1,7 @@
 package com.bll.lnkteacher.ui.activity
 
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.R
@@ -10,8 +12,9 @@ import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.MessageListAdapter
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_message_list.*
+import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
@@ -45,7 +48,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_message_list
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -95,6 +98,14 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
     }
 
     private fun initRecyclerView(){
+
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this,50f), DP2PX.dip2px(this,20f),
+            DP2PX.dip2px(this,50f),DP2PX.dip2px(this,20f))
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = MessageListAdapter(R.layout.item_message, null).apply {
             rv_list.adapter = this

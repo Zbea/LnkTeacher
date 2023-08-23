@@ -132,7 +132,7 @@ class BookStoreActivity : BaseActivity(),
     //设置tab分类
     private fun initTab() {
         for (i in subTypeList.indices) {
-            rg_group.addView(getRadioButton(i,subTypeList[i].desc,subTypeList.size-1))
+            rg_group.addView(getRadioButton(i,subTypeList[i].desc,i==0))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             subTypeStr = subTypeList[i].desc
@@ -216,17 +216,7 @@ class BookStoreActivity : BaseActivity(),
                         loadSate = 2
                         category=1
                         typeId = this@BookStoreActivity.type
-                        subtypeStr = when (tabStr) {
-                            "思维科学", "自然科学" -> {
-                                "科学技术"
-                            }
-                            "运动才艺" -> {
-                                "运动才艺"
-                            }
-                            else -> {
-                                subTypeStr
-                            }
-                        }
+                        subtypeStr = ""
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)

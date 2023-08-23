@@ -6,11 +6,12 @@ import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.BookManageDialog
 import com.bll.lnkteacher.dialog.ImageDialog
+import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.HandoutsList
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.BookDetailsActivity
@@ -143,17 +144,33 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     //长按显示课本管理
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
-        val type=if (tabId==2||tabId==3) 2 else 1
-        BookManageDialog(requireActivity(), book,type).builder()
-            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
+        val beans= mutableListOf<ItemList>()
+        if (tabId==2||tabId==3) {
+            beans.add(ItemList().apply {
+                name="删除"
+                resId=R.mipmap.icon_setting_delete
+            })
+            beans.add(ItemList().apply {
+                name="设置作业"
+                resId=R.mipmap.icon_setting_delete
+            })
+        }
+        else{
+            beans.add(ItemList().apply {
+                name="删除"
+                resId=R.mipmap.icon_setting_delete
+            })
+        }
+        LongClickManageDialog(requireActivity(), book.bookName,beans).builder()
+            .setOnDialogClickListener{
+                if (it==0){
                     BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     FileUtils.deleteFile(File(book.bookDrawPath))
                     mAdapter?.remove(position)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
                 }
-                override fun onSet() {
+                else{
                     if (!book.isHomework){
                         val map=HashMap<String,Any>()
                         map["name"]=book.bookName
@@ -168,7 +185,7 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
                         showToast("已经设置为作业")
                     }
                 }
-            })
+            }
     }
 
 

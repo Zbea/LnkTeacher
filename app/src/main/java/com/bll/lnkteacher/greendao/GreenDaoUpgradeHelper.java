@@ -21,19 +21,18 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
                     public void onCreateAllTables(Database db, boolean ifNotExists) {
                         DaoMaster.createAllTables(db,ifNotExists);
                     }
-
                     @Override
                     public void onDropAllTables(Database db, boolean ifExists) {
                         DaoMaster.dropAllTables(db, true);
                     }
-
                 },
                 NotebookDao.class,
                 BookDao.class,
                 DateEventDao.class,
                 CourseBeanDao.class,
                 NoteContentDao.class,
-                NoteDao.class
+                NoteDao.class,
+                BookTypeBeanDao.class
         );
     }
 }

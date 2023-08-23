@@ -30,6 +30,22 @@
         android:paddingTop="36dp">
 
         <TextView
+            android:id="@+id/tv_custom"
+            android:layout_width="160dp"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_30"
+            android:drawablePadding="@dimen/dp_10"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:visibility="gone"
+            android:gravity="center"
+            android:background="@drawable/bg_gary_arch"
+            />
+
+        <TextView
             android:id="@+id/tv_class"
             android:layout_width="160dp"
             android:layout_height="@dimen/dp_50"

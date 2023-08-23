@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.BookManageDialog
+import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -28,6 +29,7 @@ class BookCaseFragment: BaseFragment() {
     private var position=0
     private var books= mutableListOf<Book>()//所有数据
     private var bookTopBean:Book?=null
+    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
@@ -35,6 +37,11 @@ class BookCaseFragment: BaseFragment() {
 
     override fun initView() {
         setTitle(R.string.main_bookcase_title)
+
+        longBeans.add(ItemList().apply {
+            name="删除"
+            resId=R.mipmap.icon_setting_delete
+        })
 
         initRecyclerView()
         findBook()
@@ -110,24 +117,20 @@ class BookCaseFragment: BaseFragment() {
     //删除书架书籍
     private fun onLongClick(){
         val book = books[position]
-        BookManageDialog(requireActivity(), book,1).builder()
-            .setOnDialogClickListener (object : BookManageDialog.OnDialogClickListener {
-                override fun onDelete() {
-                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    books.remove(book)
-                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                    if (File(book.bookDrawPath).exists())
-                        FileUtils.deleteFile(File(book.bookDrawPath))
-                    mAdapter?.notifyDataSetChanged()
+        LongClickManageDialog(requireActivity(), book.bookName,longBeans).builder()
+            .setOnDialogClickListener {
+                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
 
-                    if (books.size==11)
-                    {
-                        findBook()
-                    }
+                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
+                if (File(book.bookDrawPath).exists())
+                    FileUtils.deleteFile(File(book.bookDrawPath))
+                mAdapter?.remove(position)
+
+                if (books.size==11)
+                {
+                    findBook()
                 }
-                override fun onSet() {
-                }
-            })
+            }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

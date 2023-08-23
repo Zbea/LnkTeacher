@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.ui.activity.AppCenterActivity
 import com.bll.lnkteacher.ui.adapter.AppListAdapter
@@ -46,6 +47,19 @@ class AppFragment:BaseFragment() {
                 val packageName= apps[position].packageName
                 AppUtils.startAPP(activity,packageName)
             }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            if (position>0){
+                CommonDialog(requireActivity()).setContent("卸载应用？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        AppUtils.uninstallAPK(requireActivity(),apps[position].packageName)
+                    }
+                })
+            }
+            true
         }
     }
 

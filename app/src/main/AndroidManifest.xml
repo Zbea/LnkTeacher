@@ -45,6 +45,8 @@
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:name="com.bll.lnkteacher.MyApplication"
@@ -57,6 +59,18 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:requestLegacyExternalStorage="true"
         >
+
+        <receiver
+            android:name=".MyBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name="com.bll.lnkteacher.ui.activity.AccountLoginActivity"
             android:exported="true">
@@ -98,6 +112,7 @@
         <activity android:name="com.bll.lnkteacher.ui.activity.book.BookTypeListActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name="com.bll.lnkteacher.ui.activity.book.BookListActivity" />
         <activity android:name="com.bll.lnkteacher.ui.activity.group.GroupUserActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity"
             android:windowSoftInputMode="adjustPan"

@@ -13,7 +13,7 @@ import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.widget.SpaceGridItemDecoGrade
+import com.bll.lnkteacher.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.ac_testpaper_grade.*
 import kotlinx.android.synthetic.main.common_title.*
 
@@ -71,7 +71,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
         rv_list.layoutManager = GridLayoutManager(this,2)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDecoGrade(DP2PX.dip2px(this,40f),0))
+        rv_list.addItemDecoration(SpaceGridItemDeco2(DP2PX.dip2px(this,40f),0))
 
     }
 
