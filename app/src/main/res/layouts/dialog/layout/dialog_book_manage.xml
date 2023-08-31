@@ -54,7 +54,7 @@
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
-                android:src="@mipmap/icon_setting_app"/>
+                android:src="@mipmap/icon_setting_set"/>
 
             <TextView
                 android:layout_width="match_parent"

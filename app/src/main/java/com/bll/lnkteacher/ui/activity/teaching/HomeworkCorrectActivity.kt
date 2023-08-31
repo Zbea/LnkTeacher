@@ -23,6 +23,8 @@ import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.liulishuo.filedownloader.BaseDownloadTask
+import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_homework_work.*
 import java.io.File
 
@@ -255,7 +257,6 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
      * 设置学生提交图片展示
      */
     private fun setContentImage() {
-        hideLoading()
         //批改成功后删掉原来，加载提交后的图片
         if (userItems[posUser].status == 2) {
             GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), iv_image, 10)
@@ -286,22 +287,28 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
      */
     private fun loadPapers() {
         showLoading()
-        val file = File(getPath())
-        val files = FileUtils.getFiles(file.path)
+        val savePaths= mutableListOf<String>()
+        for (i in currentImages?.indices!!){
+            savePaths.add(getPath()+"/${i+1}.png")
+        }
+        val files = FileUtils.getFiles(getPath())
         if (files.isNullOrEmpty()) {
-            val imageDownLoad = ImageDownLoadUtils(this, currentImages, file.path)
-            imageDownLoad.startDownload()
-            imageDownLoad.setCallBack(object : ImageDownLoadUtils.ImageDownLoadCallBack {
-                override fun onDownLoadSuccess(map: MutableMap<Int, String>?) {
-                    runOnUiThread {
+            FileMultitaskDownManager.with(this).create(currentImages?.toMutableList()).setPath(savePaths).startMultiTaskDownLoad(
+                object : FileMultitaskDownManager.MultiTaskCallBack {
+                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
+                    }
+                    override fun completed(task: BaseDownloadTask?) {
+                        hideLoading()
                         setContentImage()
                     }
-                }
-                override fun onDownLoadFailed(unLoadList: MutableList<Int>?) {
-                    imageDownLoad.reloadImage()
-                }
-            })
+                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    }
+                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                        hideLoading()
+                    }
+                })
         } else {
+            hideLoading()
             setContentImage()
         }
     }
@@ -364,10 +371,10 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
         }
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
         release()
+        FileDownloader.getImpl().pauseAll()
     }
 
 }

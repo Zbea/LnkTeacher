@@ -40,7 +40,7 @@ class BookListActivity : BaseActivity() {
         })
         longBeans.add(ItemList().apply {
             name="设置分类"
-            resId=R.mipmap.icon_setting_delete
+            resId=R.mipmap.icon_setting_set
         })
     }
 

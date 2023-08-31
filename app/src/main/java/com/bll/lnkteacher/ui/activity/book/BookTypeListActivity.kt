@@ -51,7 +51,7 @@ class BookTypeListActivity : BaseActivity() {
         })
         longBeans.add(ItemList().apply {
             name="移出分类"
-            resId=R.mipmap.icon_setting_delete
+            resId=R.mipmap.icon_setting_out
         })
 
     }

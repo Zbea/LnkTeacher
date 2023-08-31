@@ -13,15 +13,15 @@
 
         <ImageView
             android:id="@+id/iv_erasure"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="98dp"
+            android:layout_marginStart="120dp"
             android:scaleType="center"
             android:src="@mipmap/icon_draw_erasure" />
 
         <ImageView
             android:id="@+id/iv_page_up"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_marginStart="44dp"
             android:scaleType="center"
@@ -46,7 +46,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
+            android:textSize="20sp"
             />
         <TextView
             android:id="@+id/tv_page"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="20sp"
             />
     </LinearLayout>
 
@@ -75,7 +75,7 @@
 
         <ImageView
             android:id="@+id/iv_page_down"
-            android:layout_width="@dimen/drawing_bottom_height"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="196dp"
             android:scaleType="center"
