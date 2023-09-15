@@ -130,6 +130,8 @@
     <string name="book_tab_zrkx">自然科学</string>
     <string name="book_tab_shkx">社会科学</string>
     <string name="book_tab_sxkx">思维科学</string>
+    <string name="book_tab_ydjk">运动健康</string>
+    <string name="book_tab_yscn">艺术才能</string>
 
     <string name="book_tab_sjcc">诗经楚辞</string>
     <string name="book_tab_tssc">唐诗宋词</string>

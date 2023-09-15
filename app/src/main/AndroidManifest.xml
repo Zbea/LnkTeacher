@@ -77,18 +77,17 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>>
 
         <activity android:name="com.bll.lnkteacher.ui.activity.AccountRegisterActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.AccountInfoActivity"/>
         <activity android:name="com.bll.lnkteacher.ui.activity.MainActivity"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <category android:name="android.intent.category.HOME" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-            </activity>
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            />
         <activity android:name=".ui.activity.DateActivity" />
         <activity android:name=".ui.activity.DateEventActivity" />
         <activity android:name="com.bll.lnkteacher.ui.activity.book.TextBookStoreActivity"/>

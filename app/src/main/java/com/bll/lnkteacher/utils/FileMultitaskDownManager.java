@@ -19,6 +19,7 @@ public class FileMultitaskDownManager {
     private List<String> paths;//文件的绝对路径
     private String auth = "";
     private String token = "";
+    private int num=0;
 
 
     public static FileMultitaskDownManager with(Context context) {
@@ -36,6 +37,7 @@ public class FileMultitaskDownManager {
     //创建下载链接
     public FileMultitaskDownManager create(List<String> urls) {
         this.urls = urls;
+        num=0;
         return this;
     }
 
@@ -58,17 +60,20 @@ public class FileMultitaskDownManager {
 
             @Override
             protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                multitaskCallBack.progress(task, soFarBytes, totalBytes);
+//                multitaskCallBack.progress(task, soFarBytes, totalBytes);
             }
 
             @Override
             protected void completed(BaseDownloadTask task) {
-                multitaskCallBack.completed(task);
+                num+=1;
+                if (num==urls.size()){
+                    multitaskCallBack.completed(task);
+                }
             }
 
             @Override
             protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                multitaskCallBack.paused(task, soFarBytes, totalBytes);
+//                multitaskCallBack.paused(task, soFarBytes, totalBytes);
             }
 
             @Override
@@ -93,6 +98,7 @@ public class FileMultitaskDownManager {
         }
         queueSet.disableCallbackProgressTimes();
         queueSet.setAutoRetryTimes(1);
+        queueSet.setForceReDownload(true);
         queueSet.downloadTogether(tasks);//并行下载
         queueSet.start();
     }
