@@ -14,11 +14,11 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
 
     private var grade=0
     private var job=0
-    private var gradePopup:PopupRadioList?=null
     private var popupJob:PopupRadioList?=null
     private var tv_grade:TextView?=null
     private var tv_job:TextView?=null
     private var jobBeans= mutableListOf<PopupBean>()
+    private var grades= mutableListOf<PopupBean>()
 
     fun builder(): ClassGroupCreateDialog {
 
@@ -34,24 +34,31 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
 
         btn_ok.text=if (classGroup==null) "确定" else "修改"
 
+        grades=if (classGroup==null) DataBeanManager.popupGrades else DataBeanManager.popupGrades(classGroup?.grade!!)
         for (i in DataBeanManager.groupJobs.indices){
-            jobBeans.add(PopupBean(i,DataBeanManager.groupJobs[i],if (classGroup==null)i==0 else i==classGroup?.job))
+            jobBeans.add(PopupBean(i+1,DataBeanManager.groupJobs[i],if (classGroup==null) false else i==classGroup?.job!!-1))
         }
 
         if (classGroup!=null)
         {
             grade=classGroup?.grade!!
             et_name.setText(classGroup?.name)
-            tv_grade?.text=DataBeanManager.grades[grade-1].desc
+            tv_grade?.text=DataBeanManager.getGradeClass(classGroup?.grade!!)
             tv_job?.text=if (classGroup?.job==1) context.getString(R.string.classGroup_headteacher) else context.getString(R.string.classGroup_teacher)
         }
 
         tv_grade?.setOnClickListener {
-            showPopGradeView()
+            PopupRadioList(context, grades, tv_grade!!,tv_grade?.width!!,  5).builder().setOnSelectListener { item ->
+                tv_grade?.text=item.name
+                grade=item.id
+            }
         }
 
         tv_job?.setOnClickListener {
-            showPopJobView()
+            PopupRadioList(context, jobBeans, tv_job!!,tv_job?.width!!,  5).builder().setOnSelectListener { item ->
+                tv_job?.text=item.name
+                job=item.id
+            }
         }
 
         btn_cancel.setOnClickListener {
@@ -70,34 +77,6 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
             KeyboardUtils.hideSoftKeyboard(context)
         }
         return this
-    }
-
-    private fun showPopJobView() {
-        if (popupJob==null){
-            popupJob= PopupRadioList(context, jobBeans, tv_job!!,tv_job?.width!!,  5).builder()
-            popupJob?.setOnSelectListener { item ->
-                tv_job?.text=item.name
-                job=item.id
-            }
-        }
-        else{
-            popupJob?.show()
-        }
-
-    }
-
-    private fun showPopGradeView() {
-        if (gradePopup==null){
-            gradePopup= PopupRadioList(context, DataBeanManager.popupGrades, tv_grade!!,tv_grade?.width!!,  5).builder()
-            gradePopup?.setOnSelectListener { item ->
-                tv_grade?.text=item.name
-                grade=item.id
-            }
-        }
-        else{
-            gradePopup?.show()
-        }
-
     }
 
     private var listener: OnDialogClickListener? = null

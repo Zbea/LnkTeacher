@@ -4,22 +4,25 @@ import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.HandoutsList
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.BookDetailsActivity
-import com.bll.lnkteacher.ui.activity.book.BookStoreTypeActivity
+import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -38,6 +41,8 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     private var tabId=0
     private var position = 0
     private var handoutsBeans= mutableListOf<HandoutsList.HandoutsBean>()
+    private var popGrades= mutableListOf<PopupBean>()
+    private var grade=0
 
     override fun onHandoutsList(list: HandoutsList) {
         setPageNumber(list.total)
@@ -59,15 +64,29 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     override fun initView() {
         pageSize=12
         setTitle(R.string.main_textbook_title)
-        showSearch(true)
-
-        ll_search?.setOnClickListener {
-            startActivity(Intent(activity, BookStoreTypeActivity::class.java))
-        }
 
         initTab()
         initRecyclerView()
         initRecyclerHandouts()
+
+        grade= SPUtil.getInt("grade")
+        if (grade==0)
+            grade=1
+        popGrades=DataBeanManager.popupGrades(grade)
+        tv_grade.text=DataBeanManager.getGradeClass(grade)
+
+        tv_grade.setOnClickListener {
+            if (popGrades.size==0)
+            {
+                popGrades=DataBeanManager.popupGrades(1)
+            }
+            PopupRadioList(requireActivity(),popGrades , tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
+                tv_grade?.text=item.name
+                grade=item.id
+                pageIndex=1
+                fetchData()
+            }
+        }
 
         fetchData()
     }
@@ -110,7 +129,7 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
             val book=books[position]
             //教学教育跳转阅读器
             if (tabId==4){
-                gotoBookDetails(book)
+                MethodManager.gotoBookDetails(requireActivity(),book)
             }
             else{
                 val intent = Intent(activity, BookDetailsActivity::class.java)
@@ -195,18 +214,13 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
         }
     }
 
-    override fun onRefreshData() {
-        super.onRefreshData()
-        fetchCommonData()
-    }
-
     override fun fetchData() {
         if (tabId==5){
             val map=HashMap<String,Any>()
             map["page"] = pageIndex
             map["size"] = pageSize
             map["grade"]=grade
-            mPresenter.getList(map)
+            mPresenter.getHandoutsList(map)
         }
         else{
             books = BookGreenDaoManager.getInstance().queryAllTextBook( textBook, pageIndex, 9)
@@ -214,12 +228,6 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
             setPageNumber(total.size)
             mAdapter?.setNewData(books)
         }
-    }
-
-    override fun onGradeEvent() {
-        super.onGradeEvent()
-        pageIndex=1
-        fetchData()
     }
 
 }

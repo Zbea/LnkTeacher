@@ -24,7 +24,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
@@ -35,6 +34,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
+    private var grade=0
 
     override fun onTypeList(list:  TypeList) {
         setPageNumber(list.total)
@@ -85,16 +85,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     }
 
     override fun initView() {
-        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         pageSize=9
-        initRecyclerView()
-    }
-
-    override fun lazyLoad() {
-        fetchData()
-    }
-
-    private fun initRecyclerView(){
 
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
@@ -127,13 +118,14 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@HomeworkAssignFragment.position=position
-                if (types[position].subType==4){
-                    deleteHomeworkBook(types[position])
-                }
+                deleteHomeworkBook(types[position])
                 true
             }
         }
+    }
 
+    override fun lazyLoad() {
+        fetchData()
     }
 
     /**
@@ -145,10 +137,17 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                 override fun cancel() {
                 }
                 override fun ok() {
-                    val map=HashMap<String,Any>()
-                    map["id"]=item.id
-                    map["bookId"]=item.bookId
-                    mPresenter.deleteType(map)
+                    if (item.subType==4){
+                        val map=HashMap<String,Any>()
+                        map["id"]=item.id
+                        map["bookId"]=item.bookId
+                        mPresenter.deleteType(map)
+                    }
+                    else{
+                        val map=HashMap<String,Any>()
+                        map["ids"]= arrayOf(item.id)
+                        mPresenter.deleteHomeworkType(map)
+                    }
                 }
             })
     }
@@ -212,6 +211,8 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     }
 
     override fun fetchData() {
+        if (grade==0)
+            return
         val map=HashMap<String,Any>()
         map["page"]=pageIndex
         map["size"]=pageSize

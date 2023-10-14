@@ -10,5 +10,5 @@ import java.util.List;
 public class CorrectList implements Serializable {
 
     public int total;
-    public List<CorrectBean> list=new ArrayList<>();
+    public List<CorrectBean> list;
 }

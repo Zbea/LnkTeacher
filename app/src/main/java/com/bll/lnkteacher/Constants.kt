@@ -25,30 +25,33 @@ import android.os.Environment
 class Constants {
 
     companion object {
+        const val halfYear=180*24*60*60*1000
+        const val dayLong=24*60*60*1000
+        const val weekTime=7*24*60*60*1000
 
-//                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
+
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")?.path
+
         //解压的目录
         val BOOK_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Books"
-        val BOOK_DRAW_PATH= Environment.getExternalStorageDirectory().absolutePath+"/Notes"
+        val BOOK_DRAW_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Notes"
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")?.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
-        //截图保存目录
-        val SCREEN_PATH = MyApplication.mContext.getExternalFilesDir("Screen")?.path
+
         //笔记保存目录
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
-        //日历保存
-        val DATE_PATH = MyApplication.mContext.getExternalFilesDir("Date")?.path
-            //断点记录文件保存的文件夹
-            val RECORDER_PATH= MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+        val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
+        val FREENOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")!!.path
+        val RECORDER_PATH = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
 
         //eventbus通知标志
         const val DATE_EVENT = "DateEvent"
@@ -59,7 +62,20 @@ class Constants {
         const val NOTE_EVENT = "NoteEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
         const val MESSAGE_EVENT = "MessageEvent"
-        const val APP_EVENT="AppEvent"
+        const val HOMEWORK_CORRECT_EVENT = "HomeworkCorrectEvent"
+        const val EXAM_CORRECT_EVENT = "ExamCorrectEvent"
+        const val APP_INSTALL_EVENT = "AppInstallEvent"
+        const val APP_INSTALL_INSERT_EVENT = "AppInstallInsertEvent"
+        const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"
+        const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
+        const val PRIVACY_PASSWORD_EVENT = "PrivacyPasswordEvent"
+        const val PACKAGE_READER = "com.geniatech.knote.reader"
+        const val PACKAGE_GEOMETRY = "com.geometry"
+
+        //广播
+        const val LOGIN_BROADCAST_EVENT = "com.bll.lnkteacher.account.login"
+        const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkteacher.account.logout"
+        const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"
     }
 
 }

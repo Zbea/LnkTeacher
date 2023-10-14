@@ -10,18 +10,18 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
 
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
         when(item.sendType){
-            2->{
-                helper.setText(R.id.tv_message_source,"通知")
+            1->{
+                helper.setGone(R.id.tv_message_source,false)
             }
-            3->{
-                helper.setText(R.id.tv_message_source,"发送学生："+item.teacherName)
+            2->{
+                helper.setText(R.id.tv_message_source,item.teacherName+"同学：")
             }
             else->{
-                helper.setGone(R.id.tv_message_source,false)
+                helper.setText(R.id.tv_message_source,"学校通知：")
             }
         }
 
         helper.setText(R.id.tv_message_content,item.content)
-        helper.setText(R.id.tv_message_time,"时间："+DateUtils.longToStringWeek(item.date))
+        helper.setText(R.id.tv_message_time,DateUtils.longToStringWeek(item.date))
     }
 }

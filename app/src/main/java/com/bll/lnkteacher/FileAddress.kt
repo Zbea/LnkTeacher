@@ -2,8 +2,9 @@ package com.bll.lnkteacher
 
 import com.bll.lnkteacher.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
-import com.bll.lnkteacher.Constants.Companion.DATE_PATH
+import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
+import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_CATALOG_TXT
@@ -16,7 +17,7 @@ import java.io.File
 
 class FileAddress {
 
-    val mUserId=SPUtil.getObj("userTeacher", User::class.java)?.accountId.toString()
+    val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
 
     /**
      * 书籍地址
@@ -83,10 +84,15 @@ class FileAddress {
     /**
      * 日历保存地址
      */
-    fun getPathDate(dateStr:String):String{
-        return "$DATE_PATH/$mUserId/$dateStr"
+    fun getPathImage(type:String,titleStr:String):String{
+        return "$IMAGE_PATH/$mUserId/$type/$titleStr"
     }
-
+    /**
+     * 截屏
+     */
+    fun getPathScreen(type:String):String{
+        return "$IMAGE_PATH/$mUserId/$type"
+    }
     /**
      * 批改学生试卷保存地址
      */
@@ -98,6 +104,40 @@ class FileAddress {
      */
     fun getPathHomework(paperCorrectId: Int?,classId: Int?,userId:Int):String{
         return "$HOMEWORK_PATH/$mUserId/homeworkCorrectId$paperCorrectId/classId$classId/userId$userId"
+    }
+
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(year:Int,month:Int):String{
+        return "$IMAGE_PATH/${mUserId}/month/$year$month"
+    }
+    /**
+     * 计划总览路径
+     */
+    fun getPathPlan(startTime:String):String{
+        return "$IMAGE_PATH/${mUserId}/week/$startTime"
+    }
+
+    /**
+     * 日记路径
+     */
+    fun getPathDiary(time:String):String{
+        return "$IMAGE_PATH/${mUserId}/diary/$time"
+    }
+
+    /**
+     * 朗读作业文件夹路径
+     */
+    fun getPathRecord():String{
+        return "$HOMEWORK_PATH/${mUserId}"
+    }
+
+    /**
+     * 随笔文件路径
+     */
+    fun getPathFreeNote(title:String):String{
+        return "$FREENOTE_PATH/${mUserId}/$title"
     }
 
 }

@@ -17,23 +17,7 @@
         android:gravity="center|right"
         >
 
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="170dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:lines="1"
-            android:ellipsize="end"
-            android:drawableRight="@mipmap/icon_arrow_down"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            android:text="提交时间"
-            android:gravity="center"
-            android:textColorHint="@color/color_text_hint"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
+
 
         <TextView
             android:id="@+id/tv_group_name"
@@ -64,6 +48,24 @@
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
+            android:gravity="center"
+            android:textColorHint="@color/color_text_hint"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:lines="1"
+            android:ellipsize="end"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:text="提交时间"
             android:gravity="center"
             android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_gray_stroke_5dp_corner"

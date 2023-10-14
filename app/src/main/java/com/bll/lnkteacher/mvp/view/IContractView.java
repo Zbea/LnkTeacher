@@ -9,6 +9,7 @@ import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.HandoutsList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
+import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.group.Group;
@@ -245,7 +246,13 @@ public interface IContractView {
 
     //应用
     interface IAPPView extends IBaseView {
+        void onType(CommonData commonData);
         void onAppList(AppList appBean);
+        void buySuccess();
+    }
+
+    interface IWallpaperView extends IBaseView {
+        void onList(WallpaperList list);
         void buySuccess();
     }
 

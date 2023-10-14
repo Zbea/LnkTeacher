@@ -224,6 +224,11 @@ interface APIService{
     @POST("common/type/delete")
     fun deletePaperType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 删除作业分类
+     */
+    @POST("common/type/deleteHomework")
+    fun deleteHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 添加考卷分类成功
      */
     @POST("common/type/insert")
@@ -353,10 +358,20 @@ interface APIService{
      */
     @GET("application/list")
     fun getApks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AppList>>
-
+    /**
+     * 应用列表
+     */
+    @GET("application/types")
+    fun getApkTypes(): Observable<BaseResult<CommonData>>
     /**
      * 购买apk
      */
     @POST("buy/book/createOrder")
-    fun buyApk(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun onBuy(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 壁纸
+     */
+    @GET("font/draw/list")
+    fun getWallpaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<WallpaperList>>
 }

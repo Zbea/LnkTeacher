@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.view.View;
 
 import com.bll.lnkteacher.Constants;
+import com.bll.lnkteacher.FileAddress;
 
 public class SystemSettingUtils {
 
@@ -78,7 +79,7 @@ public class SystemSettingUtils {
         View view = context.getWindow().getDecorView();
         view.setDrawingCacheEnabled(true);//允许绘制缓存
         Bitmap bitmap = view.getDrawingCache();//绘制
-        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
+        BitmapUtils.saveBmpGallery(context,bitmap,new FileAddress().getPathScreen("screen"),"screenShot" + System.currentTimeMillis());
         SToast.showText("截图成功");
     }
 
@@ -91,7 +92,7 @@ public class SystemSettingUtils {
     public static void saveScreenShot(Activity context, View view) {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
-        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),"screenShot" + System.currentTimeMillis());
+        BitmapUtils.saveBmpGallery(context,bitmap,new FileAddress().getPathScreen("screen"),"screenShot" + System.currentTimeMillis());
         SToast.showText("截图成功");
     }
 
@@ -104,7 +105,7 @@ public class SystemSettingUtils {
     public static void saveScreenShot(Activity context, View view,String picName) {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
-        BitmapUtils.saveBmpGallery(context,bitmap,Constants.Companion.getSCREEN_PATH(),picName);
+        BitmapUtils.saveBmpGallery(context,bitmap, new FileAddress().getPathScreen("screen"),picName);
         SToast.showText("截图成功");
     }
 

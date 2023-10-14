@@ -36,6 +36,7 @@ class PopupRadioList(val context:Context, val list:MutableList<PopupBean>, val v
             if (this@PopupRadioList.width!=0){
                 width=this@PopupRadioList.width
             }
+            isClippingEnabled = false
         }
 
         val rvList=popView.findViewById<MaxRecyclerView>(R.id.rv_list)

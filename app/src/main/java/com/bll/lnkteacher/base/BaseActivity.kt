@@ -8,7 +8,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -27,6 +26,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
@@ -34,7 +34,6 @@ import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
-import com.bll.lnkteacher.ui.activity.AccountLoginActivity
 import com.bll.lnkteacher.utils.*
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
@@ -53,8 +52,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var mUser=SPUtil.getObj("userTeacher",User::class.java)
-    var mUserId=SPUtil.getObj("userTeacher",User::class.java)?.accountId
+    var mUser=SPUtil.getObj("user",User::class.java)
+    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
@@ -228,6 +227,23 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
     }
+
+    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+        val radioButton =
+            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
+        radioButton.text = str
+        radioButton.id = i
+        radioButton.isChecked = i == 0
+        val layoutParams = RadioGroup.LayoutParams(
+            RadioGroup.LayoutParams.WRAP_CONTENT,
+            DP2PX.dip2px(this, 45f))
+
+        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
+        radioButton.layoutParams = layoutParams
+
+        return radioButton
+    }
+
     fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
@@ -424,13 +440,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
     override fun login() {
         SToast.showText(R.string.login_timeout)
-        SPUtil.putString("tokenTeacher", "")
-        SPUtil.removeObj("userTeacher")
-
-        Handler().postDelayed(Runnable {
-            startActivity(Intent(this, AccountLoginActivity::class.java))
-            ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
-        }, 500)
+        MethodManager.logout(this)
     }
 
     override fun hideLoading() {

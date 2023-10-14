@@ -8,6 +8,7 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
@@ -26,6 +27,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_homework_work.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
@@ -101,6 +103,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
         FileUtils.deleteFile(File(getPath()))
         elik?.setPWEnabled(false)
         disMissView(tv_save)
+        EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
 
 

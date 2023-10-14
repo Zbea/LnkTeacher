@@ -44,7 +44,7 @@ public class NoteDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
         whereUser= NoteDao.Properties.UserId.eq(userId);
         return mDbController;
     }
@@ -53,13 +53,16 @@ public class NoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
-    public List<Note> queryAll() {
-        return dao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Date).build().list();
-    }
-
     /**
+     * 得到除开密本的笔记
+     * @param size
      * @return
      */
+    public List<Note> queryListOther(int size) {
+        WhereCondition whereCondition=NoteDao.Properties.TypeStr.notEq("我的密本");
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).limit(size).build().list();
+    }
+
     public List<Note> queryAll(String type) {
         WhereCondition whereCondition=NoteDao.Properties.TypeStr.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).build().list();

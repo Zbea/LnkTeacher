@@ -1,0 +1,74 @@
+package com.bll.lnkteacher.manager;
+
+import com.bll.lnkteacher.MyApplication;
+import com.bll.lnkteacher.greendao.DaoSession;
+import com.bll.lnkteacher.greendao.DiaryBeanDao;
+import com.bll.lnkteacher.mvp.model.DiaryBean;
+import com.bll.lnkteacher.mvp.model.User;
+import com.bll.lnkteacher.utils.SPUtil;
+
+import org.greenrobot.greendao.query.WhereCondition;
+
+import java.util.List;
+
+public class DiaryDaoManager {
+
+    /**
+     * DaoSession
+     */
+    private DaoSession mDaoSession;
+    private static DiaryDaoManager mDbController;
+    private final DiaryBeanDao dao;
+    private static WhereCondition whereUser;
+
+    /**
+     * 构造初始化
+     */
+    public DiaryDaoManager() {
+        mDaoSession = MyApplication.Companion.getMDaoSession();
+        dao = mDaoSession.getDiaryBeanDao();
+    }
+
+    /**
+     * 获取单例（context 最好用application的context  防止内存泄漏）
+     */
+    public static DiaryDaoManager getInstance() {
+        if (mDbController == null) {
+            synchronized (DiaryDaoManager.class) {
+                if (mDbController == null) {
+                    mDbController = new DiaryDaoManager();
+                }
+            }
+        }
+        User mUser=SPUtil.INSTANCE.getObj("user", User.class);
+        whereUser= DiaryBeanDao.Properties.UserId.eq(mUser.accountId);
+        return mDbController;
+    }
+
+    public void insertOrReplace(DiaryBean bean) {
+        dao.insertOrReplace(bean);
+    }
+
+    public DiaryBean queryBean(long time) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.eq(time);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
+    }
+
+    public List<DiaryBean> queryList() {
+        return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+    public List<DiaryBean> queryList(long time) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.lt(time);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+    public void delete(DiaryBean item){
+        dao.delete(item);
+    }
+
+    public void clear(){
+        dao.deleteAll();
+    }
+
+}

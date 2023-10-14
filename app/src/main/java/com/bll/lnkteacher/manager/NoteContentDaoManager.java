@@ -42,7 +42,7 @@ public class NoteContentDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
         whereUser= NoteContentDao.Properties.UserId.eq(userId);
         return mDbController;
     }
@@ -57,14 +57,14 @@ public class NoteContentDaoManager {
     }
 
 
-    public List<NoteContent> queryAll(String type, long noteId) {
+    public List<NoteContent> queryAll(String type, String noteTitle) {
         WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NoteId.eq(noteId);
+        WhereCondition whereCondition1=NoteContentDao.Properties.NoteTitle.eq(noteTitle);
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
-    public void editNotes(String type, long noteId,String editType){
-        List<NoteContent> noteContents=queryAll(type,noteId);
+    public void editNotes(String type, String noteTitle,String editType){
+        List<NoteContent> noteContents=queryAll(type,noteTitle);
         for (NoteContent noteContent: noteContents) {
             noteContent.typeStr=editType;
         }
@@ -75,9 +75,9 @@ public class NoteContentDaoManager {
         dao.delete(noteContent);
     }
 
-    public void deleteType(String type,long noteId){
+    public void deleteType(String type,String noteTitle){
         WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
-        WhereCondition whereCondition1=NoteContentDao.Properties.NoteId.eq(noteId);
+        WhereCondition whereCondition1=NoteContentDao.Properties.NoteTitle.eq(noteTitle);
         List<NoteContent> list = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
         dao.deleteInTx(list);
     }

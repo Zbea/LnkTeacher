@@ -20,7 +20,7 @@ public class CourseBean implements Serializable {
 
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     @Unique
     public int viewId;//对应textview  ID
     public String name;//科目名称

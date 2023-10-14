@@ -195,6 +195,9 @@ class BookTypeListActivity : BaseActivity() {
     }
 
     override fun fetchData() {
+        if (bookTypes.isEmpty()){
+            return
+        }
         books=BookGreenDaoManager.getInstance().queryAllBook(typeStr, pageIndex, pageSize)
         val total = BookGreenDaoManager.getInstance().queryAllBook(typeStr)
         setPageNumber(total.size)

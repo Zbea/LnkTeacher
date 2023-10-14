@@ -21,6 +21,7 @@ class DateEventActivity:BaseActivity() {
     private var dayLong = 24 * 60 * 60 * 1000
     private var nowLong=0L
     private var elik: EinkPWInterface?=null
+    private var isDraw=false
 
     override fun layoutId(): Int {
         return R.layout.ac_date_event
@@ -56,10 +57,8 @@ class DateEventActivity:BaseActivity() {
     }
 
     private fun setContentView(){
-        tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date(nowLong))
-
-        val path=FileAddress().getPathDate(DateUtils.longToStringCalender(nowLong))+"/draw.tch"
-        elik?.setPWEnabled(true)
+        tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(nowLong)
+        val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowLong))+"/draw.tch"
         elik?.setLoadFilePath(path, true)
         elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
@@ -70,6 +69,7 @@ class DateEventActivity:BaseActivity() {
 
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
                 elik?.saveBitmap(true) {}
+                isDraw=true
             }
         })
 
@@ -77,7 +77,8 @@ class DateEventActivity:BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().post(Constants.DATE_EVENT)
+        if (isDraw)
+            EventBus.getDefault().post(Constants.DATE_EVENT)
     }
 
 }

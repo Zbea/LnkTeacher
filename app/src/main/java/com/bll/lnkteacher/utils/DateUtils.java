@@ -72,6 +72,18 @@ public class DateUtils {
             return null;
         }
     }
+    public static String longToStringDataNoYear(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date10ToDate13(date)));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     /**
      * 时间戳转换为字符串类型
@@ -112,7 +124,7 @@ public class DateUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -326,6 +338,75 @@ public class DateUtils {
      */
     public static String longToDay(long time){
         return String.valueOf(time/(24*60*60*1000));
+    }
+
+    //得到当前年月日数值
+    public static int[] getDateNumber(long date){
+        Calendar a = Calendar.getInstance();
+        a.setTime(new Date(date));
+        int year = a.get(Calendar.YEAR);
+        int month = a.get(Calendar.MONTH) + 1;
+        int day=a.get(Calendar.DAY_OF_MONTH);
+        return new int[]{year,month,day};
+    }
+
+    public static long getStartOfDayInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    public static long getEndOfDayInMillis() {
+        // Add one day's time to the beginning of the day.
+        // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds = 1 day
+        return getStartOfDayInMillis() + (24 * 60 * 60 * 1000);
+    }
+
+    public static long getStartOfDayInMillis(long date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date(date));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * @param date the date in the format "yyyy-MM-dd"
+     */
+    public static long getEndOfDayInMillis(long date){
+        return getStartOfDayInMillis(date) + (24 * 60 * 60 * 1000);
+    }
+
+    /**
+     * 获取当前时间所在周开始、结束时间
+     * @return
+     */
+    public static long[] getCurrentWeekTimeFrame() {
+        Calendar calendar = Calendar.getInstance();
+        //start of the week
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DAY_OF_YEAR,-1);
+        }
+        calendar.add(Calendar.DAY_OF_WEEK, -(calendar.get(Calendar.DAY_OF_WEEK) - 2));
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        long startTime = calendar.getTimeInMillis();
+        //end of the week
+        calendar.add(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        long endTime = calendar.getTimeInMillis();
+        return new long[]{startTime, endTime};
     }
 
 }

@@ -82,12 +82,11 @@ class NotebookManagerActivity : BaseActivity() {
                     //删除笔记本
                     NotebookDaoManager.getInstance().deleteBean(noteType)
 
-                    val notebooks=
-                        NoteDaoManager.getInstance().queryAll(noteType.title)
+                    val notebooks= NoteDaoManager.getInstance().queryAll(noteType.title)
                     //删除该笔记分类中的所有笔记本及其内容
                     for (note in notebooks){
                         NoteDaoManager.getInstance().deleteBean(note)
-                        NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.id)
+                        NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
                         val path= FileAddress().getPathNote(note.typeStr,note.title)
                         FileUtils.deleteFile(File(path))
                     }
@@ -109,7 +108,7 @@ class NotebookManagerActivity : BaseActivity() {
             //修改笔记、内容分类
             val notes=NoteDaoManager.getInstance().queryAll(noteBook.title)
             for (note in notes){
-                NoteContentDaoManager.getInstance().editNotes(noteBook.title,note.id,string)
+                NoteContentDaoManager.getInstance().editNotes(noteBook.title,note.title,string)
             }
             NoteDaoManager.getInstance().editNotes(noteBook.title,string)
 

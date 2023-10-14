@@ -6,4 +6,5 @@ public class ModuleBean {
     public String name;
     public int resContentId;
     public int resId;
+    public int resFreeNote;
 }

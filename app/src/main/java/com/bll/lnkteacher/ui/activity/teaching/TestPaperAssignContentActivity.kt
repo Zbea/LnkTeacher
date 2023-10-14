@@ -88,7 +88,8 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     override fun initView() {
         setPageTitle(typeBean?.name.toString())
-        showView(tv_send,iv_manager)
+        showView(tv_setting,iv_manager)
+        tv_setting.text="发送"
         iv_manager.setImageResource(R.mipmap.icon_notebook_delete)
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
@@ -149,7 +150,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             })
         }
 
-        tv_send.setOnClickListener {
+        tv_setting.setOnClickListener {
             if (getCheckedItems().size>0&&subtype!=0&&commitTime>0){
                 val ids= mutableListOf<Int>()
                 for (item in getCheckedItems()){

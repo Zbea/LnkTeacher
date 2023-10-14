@@ -1,57 +1,29 @@
 package com.bll.lnkteacher.ui.adapter
 
-import android.annotation.SuppressLint
-import android.graphics.Typeface.BOLD
-import android.graphics.Typeface.defaultFromStyle
-import android.widget.ImageView
-import android.widget.TextView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.Date
+import com.bll.lnkteacher.manager.DateEventDaoManager
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import java.text.SimpleDateFormat
+import java.util.*
 
-class MainTeachingAdapter(layoutResId: Int, data: List<Date>?) :
-    BaseQuickAdapter<Date, BaseViewHolder>(layoutResId, data) {
+class MainTeachingAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAdapter<ClassGroup, BaseViewHolder>(layoutResId, data) {
 
-    @SuppressLint("WrongConstant")
-    override fun convert(helper: BaseViewHolder, item: Date) {
-        var tvDay = helper.getView<TextView>(R.id.tv_day)
-        var tvLunar=helper.getView<TextView>(R.id.tv_lunar)
-        var ivImage=helper.getView<ImageView>(R.id.iv_image)
-        tvDay.text = if (item.day == 0) "" else item.day.toString()
-        if (item.isNow)
-            tvDay.typeface = defaultFromStyle(BOLD)
-        if (item.isNowMonth) {
-            tvDay.setTextColor(mContext.getColor(R.color.black))
-            tvLunar.setTextColor(mContext.getColor(R.color.gray))
-        } else {
-            tvDay.setTextColor(mContext.getColor(R.color.black_90))
-            tvLunar.setTextColor(mContext.getColor(R.color.black_90))
-        }
+    private var nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
 
-        val str = if (!item.solar.solar24Term.isNullOrEmpty()) {
-            item.solar.solar24Term
-        } else {
-            if (!item.solar.solarFestivalName.isNullOrEmpty()) {
-                item.solar.solarFestivalName
-            } else {
-                if (!item.lunar.lunarFestivalName.isNullOrEmpty()) {
-                    item.lunar.lunarFestivalName
-                } else {
-                    item.lunar.getChinaDayString(item.lunar.lunarDay)
-                }
-            }
-        }
-        tvLunar.text=str
+    override fun convert(helper: BaseViewHolder, item: ClassGroup) {
+        helper.setText(R.id.tv_name,item.name)
 
-        if (item.dateEvent!=null){
-            helper.setText(R.id.tv_content,item.dateEvent.content)
-        }
-        else{
-            helper.setText(R.id.tv_content,"")
-        }
-
+        val dateEvent=DateEventDaoManager.getInstance().queryBean(item.classId,nowDate)
+        if (dateEvent!=null)
+            helper.setText(R.id.tv_plan,dateEvent.content)
     }
 
+    fun refreshDate(){
+        nowDate = DateUtils.dateToStamp(SimpleDateFormat("yyyy-MM-dd").format(Date()))
+        notifyDataSetChanged()
+    }
 
 }

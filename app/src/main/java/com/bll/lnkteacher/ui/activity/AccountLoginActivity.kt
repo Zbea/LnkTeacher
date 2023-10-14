@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.mvp.model.User
@@ -13,22 +14,27 @@ import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_login_user.*
 
-class AccountLoginActivity:BaseActivity(),
-    IContractView.ILoginView {
+class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this)
     private var token=""
 
     override fun getLogin(user: User?) {
         token= user?.token.toString()
-        SPUtil.putString("tokenTeacher",token)
+        SPUtil.putString("token",token)
         presenter.accounts()
     }
 
     override fun getAccount(user: User?) {
         user?.token=token
-        SPUtil.putObj("userTeacher",user!!)
+        SPUtil.putObj("user",user!!)
         startActivity(Intent(this,MainActivity::class.java))
+
+        val intent = Intent()
+        intent.putExtra("token", token)
+        intent.action = Constants.LOGIN_BROADCAST_EVENT
+        sendBroadcast(intent)
+
         finish()
     }
 
@@ -67,7 +73,7 @@ class AccountLoginActivity:BaseActivity(),
 
         }
 
-        val tokenStr=SPUtil.getString("tokenTeacher")
+        val tokenStr=SPUtil.getString("token")
 
         if (tokenStr.isNotEmpty() && mUser!=null)
         {

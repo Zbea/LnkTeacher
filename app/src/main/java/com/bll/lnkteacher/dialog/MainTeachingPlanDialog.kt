@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkteacher.Constants.Companion.dayLong
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.mvp.model.DateEvent
@@ -15,7 +16,6 @@ import java.util.*
 
 class MainTeachingPlanDialog(private val context: Context, private val classId:Int, private val date: Long) {
 
-    private var dayLong = 24 * 60 * 60 * 1000
     private var nowLong=0L
     private var etContent:EditText?=null
     private var tvDate:TextView?=null

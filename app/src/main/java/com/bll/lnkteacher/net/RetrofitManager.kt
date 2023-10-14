@@ -51,7 +51,7 @@ object RetrofitManager{
         return Interceptor { chain ->
             val originalRequest = chain.request()
             val requestBuilder = originalRequest.newBuilder()
-                    .header("Authorization", SPUtil.getString("tokenTeacher"))
+                    .header("Authorization", SPUtil.getString("token"))
                     .method(originalRequest.method, originalRequest.body)
             val request = requestBuilder.build()
             chain.proceed(request)

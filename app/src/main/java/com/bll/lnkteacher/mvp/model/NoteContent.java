@@ -17,22 +17,22 @@ public class NoteContent implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    public String typeStr;//分类
-    public long noteId;//笔记本id
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public String typeStr;//笔记本
+    public String noteTitle;//主题
     public long date;//创建时间
     public String title;
     public String resId;//背景id
     public String filePath;//文件路径
     public String pathName;//文件名
     public int page;//页码
-    @Generated(hash = 1759040734)
-    public NoteContent(Long id, long userId, String typeStr, long noteId, long date, String title,
+    @Generated(hash = 1246859587)
+    public NoteContent(Long id, long userId, String typeStr, String noteTitle, long date, String title,
             String resId, String filePath, String pathName, int page) {
         this.id = id;
         this.userId = userId;
         this.typeStr = typeStr;
-        this.noteId = noteId;
+        this.noteTitle = noteTitle;
         this.date = date;
         this.title = title;
         this.resId = resId;
@@ -61,11 +61,11 @@ public class NoteContent implements Serializable {
     public void setTypeStr(String typeStr) {
         this.typeStr = typeStr;
     }
-    public long getNoteId() {
-        return this.noteId;
+    public String getNoteTitle() {
+        return this.noteTitle;
     }
-    public void setNoteId(long noteId) {
-        this.noteId = noteId;
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
     public long getDate() {
         return this.date;
@@ -103,6 +103,5 @@ public class NoteContent implements Serializable {
     public void setPage(int page) {
         this.page = page;
     }
-    
-    
+
 }

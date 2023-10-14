@@ -3,12 +3,16 @@ package com.bll.lnkteacher.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -174,6 +178,26 @@ public class BitmapUtils {
         context.sendBroadcast(intent);
 
     }
+
+
+    public static byte[] drawableToByte(Drawable drawable){
+        if (drawable==null)
+            return null;
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public static Drawable byteToDrawable(byte[] bytes){
+        if (bytes==null)
+            return null;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, null);
+        BitmapDrawable bitmapDrawable = new BitmapDrawable(bitmap);
+        Drawable drawable = bitmapDrawable;
+        return drawable;
+    }
+
 
 
 }

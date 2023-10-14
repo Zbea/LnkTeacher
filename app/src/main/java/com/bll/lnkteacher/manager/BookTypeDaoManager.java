@@ -40,7 +40,7 @@ public class BookTypeDaoManager {
                 }
             }
         }
-        whereUser= BookTypeBeanDao.Properties.UserId.eq(SPUtil.INSTANCE.getObj("userTeacher", User.class).accountId);
+        whereUser= BookTypeBeanDao.Properties.UserId.eq(SPUtil.INSTANCE.getObj("user", User.class).accountId);
         return mDbController;
     }
 

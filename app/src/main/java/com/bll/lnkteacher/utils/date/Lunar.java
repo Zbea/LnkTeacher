@@ -26,4 +26,13 @@ public class Lunar implements Serializable {
         else
             return chineseTen[day / 10] + chineseNumber[n];
     }
+
+
+    public String getChinaMonthString(int month) {
+        int n = month % 10 == 0 ? 9 : month % 10 - 1;
+        if (month > 12||month==0)
+            return "";
+        else
+            return  chineseNumber[n];
+    }
 }

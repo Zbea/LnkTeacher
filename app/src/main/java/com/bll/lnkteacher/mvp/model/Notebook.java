@@ -15,15 +15,13 @@ public class Notebook {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
-    public int typeId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
     public long date;
-    @Generated(hash = 270609839)
-    public Notebook(Long id, long userId, int typeId, String title, long date) {
+    @Generated(hash = 849991874)
+    public Notebook(Long id, long userId, String title, long date) {
         this.id = id;
         this.userId = userId;
-        this.typeId = typeId;
         this.title = title;
         this.date = date;
     }
@@ -41,12 +39,6 @@ public class Notebook {
     }
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-    public int getTypeId() {
-        return this.typeId;
-    }
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
     }
     public String getTitle() {
         return this.title;

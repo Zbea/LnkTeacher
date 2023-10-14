@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.telephony.TelephonyManager;
@@ -307,6 +308,22 @@ public class AppUtils {
         return false;
     }
 
+    /**
+     * 关闭第三方应用
+     * @param packageName
+     */
+    public static void stopApp(Context context,String packageName){
+//        Process process= Runtime.getRuntime().exec("su");
+//        OutputStream out = process.getOutputStream();
+//        String cmd = "am force-stop " + packageName + " \n";
+//        out.write(cmd.getBytes());
+//        out.flush();
+//        process.getOutputStream().close();
+        ActivityManager am = (ActivityManager)context.getSystemService(
+                Context.ACTIVITY_SERVICE);
+        am.killBackgroundProcesses(packageName);
+    }
+
     //重启app
     public static void reOpenApk(Context context){
         final Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
@@ -331,13 +348,9 @@ public class AppUtils {
                 if (!packageInfo.packageName.equals(context.getPackageName()))
                 {
                     AppBean myAppInfo = new AppBean();
-                    myAppInfo.appId=4+i;
                     myAppInfo.appName= packageInfo.applicationInfo.loadLabel(packageManager).toString();
                     myAppInfo.packageName=packageInfo.packageName;
-                    if (packageInfo.applicationInfo.loadIcon(packageManager) == null) {
-                        continue;
-                    }
-                    myAppInfo.image=packageInfo.applicationInfo.loadIcon(packageManager);
+                    myAppInfo.imageByte=BitmapUtils.drawableToByte(packageInfo.applicationInfo.loadIcon(packageManager));
                     myAppInfos.add(myAppInfo);
                 }
             }
@@ -345,5 +358,29 @@ public class AppUtils {
             Log.e("TAG", "获取应用包信息失败");
         }
         return myAppInfos;
+    }
+
+    /**
+     * 查看本地应用图标
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static Drawable scanLocalInstallAppDrawable(Context context, String packageName) {
+        PackageManager packageManager=context.getPackageManager();
+        Drawable drawable=null;
+        try {
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
+            for (int i = 0; i < packageInfos.size(); i++) {
+                PackageInfo packageInfo = (PackageInfo) packageInfos.get(i);
+                if (packageInfo.packageName.equals(packageName))
+                {
+                    drawable=packageInfo.applicationInfo.loadIcon(packageManager);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "获取应用包信息失败");
+        }
+        return drawable;
     }
 }

@@ -7,7 +7,7 @@ import com.bll.lnkteacher.net.*
 class TextbookPresenter(view: IContractView.ITextbookView):BasePresenter<IContractView.ITextbookView>(view) {
 
     //获取讲义列表
-    fun getList(map: HashMap<String,Any>){
+    fun getHandoutsList(map: HashMap<String,Any>){
         val list=RetrofitManager.service.getHandouts(map)
         doRequest(list, object : Callback<HandoutsList>(view) {
             override fun failed(tBaseResult: BaseResult<HandoutsList>): Boolean {

@@ -26,9 +26,8 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property TypeId = new Property(2, int.class, "typeId", false, "TYPE_ID");
-        public final static Property Title = new Property(3, String.class, "title", false, "TITLE");
-        public final static Property Date = new Property(4, long.class, "date", false, "DATE");
+        public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
+        public final static Property Date = new Property(3, long.class, "date", false, "DATE");
     }
 
 
@@ -46,9 +45,8 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"NOTEBOOK\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"TYPE_ID\" INTEGER NOT NULL ," + // 2: typeId
-                "\"TITLE\" TEXT," + // 3: title
-                "\"DATE\" INTEGER NOT NULL );"); // 4: date
+                "\"TITLE\" TEXT," + // 2: title
+                "\"DATE\" INTEGER NOT NULL );"); // 3: date
     }
 
     /** Drops the underlying database table. */
@@ -66,13 +64,12 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getTypeId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(4, title);
+            stmt.bindString(3, title);
         }
-        stmt.bindLong(5, entity.getDate());
+        stmt.bindLong(4, entity.getDate());
     }
 
     @Override
@@ -84,13 +81,12 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getTypeId());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(4, title);
+            stmt.bindString(3, title);
         }
-        stmt.bindLong(5, entity.getDate());
+        stmt.bindLong(4, entity.getDate());
     }
 
     @Override
@@ -103,9 +99,8 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
         Notebook entity = new Notebook( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
-            cursor.getInt(offset + 2), // typeId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // title
-            cursor.getLong(offset + 4) // date
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
+            cursor.getLong(offset + 3) // date
         );
         return entity;
     }
@@ -114,9 +109,8 @@ public class NotebookDao extends AbstractDao<Notebook, Long> {
     public void readEntity(Cursor cursor, Notebook entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
-        entity.setTypeId(cursor.getInt(offset + 2));
-        entity.setTitle(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setDate(cursor.getLong(offset + 4));
+        entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setDate(cursor.getLong(offset + 3));
      }
     
     @Override

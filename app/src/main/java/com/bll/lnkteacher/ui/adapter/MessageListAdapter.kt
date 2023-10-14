@@ -13,21 +13,33 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
 
         helper.setText(R.id.tv_content,item.content)
-        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date*1000))
+        helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.date))
         helper.setChecked(R.id.cb_check,item.isCheck)
-        helper.setVisible(R.id.cb_check,item.sendType==1)
-        helper.setGone(R.id.rv_list,item.sendType==1)
-        helper.setText(R.id.tv_student_name,item.teacherName)
-        helper.setGone(R.id.tv_student_name,item.sendType==2)
-
-        val classInfos=item.classInfo.split(",")
-
-        val rvList=helper.getView<RecyclerView>(R.id.rv_list)
-        rvList.layoutManager = LinearLayoutManager(mContext)
-        val mAdapter = MyAdapter(R.layout.item_message_classname, classInfos)
-        rvList.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rvList)
-
+        when(item.sendType){
+            1->{
+                helper.setVisible(R.id.cb_check,true)
+                helper.setGone(R.id.rv_list,true)
+                helper.setGone(R.id.tv_student_name,false)
+                val classInfos=item.classInfo.split(",")
+                val rvList=helper.getView<RecyclerView>(R.id.rv_list)
+                rvList.layoutManager = LinearLayoutManager(mContext)
+                val mAdapter = MyAdapter(R.layout.item_message_classname, classInfos)
+                rvList.adapter = mAdapter
+                mAdapter.bindToRecyclerView(rvList)
+            }
+            2->{
+                helper.setVisible(R.id.cb_check,false)
+                helper.setGone(R.id.rv_list,false)
+                helper.setGone(R.id.tv_student_name,true)
+                helper.setText(R.id.tv_student_name,item.teacherName+"同学")
+            }
+            else->{
+                helper.setVisible(R.id.cb_check,false)
+                helper.setGone(R.id.rv_list,false)
+                helper.setGone(R.id.tv_student_name,true)
+                helper.setText(R.id.tv_student_name,"学校通知")
+            }
+        }
         helper.setOnClickListener(R.id.cb_check) {
             item.isCheck = !item.isCheck
             notifyDataSetChanged()

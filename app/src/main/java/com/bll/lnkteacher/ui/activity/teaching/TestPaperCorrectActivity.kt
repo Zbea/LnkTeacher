@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
@@ -25,6 +26,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
@@ -99,6 +101,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik?.setPWEnabled(false)
+        EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
     }
 
 

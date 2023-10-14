@@ -1,20 +1,20 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.SchoolSelectDialog
+import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
-import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
+import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchoolView {
 
@@ -24,6 +24,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     private var school=0
     private var schoolBean: SchoolBean?=null
     private var schools= mutableListOf<SchoolBean>()
+    private var privacyPassword:PrivacyPassword?=null
+    private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onLogout() {
     }
@@ -55,6 +57,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     }
 
     override fun initData() {
+        privacyPassword=SPUtil.getObj("${mUser?.accountId}PrivacyPassword", PrivacyPassword::class.java)
         mSchoolPresenter.getSchool()
     }
 
@@ -67,15 +70,21 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             tv_user.text = account
             tv_name.text = nickname
             tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
-            tv_course.text=subjectName
+            tv_course_str.text=subjectName
             tv_province_str.text = schoolProvince
             tv_city.text = schoolCity
             tv_school.text = schoolName
             tv_area.text = schoolArea
         }
 
-        btn_edit_psd.setOnClickListener {
-            startActivity(Intent(this,AccountRegisterActivity::class.java).setFlags(2))
+        if (privacyPassword!=null){
+            showView(tv_check_pad)
+            if (privacyPassword?.isSet == true){
+                btn_psd_check.text="取消密码"
+            }
+            else{
+                btn_psd_check.text="设置密码"
+            }
         }
 
         btn_edit_name.setOnClickListener {
@@ -92,13 +101,39 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
                 override fun cancel() {
                 }
                 override fun ok() {
-                    SPUtil.putString("tokenTeacher", "")
-                    SPUtil.removeObj("userTeacher")
-                    startActivity(Intent(this@AccountInfoActivity, AccountLoginActivity::class.java))
-                    ActivityManager.getInstance().finishOthers(AccountLoginActivity::class.java)
+                    MethodManager.logout(this@AccountInfoActivity)
                 }
             })
         }
+
+        btn_psd_check.setOnClickListener {
+            setPassword()
+        }
+
+    }
+
+    /**
+     * 设置查看密码
+     */
+    private fun setPassword(){
+        if (privacyPassword==null){
+            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
+                privacyPassword=it
+                showView(tv_check_pad)
+                btn_psd_check.text="设置密码"
+                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
+                EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
+            }
+        }
+        else{
+            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
+                privacyPassword?.isSet=!privacyPassword?.isSet!!
+                btn_psd_check.text=if (privacyPassword?.isSet==true) "取消密码" else "设置密码"
+                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
+                EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
+            }
+        }
+
     }
 
     /**
@@ -116,21 +151,27 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
      * 修改学校
      */
     private fun editSchool() {
-        SchoolSelectDialog(this,schools).builder().setOnDialogClickListener {
-            school=it
-            if (school==mUser?.schoolId)
-                return@setOnDialogClickListener
-            presenter.editSchool(it)
-            for (item in schools){
-                if (item.id==school)
-                    schoolBean=item
+        if (schoolSelectDialog==null){
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
+            schoolSelectDialog?.setOnDialogClickListener {
+                school=it.id
+                if (school==mUser?.schoolId)
+                    return@setOnDialogClickListener
+                presenter.editSchool(it.id)
+                for (item in schools){
+                    if (item.id==school)
+                        schoolBean=item
+                }
             }
+        }
+        else{
+            schoolSelectDialog?.show()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mUser?.let { SPUtil.putObj("userTeacher", it) }
+        mUser?.let { SPUtil.putObj("user", it) }
     }
 
 }

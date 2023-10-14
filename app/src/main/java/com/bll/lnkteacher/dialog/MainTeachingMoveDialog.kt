@@ -6,6 +6,7 @@ import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.Constants.Companion.dayLong
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.utils.DateUtils
@@ -14,7 +15,6 @@ import com.bll.lnkteacher.utils.DateUtils
 class MainTeachingMoveDialog(private val context: Context,private val classId:Int) {
 
     private var dialog:Dialog?=null
-    private val long=24*60*60*1000
 
     fun builder(): MainTeachingMoveDialog {
         dialog =Dialog(context)
@@ -61,7 +61,7 @@ class MainTeachingMoveDialog(private val context: Context,private val classId:In
             if (cbUp?.isChecked==false&&cbDown?.isChecked==false)
                 return@setOnClickListener
             for (item in lists) {
-                val nowLong=if (cbDown?.isChecked==true) item.date-long* day!! else item.date+long* day!!
+                val nowLong=if (cbDown?.isChecked==true) item.date-dayLong* day!! else item.date+dayLong* day!!
                 val dateEvent=DateEventDaoManager.getInstance().queryBean(classId,nowLong)
                 if (dateEvent!=null)
                 {

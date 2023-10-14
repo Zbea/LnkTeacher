@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.ui.adapter.MainClassGroupAdapter
+import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 
 /**
@@ -30,7 +30,7 @@ class ClassGroupSelectDialog(val context: Context){
         val classs= DataBeanManager.classGroups
 
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
-        val mAdapter = MainClassGroupAdapter(R.layout.item_classgroup, classs)
+        val mAdapter = MainTeachingAdapter(R.layout.item_classgroup, classs)
         rvList.layoutManager = GridLayoutManager(context,2)
         rvList.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rvList)

@@ -5,34 +5,54 @@ import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
+import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.SchoolBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.view.IContractView.ICommonView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
+import kotlinx.android.synthetic.main.common_title.*
 
 
-/**
- *  //2. 帐号规则 4 - 12 位字母、数字
-//3. 密码规则 6 - 20 位字母、数字
-//4. 姓名规则 2 - 5 位中文
-//5. 手机号码规则 11 位有效手机号
-//6. 验证码规则数字即可
- */
-class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView {
+class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView,ICommonView {
 
+    private val mCommonPresenter=CommonPresenter(this)
     private val mSchoolPresenter=SchoolPresenter(this)
     private val presenter= RegisterOrFindPsdPresenter(this)
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var school=0
     private var schools= mutableListOf<SchoolBean>()
+    private var schoolSelectDialog:SchoolSelectDialog?=null
+    private var popCourses= mutableListOf<PopupBean>()
+
+    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
+    }
+    override fun onGroupList(groups: MutableList<Group>?) {
+    }
+    override fun onCommon(commonData: CommonData) {
+        if (!commonData.grade.isNullOrEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (!commonData.subject.isNullOrEmpty())
+            DataBeanManager.courses=commonData.subject
+        popCourses=DataBeanManager.popupCourses
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
+    }
+
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
@@ -63,8 +83,10 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
 
     override fun initData() {
         flags=intent.flags
-        if (flags==0)
+        if (flags==0){
+            mCommonPresenter.getCommon()
             mSchoolPresenter.getSchool()
+        }
     }
 
     override fun initView() {
@@ -97,6 +119,13 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
             presenter.sms(phone)
         }
 
+        tv_course_btn.setOnClickListener {
+            PopupRadioList(this, popCourses, tv_course_btn,tv_course_btn.width, 5).builder()
+                .setOnSelectListener { item ->
+                    tv_course_btn.text = item.name
+                }
+        }
+
         tv_school.setOnClickListener {
             selectorSchool()
         }
@@ -108,7 +137,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
             val name=ed_name.text.toString().trim()
             val phone=ed_phone.text.toString().trim()
             val code=ed_code.text.toString().trim()
-            val course=et_course.text.toString().trim()
+            val course=tv_course.text.toString().trim()
             val role=1
 
             if (psd.isEmpty()) {
@@ -149,7 +178,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
                         return@setOnClickListener
                     }
                     if (course.isEmpty()) {
-                        showToast("请输入科目")
+                        showToast("请选择科目")
                         return@setOnClickListener
                     }
                     if (school==0){
@@ -220,8 +249,15 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
      * 选择学校
      */
     private fun selectorSchool(){
-        SchoolSelectDialog(this,schools).builder().setOnDialogClickListener{
-            school=it
+        if (schoolSelectDialog==null){
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
+            schoolSelectDialog?.setOnDialogClickListener{
+                school=it.id
+                tv_school.text=it.name
+            }
+        }
+        else{
+            schoolSelectDialog?.show()
         }
     }
 

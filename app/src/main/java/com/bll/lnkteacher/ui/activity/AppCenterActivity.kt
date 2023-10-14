@@ -3,18 +3,25 @@ package com.bll.lnkteacher.ui.activity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.manager.AppDaoManager
+import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.mvp.model.AppList
+import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.AppCenterPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.AppCenterListAdapter
 import com.bll.lnkteacher.utils.AppUtils
+import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_download_app.*
+import kotlinx.android.synthetic.main.ac_app_center.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
@@ -25,6 +32,12 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     private var apps= mutableListOf<AppList.ListBean>()
     private var position=0
     private var currentDownLoadTask:BaseDownloadTask?=null
+    private var types= mutableListOf<ItemList>()
+
+    override fun onType(commonData: CommonData) {
+        types=commonData.subType
+        initTab()
+    }
 
     override fun onAppList(appBean: AppList) {
         setPageNumber(appBean.total)
@@ -39,34 +52,34 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
             currentDownLoadTask = downLoadStart(apps[position])
         } else {
-            showToast(R.string.toast_download_install)
+            showToast("正在下载安装")
         }
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_download_app
+        return R.layout.ac_app_center
     }
 
     override fun initData() {
         pageSize=8
-        fetchData()
+        presenter.getTypeList()
     }
 
     override fun initView() {
-        setPageTitle("应用中心")
+        setPageTitle("应用")
+        initRecyclerView()
+    }
 
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            type = if (id==R.id.rb_official){
-                1
-            }else{
-                2
-            }
+    private fun initTab(){
+        for (i in types.indices) {
+            rg_group.addView(getRadioButton(i,types[i].desc,types.size-1))
+        }
+        rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            type=types[i].type
             pageIndex=1
             fetchData()
         }
-
-        initRecyclerView()
-
+        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -82,7 +95,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
             setOnItemClickListener { adapter, view, position ->
                 this@AppCenterActivity.position=position
                 val app=apps[position]
-                if (app?.buyStatus==0){
+                if (app.buyStatus==0){
                     val map = HashMap<String, Any>()
                     map["type"] = 4
                     map["bookId"] = app.applicationId
@@ -94,7 +107,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
                         if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
                             currentDownLoadTask = downLoadStart(app)
                         } else {
-                            showToast(R.string.toast_download_install)
+                            showToast("正在下载安装")
                         }
                     }
                 }
@@ -152,8 +165,24 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["type"] = type
+        map["subType"] = type
+        map["mainType"]=1
         presenter.getAppList(map)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.APP_INSTALL_EVENT){
+            if (type==6){
+                val bean=apps[position]
+                val drawable=AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
+                val item=AppBean()
+                item.appName=bean.nickname
+                item.packageName=bean.packageName
+                item.imageByte= BitmapUtils.drawableToByte(drawable)
+                AppDaoManager.getInstance().insertOrReplace(item)
+                EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
+            }
+        }
     }
 
 }

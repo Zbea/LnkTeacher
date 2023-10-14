@@ -46,7 +46,7 @@ public class BookGreenDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
         whereUser= BookDao.Properties.UserId.eq(userId);
         return mDbController;
     }

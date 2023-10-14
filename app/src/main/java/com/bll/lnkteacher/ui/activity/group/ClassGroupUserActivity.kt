@@ -55,7 +55,10 @@ class ClassGroupUserActivity:BaseActivity(),IContractView.IClassGroupUserView {
 
     override fun initData() {
         index=intent.flags
-        pops= DataBeanManager.popClassGroups
+        for (i in 0 until DataBeanManager.popClassGroups.size){
+            val item=DataBeanManager.popClassGroups[i]
+            pops.add(PopupBean(item.id, item.name, i == index))
+        }
         mPresenter.getClassList(pops[index].id)
     }
 

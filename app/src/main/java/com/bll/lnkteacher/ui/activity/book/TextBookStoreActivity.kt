@@ -123,7 +123,8 @@ class TextBookStoreActivity : BaseActivity(),
         }
 
         subjectList=DataBeanManager.popupCourses
-        gradeList=DataBeanManager.popupGrades
+
+        gradeList=DataBeanManager.popupGrades(1)
 
         presenter.getBookType()
     }
@@ -188,7 +189,7 @@ class TextBookStoreActivity : BaseActivity(),
         }
 
         tv_type.setOnClickListener {
-            PopupRadioList(this, subTypeList, tv_type, 5).builder()
+            PopupRadioList(this, subTypeList, tv_type, tv_type.width, 5).builder()
                 .setOnSelectListener { item ->
                     subType = item.id
                     tv_type.text = item.name
@@ -479,6 +480,7 @@ class TextBookStoreActivity : BaseActivity(),
             }
             4->{
                 map["subject"]=courseId
+                map["type"]=subType
                 presenter.getTeachingBooks(map)
             }
         }

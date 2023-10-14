@@ -21,7 +21,7 @@ public class DateEvent implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String content;
     public long date;//当天日期
     public int week;//当天星期 2星期一 8星期日

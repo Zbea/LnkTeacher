@@ -45,10 +45,10 @@
     <string name="download">下载</string>
 
     <string name="main_home_title">首页</string>
-    <string name="main_textbook_title">教学</string>
+    <string name="main_textbook_title">教材</string>
     <string name="main_classgroup_title">班群</string>
     <string name="main_classgroup_fragment_title">群管理</string>
-    <string name="main_teaching_title">作业</string>
+    <string name="main_homework_title">作业</string>
     <string name="main_note_title">笔记</string>
     <string name="main_bookcase_title">书架</string>
     <string name="main_app_title">应用</string>
@@ -80,7 +80,7 @@
     <string name="main_button_classes">排课表</string>
     <string name="main_button_message">信息</string>
     <string name="main_button_teaching">教学计划</string>
-    <string name="main_button_textbook">我的课本</string>
+    <string name="main_button_homework">收到作业</string>
     <string name="main_button_note">笔记</string>
 
     <string name="toast_is_delete_tips">确认删除？</string>
@@ -152,5 +152,15 @@
 
     <string name="download_official_str">官方</string>
     <string name="download_thirdParty_str">第三方</string>
+
+    <string name="axis_one">一维坐标</string>
+    <string name="axis_two">二维坐标</string>
+    <string name="axis_three">三维坐标</string>
+    <string name="circle_1">圆心</string>
+    <string name="circle_2">两点</string>
+    <string name="circle_3">三点</string>
+    <string name="line_black">黑线</string>
+    <string name="line_gray">灰线</string>
+    <string name="line_dotted">虚线</string>
 
 </resources>

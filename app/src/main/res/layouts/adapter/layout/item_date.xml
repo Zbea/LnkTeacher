@@ -41,7 +41,7 @@
         android:scaleType="center"
         android:layout_marginStart="@dimen/dp_5"
         android:layout_marginEnd="@dimen/dp_5"
-        android:background="@mipmap/icon_date_event_bg"/>
+        android:background="@mipmap/icon_freenote_bg_1"/>
 
 
 </LinearLayout>

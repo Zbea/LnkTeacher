@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -24,6 +25,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     private var mAdapter:HomeworkCorrectAdapter?=null
     private var position=0
     private var items= mutableListOf<CorrectBean>()
+    private var grade=0
 
     override fun onList(list: CorrectList) {
         setPageNumber(list.total)
@@ -128,12 +130,20 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     }
 
     override fun fetchData() {
+        if (grade==0)
+            return
         val map=HashMap<String,Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
         map["taskType"]=1
         map["grade"]=grade
         mPresenter.getList(map)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if(msgFlag==Constants.HOMEWORK_CORRECT_EVENT){
+            fetchData()
+        }
     }
 
 }

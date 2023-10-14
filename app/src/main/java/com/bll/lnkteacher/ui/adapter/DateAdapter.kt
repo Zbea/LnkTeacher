@@ -50,7 +50,7 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         tvLunar.text=str
 
         if (item.year!=0){
-            val path= FileAddress().getPathDate(DateUtils.longToStringCalender(item.time))+"/draw.png"
+            val path= FileAddress().getPathImage("date",DateUtils.longToStringCalender(item.time))+"/draw.png"
             if (File(path).exists()){
                 GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
             }

@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.common_title.*
 class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
 
     private val mPresenter= GroupPresenter(this)
-    private var popWindowClass: PopupRadioList?=null
     private var index=0//校群 班群
     private var users= mutableListOf<GroupUser>()
     private var mAdapter: GroupUserAdapter?=null
@@ -52,13 +51,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
 
         for (i in 0 until groups.size){
             val item=groups[i]
-            pops.add(
-                PopupBean(
-                    item.id,
-                    item.schoolName,
-                    i == position
-                )
-            )
+            pops.add(PopupBean(item.id, item.schoolName, i == position))
         }
 
         mPresenter.getGroupUsers(id)
@@ -78,31 +71,12 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
 
-
         tv_class.setOnClickListener {
-            selectorClassGroupView()
-        }
-
-    }
-
-
-    /**
-     * 班级选择
-     */
-    private fun selectorClassGroupView(){
-        if (popWindowClass==null){
-            popWindowClass= PopupRadioList(this, pops, tv_class, tv_class.width, 5).builder()
-            popWindowClass?.setOnSelectListener { item ->
+            PopupRadioList(this, pops, tv_class, tv_class.width, 5).builder().setOnSelectListener { item ->
                 tv_class.text = item.name
                 mPresenter.getGroupUsers(item.id)
             }
         }
-        else{
-            popWindowClass?.show()
-        }
+
     }
-
-
-
-
 }

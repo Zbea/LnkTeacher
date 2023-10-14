@@ -58,10 +58,11 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
     override fun initView() {
         setPageTitle("消息通知")
-        showView(iv_manager, tv_send)
-        iv_manager.setImageResource(R.mipmap.icon_notebook_delete)
+        showView(iv_manager, iv_setting)
+        iv_setting.setImageResource(R.mipmap.icon_notebook_delete)
+        iv_manager.setImageResource(R.mipmap.icon_save)
 
-        iv_manager.setOnClickListener {
+        iv_setting.setOnClickListener {
             val datas=mAdapter?.data
             val ids= mutableListOf<Int>()
             for (item in datas!!){
@@ -79,7 +80,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
             }
         }
 
-        tv_send.setOnClickListener {
+        iv_manager.setOnClickListener {
             if (sendDialog == null) {
                 sendDialog = MessageSendDialog(this).builder()
                 sendDialog?.setOnClickListener { contenStr, ids ->
@@ -98,7 +99,6 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
     }
 
     private fun initRecyclerView(){
-
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this,50f), DP2PX.dip2px(this,20f),

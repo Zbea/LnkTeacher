@@ -42,7 +42,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
             runOnUiThread {
                 tv_xdmoney.text = "" + order.amount
                 mUser?.balance = order.amount
-                SPUtil.putObj("userTeacher",mUser!!)
+                SPUtil.putObj("user",mUser!!)
             }
         }
     }
@@ -76,12 +76,10 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     private fun getXdView(){
         if (xdDialog==null){
             xdDialog= WalletBuyXdDialog(this,xdList).builder()
-            xdDialog?.setOnDialogClickListener(object : WalletBuyXdDialog.OnDialogClickListener {
-                override fun onClick(id: String) {
-                    xdDialog?.dismiss()
-                    walletPresenter.postXdOrder(id)
-                }
-            })
+            xdDialog?.setOnDialogClickListener { id ->
+                xdDialog?.dismiss()
+                walletPresenter.postXdOrder(id)
+            }
         }
         else{
             xdDialog?.show()

@@ -27,7 +27,7 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property TypeStr = new Property(2, String.class, "typeStr", false, "TYPE_STR");
-        public final static Property NoteId = new Property(3, long.class, "noteId", false, "NOTE_ID");
+        public final static Property NoteTitle = new Property(3, String.class, "noteTitle", false, "NOTE_TITLE");
         public final static Property Date = new Property(4, long.class, "date", false, "DATE");
         public final static Property Title = new Property(5, String.class, "title", false, "TITLE");
         public final static Property ResId = new Property(6, String.class, "resId", false, "RES_ID");
@@ -52,7 +52,7 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
                 "\"TYPE_STR\" TEXT," + // 2: typeStr
-                "\"NOTE_ID\" INTEGER NOT NULL ," + // 3: noteId
+                "\"NOTE_TITLE\" TEXT," + // 3: noteTitle
                 "\"DATE\" INTEGER NOT NULL ," + // 4: date
                 "\"TITLE\" TEXT," + // 5: title
                 "\"RES_ID\" TEXT," + // 6: resId
@@ -81,7 +81,11 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         if (typeStr != null) {
             stmt.bindString(3, typeStr);
         }
-        stmt.bindLong(4, entity.getNoteId());
+ 
+        String noteTitle = entity.getNoteTitle();
+        if (noteTitle != null) {
+            stmt.bindString(4, noteTitle);
+        }
         stmt.bindLong(5, entity.getDate());
  
         String title = entity.getTitle();
@@ -120,7 +124,11 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         if (typeStr != null) {
             stmt.bindString(3, typeStr);
         }
-        stmt.bindLong(4, entity.getNoteId());
+ 
+        String noteTitle = entity.getNoteTitle();
+        if (noteTitle != null) {
+            stmt.bindString(4, noteTitle);
+        }
         stmt.bindLong(5, entity.getDate());
  
         String title = entity.getTitle();
@@ -156,7 +164,7 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // typeStr
-            cursor.getLong(offset + 3), // noteId
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // noteTitle
             cursor.getLong(offset + 4), // date
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // title
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // resId
@@ -172,7 +180,7 @@ public class NoteContentDao extends AbstractDao<NoteContent, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setTypeStr(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setNoteId(cursor.getLong(offset + 3));
+        entity.setNoteTitle(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setDate(cursor.getLong(offset + 4));
         entity.setTitle(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setResId(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));

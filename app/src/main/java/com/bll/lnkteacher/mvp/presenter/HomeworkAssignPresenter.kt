@@ -45,7 +45,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     }
 
     /**
-     * 删除作业分类
+     * 删除题卷本
      */
     fun deleteType(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
@@ -59,6 +59,23 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
             }
         }, true)
     }
+
+    /**
+     * 删除作业分类
+     */
+    fun deleteHomeworkType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.deleteHomeworkType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onDeleteSuccess()
+            }
+        }, true)
+    }
+
 
     fun getList(map: HashMap<String,Any>){
         val list = RetrofitManager.service.getHomeworkList(map)

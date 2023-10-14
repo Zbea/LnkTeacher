@@ -46,7 +46,7 @@ public class CourseGreenDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
         whereUser= CourseBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }

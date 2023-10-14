@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
+import com.bll.lnkteacher.Constants.Companion.PRIVACY_PASSWORD_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -12,6 +13,7 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.manager.NotebookDaoManager
@@ -32,7 +34,6 @@ import java.io.File
  * 笔记
  */
 class NoteFragment : BaseFragment() {
-    private var popWindowList: PopupClick? = null
     private var popupBeans = mutableListOf<PopupBean>()
     private var notebooks = mutableListOf<Notebook>()
     private var notes = mutableListOf<Note>()
@@ -56,7 +57,20 @@ class NoteFragment : BaseFragment() {
         showView(iv_manager)
 
         iv_manager?.setOnClickListener {
-            setTopSelectView()
+            PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder()
+                .setOnSelectListener { item ->
+                    when (item.id) {
+                        0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
+                        1 -> createNoteBookType()
+                        else -> {
+                            NoteModuleAddDialog(requireContext(), 1).builder()
+                                ?.setOnDialogClickListener { moduleBean ->
+                                    createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
+                                }
+                        }
+
+                    }
+                }
         }
 
         initRecyclerView()
@@ -74,17 +88,60 @@ class NoteFragment : BaseFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            gotoNote(note)
+            if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    gotoNote(note)
+                }
+            }
+            else{
+                gotoNote(note)
+            }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position = position
-            if (view.id == R.id.iv_delete) {
-                deleteNote()
-            }
-            if (view.id == R.id.iv_edit) {
-                editNote(notes[position].title)
-            }
+            val note=notes[position]
+            when (view.id) {
+                R.id.iv_delete -> {
+                    CommonDialog(requireActivity()).setContent("确定要删除主题？").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                mAdapter?.remove(position)
+                                //删除笔记本
+                                NoteDaoManager.getInstance().deleteBean(note)
+                                //删除笔记本中的所有笔记
+                                NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.title)
+                                val path= FileAddress().getPathNote(note.typeStr,note.title)
+                                FileUtils.deleteFile(File(path))
+                                EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+                            }
 
+                        })
+                }
+                R.id.iv_edit -> {
+                    InputContentDialog(requireContext(), note.title).builder()
+                        .setOnDialogClickListener { string ->
+                            if (NoteDaoManager.getInstance().isExist(typeStr,string)){
+                                showToast(R.string.toast_existed)
+                                return@setOnDialogClickListener
+                            }
+                            //修改内容分类
+                            NoteContentDaoManager.getInstance().editNotes(note.typeStr,note.title,string)
+                            note.title = string
+                            NoteDaoManager.getInstance().insertOrReplace(note)
+                            mAdapter?.notifyItemChanged(position)
+                            EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+                        }
+                }
+                R.id.iv_password->{
+                    PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                        note.isCancelPassword=!note.isCancelPassword
+                        mAdapter?.notifyItemChanged(position)
+                        NoteDaoManager.getInstance().insertOrReplace(note)
+                    }
+                }
+            }
         }
     }
 
@@ -135,74 +192,9 @@ class NoteFragment : BaseFragment() {
             }
     }
 
-    //修改笔记
-    private fun editNote(content: String) {
-        InputContentDialog(requireContext(), content).builder()
-            .setOnDialogClickListener { string ->
-                if (NoteDaoManager.getInstance().isExist(typeStr,string)){
-                    showToast(R.string.toast_existed)
-                    return@setOnDialogClickListener
-                }
-                val note=notes[position]
-                //修改内容分类
-                NoteContentDaoManager.getInstance().editNotes(note.typeStr,note.id,string)
-                note.title = string
-                mAdapter?.notifyDataSetChanged()
-                NoteDaoManager.getInstance().insertOrReplace(note)
-                EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
-            }
-    }
-
-    //删除
-    private fun deleteNote() {
-        CommonDialog(requireActivity()).setContent("确定要删除主题？").builder()
-            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-
-                override fun ok() {
-                    val note = notes[position]
-                    notes.removeAt(position)
-                    mAdapter?.notifyDataSetChanged()
-                    //删除笔记本
-                    NoteDaoManager.getInstance().deleteBean(note)
-                    //删除笔记本中的所有笔记
-                    NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.id)
-                    EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
-                    val path= FileAddress().getPathNote(note.typeStr,note.title)
-                    FileUtils.deleteFile(File(path))
-                }
-
-            })
-    }
-
-
-    //顶部弹出选择
-    private fun setTopSelectView() {
-        if (popWindowList == null) {
-            popWindowList = PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder()
-            popWindowList?.setOnSelectListener { item ->
-                when (item.id) {
-                    0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
-                    1 -> addNoteBookType()
-                    else -> {
-                        NoteModuleAddDialog(requireContext(), if (typeStr==resources.getString(R.string.note_tab_diary)) 0 else 1).builder()
-                            ?.setOnDialogClickListener { moduleBean ->
-                                createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
-                            }
-                    }
-
-                }
-
-            }
-        } else {
-            popWindowList?.show()
-        }
-    }
-
 
     //新建笔记分类
-    private fun addNoteBookType() {
+    private fun createNoteBookType() {
         InputContentDialog(requireContext(),  "请输入笔记本").builder()
             .setOnDialogClickListener { string ->
                 if (NotebookDaoManager.getInstance().isExist(string)){
@@ -212,7 +204,6 @@ class NoteFragment : BaseFragment() {
                     val noteBook = Notebook()
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
-                    noteBook.typeId=ToolUtils.getDateId()
                     notebooks.add(noteBook)
                     NotebookDaoManager.getInstance().insertOrReplace(noteBook)
                     initTab()
@@ -228,6 +219,10 @@ class NoteFragment : BaseFragment() {
             NOTE_EVENT->{
                 fetchData()
             }
+            PRIVACY_PASSWORD_EVENT->{
+                privacyPassword=getPrivacyPasswordObj()
+                fetchData()
+            }
         }
     }
 
@@ -235,6 +230,9 @@ class NoteFragment : BaseFragment() {
         notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
         val total = NoteDaoManager.getInstance().queryAll(typeStr)
         setPageNumber(total.size)
+        for (item in notes){
+            item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
+        }
         mAdapter?.setNewData(notes)
     }
 

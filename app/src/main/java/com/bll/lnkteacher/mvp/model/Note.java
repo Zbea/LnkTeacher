@@ -21,21 +21,25 @@ public class Note implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("userTeacher", User.class)).accountId;
+    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
     public String typeStr;//笔记分类id
     public long date; //创建时间
     public String contentResId; //笔记内容背景id
+    public boolean isCancelPassword;//取消加密
+    @Transient
+    public boolean isSet;
 
-    @Generated(hash = 1405516646)
-    public Note(Long id, long userId, String title, String typeStr, long date,
-            String contentResId) {
+    @Generated(hash = 150613865)
+    public Note(Long id, long userId, String title, String typeStr, long date, String contentResId,
+            boolean isCancelPassword) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.typeStr = typeStr;
         this.date = date;
         this.contentResId = contentResId;
+        this.isCancelPassword = isCancelPassword;
     }
     @Generated(hash = 1272611929)
     public Note() {
@@ -75,6 +79,12 @@ public class Note implements Serializable {
     }
     public void setContentResId(String contentResId) {
         this.contentResId = contentResId;
+    }
+    public boolean getIsCancelPassword() {
+        return this.isCancelPassword;
+    }
+    public void setIsCancelPassword(boolean isCancelPassword) {
+        this.isCancelPassword = isCancelPassword;
     }
 
 }

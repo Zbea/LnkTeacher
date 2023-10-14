@@ -4,21 +4,18 @@ import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
-import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_bookcase.*
-import java.io.File
 
 /**
  * 书架
@@ -38,11 +35,6 @@ class BookCaseFragment: BaseFragment() {
     override fun initView() {
         setTitle(R.string.main_bookcase_title)
 
-        longBeans.add(ItemList().apply {
-            name="删除"
-            resId=R.mipmap.icon_setting_delete
-        })
-
         initRecyclerView()
         findBook()
 
@@ -51,7 +43,7 @@ class BookCaseFragment: BaseFragment() {
         }
 
         ll_book_top.setOnClickListener {
-            bookTopBean?.let { gotoBookDetails(it) }
+            bookTopBean?.let { MethodManager.gotoBookDetails(requireActivity(),it) }
         }
     }
 
@@ -67,12 +59,7 @@ class BookCaseFragment: BaseFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity,23f),28))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
-            }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                this@BookCaseFragment.position=position
-                onLongClick()
-                true
+                MethodManager.gotoBookDetails(requireActivity(),bookBean)
             }
         }
     }
@@ -111,26 +98,6 @@ class BookCaseFragment: BaseFragment() {
 
     private fun setImageUrl(url: String,image: ImageView){
         GlideUtils.setImageRoundUrl(activity,url,image,5)
-    }
-
-
-    //删除书架书籍
-    private fun onLongClick(){
-        val book = books[position]
-        LongClickManageDialog(requireActivity(), book.bookName,longBeans).builder()
-            .setOnDialogClickListener {
-                BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-
-                FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                if (File(book.bookDrawPath).exists())
-                    FileUtils.deleteFile(File(book.bookDrawPath))
-                mAdapter?.remove(position)
-
-                if (books.size==11)
-                {
-                    findBook()
-                }
-            }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

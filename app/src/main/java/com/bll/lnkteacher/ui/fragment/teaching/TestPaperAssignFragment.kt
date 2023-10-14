@@ -16,7 +16,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
@@ -26,6 +25,7 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     private var mAdapter: TestPaperAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var addTypeStr=""
+    private var grade=0
 
     override fun onType(typeList: TypeList) {
         setPageNumber(typeList.total)
@@ -55,7 +55,6 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     }
 
     override fun initView() {
-        grade=if (SPUtil.getInt("grade")==0) 1 else SPUtil.getInt("grade")
         pageSize=6
         initRecyclerView()
     }
@@ -109,6 +108,8 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     }
 
     override fun fetchData() {
+        if (grade==0)
+            return
         val map=HashMap<String,Any>()
         map["type"]=1
         map["page"]=pageIndex
