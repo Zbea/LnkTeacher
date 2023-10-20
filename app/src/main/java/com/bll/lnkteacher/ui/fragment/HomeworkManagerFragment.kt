@@ -13,6 +13,7 @@ import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.teaching.TestPaperCorrectFragment
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
@@ -83,7 +84,8 @@ class HomeworkManagerFragment : BaseFragment(){
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchCommonData()
     }
 
     /**
@@ -118,7 +120,6 @@ class HomeworkManagerFragment : BaseFragment(){
                     disMissView(iv_manager,tv_grade)
                     switchFragment(lastFragment, testPaperCorrectFragment)
                 }
-
             }
             this.lastPosition = i
         }
@@ -196,7 +197,7 @@ class HomeworkManagerFragment : BaseFragment(){
     private fun showCreateTestPaperName() {
         InputContentDialog(requireContext(), getString(R.string.teaching_pop_create_testpaper)).builder()
             .setOnDialogClickListener { str ->
-                testPaperAssignFragment?.addType(str)
+                testPaperAssignFragment?.addType(str+"测试卷")
             }
     }
 

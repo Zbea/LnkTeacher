@@ -25,7 +25,7 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
 
     }
 
-    fun findPsd(role: String,account: String, psd: String,phone: String,code: String) {
+    fun findPsd(role: Int,account: String, psd: String,phone: String,code: String) {
 
 
         val body = RequestUtils.getBody(
@@ -53,11 +53,11 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView) : B
     }
 
 
-    fun editPsd(psd: String,code: String) {
+    fun editPsd(role: Int,psd: String,code: String) {
 
 
         val body = RequestUtils.getBody(
-
+            Pair.create("role", role),
             Pair.create("password", psd),
             Pair.create("smsCode", code),
         )

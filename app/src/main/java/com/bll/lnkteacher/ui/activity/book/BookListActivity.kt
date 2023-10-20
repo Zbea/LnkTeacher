@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.BookTypeSelectorDialog
+import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.ui.adapter.BookAdapter
@@ -39,7 +40,7 @@ class BookListActivity : BaseActivity() {
             resId=R.mipmap.icon_setting_delete
         })
         longBeans.add(ItemList().apply {
-            name="设置分类"
+            name="设置"
             resId=R.mipmap.icon_setting_set
         })
     }
@@ -88,8 +89,14 @@ class BookListActivity : BaseActivity() {
                     mAdapter?.remove(pos)
                 }
                 else{
-                    BookTypeSelectorDialog(this@BookListActivity,"设置分类").builder().setOnDialogClickListener{
-                        book.subtypeStr=it
+                    val types=ItemTypeDaoManager.getInstance().queryAll(2)
+                    val lists= mutableListOf<ItemList>()
+                    for (i in types.indices){
+                        lists.add(ItemList(i,types[i].title))
+                    }
+                    ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{
+                        val typeStr=types[it].title
+                        book.subtypeStr=typeStr
                         mBookDaoManager.insertOrReplaceBook(book)
                         books.removeAt(pos)
                         mAdapter?.notifyItemChanged(pos)

@@ -10,10 +10,7 @@ import java.util.*
 object DataBeanManager {
 
     var classGroups = mutableListOf<ClassGroup>()
-
     var schoolGroups = mutableListOf<Group>()
-
-    var areaGroups = mutableListOf<Group>()
 
     var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
 
@@ -28,6 +25,7 @@ object DataBeanManager {
         R.string.main_textbook_title,
         R.string.main_classgroup_title,
         R.string.main_homework_title,
+        R.string.main_exam_title,
         R.string.main_note_title,
         R.string.main_app_title
     )
@@ -48,15 +46,13 @@ object DataBeanManager {
     )
 
     var groupStrs = arrayOf(
-        mContext.getString(R.string.group_tab_class), mContext.getString(R.string.group_tab_school),
-        mContext.getString(R.string.group_tab_area)
+        mContext.getString(R.string.group_tab_class), mContext.getString(R.string.group_tab_school)
     )
 
     var groupJobs = arrayOf(
         mContext.getString(R.string.classGroup_headteacher),
         mContext.getString(R.string.classGroup_teacher)
     )
-
 
     fun getGradeClassGroups(grade: Int): MutableList<PopupBean> {
         val popClasss = mutableListOf<PopupBean>()
@@ -68,33 +64,12 @@ object DataBeanManager {
         return popClasss
     }
 
-    /**
-     * 通过班群获取当前老师所教班级所有年级
-     */
-    fun getClassGroupGrade(): MutableList<PopupBean> {
-        val gradeList = mutableListOf<Grade>()
-        for (item in classGroups) {
-            for (grade in grades) {
-                if (item.grade == grade.type) {
-                    if (!gradeList.contains(grade))
-                        gradeList.add(grade)
-                }
-            }
-        }
-        val popClasss = mutableListOf<PopupBean>()
-        for (item in gradeList) {
-            popClasss.add(PopupBean(item.type, item.desc, false))
-        }
-        return popClasss
-    }
-
-
     val popClassGroups: MutableList<PopupBean>
         get() {
             val popClasss = mutableListOf<PopupBean>()
             for (i in classGroups.indices) {
                 val item = classGroups[i]
-                popClasss.add(PopupBean(item.classId, item.name, i == 0))
+                popClasss.add(PopupBean(item.classId, item.name, false))
             }
             return popClasss
         }
@@ -104,16 +79,6 @@ object DataBeanManager {
             val popSchools = mutableListOf<PopupBean>()
             for (i in 0 until schoolGroups.size) {
                 val item = schoolGroups[i]
-                popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
-            }
-            return popSchools
-        }
-
-    val popAreaGroups: MutableList<PopupBean>
-        get() {
-            val popSchools = mutableListOf<PopupBean>()
-            for (i in 0 until areaGroups.size) {
-                val item = areaGroups[i]
                 popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
             }
             return popSchools
@@ -136,7 +101,7 @@ object DataBeanManager {
         return list
     }
 
-    fun getGradeClass(grade: Int): String {
+    fun getGradeStr(grade: Int): String {
         var cls=""
         for (item in grades) {
             if (item.type == grade){
@@ -170,59 +135,58 @@ object DataBeanManager {
      * @param context
      * @return
      */
-    fun getIndexData(): MutableList<MainListBean> {
-        val list = mutableListOf<MainListBean>()
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sy_check)
-            checked = true
+    fun getIndexData(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
             name = mContext.getString(listTitle[0])
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_sj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_sj_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
             name = mContext.getString(listTitle[1])
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_jc)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_jc_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
             name = mContext.getString(listTitle[2])
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_group_nor)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_group_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_group)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_group_check)
             name = mContext.getString(listTitle[3])
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_zy)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_zy_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
             name = mContext.getString(listTitle[4])
         })
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_bj)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_bj_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_paper)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_paper_check)
             name = mContext.getString(listTitle[5])
         })
-
-        list.add(MainListBean().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_main_app)
-            icon_check = mContext.getDrawable(R.mipmap.icon_main_app_check)
-            checked = false
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
             name = mContext.getString(listTitle[6])
+        })
+
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
+            name = mContext.getString(listTitle[7])
         })
         return list
     }
 
 
-    val notebooks: MutableList<Notebook>
+    val notebooks: MutableList<ItemTypeBean>
         get() {
-            val list = mutableListOf<Notebook>()
-            list.add(Notebook().apply {
+            val list = mutableListOf<ItemTypeBean>()
+            list.add(ItemTypeBean().apply {
                 title = mContext.getString(R.string.note_tab_diary)
             })
             return list

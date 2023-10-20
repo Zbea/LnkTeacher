@@ -99,11 +99,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                         pos=position
                         deleteCorrect()
                     }
-                    R.id.tv_student->{
-                        if (item.sendStatus==2){
-                            mPresenter.sendGroup(item.id)
-                        }
-                    }
                 }
             }
             setOnChildClickListener { view,parentPos, position ->

@@ -4,15 +4,17 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.EditText
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
+import com.bll.lnkteacher.widget.SpaceItemDeco
 
 class HomeworkPublishDialog(val context: Context,val grade: Int) {
 
-    private var selectDialog: HomeworkPublishClassGroupSelectDialog? = null
     private var selectClasss= mutableListOf<HomeworkClass>()
     private var datas= mutableListOf<HomeworkClass>()
 
@@ -34,21 +36,48 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
             }
         }
 
-        val tv_send = dialog.findViewById<TextView>(R.id.tv_send)
-        val tv_class_name = dialog.findViewById<TextView>(R.id.tv_class_name)
+        val tv_send = dialog.findViewById<TextView>(R.id.tv_ok)
+        val tv_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
 
-        tv_class_name.setOnClickListener {
-            if (datas.size>0){
-                getSelectClass()
+        val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
+        val mAdapter= HomeworkPublishClassGroupSelectDialog.MyAdapter(
+            R.layout.item_publish_classgroup_selector,
+            datas
+        )
+        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
+        rvList.adapter = mAdapter
+        mAdapter.bindToRecyclerView(rvList)
+        rvList.addItemDecoration(SpaceItemDeco(0,0,0, 20))
+        mAdapter.setOnItemChildClickListener { adapter, view, position ->
+            val item=datas[position]
+            when (view.id){
+                R.id.tv_date->{
+                    DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
+                        item.date=dateTim
+                        mAdapter?.notifyDataSetChanged()
+                    }
+                }
+                R.id.cb_class->{
+                    item.isCheck=!item.isCheck
+                    mAdapter?.notifyDataSetChanged()
+                }
+                R.id.cb_commit->{
+                    item.isCommit=!item.isCommit
+                    item.submitStatus=if (item.isCommit) 0 else 1
+                    mAdapter?.notifyDataSetChanged()
+                }
             }
-            else{
-                SToast.showText("该年级无班级")
-            }
+
+        }
+
+        tv_cancel.setOnClickListener {
+            dialog.dismiss()
         }
 
         tv_send.setOnClickListener {
             val contentStr = etContent.text.toString()
+            selectClasss=getSelectClass()
             if (contentStr.isNotEmpty()) {
                 if (selectClasss.isNotEmpty())
                 {
@@ -69,20 +98,17 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
     }
 
     /**
-     * 班级选择
+     * 得到选中的班级信息
      */
-    private fun getSelectClass() {
-        if (selectDialog == null) {
-            selectDialog = HomeworkPublishClassGroupSelectDialog(context,grade).builder()
-            selectDialog?.setOnDialogClickListener {
-                selectClasss= it
+    private fun getSelectClass():MutableList<HomeworkClass>{
+        val items= mutableListOf<HomeworkClass>()
+        for (item in datas){
+            if (item.isCheck){
+                items.add(item)
             }
-        } else {
-            selectDialog?.show()
         }
-
+        return items
     }
-
 
     private var listener: OnDialogClickListener? = null
 

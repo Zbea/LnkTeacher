@@ -11,6 +11,7 @@ public class GroupUser {
     public String name;//班群名
     public int classNum;//群号
     public String school;
+    public String teacherName;
     public String createTime;
     public int studentCount;
     public String subject;

@@ -19,6 +19,7 @@ import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.MD5Utils
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
@@ -28,7 +29,6 @@ import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.text.DecimalFormat
 import java.util.concurrent.locks.ReentrantLock
 
 class TextBookStoreActivity : BaseActivity(),
@@ -316,13 +316,9 @@ class TextBookStoreActivity : BaseActivity(),
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
+                                    "/"+
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -410,11 +406,6 @@ class TextBookStoreActivity : BaseActivity(),
         Handler().postDelayed({
             showToast(book.bookName+getString(R.string.book_download_success))
         },500)
-    }
-
-    fun getFormatNum(pi: Double, format: String?): String? {
-        val df = DecimalFormat(format)
-        return df.format(pi)
     }
 
     /**

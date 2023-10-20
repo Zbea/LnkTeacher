@@ -45,13 +45,14 @@
     <string name="download">下载</string>
 
     <string name="main_home_title">首页</string>
-    <string name="main_textbook_title">教材</string>
+    <string name="main_textbook_title">教学</string>
     <string name="main_classgroup_title">班群</string>
     <string name="main_classgroup_fragment_title">群管理</string>
     <string name="main_homework_title">作业</string>
     <string name="main_note_title">笔记</string>
     <string name="main_bookcase_title">书架</string>
     <string name="main_app_title">应用</string>
+    <string name="main_exam_title">考试</string>
 
     <string name="textbook_tab_text">我的课本</string>
     <string name="textbook_tab_course">解析课本</string>
@@ -62,8 +63,9 @@
 
     <string name="teaching_tab_homework_assign">作业布置</string>
     <string name="teaching_tab_homework_correct">作业批改</string>
-    <string name="teaching_tab_testpaper_assign">考卷发放</string>
-    <string name="teaching_tab_testpaper_correct">考卷批改</string>
+    <string name="teaching_tab_testpaper_assign">测卷布置</string>
+    <string name="teaching_tab_testpaper_correct">测卷批改</string>
+    <string name="teaching_tab_exam_correct">考卷改发</string>
 
     <string name="note_tab_diary">我的密本</string>
     <string name="note_type_hgb">横格本</string>
@@ -75,7 +77,6 @@
 
     <string name="group_tab_class">班群</string>
     <string name="group_tab_school">校群</string>
-    <string name="group_tab_area">际群</string>
 
     <string name="main_button_classes">排课表</string>
     <string name="main_button_message">信息</string>
@@ -105,7 +106,7 @@
     <string name="teaching_pop_assign_details">布置详情</string>
     <string name="teaching_pop_create_book">新增作业本</string>
     <string name="teaching_pop_create_reel">新增作业卷</string>
-    <string name="teaching_pop_create_testpaper">新增考试卷</string>
+    <string name="teaching_pop_create_testpaper">新增测试卷</string>
     <string name="teaching_book">作业本</string>
     <string name="teaching_reel">作业卷</string>
     <string name="teaching_assign_time">布置时间</string>
@@ -114,7 +115,6 @@
     <string name="teaching_testpaper_correct_undone">考卷未改完</string>
     <string name="teaching_testpaper_group_class">班群单考</string>
     <string name="teaching_testpaper_group_school">校群联考</string>
-    <string name="teaching_testpaper_group_area">际群联考</string>
     <string name="teaching_testpaper_analyse">考卷分析</string>
     <string name="teaching_testpaper_score">成绩统计</string>
     <string name="teaching_testpaper_send">发送学生</string>

@@ -9,10 +9,10 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class GroupCreateDialog(val context: Context,val type:Int) {
+class GroupCreateDialog(val context: Context) {
 
     private var classIds= mutableListOf<Int>()
-    private var popWindow:PopupCheckList?=null
+    private var grade=0
 
     fun builder(): GroupCreateDialog? {
 
@@ -22,26 +22,37 @@ class GroupCreateDialog(val context: Context,val type:Int) {
         dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
-        val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.setText(if (type==2) "创建校群" else "创建际群")
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
-        et_name.hint=if (type==2) "校群名称" else "际群名称"
         val tv_class_name = dialog.findViewById<TextView>(R.id.tv_class_name)
+        val tv_grade = dialog.findViewById<TextView>(R.id.tv_grade)
 
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
-        btn_ok.setOnClickListener {
-            val name=et_name.text.toString()
-            if (name.isNotEmpty())
-            {
-                dialog.dismiss()
-                listener?.onClick(name,classIds.toIntArray())
+        tv_class_name.setOnClickListener {
+            val pops=if (grade==0) DataBeanManager.popClassGroups else DataBeanManager.getGradeClassGroups(grade)
+            PopupCheckList(context, pops, tv_class_name,tv_class_name.width,  5).builder()
+                ?.setOnSelectListener { items ->
+                for (item in items) {
+                    if (!classIds.contains(item.id))
+                        classIds.add(item.id)
+                }
             }
         }
-        tv_class_name.setOnClickListener {
-            selectorClassGroup(tv_class_name)
+
+        val popGrades=DataBeanManager.popupGrades
+        tv_grade.setOnClickListener {
+            PopupRadioList(context, popGrades, tv_grade, tv_grade.width,5).builder()
+                .setOnSelectListener { item ->
+                    grade = item.id
+                    tv_grade.text = item.name
+                }
+        }
+
+        btn_ok.setOnClickListener {
+            val name=et_name.text.toString()
+            if (name.isNotEmpty()&&grade>0)
+            {
+                dialog.dismiss()
+                listener?.onClick(name,grade,classIds.toIntArray())
+            }
         }
 
         dialog.setOnDismissListener {
@@ -50,28 +61,12 @@ class GroupCreateDialog(val context: Context,val type:Int) {
         return this
     }
 
-    private fun selectorClassGroup(view: TextView){
-        val pops= DataBeanManager.popClassGroups
-        if (popWindow==null)
-        {
-            popWindow= PopupCheckList(context, pops, view,  5).builder()
-            popWindow?.setOnSelectListener { items ->
-                for (item in items) {
-                    if (!classIds.contains(item.id))
-                        classIds.add(item.id)
-                }
-            }
-        }
-        else{
-            popWindow?.show()
-        }
-    }
 
 
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(str: String,classIds:IntArray)
+        fun onClick(str: String,grade:Int,classIds:IntArray)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

@@ -7,10 +7,10 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.manager.NotebookDaoManager
-import com.bll.lnkteacher.mvp.model.Notebook
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.NoteBookManagerAdapter
 import com.bll.lnkteacher.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_note_book_manager.*
@@ -20,7 +20,7 @@ import java.util.*
 
 class NotebookManagerActivity : BaseActivity() {
 
-    private var noteBooks= mutableListOf<Notebook>()
+    private var noteBooks= mutableListOf<ItemTypeBean>()
     private var mAdapter: NoteBookManagerAdapter? = null
     private var position=0
 
@@ -29,7 +29,7 @@ class NotebookManagerActivity : BaseActivity() {
     }
 
     override fun initData() {
-        noteBooks= NotebookDaoManager.getInstance().queryAll()
+        noteBooks= ItemTypeDaoManager.getInstance().queryAll(1)
     }
 
     override fun initView() {
@@ -56,7 +56,7 @@ class NotebookManagerActivity : BaseActivity() {
             if (view.id==R.id.iv_top){
                 val date=noteBooks[0].date//拿到最小时间
                 noteBooks[position].date=date-1000
-                NotebookDaoManager.getInstance().insertOrReplace(noteBooks[position])
+                ItemTypeDaoManager.getInstance().insertOrReplace(noteBooks[position])
                 Collections.swap(noteBooks,position,0)
                 setNotify()
             }
@@ -80,7 +80,7 @@ class NotebookManagerActivity : BaseActivity() {
                     val noteType=noteBooks[position]
                     noteBooks.removeAt(position)
                     //删除笔记本
-                    NotebookDaoManager.getInstance().deleteBean(noteType)
+                    ItemTypeDaoManager.getInstance().deleteBean(noteType)
 
                     val notebooks= NoteDaoManager.getInstance().queryAll(noteType.title)
                     //删除该笔记分类中的所有笔记本及其内容
@@ -100,7 +100,7 @@ class NotebookManagerActivity : BaseActivity() {
     //修改笔记本
     private fun editNoteBook(content:String){
         InputContentDialog(this,content).builder().setOnDialogClickListener { string ->
-            if (NotebookDaoManager.getInstance().isExist(string)){
+            if (ItemTypeDaoManager.getInstance().isExist(string,1)){
                 showToast(R.string.toast_existed)
                 return@setOnDialogClickListener
             }
@@ -113,7 +113,7 @@ class NotebookManagerActivity : BaseActivity() {
             NoteDaoManager.getInstance().editNotes(noteBook.title,string)
 
             noteBook.title = string
-            NotebookDaoManager.getInstance().insertOrReplace(noteBook)
+            ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
 
             setNotify()
         }

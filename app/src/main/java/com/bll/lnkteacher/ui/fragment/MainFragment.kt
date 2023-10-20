@@ -34,6 +34,7 @@ import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
@@ -146,16 +147,21 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
     }
 
     override fun lazyLoad() {
-        findHomework()
-        findMessages()
-        fetchCommonData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+            findHomework()
+            findMessages()
+            fetchCommonData()
+        }
+        else{
+            showToast(R.string.net_work_error)
+        }
         initDateView()
     }
 
 
     //课程表相关处理
     private fun initCourse() {
-        val path=FileAddress().getPathScreen("screen") + "/course.png"
+        val path=FileAddress().getPathCourse("course") + "/course.png"
         if (File(path).exists())
             GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
     }

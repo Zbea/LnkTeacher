@@ -49,7 +49,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     }
 
     override fun initData() {
-        correctList=intent.getBundleExtra("bundle").get("paperCorrect") as CorrectBean
+        correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         val scores= DataBeanManager.scoreList
         for (i in scores.indices)
         {

@@ -13,7 +13,7 @@ class TestPaperAssignContentAdapter(layoutResId: Int, data: List<ContentListBean
             setText(R.id.cb_check,"  "+item.title)
             setChecked(R.id.cb_check,item.isCheck)
             GlideUtils.setImageUrl(mContext,item.url,getView(R.id.iv_image))
-            addOnClickListener(R.id.iv_image)
+            addOnClickListener(R.id.cb_check)
         }
     }
 

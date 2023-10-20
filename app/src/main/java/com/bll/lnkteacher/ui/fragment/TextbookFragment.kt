@@ -22,6 +22,7 @@ import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -73,7 +74,7 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
         if (grade==0)
             grade=1
         popGrades=DataBeanManager.popupGrades(grade)
-        tv_grade.text=DataBeanManager.getGradeClass(grade)
+        tv_grade.text=DataBeanManager.getGradeStr(grade)
 
         tv_grade.setOnClickListener {
             if (popGrades.size==0)
@@ -92,7 +93,8 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchCommonData()
     }
 
     //设置头部索引

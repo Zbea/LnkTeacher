@@ -61,7 +61,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
     private fun initRecyclerView(){
 
-        mAdapter=ClassGroupAdapter(R.layout.item_teaching_classgroup,classGroups)
+        mAdapter=ClassGroupAdapter(R.layout.item_group_classgroup,classGroups)
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)

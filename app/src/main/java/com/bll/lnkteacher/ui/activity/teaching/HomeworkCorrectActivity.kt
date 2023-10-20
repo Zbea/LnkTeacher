@@ -78,16 +78,9 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     }
 
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
-        val beans = bean?.list!!
-        for (item in beans) {
-            if (item.status != 3) {
-                userItems.add(item)
-            }
-        }
-        if (userItems.size > 0) {
-            userItems[posUser].isCheck = true
-            setContentView()
-        }
+        userItems=bean?.list!!
+        userItems[0].isCheck = true
+        setContentView()
         mAdapter?.setNewData(userItems)
     }
 
@@ -113,8 +106,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
 
     override fun initData() {
         id = intent.flags
-        mClassBean =
-            intent.getBundleExtra("bundle")?.getSerializable("classBean") as CorrectClassBean
+        mClassBean = intent.getBundleExtra("bundle")?.getSerializable("classBean") as CorrectClassBean
         subType = intent.getIntExtra("subType", 0)
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
@@ -234,16 +226,25 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
      */
     private fun setContentView() {
         val userItem = userItems[posUser]
+        //不为朗读作业本
         if (subType != 3) {
-            if (userItem.status == 2) {
-                currentImages = userItem.submitUrl.split(",").toTypedArray()
-                elik?.setPWEnabled(false)
-                disMissView(tv_save)
-                setContentImage()
-            } else {
-                showView(tv_save)
-                currentImages = userItem.studentUrl.split(",").toTypedArray()
-                loadPapers()
+            when(userItem.status){
+                1->{
+                    showView(tv_save)
+                    currentImages = userItem.studentUrl.split(",").toTypedArray()
+                    loadPapers()
+                }
+                2->{
+                    currentImages = userItem.submitUrl.split(",").toTypedArray()
+                    elik?.setPWEnabled(false)
+                    disMissView(tv_save)
+                    setContentImage()
+                }
+                3->{
+                    showView(tv_save)
+                    elik?.setPWEnabled(false)
+                    iv_image.setImageResource(0)
+                }
             }
         } else {
             if (!userItem.studentUrl.isNullOrEmpty()) {
@@ -284,6 +285,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
             }
         })
     }
+
 
     /**
      * 下载学生提交试卷

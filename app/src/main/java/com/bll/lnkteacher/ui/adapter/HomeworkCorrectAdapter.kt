@@ -13,7 +13,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(R.id.tv_title,item.title)
+        helper.setText(R.id.tv_title,item.examList[0].examName+"  "+item.title)
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time*1000))
         helper.setVisible(R.id.tv_student,item.subType!=3)
         val rvList=helper.getView<RecyclerView>(R.id.rv_list)
@@ -31,9 +31,8 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
     class TypeAdapter(layoutResId: Int,data: List<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
-            helper.setText(R.id.tv_type,item.examName)
             helper.setText(R.id.tv_class_name,item.name)
-            helper.setText(R.id.tv_number,"${item.totalStudent}")
+            helper.setText(R.id.tv_number,"${item.totalStudent}人")
             helper.setText(R.id.tv_receive_number,"${item.totalSubmitStudent}")
             helper.setVisible(R.id.tv_end_date,true)
             helper.setText(R.id.tv_end_date,DateUtils.longToStringWeek(item.endTime*1000))

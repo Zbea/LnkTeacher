@@ -32,6 +32,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
         val intent = Intent()
         intent.putExtra("token", token)
+        intent.putExtra("userId", user.accountId)
         intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
 

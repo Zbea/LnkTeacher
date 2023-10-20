@@ -14,11 +14,11 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
+import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.manager.NotebookDaoManager
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.Note
-import com.bll.lnkteacher.mvp.model.Notebook
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
@@ -35,7 +35,7 @@ import java.io.File
  */
 class NoteFragment : BaseFragment() {
     private var popupBeans = mutableListOf<PopupBean>()
-    private var notebooks = mutableListOf<Notebook>()
+    private var notebooks = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
     private var position = 0 //当前笔记标记
@@ -150,7 +150,7 @@ class NoteFragment : BaseFragment() {
      */
     private fun findTabs() {
         notebooks=DataBeanManager.notebooks
-        notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
+        notebooks.addAll(ItemTypeDaoManager.getInstance().queryAll(1))
         if (positionType>=notebooks.size){
             positionType=0
         }
@@ -197,15 +197,16 @@ class NoteFragment : BaseFragment() {
     private fun createNoteBookType() {
         InputContentDialog(requireContext(),  "请输入笔记本").builder()
             .setOnDialogClickListener { string ->
-                if (NotebookDaoManager.getInstance().isExist(string)){
+                if (ItemTypeDaoManager.getInstance().isExist(string,1)){
                     showToast(R.string.toast_existed)
                 }
                 else{
-                    val noteBook = Notebook()
+                    val noteBook = ItemTypeBean()
+                    noteBook.type=1
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
                     notebooks.add(noteBook)
-                    NotebookDaoManager.getInstance().insertOrReplace(noteBook)
+                    ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
                     initTab()
                 }
             }

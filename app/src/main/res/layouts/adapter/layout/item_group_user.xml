@@ -43,7 +43,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="学校"
+        android:text="老师"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20" />
 

@@ -15,8 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_height="@dimen/dp_50"
         android:orientation="horizontal"
         android:gravity="center_vertical|right"
         tools:ignore="RtlHardcoded">
@@ -29,14 +28,14 @@
             android:paddingEnd="@dimen/dp_10"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:text="@string/classgroup_selector_str"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:background="@drawable/bg_gary_arch"
             app:drawableRightCompat="@mipmap/icon_arrow_down" />
 
         <TextView
             android:id="@+id/tv_commit"
-            android:layout_width="80dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_40"
             android:layout_marginEnd="@dimen/dp_40"
@@ -44,7 +43,7 @@
             android:textSize="@dimen/sp_22"
             android:gravity="center"
             android:text="@string/send"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:background="@drawable/bg_gary_arch"
             />
 
     </LinearLayout>
@@ -52,11 +51,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
         />
 
     <include

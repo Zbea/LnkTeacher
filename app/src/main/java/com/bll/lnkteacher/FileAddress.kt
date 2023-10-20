@@ -6,6 +6,7 @@ import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
+import com.bll.lnkteacher.Constants.Companion.SCREEN_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PATH
@@ -88,9 +89,9 @@ class FileAddress {
         return "$IMAGE_PATH/$mUserId/$type/$titleStr"
     }
     /**
-     * 截屏
+     * 课程表
      */
-    fun getPathScreen(type:String):String{
+    fun getPathCourse(type:String):String{
         return "$IMAGE_PATH/$mUserId/$type"
     }
     /**
@@ -138,6 +139,13 @@ class FileAddress {
      */
     fun getPathFreeNote(title:String):String{
         return "$FREENOTE_PATH/${mUserId}/$title"
+    }
+
+    /**
+     * 截图
+     */
+    fun getPathScreen(typeStr: String):String{
+        return "$SCREEN_PATH/${mUserId}/$typeStr"
     }
 
 }

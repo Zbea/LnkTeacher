@@ -2,7 +2,6 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -10,10 +9,9 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class GroupAddDialog(val context: Context, val type:Int) {
+class GroupAddDialog(val context: Context) {
 
     private var classIds= mutableListOf<Int>()
-    private var popWindow:PopupCheckList?=null
 
     fun builder(): GroupAddDialog? {
 
@@ -23,26 +21,26 @@ class GroupAddDialog(val context: Context, val type:Int) {
         dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
-        val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.text=(if (type==2) "加入校群" else "加入际群")
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
-        et_name.hint=if (type==2) "校群名称" else "际群名称"
         val tv_class_name = dialog.findViewById<TextView>(R.id.tv_class_name)
 
-        btn_cancel.setOnClickListener {
-            dialog.dismiss()
-        }
         btn_ok.setOnClickListener {
             val name=et_name.text.toString()
-            if (!name.isNullOrEmpty())
+            if (name.isNotEmpty())
             {
                 dialog.dismiss()
                 listener?.onClick(name,classIds.toIntArray())
             }
         }
+        val pops= DataBeanManager.popClassGroups
         tv_class_name.setOnClickListener {
-            selectorClassGroup(tv_class_name)
+            PopupCheckList(context, pops, tv_class_name,tv_class_name.width,  5).builder()
+                ?.setOnSelectListener { items ->
+                    for (item in items) {
+                        if (!classIds.contains(item.id))
+                            classIds.add(item.id)
+                    }
+                }
         }
 
         dialog.setOnDismissListener {
@@ -51,27 +49,10 @@ class GroupAddDialog(val context: Context, val type:Int) {
         return this
     }
 
-
-    private fun selectorClassGroup(view: View){
-        val pops= DataBeanManager.popClassGroups
-        if (popWindow==null)
-        {
-            popWindow= PopupCheckList(context, pops, view , 5).builder()
-            popWindow  ?.setOnSelectListener { items ->
-                for (item in items) {
-                    classIds.add(item.id)
-                }
-            }
-        }
-        else{
-            popWindow?.show()
-        }
-    }
-
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(str: String,classIds:IntArray)
+        fun onClick(num: String,classIds:IntArray)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

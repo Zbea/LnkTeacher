@@ -7,6 +7,16 @@
     android:background="@drawable/bg_gray_stroke_10dp_corner">
 
     <TextView
+        android:id="@+id/tv_code"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="班群号"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+
+    <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +26,7 @@
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         />
+
 
     <TextView
         android:id="@+id/tv_teacher"

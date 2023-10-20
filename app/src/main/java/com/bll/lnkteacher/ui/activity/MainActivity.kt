@@ -14,7 +14,6 @@ import com.bll.lnkteacher.MyBroadcastReceiver
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.mvp.model.AreaBean
-import com.bll.lnkteacher.mvp.model.MainListBean
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
 import com.bll.lnkteacher.utils.FileUtils
@@ -27,7 +26,6 @@ class MainActivity : BaseActivity() {
 
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
-    private var mData= mutableListOf<MainListBean>()
     private var lastFragment: Fragment? = null
 
     private var mainFragment: MainFragment? = null
@@ -37,6 +35,7 @@ class MainActivity : BaseActivity() {
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
     private var textbookFragment: TextbookFragment? = null
+    private var examFragment: ExamFragment? = null
 
     override fun layoutId(): Int {
         return R.layout.ac_main
@@ -46,9 +45,7 @@ class MainActivity : BaseActivity() {
         val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
         val type= object : TypeToken<List<AreaBean>>() {}.type
         DataBeanManager.provinces = Gson().fromJson(areaJson, type)
-        mData= DataBeanManager.getIndexData()
     }
-
 
     override fun initView() {
 
@@ -59,11 +56,12 @@ class MainActivity : BaseActivity() {
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()
+        examFragment= ExamFragment()
 
         switchFragment(lastFragment, mainFragment)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mHomeAdapter = MainListAdapter(R.layout.item_main_list, mData)
+        mHomeAdapter = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexData())
         rv_list.adapter = mHomeAdapter
         mHomeAdapter?.bindToRecyclerView(rv_list)
         mHomeAdapter?.setOnItemClickListener { adapter, view, position ->
@@ -77,8 +75,9 @@ class MainActivity : BaseActivity() {
                 2 -> switchFragment(lastFragment, textbookFragment)
                 3 -> switchFragment(lastFragment, groupManagerFragment)
                 4 -> switchFragment(lastFragment, homeworkManagerFragment)
-                5 -> switchFragment(lastFragment, noteFragment)
-                6 -> switchFragment(lastFragment, appFragment)
+                5 -> switchFragment(lastFragment, examFragment)
+                6 -> switchFragment(lastFragment, noteFragment)
+                7 -> switchFragment(lastFragment, appFragment)
             }
 
             lastPosition=position

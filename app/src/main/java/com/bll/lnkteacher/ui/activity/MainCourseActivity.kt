@@ -6,12 +6,14 @@ import android.view.View
 import android.widget.GridLayout
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.ClassGroupSelectDialog
 import com.bll.lnkteacher.dialog.CourseTimeSelectorDialog
+import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.manager.CourseGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CourseBean
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_course.*
@@ -578,28 +580,31 @@ class MainCourseActivity : BaseActivity() {
      * 输入课程
      */
     private fun inputContent(v: TextView) {
-        ClassGroupSelectDialog(this).builder()
-            .setOnDialogClickListener{
-                v.text = it.name
+        val classGroups=DataBeanManager.classGroups
+        val lists= mutableListOf<ItemList>()
+        for (item in classGroups){
+            lists.add(ItemList(item.classId,item.name))
+        }
+        ItemSelectorDialog(this,"班级选择",lists).builder().setOnDialogClickListener{
+            val classGroup=classGroups[it]
+            v.text = classGroup.name
 
-                val course = CourseBean().apply {
-                    viewId = v.id
-                    name = it.name
-                    type = this@MainCourseActivity.type
-                }
-                //删除已经存在了的
-                if (selectLists.size > 0) {
-                    val it = selectLists.iterator()
-                    while (it.hasNext()) {
-                        if (it.next().viewId == v.id) {
-                            it.remove()
-                        }
+            val course = CourseBean().apply {
+                viewId = v.id
+                name = classGroup.name
+                type = this@MainCourseActivity.type
+            }
+            //删除已经存在了的
+            if (selectLists.size > 0) {
+                val it = selectLists.iterator()
+                while (it.hasNext()) {
+                    if (it.next().viewId == v.id) {
+                        it.remove()
                     }
                 }
-                selectLists.add(course)
             }
-
+            selectLists.add(course)
+        }
     }
-
 
 }

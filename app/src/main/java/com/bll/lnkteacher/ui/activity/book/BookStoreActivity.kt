@@ -17,12 +17,12 @@ import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.MD5Utils
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.text.DecimalFormat
 
 /**
  * 书城
@@ -196,13 +196,9 @@ class BookStoreActivity : BaseActivity(),
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
-                            val s = getFormatNum(
-                                soFarBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M/" + getFormatNum(
-                                totalBytes.toDouble() / (1024 * 1024),
-                                "0.0"
-                            ) + "M"
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
+                                    "/"+
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             bookDetailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -241,12 +237,6 @@ class BookStoreActivity : BaseActivity(),
                 }
             })
         return download
-    }
-
-
-    fun getFormatNum(pi: Double, format: String?): String? {
-        val df = DecimalFormat(format)
-        return df.format(pi)
     }
 
     /**

@@ -8,22 +8,22 @@
     >
 
     <TextView
+        android:id="@+id/tv_code"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="班群号"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+
+    <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:layout_marginStart="@dimen/dp_20"
         android:text="班群名称"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
-        />
-
-    <TextView
-        android:id="@+id/tv_code"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="班群号"
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         />

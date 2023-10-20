@@ -8,11 +8,12 @@ import com.bll.lnkteacher.net.*
 
 class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractView.IGroupView>(view) {
 
-    fun createGroup(name: String, type: Int, classId: IntArray) {
+    fun createGroup(name: String, grade: Int,classId: IntArray) {
 
         val body = RequestUtils.getBody(
             Pair.create("schoolName", name),
-            Pair.create("type", type),
+            Pair.create("type", 1),
+            Pair.create("grade", grade),
             Pair.create("selClassList", classId)
         )
         val createGroup = RetrofitManager.service.createGroup(body)
@@ -28,11 +29,10 @@ class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractVi
 
     }
 
-    fun addGroup(name: String, type: Int, classId: IntArray) {
+    fun addGroup(num: String, classId: IntArray) {
 
         val body = RequestUtils.getBody(
-            Pair.create("schoolName", name),
-            Pair.create("type", type),
+            Pair.create("id", num.toInt()),
             Pair.create("selClassList", classId)
         )
         val addGroup = RetrofitManager.service.addGroup(body)

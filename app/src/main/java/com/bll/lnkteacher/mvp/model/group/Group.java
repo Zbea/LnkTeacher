@@ -1,8 +1,5 @@
 package com.bll.lnkteacher.mvp.model.group;
 
-
-import com.bll.lnkteacher.mvp.model.group.ClassGroup;
-
 import java.util.List;
 
 public class Group {
@@ -11,15 +8,13 @@ public class Group {
 
     public String schoolName;
 
-    public int type;//1际群 2校群
-
     public int userId;
 
     public String createTime;
 
-    public Object selClassList;
-
     public int totalGroup;
+    public String subject;
+    public int grade;
 
     public int totalUser;
 

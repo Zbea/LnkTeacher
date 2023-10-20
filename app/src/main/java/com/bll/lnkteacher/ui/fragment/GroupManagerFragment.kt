@@ -6,6 +6,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.ui.fragment.group.ClassGroupFragment
 import com.bll.lnkteacher.ui.fragment.group.GroupFragment
+import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
@@ -13,7 +14,6 @@ class GroupManagerFragment:BaseFragment() {
 
     private var classGroupFragment: ClassGroupFragment? = null
     private var groupFragment: GroupFragment? = null
-    private var areaFragment: GroupFragment? = null
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
@@ -28,8 +28,7 @@ class GroupManagerFragment:BaseFragment() {
         showView(iv_create)
 
         classGroupFragment = ClassGroupFragment()
-        groupFragment = GroupFragment().newInstance(2)
-        areaFragment = GroupFragment().newInstance(1)
+        groupFragment = GroupFragment()
 
         switchFragment(lastFragment, classGroupFragment)
 
@@ -39,27 +38,20 @@ class GroupManagerFragment:BaseFragment() {
                     classGroupFragment?.createClassGroup()
                 }
                 1 -> {
-                    groupFragment?.createGroup(2)
-                }
-                else -> {
-                    areaFragment?.createGroup(1)
+                    groupFragment?.createGroup()
                 }
             }
         }
 
         iv_add.setOnClickListener {
-            if (lastPosition==1){
-                groupFragment?.addGroup(2)
-            }
-            else{
-                areaFragment?.addGroup( 1)
-            }
+            groupFragment?.addGroup()
         }
         initTab()
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchCommonData()
     }
 
     /**
@@ -77,17 +69,10 @@ class GroupManagerFragment:BaseFragment() {
                     disMissView(iv_add)
                     switchFragment(lastFragment, classGroupFragment)
                 }
-
                 1 -> {
                     showView(iv_add)
                     switchFragment(lastFragment, groupFragment)
                 }
-
-                2 -> {
-                    showView(iv_add)
-                    switchFragment(lastFragment, areaFragment)
-                }
-
             }
             lastPosition = i
         }

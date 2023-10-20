@@ -62,7 +62,7 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
                 dateEvent?.content=contentStr
             }
             DateEventDaoManager.getInstance().insertOrReplace(dateEvent)
-            listener?.onClick()
+            listener?.onClick(dateEvent!!)
             dialog.dismiss()
         }
 
@@ -85,7 +85,7 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
     private var listener: OnClickListener? = null
 
     fun interface OnClickListener {
-        fun onClick()
+        fun onClick(dateEvent:DateEvent)
     }
 
     fun setOnClickListener(listener: OnClickListener?) {

@@ -11,7 +11,7 @@ class GroupUserAdapter(layoutResId: Int, data: List<GroupUser>?) : BaseQuickAdap
     override fun convert(helper: BaseViewHolder, item: GroupUser) {
         helper.setText(R.id.tv_name,item.name)
         helper.setText(R.id.tv_number, ToolUtils.getFormatNum(item.classNum,"000000"))
-        helper.setText(R.id.tv_school,item.school)
+        helper.setText(R.id.tv_school,item.teacherName)
         helper.setText(R.id.tv_address,item.studentCount.toString()+"人")
     }
 

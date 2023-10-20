@@ -7,33 +7,31 @@ import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.manager.BookTypeDaoManager
-import com.bll.lnkteacher.mvp.model.BookTypeBean
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class BookTypeSelectorDialog(val context: Context,val okStr: String) {
+class ItemSelectorDialog(val context: Context, val titleStr: String,val items:MutableList<ItemList>) {
 
-    fun builder(): BookTypeSelectorDialog {
+    fun builder(): ItemSelectorDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_book_type_selector)
+        dialog.setContentView(R.layout.dialog_item_select)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
         val tv_name = dialog.findViewById<TextView>(R.id.tv_name)
-        tv_name.text=okStr
+        tv_name.text=titleStr
         val iv_close = dialog.findViewById<ImageView>(R.id.iv_close)
 
-        val lists=BookTypeDaoManager.getInstance().queryAllList()
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = GridLayoutManager(context,2)
-        val mAdapter = MyAdapter(R.layout.item_book_type_name, lists)
+        val mAdapter = MyAdapter(R.layout.item_select_name, items)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(2, 20, 40))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(2, 0, 40))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            listener?.onClick(lists[position].name)
+            listener?.onClick(position)
             dialog.dismiss()
         }
 
@@ -47,15 +45,15 @@ class BookTypeSelectorDialog(val context: Context,val okStr: String) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(string: String)
+        fun onClick(pos: Int)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
     }
 
-    class MyAdapter(layoutResId: Int, data: List<BookTypeBean>?) : BaseQuickAdapter<BookTypeBean, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: BookTypeBean) {
+    class MyAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name,item.name)
             helper.setChecked(R.id.cb_check,item.isCheck)
         }

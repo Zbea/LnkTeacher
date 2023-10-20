@@ -26,18 +26,17 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
                         DaoMaster.dropAllTables(db, true);
                     }
                 },
-                NotebookDao.class,
                 BookDao.class,
                 DateEventDao.class,
                 CourseBeanDao.class,
                 NoteContentDao.class,
                 NoteDao.class,
-                BookTypeBeanDao.class,
                 AppBeanDao.class,
                 WallpaperBeanDao.class,
                 DiaryBeanDao.class,
                 FreeNoteBeanDao.class,
-                RecordBeanDao.class
+                RecordBeanDao.class,
+                ItemTypeBeanDao.class
         );
     }
 }

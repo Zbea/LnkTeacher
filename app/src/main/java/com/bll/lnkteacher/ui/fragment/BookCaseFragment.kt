@@ -9,7 +9,6 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -23,10 +22,8 @@ import kotlinx.android.synthetic.main.fragment_bookcase.*
 class BookCaseFragment: BaseFragment() {
 
     private var mAdapter: BookAdapter?=null
-    private var position=0
     private var books= mutableListOf<Book>()//所有数据
     private var bookTopBean:Book?=null
-    private var longBeans = mutableListOf<ItemList>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_bookcase
@@ -88,10 +85,12 @@ class BookCaseFragment: BaseFragment() {
         if (bookTopBean!=null){
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_up)
             setImageUrl(bookTopBean?.imageUrl!!,iv_content_down)
+            tv_name.text=bookTopBean?.bookName
         }
         else{
             iv_content_up.setImageBitmap(null)
             iv_content_down.setImageBitmap(null)
+            tv_name.text=""
         }
     }
 

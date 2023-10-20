@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.common_title.*
 class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
 
     private val mPresenter= GroupPresenter(this)
-    private var index=0//校群 班群
     private var users= mutableListOf<GroupUser>()
     private var mAdapter: GroupUserAdapter?=null
     private var pops= mutableListOf<PopupBean>()
@@ -38,16 +37,10 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     }
 
     override fun initData() {
-        index=intent.flags
         position=intent.getIntExtra("position",0)
         val id=intent.getIntExtra("id",0)
 
-        val groups=if (index==2){
-            DataBeanManager.schoolGroups
-        }
-        else{
-            DataBeanManager.areaGroups
-        }
+        val groups=DataBeanManager.schoolGroups
 
         for (i in 0 until groups.size){
             val item=groups[i]

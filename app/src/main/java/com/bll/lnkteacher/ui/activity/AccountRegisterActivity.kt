@@ -137,7 +137,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
             val name=ed_name.text.toString().trim()
             val phone=ed_phone.text.toString().trim()
             val code=ed_code.text.toString().trim()
-            val course=tv_course.text.toString().trim()
+            val course=tv_course_btn.text.toString().trim()
             val role=1
 
             if (psd.isEmpty()) {
@@ -194,6 +194,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
                     map["telNumber"]=phone
                     map["schoolId"]=school
                     map["subjectName"]=course
+                    map["role"]=role
                     presenter.register(map)
                 }
                 1 -> {
@@ -201,10 +202,10 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
                         showToast("请输入用户名")
                         return@setOnClickListener
                     }
-                    presenter.findPsd(role.toString(),account,MD5Utils.digest(psd),phone, code)
+                    presenter.findPsd(role,account,MD5Utils.digest(psd),phone, code)
                 }
                 else -> {
-                    presenter.editPsd(MD5Utils.digest(psd),code)
+                    presenter.editPsd(role,MD5Utils.digest(psd),code)
                 }
             }
 

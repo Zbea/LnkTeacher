@@ -38,9 +38,6 @@ class Constants {
         ///storage/emulated/0/Android/data/yourPackageName/files/APK
         val APK_PATH = MyApplication.mContext.getExternalFilesDir("APK")?.path
 
-        //解压的目录
-        val BOOK_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Books"
-        val BOOK_DRAW_PATH = Environment.getExternalStorageDirectory().absolutePath + "/Notes"
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")?.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
@@ -52,6 +49,10 @@ class Constants {
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
         val FREENOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")!!.path
         val RECORDER_PATH = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+
+        val BOOK_PATH =Environment.getExternalStoragePublicDirectory("Books").absolutePath
+        val BOOK_DRAW_PATH= Environment.getExternalStoragePublicDirectory("Notes").absolutePath
+        val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
         const val DATE_EVENT = "DateEvent"
@@ -69,6 +70,8 @@ class Constants {
         const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val PRIVACY_PASSWORD_EVENT = "PrivacyPasswordEvent"
+        const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"
+
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
 

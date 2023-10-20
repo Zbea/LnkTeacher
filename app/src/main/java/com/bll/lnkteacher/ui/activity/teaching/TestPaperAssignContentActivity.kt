@@ -18,7 +18,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
-import kotlinx.android.synthetic.main.common_title.*
 
 class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignView {
 
@@ -33,6 +32,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private var grade=0
     private var timeDialog:DateTimeSelectorDialog?=null
     private var commitTime=0L
+    private var position=0
 
     override fun onType(typeList: TypeList?) {
     }
@@ -74,7 +74,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
         popGroupNames.add(PopupBean(1,getString(R.string.teaching_testpaper_group_class),true))
         popGroupNames.add(PopupBean(2,getString(R.string.teaching_testpaper_group_school),false))
-        popGroupNames.add(PopupBean(3,getString(R.string.teaching_testpaper_group_area),false))
         tv_group_name.text=popGroupNames[0].name
         popGroups=DataBeanManager.getGradeClassGroups(grade)
         if (popGroups.size>0){
@@ -88,9 +87,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     override fun initView() {
         setPageTitle(typeBean?.name.toString())
-        showView(tv_setting,iv_manager)
-        tv_setting.text="发送"
-        iv_manager.setImageResource(R.mipmap.icon_notebook_delete)
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, items).apply {
@@ -98,17 +94,22 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                for (item in items){
-                    item.isCheck=false
-                }
-                val item =items[position]
-                item.isCheck=true
-                notifyDataSetChanged()
+                presenter.getPaperImages(items[position].taskId)
             }
             setOnItemChildClickListener { adapter, view, position ->
-                if (view.id==R.id.iv_image){
-                    presenter.getPaperImages(items[position].taskId)
+                if (view.id==R.id.cb_check){
+                    for (item in items){
+                        item.isCheck=false
+                    }
+                    val item =items[position]
+                    item.isCheck=true
+                    notifyDataSetChanged()
                 }
+            }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@TestPaperAssignContentActivity.position=position
+                delete()
+                true
             }
         }
 
@@ -133,24 +134,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             selectorGroup()
         }
 
-        iv_manager.setOnClickListener {
-            CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
-                CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    if (getCheckedItems().size>0){
-                        val ids= mutableListOf<Int>()
-                        for (item in getCheckedItems()){
-                            ids.add(item.taskId)
-                        }
-                        presenter.deletePapers(ids)
-                    }
-                }
-            })
-        }
-
-        tv_setting.setOnClickListener {
+        tv_commit.setOnClickListener {
             if (getCheckedItems().size>0&&subtype!=0&&commitTime>0){
                 val ids= mutableListOf<Int>()
                 for (item in getCheckedItems()){
@@ -165,6 +149,19 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 presenter.sendPapers(map)
             }
         }
+    }
+
+    private fun delete(){
+        CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val item=items[position]
+                val ids= arrayListOf(item.taskId)
+                presenter.deletePapers(ids)
+            }
+        })
     }
 
     /**
@@ -189,11 +186,8 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                     1->{
                         DataBeanManager.getGradeClassGroups(grade)
                     }
-                    2->{
-                        DataBeanManager.popSchoolGroups
-                    }
                     else->{
-                        DataBeanManager.popAreaGroups
+                        DataBeanManager.popSchoolGroups
                     }
                 }
                 tv_group.text=popGroups[0].name
@@ -203,7 +197,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     private fun selectorGroup() {
-        PopupRadioList(this, popGroups, tv_group,tv_group.width,  5).builder()
+        PopupRadioList(this, popGroups, tv_group,  5).builder()
          .setOnSelectListener { item ->
              tv_group.text = item.name
              subtype=item.id

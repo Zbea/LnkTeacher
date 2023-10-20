@@ -70,17 +70,10 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     override fun onGroupList(groups: MutableList<Group>) {
         val schools= mutableListOf<Group>()
-        val areas= mutableListOf<Group>()
         for (item in groups){
-            if (item.type==2){
-                schools.add(item)
-            }
-            else{
-                areas.add(item)
-            }
+            schools.add(item)
         }
         DataBeanManager.schoolGroups=schools
-        DataBeanManager.areaGroups=areas
         onGroupEvent()
     }
 
@@ -347,7 +340,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden){
+        if (!hidden&&NetworkUtil.isNetworkAvailable(requireActivity())){
             onRefreshData()
         }
     }

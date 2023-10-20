@@ -7,10 +7,7 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
-import com.bll.lnkteacher.manager.NotebookDaoManager
 import com.bll.lnkteacher.mvp.model.FreeNoteBean
-import com.bll.lnkteacher.mvp.model.Notebook
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_free_note.*
@@ -26,10 +23,6 @@ class FreeNoteActivity:BaseDrawingActivity() {
     private var bgResList= mutableListOf<String>()//背景地址
     private var freeNotePopWindow:PopupFreeNoteList?=null
 
-    private var popsNote= mutableListOf<PopupBean>()
-    private var notebooks= mutableListOf<Notebook>()
-
-
     override fun layoutId(): Int {
         return R.layout.ac_free_note
     }
@@ -38,14 +31,8 @@ class FreeNoteActivity:BaseDrawingActivity() {
         freeNoteBean= FreeNoteBean()
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
-
-        notebooks.addAll(NotebookDaoManager.getInstance().queryAll())
-
-        for (i in notebooks.indices){
-            popsNote.add(PopupBean(i,notebooks[i].title))
-        }
-
     }
+
     override fun initView() {
         setPageTitle("随笔")
         tv_name.text=freeNoteBean?.title

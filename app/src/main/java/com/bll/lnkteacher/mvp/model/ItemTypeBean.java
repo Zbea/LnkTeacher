@@ -4,29 +4,37 @@ import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Objects;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class Notebook {
+public class ItemTypeBean {
 
     @Unique
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
+    public int type;//1书籍分类2截图分类
     public long date;
-    @Generated(hash = 849991874)
-    public Notebook(Long id, long userId, String title, long date) {
+    public String path;
+    @Transient
+    public boolean isCheck;
+
+    @Generated(hash = 757415184)
+    public ItemTypeBean(Long id, long userId, String title, int type, long date, String path) {
         this.id = id;
         this.userId = userId;
         this.title = title;
+        this.type = type;
         this.date = date;
+        this.path = path;
     }
-    @Generated(hash = 1348176405)
-    public Notebook() {
+    @Generated(hash = 2077540725)
+    public ItemTypeBean() {
     }
     public Long getId() {
         return this.id;
@@ -46,11 +54,23 @@ public class Notebook {
     public void setTitle(String title) {
         this.title = title;
     }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
     public long getDate() {
         return this.date;
     }
     public void setDate(long date) {
         this.date = date;
     }
-   
+    public String getPath() {
+        return this.path;
+    }
+    public void setPath(String path) {
+        this.path = path;
+    }
+
 }

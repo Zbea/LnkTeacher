@@ -14,7 +14,6 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
 
     private var grade=0
     private var job=0
-    private var popupJob:PopupRadioList?=null
     private var tv_grade:TextView?=null
     private var tv_job:TextView?=null
     private var jobBeans= mutableListOf<PopupBean>()
@@ -43,7 +42,7 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
         {
             grade=classGroup?.grade!!
             et_name.setText(classGroup?.name)
-            tv_grade?.text=DataBeanManager.getGradeClass(classGroup?.grade!!)
+            tv_grade?.text=DataBeanManager.getGradeStr(classGroup?.grade!!)
             tv_job?.text=if (classGroup?.job==1) context.getString(R.string.classGroup_headteacher) else context.getString(R.string.classGroup_teacher)
         }
 

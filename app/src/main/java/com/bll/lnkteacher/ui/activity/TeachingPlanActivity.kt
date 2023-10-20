@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity
 
 import PopupClick
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.MainTeachingCopyDialog
 import com.bll.lnkteacher.dialog.MainTeachingDeleteDialog
@@ -17,7 +16,6 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.*
-import org.greenrobot.eventbus.EventBus
 
 /**
  * 教学计划
@@ -43,7 +41,20 @@ class TeachingPlanActivity:DateActivity() {
         showView(iv_manager)
 
         iv_manager.setOnClickListener {
-            showPopView()
+            PopupClick(this, pops, iv_manager,10).builder()
+                .setOnSelectListener { item ->
+                    when (item.id) {
+                        0 -> {
+                            move()
+                        }
+                        1 -> {
+                            copy()
+                        }
+                        2 -> {
+                            delete()
+                        }
+                    }
+                }
         }
 
     }
@@ -58,7 +69,8 @@ class TeachingPlanActivity:DateActivity() {
             if (dateBean.time>0){
                 MainTeachingPlanDialog(this,classGroup?.classId!!,dateBean.time).builder()
                     ?.setOnClickListener{
-                        getDates()
+                       dateBean.dateEvent=it
+                        mAdapter?.notifyItemChanged(position)
                     }
             }
         }
@@ -86,27 +98,10 @@ class TeachingPlanActivity:DateActivity() {
         date.solar= solar
         date.week= DateUtils.getWeek(date.time)
         date.lunar= LunarSolarConverter.SolarToLunar(solar)
-        date.dateEvent=DateEventDaoManager.getInstance().queryBean(classGroup?.classId!!,date.time)
+        date.dateEvent= DateEventDaoManager.getInstance().queryBean(classGroup?.classId!!,date.time)
 
         return date
 
-    }
-
-    private fun showPopView(){
-        PopupClick(this, pops, iv_manager,10).builder()
-            .setOnSelectListener { item ->
-                when (item.id) {
-                    0 -> {
-                        move()
-                    }
-                    1 -> {
-                        copy()
-                    }
-                    2 -> {
-                        delete()
-                    }
-                }
-            }
     }
 
     private fun move(){
@@ -125,11 +120,6 @@ class TeachingPlanActivity:DateActivity() {
 
     private fun copy(){
         MainTeachingCopyDialog(this,classGroup?.classId!!).builder()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
 }

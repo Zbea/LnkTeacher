@@ -6,6 +6,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
 import android.view.EinkPWInterface
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -75,12 +76,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     override fun onImageList(list: MutableList<ContentListBean>?) {
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
-        val beans=bean?.list!!
-        for (item in beans){
-            if (item.status!=3){
-                userItems.add(item)
-            }
-        }
+        userItems=bean?.list!!
         if (userItems.size>0){
             userItems[posUser].isCheck=true
             setContentView()
@@ -208,19 +204,27 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
      */
     private fun setContentView(){
         val userItem=userItems[posUser]
-        if (userItem.status==2){
-            currentImages=userItem.submitUrl.split(",").toTypedArray()
-            et_score.setText(userItem.score.toString())
-            setEditState(false)
-            disMissView(tv_save)
-            elik?.setPWEnabled(false)
-            setContentImage()
+        when(userItem.status){
+            1->{
+                showView(tv_save)
+                currentImages=userItem.studentUrl.split(",").toTypedArray()
+                loadPapers()
+            }
+            2->{
+                currentImages=userItem.submitUrl.split(",").toTypedArray()
+                et_score.setText(userItem.score.toString())
+                setEditState(false)
+                tv_save.visibility= View.INVISIBLE
+                elik?.setPWEnabled(false)
+                setContentImage()
+            }
+            3->{
+                showView(tv_save)
+                setEditState(false)
+                elik?.setPWEnabled(false)
+                iv_image.setImageResource(0)
+            }
         }
-        else{
-            currentImages=userItem.studentUrl.split(",").toTypedArray()
-            loadPapers()
-        }
-
     }
 
     /**

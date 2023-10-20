@@ -1,12 +1,9 @@
 package com.bll.lnkteacher.manager;
 
 import com.bll.lnkteacher.MyApplication;
-import com.bll.lnkteacher.greendao.BookDao;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.NoteDao;
 import com.bll.lnkteacher.mvp.model.Note;
-import com.bll.lnkteacher.mvp.model.NoteContent;
-import com.bll.lnkteacher.mvp.model.Notebook;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.utils.SPUtil;
 

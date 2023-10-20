@@ -14,11 +14,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        when(item.type){
-            1-> helper.setText(tv_exam_type,R.string.teaching_testpaper_group_class)
-            2->helper.setText(tv_exam_type,R.string.teaching_testpaper_group_school)
-            else->helper.setText(tv_exam_type,R.string.teaching_testpaper_group_area)
+        val type=when(item.type){
+            1-> "班级单考"+"  "+item.examList[0].examName
+            else->"校群联考"+"  "+item.examList[0].examName
         }
+        helper.setText(tv_exam_type,type)
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time*1000))
         helper.setText(tv_group_name,item.name)
         val rvList=helper.getView<RecyclerView>(rv_list)
@@ -30,16 +30,15 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
                 listener?.onClick(view,helper.adapterPosition,position)
             }
         }
-        helper.addOnClickListener(tv_data,tv_analyse,iv_delete,tv_student)
+        helper.addOnClickListener(tv_data,tv_analyse,iv_delete)
 
     }
 
     class ClassAdapter(layoutResId: Int,data: MutableList<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
             helper.apply {
-                setText(tv_type,item.examName)
                 setText(tv_class_name,item.name)
-                setText(tv_number,"${item.totalStudent}")
+                setText(tv_number,"${item.totalStudent}人")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
                 setVisible(tv_save,item.status==2&&item.totalSubmitStudent>0)
                 addOnClickListener(ll_content, tv_save)

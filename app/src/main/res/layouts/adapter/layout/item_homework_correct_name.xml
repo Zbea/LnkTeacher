@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_36"
-    android:background="@drawable/bg_gray_stroke_5dp_corner"
-    android:padding="@dimen/dp_5"
+    android:background="@drawable/bg_gray_stroke_10dp_corner"
+    android:paddingEnd="@dimen/dp_10"
     android:gravity="center">
 
     <TextView
