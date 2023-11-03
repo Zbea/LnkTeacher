@@ -82,4 +82,7 @@ public class NoteContentDaoManager {
         dao.deleteInTx(list);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 }

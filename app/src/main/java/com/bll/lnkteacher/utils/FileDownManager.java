@@ -8,9 +8,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
 
-/**
- * Created by ly on 2021/1/20 9:45
- */
+
 public class FileDownManager {
 
     private static FileDownManager incetance;

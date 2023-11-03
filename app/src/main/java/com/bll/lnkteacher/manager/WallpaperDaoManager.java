@@ -72,5 +72,7 @@ public class WallpaperDaoManager {
         dao.delete(bean);
     }
 
-
+    public void clear(){
+        dao.deleteAll();
+    }
 }

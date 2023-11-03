@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
@@ -68,7 +69,7 @@ class BookListActivity : BaseActivity() {
             rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@BookListActivity, 22f), DP2PX.dip2px(this@BookListActivity, 60f)))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodManager.gotoBookDetails(this@BookListActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

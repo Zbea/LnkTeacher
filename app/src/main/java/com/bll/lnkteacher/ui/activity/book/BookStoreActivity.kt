@@ -146,7 +146,7 @@ class BookStoreActivity : BaseActivity(),
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, books)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        mAdapter?.setEmptyView(R.layout.common_book_empty)
+        mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this, 22f), 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position

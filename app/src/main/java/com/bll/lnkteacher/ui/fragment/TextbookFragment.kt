@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
@@ -11,21 +12,16 @@ import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.HandoutsList
-import com.bll.lnkteacher.mvp.model.ItemList
-import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
-import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.utils.NetworkUtil
-import com.bll.lnkteacher.utils.SPUtil
+import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
@@ -209,6 +205,68 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
             }
     }
 
+    /**
+     * 每天上传书籍
+     */
+    fun upload(tokenStr:String){
+        cloudList.clear()
+        val maxBooks= mutableListOf<Book>()
+        val books= BookGreenDaoManager.getInstance().queryAllTextBook()
+        for (book in books){
+            if (System.currentTimeMillis()>=book.time+ Constants.halfYear){
+                val subTypeId=DataBeanManager.textbookType.indexOf(book.subtypeStr)
+                maxBooks.add(book)
+                //判读是否存在手写内容
+                if (File(book.bookDrawPath).exists()){
+                    FileUploadManager(tokenStr).apply {
+                        startUpload(book.bookDrawPath,book.bookId.toString())
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=2
+                                zipUrl=book.downloadUrl
+                                downloadUrl=it
+                                subType=subTypeId
+                                subTypeStr=book.subtypeStr
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(book)
+                                bookId=book.bookId
+                                bookTypeId=book.typeId
+                            })
+                            if (cloudList.size==maxBooks.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=2
+                        zipUrl=book.downloadUrl
+                        subType=subTypeId
+                        subTypeStr=book.subtypeStr
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(book)
+                        bookId=book.bookId
+                        bookTypeId=book.typeId
+                    })
+                    if (cloudList.size==maxBooks.size)
+                        mCloudUploadPresenter.upload(cloudList)
+                }
+            }
+        }
+    }
+
+    //上传完成后删除书籍
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (item in cloudList){
+            val bookBean=BookGreenDaoManager.getInstance().queryTextBookByBookID(item.bookTypeId,item.bookId)
+            //删除书籍
+            FileUtils.deleteFile(File(bookBean.bookPath))
+            FileUtils.deleteFile(File(bookBean.bookDrawPath))
+            BookGreenDaoManager.getInstance().deleteBook(bookBean)
+        }
+        fetchData()
+    }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == TEXT_BOOK_EVENT) {

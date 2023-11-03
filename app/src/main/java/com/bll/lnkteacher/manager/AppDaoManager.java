@@ -86,4 +86,8 @@ public class AppDaoManager {
         dao.delete(item);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
+
 }

@@ -23,6 +23,12 @@ public class ItemTypeBean {
     public String path;
     @Transient
     public boolean isCheck;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String downloadUrl;
+    @Transient
+    public int year;
 
     @Generated(hash = 757415184)
     public ItemTypeBean(Long id, long userId, String title, int type, long date, String path) {

@@ -261,38 +261,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
-     * 跳转阅读器
-     */
-    fun gotoBookDetails(bookBean: Book){
-        bookBean.isLook=true
-        bookBean.time=System.currentTimeMillis()
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean)
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-
-//        val toolApps= AppDaoManager.getInstance().queryTool()
-//        val result = JSONArray()
-//        for (item in toolApps){
-//            val jsonObject = JSONObject()
-//            try {
-//                jsonObject.put("appName", item.appName)
-//                jsonObject.put("packageName", item.packageName)
-//            } catch (_: JSONException) {
-//            }
-//            result.put(jsonObject)
-//        }
-
-        val intent = Intent()
-        intent.action = "com.geniatech.reader.action.VIEW_BOOK_PATH"
-        intent.setPackage("com.geniatech.knote.reader")
-        intent.putExtra("path", bookBean.bookPath)
-        intent.putExtra("key_book_id",bookBean.bookId.toString())
-        intent.putExtra("bookName", bookBean.bookName)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1)
-        startActivity(intent)
-    }
-
-    /**
      * 删除书本
      */
     fun deleteBook(book: Book){
@@ -472,7 +440,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     //更新数据
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
         onEventBusMessage(msgFlag)
     }

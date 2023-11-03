@@ -12,7 +12,7 @@ class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractVi
 
         val body = RequestUtils.getBody(
             Pair.create("schoolName", name),
-            Pair.create("type", 1),
+            Pair.create("type", 2),
             Pair.create("grade", grade),
             Pair.create("selClassList", classId)
         )
@@ -33,6 +33,7 @@ class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractVi
 
         val body = RequestUtils.getBody(
             Pair.create("id", num.toInt()),
+            Pair.create("type", 2),
             Pair.create("selClassList", classId)
         )
         val addGroup = RetrofitManager.service.addGroup(body)
@@ -59,6 +60,24 @@ class GroupPresenter(view: IContractView.IGroupView) : BasePresenter<IContractVi
                 return false
             }
 
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onQuitSuccess()
+            }
+        }, true)
+
+    }
+
+    fun quitGroupClassGroup(id: Int,userId:Int) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("id", id),
+            Pair.create("userId", userId)
+        )
+        val addGroup = RetrofitManager.service.quitGroupClassGroup(body)
+        doRequest(addGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onQuitSuccess()
             }

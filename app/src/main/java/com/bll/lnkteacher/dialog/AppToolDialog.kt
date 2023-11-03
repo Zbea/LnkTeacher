@@ -9,8 +9,6 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
-import com.bll.lnkteacher.ui.activity.DiaryActivity
-import com.bll.lnkteacher.ui.activity.FreeNoteActivity
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DP2PX
@@ -33,17 +31,6 @@ class AppToolDialog(val context: Context) {
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()
-        //日记、随笔去掉几何绘图
-        if (context is DiaryActivity||context is FreeNoteActivity){
-            val iterator=lists.iterator()
-            while (iterator.hasNext()){
-                val item=iterator.next()
-                if (item.packageName.equals(Constants.PACKAGE_GEOMETRY)){
-                    iterator.remove()
-                }
-            }
-        }
-
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)

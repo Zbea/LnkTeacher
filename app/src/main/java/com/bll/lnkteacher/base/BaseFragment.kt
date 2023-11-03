@@ -16,12 +16,10 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.mvp.model.CommonData
-import com.bll.lnkteacher.mvp.model.Note
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
-import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
+import com.bll.lnkteacher.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
@@ -38,10 +36,11 @@ import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
+abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
+    IContractView.ICloudUploadView {
 
     var mCommonPresenter= CommonPresenter(this)
-
+    var mCloudUploadPresenter= CloudUploadPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -62,21 +61,22 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var privacyPassword:PrivacyPassword?=null
+    var cloudList= mutableListOf<CloudListBean>()
+
+    override fun onSuccess(cloudIds: MutableList<Int>?) {
+        uploadSuccess(cloudIds)
+    }
+    override fun onDeleteSuccess() {
+    }
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
         onClassGroupEvent()
     }
-
     override fun onGroupList(groups: MutableList<Group>) {
-        val schools= mutableListOf<Group>()
-        for (item in groups){
-            schools.add(item)
-        }
-        DataBeanManager.schoolGroups=schools
+        DataBeanManager.schoolGroups=groups
         onGroupEvent()
     }
-
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
         {
@@ -382,6 +382,15 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
      * 网络请求数据
      */
     open fun fetchData(){
+    }
+    /**
+     * 上传成功(书籍云id) 上传成功后删掉重复上传的数据
+     */
+    open fun uploadSuccess(cloudIds: MutableList<Int>?){
+        if (!cloudIds.isNullOrEmpty())
+        {
+            mCloudUploadPresenter.deleteCloud(cloudIds)
+        }
     }
 
     /**

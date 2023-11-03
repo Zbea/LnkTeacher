@@ -90,4 +90,8 @@ public class DateEventDaoManager {
         dao.insertOrReplaceInTx(lists);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
+
 }

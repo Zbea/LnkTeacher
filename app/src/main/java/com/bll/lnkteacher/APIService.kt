@@ -17,16 +17,35 @@ import retrofit2.http.*
 interface APIService{
 
     /**
+     * 获取下载token
+     */
+    @POST("file/token")
+    fun getQiniuToken(): Observable<BaseResult<String>>
+    @POST("cloud/data/insert")
+    fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
+    /**
+     * 获取云列表
+     */
+    @GET("cloud/data/list")
+    fun getCloudList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CloudList>>
+    /**
+     * 获取分类
+     */
+    @GET("cloud/data/types")
+    fun getCloudType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<String>>>
+    /**
+     * 删除云列表
+     */
+    @POST("cloud/data/delete")
+    fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
      * 文件上传
      */
     @Multipart
     @POST("file/manyUpload")
     fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
-    /**
-     * 获取下载token
-     */
-    @POST("file/token")
-    fun getQiniuToken(): Observable<BaseResult<String>>
+
     /**
      * 公共年级接口
      */
@@ -155,11 +174,7 @@ interface APIService{
      */
     @POST("class/disbandClass")
     fun dissolveClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 老师发送控制删除信息
-     */
-    @POST("delete/message/send")
-    fun sendClassGroupControl(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
     /**
      * 获取班群学生列表
      */
@@ -202,17 +217,21 @@ interface APIService{
     fun getGroupList(): Observable<BaseResult<MutableList<Group>>>
 
     /**
-     * 加入校群、际群
+     * 退出、解散校群
      */
     @POST("group/quitGroup")
     fun quitGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
-     * 查看校群、际群的班级列表
+     * 查看校群的班级列表
      */
     @GET("group/classList")
     fun checkGroupUser(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<GroupUser>>>
-
+    /**
+     * 退出校群
+     */
+    @POST("group/quitGroupOne")
+    fun quitGroupClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取考卷分类
      */

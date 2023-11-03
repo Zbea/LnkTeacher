@@ -38,7 +38,7 @@ public class MethodManager {
         //发出退出登录广播
         Intent intent = new Intent();
         intent.putExtra("token", "");
-        intent.putExtra("userId", 0);
+        intent.putExtra("userId", 0L);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
     }
@@ -49,7 +49,7 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, Book bookBean)  {
-        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+//        AppUtils.stopApp(context,Constants.PACKAGE_READER);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -78,8 +78,9 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
     }
     

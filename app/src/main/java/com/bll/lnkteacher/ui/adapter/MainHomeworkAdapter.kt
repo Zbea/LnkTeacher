@@ -8,7 +8,9 @@ import com.chad.library.adapter.base.BaseViewHolder
 class MainHomeworkAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(R.id.tv_type,item.examList[0].examName)
+        if (item.examList.isNotEmpty()){
+            helper.setText(R.id.tv_type,item.examList[0].examName)
+        }
         helper.setText(R.id.tv_title,item.title)
     }
 

@@ -7,8 +7,9 @@
 
     <TextView
         android:id="@+id/tv_date_create"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="right"
         android:text="@string/teaching_assign_time"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_16" />
@@ -33,6 +34,7 @@
                 android:layout_marginStart="@dimen/dp_30"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
+                android:text="期中考试卷"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/tv_group_name"

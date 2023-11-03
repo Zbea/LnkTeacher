@@ -60,24 +60,6 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 view.onDissolveSuccess()
             }
         }, true)
-
-    }
-
-    fun sendClassGroupControl(classId: Int) {
-
-        val body = RequestUtils.getBody(
-            Pair.create("classId", classId)
-        )
-        val createGroup = RetrofitManager.service.sendClassGroupControl(body)
-        doRequest(createGroup, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSendSuccess()
-            }
-        }, true)
-
     }
 
 }

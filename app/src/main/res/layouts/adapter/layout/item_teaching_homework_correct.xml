@@ -48,6 +48,7 @@
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="发送学生"
+                android:visibility="gone"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
 

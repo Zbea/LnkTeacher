@@ -19,4 +19,6 @@ public class GroupUser {
     public String city;
     public int userId;
     public int time;
+    public int groupClassId;
+    public int groupUserId;
 }

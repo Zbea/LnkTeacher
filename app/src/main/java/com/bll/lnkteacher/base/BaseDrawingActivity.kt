@@ -20,7 +20,6 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
-import com.bll.lnkteacher.ui.activity.DiaryActivity
 import com.bll.lnkteacher.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
@@ -404,8 +403,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     private fun showDialogAppTool(){
         AppToolDialog(this).builder()?.setDialogClickListener{
-            if (this is DiaryActivity)
-                return@setDialogClickListener
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

@@ -15,8 +15,6 @@ class ClassGroupAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAd
             setText(R.id.tv_code,ToolUtils.getFormatNum(item.classNum,"000000"))
             setText(R.id.tv_job,DataBeanManager.groupJobs[item.job-1])
             setText(R.id.tv_number,item.studentCount.toString())
-            setVisible(R.id.tv_send,item.job==1)
-
             addOnClickListener(R.id.tv_info,R.id.tv_dissolve,R.id.tv_edit,R.id.tv_send)
         }
     }

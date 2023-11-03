@@ -13,7 +13,12 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(R.id.tv_title,item.examList[0].examName+"  "+item.title)
+        if (item.examList.isNotEmpty()){
+            helper.setText(R.id.tv_title,item.examList[0].examName+"  "+item.title)
+        }
+        else{
+            helper.setText(R.id.tv_title,item.title)
+        }
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time*1000))
         helper.setVisible(R.id.tv_student,item.subType!=3)
         val rvList=helper.getView<RecyclerView>(R.id.rv_list)

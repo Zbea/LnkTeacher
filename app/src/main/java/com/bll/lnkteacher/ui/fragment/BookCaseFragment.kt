@@ -9,12 +9,17 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.FileUploadManager
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_bookcase.*
+import java.io.File
 
 /**
  * 书架
@@ -97,6 +102,66 @@ class BookCaseFragment: BaseFragment() {
 
     private fun setImageUrl(url: String,image: ImageView){
         GlideUtils.setImageRoundUrl(activity,url,image,5)
+    }
+
+    /**
+     * 每天上传书籍
+     */
+    fun upload(tokenStr:String){
+        cloudList.clear()
+        val maxBooks= mutableListOf<Book>()
+        val books= BookGreenDaoManager.getInstance().queryAllBook()
+        for (book in books){
+            if (System.currentTimeMillis()>=book.time+Constants.halfYear){
+                maxBooks.add(book)
+                //判读是否存在手写内容
+                if (File(book.bookDrawPath).exists()){
+                    FileUploadManager(tokenStr).apply {
+                        startUpload(book.bookDrawPath,book.bookId.toString())
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=1
+                                zipUrl=book.downloadUrl
+                                downloadUrl=it
+                                subType=-1
+                                subTypeStr=book.subtypeStr
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(book)
+                                bookId=book.bookId
+                            })
+                            if (cloudList.size==maxBooks.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    cloudList.add(CloudListBean().apply {
+                        type=1
+                        zipUrl=book.downloadUrl
+                        subType=-1
+                        subTypeStr=book.subtypeStr
+                        date=System.currentTimeMillis()
+                        listJson= Gson().toJson(book)
+                        bookId=book.bookId
+                    })
+                    if (cloudList.size==maxBooks.size)
+                        mCloudUploadPresenter.upload(cloudList)
+                }
+            }
+        }
+    }
+
+    //上传完成后删除书籍
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (item in cloudList){
+            val bookBean=BookGreenDaoManager.getInstance().queryBookByBookID(item.bookId)
+            //删除书籍
+            FileUtils.deleteFile(File(bookBean.bookPath))
+            FileUtils.deleteFile(File(bookBean.bookDrawPath))
+            BookGreenDaoManager.getInstance().deleteBook(bookBean)
+        }
+        findBook()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

@@ -29,6 +29,8 @@ object DataBeanManager {
         R.string.main_note_title,
         R.string.main_app_title
     )
+    private val cloudListTitle = arrayOf("书架","教材","笔记","日记","随笔","截图")
+
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),
         mContext.getString(R.string.textbook_tab_course),
@@ -135,6 +137,48 @@ object DataBeanManager {
      * @param context
      * @return
      */
+    fun getMainCloud(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
+            isCheck = true
+            name = cloudListTitle[0]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
+            name = cloudListTitle[1]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
+            name = cloudListTitle[2]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_diary)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_diary_check)
+            name = cloudListTitle[3]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_freenote)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_freenote_check)
+            name = cloudListTitle[4]
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_screenshot)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_screenshot_check)
+            name = cloudListTitle[5]
+        })
+        return list
+    }
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
     fun getIndexData(): MutableList<ItemList> {
         val list = mutableListOf<ItemList>()
         list.add(ItemList().apply {
@@ -149,8 +193,8 @@ object DataBeanManager {
             name = mContext.getString(listTitle[1])
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
+            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
             name = mContext.getString(listTitle[2])
         })
         list.add(ItemList().apply {

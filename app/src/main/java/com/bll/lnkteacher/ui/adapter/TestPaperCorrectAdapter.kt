@@ -15,8 +15,8 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
         val type=when(item.type){
-            1-> "班级单考"+"  "+item.examList[0].examName
-            else->"校群联考"+"  "+item.examList[0].examName
+            1-> "班级单考"+"  "+if (item.examList.isNullOrEmpty())  "" else item.examList[0].examName
+            else->"校群联考"+"  "+if (item.examList.isNullOrEmpty())  "" else item.examList[0].examName
         }
         helper.setText(tv_exam_type,type)
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time*1000))

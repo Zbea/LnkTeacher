@@ -15,7 +15,7 @@ import com.bll.lnkteacher.ui.activity.group.ClassGroupUserActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_group.*
+import kotlinx.android.synthetic.main.fragment_teaching_list.*
 import org.greenrobot.eventbus.EventBus
 
 class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
@@ -43,12 +43,8 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
-    override fun onSendSuccess() {
-        showToast(R.string.classgroup_send_control_success)
-    }
-
     override fun getLayoutId(): Int {
-        return R.layout.fragment_group
+        return R.layout.fragment_teaching_list
     }
 
     override fun initView() {
@@ -77,9 +73,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
                 }
                 R.id.tv_edit->{
                     editGroup()
-                }
-                R.id.tv_send->{
-                    sendGroup()
                 }
             }
 
@@ -121,19 +114,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
             })
     }
 
-    /**
-     * 老师控制学生删除
-     */
-    private fun sendGroup(){
-        CommonDialog(requireActivity()).setContent(R.string.classgroup_is_delete_book_tips).builder()
-            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    mGroupPresenter.sendClassGroupControl(classGroups[position].classId)
-                }
-            })
-    }
 
     override fun onClassGroupEvent() {
         classGroups=DataBeanManager.classGroups

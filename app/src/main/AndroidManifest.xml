@@ -66,7 +66,10 @@
             android:exported="true"
             >
             <intent-filter>
+                <action android:name="com.bll.lnkteacher.upload"/>
+                <action android:name="com.bll.lnkteacher.upload.year"/>
                 <action android:name="com.bll.lnkteacher.refresh"/>
+                <action android:name="com.android.settings.importdatasgl"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -143,6 +146,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.ScreenshotListActivity"/>
+        <activity android:name=".ui.activity.CloudStorageActivity"
+            android:launchMode="singleTask"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

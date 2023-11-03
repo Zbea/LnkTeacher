@@ -65,5 +65,11 @@ public class ItemTypeDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(int type){
+        dao.deleteInTx(queryAll(type));
+    }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 }

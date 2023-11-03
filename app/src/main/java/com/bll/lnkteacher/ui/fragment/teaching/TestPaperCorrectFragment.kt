@@ -69,6 +69,7 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(requireActivity(),30f)))
             setOnItemChildClickListener { _, view, position ->
+                pos=position
                 val item=items[position]
                 when(view.id){
                     R.id.tv_analyse->{
@@ -96,7 +97,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                         }
                     }
                     R.id.iv_delete->{
-                        pos=position
                         deleteCorrect()
                     }
                 }

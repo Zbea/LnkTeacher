@@ -90,7 +90,7 @@ class GroupManagerFragment:BaseFragment() {
                 if (from != null) {
                     ft?.hide(from)
                 }
-                ft?.add(R.id.fl_content_group, to)?.commit()
+                ft?.add(R.id.fl_content, to)?.commit()
             } else {
                 if (from != null) {
                     ft?.hide(from)

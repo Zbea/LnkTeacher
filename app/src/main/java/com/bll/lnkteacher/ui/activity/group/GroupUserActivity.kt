@@ -19,6 +19,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     private var users= mutableListOf<GroupUser>()
     private var mAdapter: GroupUserAdapter?=null
     private var pops= mutableListOf<PopupBean>()
+    private var index=0
     private var position=0
 
     override fun onCreateGroupSuccess() {
@@ -26,6 +27,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     override fun onAddSuccess() {
     }
     override fun onQuitSuccess() {
+        mAdapter?.remove(position)
     }
     override fun getGroupUser(lists: MutableList<GroupUser>?) {
         users=lists!!
@@ -37,14 +39,14 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
     }
 
     override fun initData() {
-        position=intent.getIntExtra("position",0)
+        index=intent.getIntExtra("position",0)
         val id=intent.getIntExtra("id",0)
 
         val groups=DataBeanManager.schoolGroups
 
         for (i in 0 until groups.size){
             val item=groups[i]
-            pops.add(PopupBean(item.id, item.schoolName, i == position))
+            pops.add(PopupBean(item.id, item.schoolName, i == index))
         }
 
         mPresenter.getGroupUsers(id)
@@ -55,7 +57,7 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         setPageTitle(R.string.details)
 
         if (pops.size>0){
-            tv_class.text= pops[position].name
+            tv_class.text= pops[index].name
         }
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
@@ -63,6 +65,12 @@ class GroupUserActivity:BaseActivity(),IContractView.IGroupView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            this.position=position
+            if (view.id==R.id.tv_out){
+                mPresenter.quitGroupClassGroup(users[position].groupClassId,users[position].groupUserId)
+            }
+        }
 
         tv_class.setOnClickListener {
             PopupRadioList(this, pops, tv_class, tv_class.width, 5).builder().setOnSelectListener { item ->

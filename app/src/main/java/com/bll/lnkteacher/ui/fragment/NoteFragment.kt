@@ -17,13 +17,17 @@ import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
+import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
@@ -212,6 +216,16 @@ class NoteFragment : BaseFragment() {
             }
     }
 
+    override fun fetchData() {
+        notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
+        val total = NoteDaoManager.getInstance().queryAll(typeStr)
+        setPageNumber(total.size)
+        for (item in notes){
+            item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
+        }
+        mAdapter?.setNewData(notes)
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             NOTE_BOOK_MANAGER_EVENT->{
@@ -227,14 +241,62 @@ class NoteFragment : BaseFragment() {
         }
     }
 
-    override fun fetchData() {
-        notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
-        val total = NoteDaoManager.getInstance().queryAll(typeStr)
-        setPageNumber(total.size)
-        for (item in notes){
-            item.isSet = positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true
+    /**
+     * 上传
+     */
+    fun upload(token:String){
+        cloudList.clear()
+        val nullItems= mutableListOf<Note>()
+        for (noteType in notebooks){
+            //查找到这个分类的所有内容，然后遍历上传所有内容
+            val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
+            for (item in notes){
+                val path=FileAddress().getPathNote(noteType.title,item.title)
+                val fileName=item.title
+                //获取笔记所有内容
+                val noteContents = NoteContentDaoManager.getInstance().queryAll(item.typeStr,item.title)
+                //如果此笔记还没有开始书写，则不用上传源文件
+                if (noteContents.size>0){
+                    FileUploadManager(token).apply {
+                        startUpload(path,fileName)
+                        setCallBack{
+                            cloudList.add(CloudListBean().apply {
+                                type=3
+                                subType=-1
+                                subTypeStr=item.typeStr
+                                year= DateUtils.getYear()
+                                date=System.currentTimeMillis()
+                                listJson= Gson().toJson(item)
+                                contentJson= Gson().toJson(noteContents)
+                                downloadUrl=it
+                            })
+                            //当加入上传的内容等于全部需要上传时候，则上传
+                            if (cloudList.size== NoteDaoManager.getInstance().queryAll().size-nullItems.size)
+                                mCloudUploadPresenter.upload(cloudList)
+                        }
+                    }
+                }
+                else{
+                    nullItems.add(item)
+                }
+            }
         }
-        mAdapter?.setNewData(notes)
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (i in notebooks.indices){
+            val notes= NoteDaoManager.getInstance().queryAll(notebooks[i].title)
+            //删除该笔记分类中的所有笔记本及其内容
+            for (note in notes){
+                NoteDaoManager.getInstance().deleteBean(note)
+                NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
+                val path= FileAddress().getPathNote(note.typeStr,note.title)
+                FileUtils.deleteFile(File(path))
+            }
+        }
+        ItemTypeDaoManager.getInstance().clear(1)
+        EventBus.getDefault().post(NOTE_BOOK_MANAGER_EVENT)
     }
 
 }

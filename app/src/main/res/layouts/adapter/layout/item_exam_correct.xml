@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    >
+
+    <LinearLayout
+        android:layout_width="360dp"
+        android:layout_height="240dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_black_stroke_10dp_corner"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_20"
+            android:text="期中考试卷"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            />
+        
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            />
+        
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="36dp"
+                android:gravity="center"
+                android:text="完成"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@drawable/bg_gary_arch"
+                />
+
+
+            <TextView
+                android:id="@+id/tv_class_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"
+                android:text="三(1)班"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_24"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_class_name"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_centerInParent="true"
+                android:text="43人"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_20" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

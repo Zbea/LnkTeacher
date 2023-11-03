@@ -57,6 +57,10 @@ public class Book {
     public String desc;
     @Transient
     public int subject;
+    @Transient
+    public int cloudId;
+    @Transient
+    public String drawUrl;
 
     @Generated(hash = 1993065957)
     public Book(Long id, long userId, int bookId, int bookPlusId, String imageUrl, String bookName, int price,

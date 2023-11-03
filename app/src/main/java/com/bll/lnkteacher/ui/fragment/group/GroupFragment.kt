@@ -17,7 +17,7 @@ import com.bll.lnkteacher.ui.adapter.GroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_group.*
+import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
 class GroupFragment:BaseFragment(),IContractView.IGroupView{
 
@@ -36,15 +36,14 @@ class GroupFragment:BaseFragment(),IContractView.IGroupView{
 
     override fun onQuitSuccess() {
         showToast(if (groups[position].selfStatus==2) R.string.out_success else R.string.dissolve_success)
-        groups.removeAt(position)
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.remove(position)
         DataBeanManager.schoolGroups=groups
     }
     override fun getGroupUser(users: MutableList<GroupUser>?) {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_group
+        return R.layout.fragment_teaching_list
     }
 
     override fun initView() {

@@ -34,14 +34,18 @@ class HomeworkManagerFragment : BaseFragment(){
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_homework
+        return R.layout.fragment_homework_manager
     }
 
     override fun initView() {
         setTitle(R.string.main_homework_title)
         showView(iv_manager,tv_grade)
 
-        popGrades = DataBeanManager.popupGrades
+        grade=SPUtil.getInt("grade")
+        if (grade>0){
+            tv_grade.text=DataBeanManager.getGradeStr(grade)
+        }
+        popGrades = if (grade==0) DataBeanManager.popupGrades else DataBeanManager.popupGrades(grade)
 
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book), false))
@@ -81,6 +85,7 @@ class HomeworkManagerFragment : BaseFragment(){
         }
 
         initTab()
+        onGradeEvent()
     }
 
     override fun lazyLoad() {
@@ -137,7 +142,7 @@ class HomeworkManagerFragment : BaseFragment(){
                 if (from != null) {
                     ft?.hide(from)
                 }
-                ft?.add(R.id.fl_content, to)?.commit()
+                ft?.add(R.id.fl_content_homework, to)?.commit()
             } else {
                 if (from != null) {
                     ft?.hide(from)

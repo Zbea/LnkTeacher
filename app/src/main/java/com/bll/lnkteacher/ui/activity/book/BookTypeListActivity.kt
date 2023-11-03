@@ -4,6 +4,7 @@ import PopupClick
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.InputContentDialog
@@ -165,7 +166,7 @@ class BookTypeListActivity : BaseActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                gotoBookDetails(bookBean)
+                MethodManager.gotoBookDetails(this@BookTypeListActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

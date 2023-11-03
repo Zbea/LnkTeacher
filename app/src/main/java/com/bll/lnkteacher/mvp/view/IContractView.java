@@ -5,6 +5,7 @@ import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.AppList;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
+import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.HandoutsList;
 import com.bll.lnkteacher.mvp.model.Message;
@@ -68,7 +69,6 @@ public interface IContractView {
         void onCreateSuccess();
         void onEditSuccess();
         void onDissolveSuccess();
-        void onSendSuccess();
     }
 
     //班群学生
@@ -254,6 +254,24 @@ public interface IContractView {
     interface IWallpaperView extends IBaseView {
         void onList(WallpaperList list);
         void buySuccess();
+    }
+
+    interface IQiniuView extends IBaseView {
+        void onToken(String token);
+    }
+
+    /**
+     * 云书库上传
+     */
+    interface ICloudUploadView extends IBaseView{
+        void onSuccess(List<Integer> cloudIds);
+        void onDeleteSuccess();
+    }
+
+    interface ICloudView extends IBaseView {
+        void onList(CloudList item);
+        void onType(List<String> types);
+        void onDelete();
     }
 
 }

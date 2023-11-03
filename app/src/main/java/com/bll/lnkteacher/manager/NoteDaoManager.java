@@ -60,6 +60,10 @@ public class NoteDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).limit(size).build().list();
     }
 
+    public List<Note> queryAll() {
+        return dao.queryBuilder().where(whereUser).orderDesc(NoteDao.Properties.Date).build().list();
+    }
+
     public List<Note> queryAll(String type) {
         WhereCondition whereCondition=NoteDao.Properties.TypeStr.eq(type);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(NoteDao.Properties.Date).build().list();
@@ -81,7 +85,16 @@ public class NoteDaoManager {
         }
         dao.insertOrReplaceInTx(notes);
     }
-
+    /**
+     * 是否存在笔记（云书库）
+     * @return
+     */
+    public Boolean isExistCloud(String typeStr,String title,long date){
+        WhereCondition whereCondition1=NoteDao.Properties.TypeStr.eq(typeStr);
+        WhereCondition whereCondition2= NoteDao.Properties.Title.eq(title);
+        WhereCondition whereCondition3= NoteDao.Properties.Date.eq(date);
+        return dao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).unique()!=null;
+    }
     /**
      * 是否存在笔记
      * @return
@@ -96,4 +109,7 @@ public class NoteDaoManager {
         dao.delete(bean);
     }
 
+    public void clear(){
+        dao.deleteAll();
+    }
 }

@@ -1,7 +1,9 @@
 package com.bll.lnkteacher.ui.adapter
 
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.GroupUser
+import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -13,6 +15,9 @@ class GroupUserAdapter(layoutResId: Int, data: List<GroupUser>?) : BaseQuickAdap
         helper.setText(R.id.tv_number, ToolUtils.getFormatNum(item.classNum,"000000"))
         helper.setText(R.id.tv_school,item.teacherName)
         helper.setText(R.id.tv_address,item.studentCount.toString()+"人")
+        helper.setVisible(R.id.tv_out,SPUtil.getObj("user",User::class.java)?.accountId?.toInt()==item.userId)
+
+        helper.addOnClickListener(R.id.tv_out)
     }
 
 

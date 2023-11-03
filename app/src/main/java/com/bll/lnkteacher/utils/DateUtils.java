@@ -10,6 +10,15 @@ import java.util.Locale;
 
 public class DateUtils {
 
+    // 判断是闰年还是平年
+    public boolean isYear(int year) {
+        boolean judge = false;
+        if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+            judge = true;
+        }
+        return judge;
+    }
+
     /**
      * 基于当天剩余天数
      * @param date
@@ -125,6 +134,18 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date10ToDate13(date)));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String longToStringWeek1(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;

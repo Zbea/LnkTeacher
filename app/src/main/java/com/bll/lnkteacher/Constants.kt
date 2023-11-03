@@ -55,6 +55,9 @@ class Constants {
         val SCREEN_PATH =Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
+        const val AUTO_UPLOAD_DAY_EVENT = "AutoUploadDayEvent" //每天3点自动上传
+        const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadYearEvent" //每天3点自动上传
+        const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"
         const val TEXT_BOOK_EVENT = "TextBookEvent"
@@ -68,17 +71,19 @@ class Constants {
         const val APP_INSTALL_EVENT = "AppInstallEvent"
         const val APP_INSTALL_INSERT_EVENT = "AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"
-        const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val PRIVACY_PASSWORD_EVENT = "PrivacyPasswordEvent"
         const val SCREENSHOT_MANAGER_EVENT="ScreenshotManagerEvent"
+        const val SETTING_DATA_EVENT = "SettingDataEvent" //系统设置 一键下载
 
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
-
         //广播
+        const val DATA_BROADCAST_EVENT = "com.android.settings.importdatasgl"
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkteacher.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkteacher.account.logout"
         const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"
+        const val ACTION_UPLOAD_REFRESH = "com.bll.lnkteacher.upload"//每天3自动更新
+        const val ACTION_UPLOAD_YEAR = "com.bll.lnkteacher.upload.year"//每年12月31 3点自动上传
     }
 
 }

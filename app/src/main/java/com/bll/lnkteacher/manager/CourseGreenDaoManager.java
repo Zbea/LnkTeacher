@@ -77,5 +77,8 @@ public class CourseGreenDaoManager {
         courseDao.deleteAll();
     }
 
+    public void clear(){
+        courseDao.deleteAll();
+    }
 
 }
