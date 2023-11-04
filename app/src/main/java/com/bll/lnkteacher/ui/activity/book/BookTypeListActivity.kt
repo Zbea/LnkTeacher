@@ -92,9 +92,9 @@ class BookTypeListActivity : BaseActivity() {
                         ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
 
                         rg_group.addView(getRadioButton(bookTypes.size, it, bookTypes.size==0))
-                        bookTypes.add(bookTypeBean)
                         //更新tab
                         if (bookTypes.isEmpty()){
+                            bookTypes.add(bookTypeBean)
                             typeStr=it
                             fetchData()
                         }
@@ -151,7 +151,6 @@ class BookTypeListActivity : BaseActivity() {
             typeStr=bookTypes[id].title
             fetchData()
         }
-
         fetchData()
     }
 

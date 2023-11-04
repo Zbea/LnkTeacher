@@ -9,7 +9,6 @@
         android:id="@+id/tv_date_create"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
         android:text="@string/teaching_assign_time"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_16" />

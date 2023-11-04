@@ -51,6 +51,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
 
     private fun initTab(){
         val texts= DataBeanManager.textbookType.toMutableList()
+        texts.removeLast()
         textBook=texts[0]
         for (i in texts.indices) {
             rg_group.addView(getRadioButton(i ,texts[i],texts.size-1))

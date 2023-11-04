@@ -96,7 +96,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik?.setPWEnabled(false)
+        elik?.setPWEnabled(false,false)
         EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
     }
 
@@ -114,7 +114,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     override fun initView() {
         elik=iv_image.pwInterFace
-        elik?.setPWEnabled(false)
+        elik?.setPWEnabled(false,false)
 
         setPageTitle("${getString(R.string.teaching_tab_testpaper_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
 
@@ -215,13 +215,13 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
                 et_score.setText(userItem.score.toString())
                 setEditState(false)
                 tv_save.visibility= View.INVISIBLE
-                elik?.setPWEnabled(false)
+                elik?.setPWEnabled(false,false)
                 setContentImage()
             }
             3->{
                 showView(tv_save)
                 setEditState(false)
-                elik?.setPWEnabled(false)
+                elik?.setPWEnabled(false,false)
                 iv_image.setImageResource(0)
             }
         }
@@ -244,7 +244,7 @@ class TestPaperCorrectActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage) ,iv_image,10)
         }
         else{
-            elik?.setPWEnabled(true)
+            elik?.setPWEnabled(true,true)
             val masterImage="${getPath()}/${posImage+1}.png"//原图
             GlideUtils.setImageFile(this,File(masterImage),iv_image)
         }

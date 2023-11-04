@@ -94,7 +94,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
         mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik?.setPWEnabled(false)
+        elik?.setPWEnabled(false,false)
         disMissView(tv_save)
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
@@ -113,17 +113,17 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
 
     override fun initView() {
         elik = iv_image.pwInterFace
-        elik?.setPWEnabled(false)
+        elik?.setPWEnabled(false,false)
 
         setPageTitle("${getString(R.string.teaching_tab_homework_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
 
         //如果是朗读本
         if (subType == 3) {
-            disMissView(tv_save, ll_content)
+            disMissView(tv_save)
             showView(ll_record)
         } else {
             disMissView(ll_record)
-            showView(tv_save, ll_content)
+            showView(tv_save)
         }
 
         initRecyclerView()
@@ -236,13 +236,13 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 }
                 2->{
                     currentImages = userItem.submitUrl.split(",").toTypedArray()
-                    elik?.setPWEnabled(false)
+                    elik?.setPWEnabled(false,false)
                     disMissView(tv_save)
                     setContentImage()
                 }
                 3->{
                     showView(tv_save)
-                    elik?.setPWEnabled(false)
+                    elik?.setPWEnabled(false,false)
                     iv_image.setImageResource(0)
                 }
             }
@@ -265,7 +265,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
         if (userItems[posUser].status == 2) {
             GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), iv_image, 10)
         } else {
-            elik?.setPWEnabled(true)
+            elik?.setPWEnabled(true,true)
             val masterImage = "${getPath()}/${posImage + 1}.png"//原图
             GlideUtils.setImageFile(this, File(masterImage), iv_image)
         }

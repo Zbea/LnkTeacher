@@ -7,6 +7,7 @@ import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.Book;
+import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.MainActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
@@ -49,7 +50,8 @@ public class MethodManager {
      * @param bookBean
      */
     public static void gotoBookDetails(Context context, Book bookBean)  {
-//        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
@@ -78,7 +80,7 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);

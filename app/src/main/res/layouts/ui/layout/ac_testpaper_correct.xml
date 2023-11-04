@@ -48,7 +48,7 @@
                 android:id="@+id/tv_save"
                 android:layout_width="100dp"
                 android:layout_height="45dp"
-                android:layout_marginStart="40dp"
+                android:layout_marginStart="25dp"
                 android:text="@string/save"
                 android:textSize="@dimen/sp_22"
                 android:gravity="center"
@@ -65,31 +65,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/dp_50"
-        android:layout_marginStart="@dimen/dp_30"
-        android:layout_marginEnd="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal"
+        android:gravity="center"
         >
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="856dp"
+            android:layout_height="1120dp"
             android:orientation="vertical"
             android:background="@drawable/bg_gray_stroke_10dp_corner"
-            android:layout_weight="1"
             >
+
             <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/iv_image"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
-                />
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"
+                android:scaleType="fitCenter" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/drawing_bottom_height">
+                android:layout_height="@dimen/drawing_bottom_height"
+                android:layout_alignParentBottom="true"
+                >
                 <ImageView
                     android:id="@+id/iv_up"
                     android:layout_width="wrap_content"
@@ -119,16 +122,14 @@
 
         </LinearLayout>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"
             />
-
 
     </LinearLayout>
 
