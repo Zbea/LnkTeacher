@@ -41,6 +41,7 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
         if (classGroup!=null)
         {
             grade=classGroup?.grade!!
+            job=classGroup?.job!!
             et_name.setText(classGroup?.name)
             tv_grade?.text=DataBeanManager.getGradeStr(classGroup?.grade!!)
             tv_job?.text=if (classGroup?.job==1) context.getString(R.string.classGroup_headteacher) else context.getString(R.string.classGroup_teacher)

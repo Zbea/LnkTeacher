@@ -2,14 +2,12 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
+import com.bll.lnkteacher.utils.SToast
 
 class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int) {
 
@@ -73,8 +71,14 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                     }
                 }
                 else{
-                    dialog.dismiss()
-                    listener?.onClick(width.toFloat(),0f)
+                    val num=width.toFloat()
+                    if (currentGeometry==8&&num>360){
+                        SToast.showText("角度需要小于360°")
+                    }
+                    else{
+                        dialog.dismiss()
+                        listener?.onClick(num,0f)
+                    }
                 }
             }
         }

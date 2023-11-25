@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_30"
-            android:text="作业本"
             android:textColor="@color/black"
             android:textSize="26sp"
             android:textStyle="bold" />

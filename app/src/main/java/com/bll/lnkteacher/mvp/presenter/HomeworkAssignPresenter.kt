@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
+import com.bll.lnkteacher.mvp.model.BookStore
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
@@ -31,7 +31,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     /**
      * 添加作业本
      */
-    fun addType(map: HashMap<String,Any>) {
+    fun addType(map: HashMap<String,Any>,boolean: Boolean) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.addPaperType(body)
         doRequest(type, object : Callback<Any>(view) {
@@ -41,7 +41,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onAddSuccess()
             }
-        }, true)
+        }, boolean)
     }
 
     /**
@@ -74,37 +74,6 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 view.onDeleteSuccess()
             }
         }, true)
-    }
-
-
-    fun getList(map: HashMap<String,Any>){
-        val list = RetrofitManager.service.getHomeworkList(map)
-        doRequest(list, object : Callback<AssignContent>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AssignContent>) {
-                if (tBaseResult.data!=null)
-                    view.onList(tBaseResult.data)
-            }
-        }, true)
-    }
-
-    fun getImages(taskId:Int){
-        val map=HashMap<String,Any>()
-        map["taskId"]=taskId
-        map["size"]=100
-        val list = RetrofitManager.service.getHomeworkImages(map)
-        doRequest(list, object : Callback<AssignContent>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AssignContent>) {
-                if (!tBaseResult.data?.list.isNullOrEmpty()){
-                    view.onImageList(tBaseResult.data?.list)
-                }
-            }
-        }, false)
     }
 
     fun commitHomework(map:HashMap<String,Any>){
@@ -165,6 +134,26 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 view.onDetailsDeleteSuccess()
             }
         }, true)
+    }
+
+    /**
+     * 教辅本
+     */
+    fun getHomeworkBooks(map: HashMap<String,Any>) {
+
+        val books = RetrofitManager.service.getHomeworkBooks(map)
+
+        doRequest(books, object : Callback<BookStore>(view) {
+            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<BookStore>) {
+                view.onBook(tBaseResult.data)
+            }
+
+        }, false)
+
     }
 
 }

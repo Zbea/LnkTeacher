@@ -14,9 +14,11 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
                 helper.setGone(R.id.tv_message_source,false)
             }
             2->{
+                helper.setGone(R.id.tv_message_source,true)
                 helper.setText(R.id.tv_message_source,item.teacherName+"同学：")
             }
-            else->{
+            3->{
+                helper.setGone(R.id.tv_message_source,true)
                 helper.setText(R.id.tv_message_source,"学校通知：")
             }
         }

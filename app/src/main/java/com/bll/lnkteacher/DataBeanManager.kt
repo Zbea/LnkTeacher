@@ -113,6 +113,16 @@ object DataBeanManager {
         return cls
     }
 
+    fun getCourseId(course: String): Int {
+        var courseId=0
+        for (item in courses) {
+            if (item.desc == course){
+                courseId=item.type
+            }
+        }
+        return courseId
+    }
+
     val popupTypeGrades: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()

@@ -2,6 +2,7 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +27,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
         dialog.show()
 
         val classs= DataBeanManager.classGroups
+        Log.d("debug",classs.size.toString())
 
         for (item in classs){
             if (item.grade==grade){

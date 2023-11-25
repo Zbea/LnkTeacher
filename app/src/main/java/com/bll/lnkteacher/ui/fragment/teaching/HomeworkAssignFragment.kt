@@ -12,11 +12,10 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.mvp.model.BookStore
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
@@ -24,6 +23,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
@@ -40,6 +40,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         setPageNumber(list.total)
         types=list.list
         mAdapter?.setNewData(types)
+        fetchHomeworkBooks()
     }
     override fun onAddSuccess() {
         if (types.size==pageSize){
@@ -58,14 +59,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         }
         mAdapter?.remove(position)
     }
-    override fun onList(homeworkContent: AssignContent?) {
-    }
-    override fun onImageList(lists: MutableList<ContentListBean>?) {
-    }
     override fun onCommitSuccess() {
         showToast(R.string.teaching_assign_success)
     }
-
     override fun onDetails(details: HomeworkAssignDetails) {
         detailsDialog=HomeworkAssignDetailsDialog(requireContext(), details.list).builder()
         detailsDialog?.setDialogClickListener {
@@ -79,6 +75,21 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         detailsDialog?.dismiss()
     }
 
+    override fun onBook(bookStore: BookStore) {
+        val books = bookStore.list
+        for (book in books){
+            if (!isExistBook(book.bookId)){
+                val map=HashMap<String,Any>()
+                map["name"]=book.bookName
+                map["type"]=2
+                map["subType"]=4//题卷本
+                map["grade"]=book.grade
+                map["bookId"]=book.bookId
+                map["bgResId"]=book.imageUrl
+                mPresenter.addType(map,false)
+            }
+        }
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching_list
@@ -188,7 +199,27 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["subType"]=subType
         map["grade"]=grade
         map["bgResId"]=DataBeanManager.getHomeworkCoverStr()
-        mPresenter.addType(map)
+        mPresenter.addType(map,true)
+    }
+
+    /**
+     * 设置课本学期（月份为9月份之前为下学期）
+     */
+    private fun getSemester():Int{
+       return if (DateUtils.getMonth()<9) 2 else 1
+    }
+
+    /**
+     * 判断本书是否已经创建为教辅本
+     */
+    private fun isExistBook(bookId:Int):Boolean{
+        var isExist=false
+        for (item in types){
+            if(item.bookId==bookId){
+                isExist=true
+            }
+        }
+        return isExist
     }
 
     /**
@@ -219,5 +250,20 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["grade"]=grade
         map["type"]=2
         mPresenter.getTypeList(map)
+    }
+
+    /**
+     * 获取当前年级是否存在我的教辅
+     */
+    private fun fetchHomeworkBooks(){
+        val map1 = HashMap<String, Any>()
+        map1["page"] = pageIndex
+        map1["size"] = 100
+        map1["subjectName"]=DataBeanManager.getCourseId(mUser?.subjectName!!)
+        map1["type"] = 1
+        map1["area"] = mUser?.schoolProvince!!
+        map1["grade"] = grade
+        map1["semester"]=getSemester()
+        mPresenter.getHomeworkBooks(map1)
     }
 }

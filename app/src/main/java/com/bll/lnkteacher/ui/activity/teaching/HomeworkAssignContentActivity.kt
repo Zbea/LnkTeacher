@@ -3,36 +3,30 @@ package com.bll.lnkteacher.ui.activity.teaching
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishClassGroupSelectDialog
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.mvp.model.testpaper.TypeList
-import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
+import com.bll.lnkteacher.mvp.presenter.HomeworkPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import kotlinx.android.synthetic.main.ac_homework_assgin_content.*
 
-class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssignView {
+class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
 
     private var grade=0
-    private val mPresenter=HomeworkAssignPresenter(this)
+    private val mPresenter= HomeworkPaperAssignPresenter(this)
     private var mAdapter:TestPaperAssignContentAdapter?=null
     private var items= mutableListOf<ContentListBean>()//列表数据
     private var typeBean: TypeBean?=null//作业卷分类
     private var selectDialog:HomeworkPublishClassGroupSelectDialog?=null
     private var selectClasss= mutableListOf<HomeworkClass>()//选中班级
+    private var position=0
 
-    override fun onTypeList(list: TypeList) {
-    }
-    override fun onAddSuccess() {
-    }
-    override fun onDeleteSuccess() {
-    }
     override fun onList(homeworkContent: AssignContent) {
         setPageNumber(homeworkContent.total)
         items= homeworkContent.list
@@ -49,11 +43,11 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
         showToast(R.string.teaching_assign_success)
         finish()
     }
-    override fun onDetails(details: HomeworkAssignDetails?) {
-    }
-    override fun onDetailsDeleteSuccess() {
-    }
 
+    override fun onDeleteSuccess() {
+        showToast(R.string.delete_success)
+        mAdapter?.remove(position)
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_homework_assgin_content
@@ -75,14 +69,23 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                val item =items[position]
-                item.isCheck=!item.isCheck
-                notifyDataSetChanged()
+                mPresenter.getImages(items[position].taskId)
             }
             setOnItemChildClickListener { adapter, view, position ->
-                if (view.id==R.id.iv_image){
-                    mPresenter.getImages(items[position].taskId)
+                if (view.id==R.id.cb_check){
+                    for (item in items){
+                        if (item.isCheck)
+                            item.isCheck=false
+                    }
+                    val item =items[position]
+                    item.isCheck=!item.isCheck
+                    notifyDataSetChanged()
                 }
+            }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@HomeworkAssignContentActivity.position=position
+                delete()
+                true
             }
         }
 
@@ -104,6 +107,19 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
             }
         }
 
+    }
+
+    private fun delete(){
+        CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val item=items[position]
+                val ids= arrayListOf(item.taskId)
+                mPresenter.deletePapers(ids)
+            }
+        })
     }
 
     /**
@@ -137,7 +153,6 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkAssign
         map["showStatus"]=if (isCommit) 0 else 1
         mPresenter.commitHomeworkReel(map)
     }
-
 
     /**
      * 获的选中作业卷

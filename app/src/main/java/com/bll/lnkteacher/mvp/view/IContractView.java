@@ -196,6 +196,21 @@ public interface IContractView {
          */
         void onDeleteSuccess();
         /**
+         * 发送成功
+         */
+        void onCommitSuccess();
+        /**
+         * 布置详情
+         * @param details
+         */
+        void onDetails(HomeworkAssignDetails details);
+        void onDetailsDeleteSuccess();
+        void onBook(BookStore bookStore);
+    }
+
+    interface IHomeworkPaperAssignView extends IBaseView{
+
+        /**
          * 获取作业卷内容列表
          * @param homeworkContent
          */
@@ -209,13 +224,9 @@ public interface IContractView {
          * 发送成功
          */
         void onCommitSuccess();
-        /**
-         * 布置详情
-         * @param details
-         */
-        void onDetails(HomeworkAssignDetails details);
-        void onDetailsDeleteSuccess();
+        void onDeleteSuccess();
     }
+
 
     interface IHomeworkCorrectView extends IBaseView{
         /**

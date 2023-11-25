@@ -28,18 +28,18 @@ import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
+class TextbookFragment : BaseFragment(), IContractView.ITextbookView {
 
-    private val mPresenter=TextbookPresenter(this)
+    private val mPresenter = TextbookPresenter(this)
     private var mAdapter: BookAdapter? = null
-    private var mHandoutsAdapter:HandoutsAdapter?=null
+    private var mHandoutsAdapter: HandoutsAdapter? = null
     private var books = mutableListOf<Book>()
     private var textBook = ""//用来区分课本类型
-    private var tabId=0
+    private var tabId = 0
     private var position = 0
-    private var handoutsBeans= mutableListOf<HandoutsList.HandoutsBean>()
-    private var popGrades= mutableListOf<PopupBean>()
-    private var grade=0
+    private var handoutsBeans = mutableListOf<HandoutsList.HandoutsBean>()
+    private var popGrades = mutableListOf<PopupBean>()
+    private var grade = 0
 
     override fun onHandoutsList(list: HandoutsList) {
         setPageNumber(list.total)
@@ -48,8 +48,8 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     }
 
     override fun onAddHomeworkBook() {
-        showToast("设置题卷本为作业成功")
-        books[position].isHomework=true
+        showToast("设置教辅书成功")
+        books[position].isHomework = true
         mAdapter?.notifyItemChanged(position)
         BookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
     }
@@ -59,28 +59,27 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     }
 
     override fun initView() {
-        pageSize=12
+        pageSize = 12
         setTitle(R.string.main_textbook_title)
 
         initTab()
         initRecyclerView()
         initRecyclerHandouts()
 
-        grade= SPUtil.getInt("grade")
-        if (grade==0)
-            grade=1
-        popGrades=DataBeanManager.popupGrades(grade)
-        tv_grade.text=DataBeanManager.getGradeStr(grade)
+        grade = SPUtil.getInt("grade")
+        if (grade == 0)
+            grade = 1
+        popGrades = DataBeanManager.popupGrades(grade)
+        tv_grade.text = DataBeanManager.getGradeStr(grade)
 
         tv_grade.setOnClickListener {
-            if (popGrades.size==0)
-            {
-                popGrades=DataBeanManager.popupGrades(1)
+            if (popGrades.size == 0) {
+                popGrades = DataBeanManager.popupGrades(1)
             }
-            PopupRadioList(requireActivity(),popGrades , tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
-                tv_grade?.text=item.name
-                grade=item.id
-                pageIndex=1
+            PopupRadioList(requireActivity(), popGrades, tv_grade, tv_grade.width, 5).builder().setOnSelectListener { item ->
+                tv_grade?.text = item.name
+                grade = item.id
+                pageIndex = 1
                 fetchData()
             }
         }
@@ -96,21 +95,20 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     //设置头部索引
     private fun initTab() {
         val tabStrs = DataBeanManager.textbookType
-        textBook=tabStrs[0]
+        textBook = tabStrs[0]
         for (i in tabStrs.indices) {
             rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
         }
         rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            tabId=id
+            tabId = id
             textBook = tabStrs[id]
-            pageIndex=1
-            if (tabId==5){
-                showView(rv_handouts,tv_grade)
+            pageIndex = 1
+            if (tabId == 5) {
+                showView(rv_handouts, tv_grade)
                 disMissView(rv_list)
-            }
-            else{
+            } else {
                 showView(rv_list)
-                disMissView(rv_handouts,tv_grade)
+                disMissView(rv_handouts, tv_grade)
             }
             fetchData()
         }
@@ -122,14 +120,13 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3,DP2PX.dip2px(activity, 33f), 38))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 38))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val book=books[position]
+            val book = books[position]
             //教学教育跳转阅读器
-            if (tabId==4){
-                MethodManager.gotoBookDetails(requireActivity(),book)
-            }
-            else{
+            if (tabId == 4) {
+                MethodManager.gotoBookDetails(requireActivity(), book)
+            } else {
                 val intent = Intent(activity, BookDetailsActivity::class.java)
                 intent.putExtra("book_id", book.bookId)
                 intent.putExtra("book_type", book.typeId)
@@ -144,16 +141,16 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
             }
     }
 
-    private fun initRecyclerHandouts(){
+    private fun initRecyclerHandouts() {
         rv_handouts.layoutManager = GridLayoutManager(requireActivity(), 3)//创建布局管理
         mHandoutsAdapter = HandoutsAdapter(R.layout.item_textbook, null).apply {
             rv_handouts.adapter = this
             bindToRecyclerView(rv_handouts)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                val item=handoutsBeans[position]
-                val images=item.paths.split(",")
-                ImageDialog(requireActivity(),images).builder()
+                val item = handoutsBeans[position]
+                val images = item.paths.split(",")
+                ImageDialog(requireActivity(), images).builder()
             }
         }
     }
@@ -161,45 +158,42 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     //长按显示课本管理
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
-        val beans= mutableListOf<ItemList>()
-        if (tabId==2||tabId==3) {
+        val beans = mutableListOf<ItemList>()
+        if (tabId == 3) {
             beans.add(ItemList().apply {
-                name="删除"
-                resId=R.mipmap.icon_setting_delete
+                name = "删除"
+                resId = R.mipmap.icon_setting_delete
             })
             beans.add(ItemList().apply {
-                name="设置作业"
-                resId=R.mipmap.icon_setting_delete
+                name = "设置作业"
+                resId = R.mipmap.icon_setting_delete
+            })
+        } else {
+            beans.add(ItemList().apply {
+                name = "删除"
+                resId = R.mipmap.icon_setting_delete
             })
         }
-        else{
-            beans.add(ItemList().apply {
-                name="删除"
-                resId=R.mipmap.icon_setting_delete
-            })
-        }
-        LongClickManageDialog(requireActivity(), book.bookName,beans).builder()
-            .setOnDialogClickListener{
-                if (it==0){
+        LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
+            .setOnDialogClickListener {
+                if (it == 0) {
                     BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
                     FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
                     FileUtils.deleteFile(File(book.bookDrawPath))
                     mAdapter?.remove(position)
                     EventBus.getDefault().post(TEXT_BOOK_EVENT)
-                }
-                else{
-                    if (!book.isHomework){
-                        val map=HashMap<String,Any>()
-                        map["name"]=book.bookName
-                        map["type"]=2
-                        map["subType"]=4//题卷本
-                        map["grade"]=book.grade
-                        map["bookId"]=book.bookId
-                        map["bgResId"]=book.imageUrl
+                } else {
+                    if (!book.isHomework) {
+                        val map = HashMap<String, Any>()
+                        map["name"] = book.bookName
+                        map["type"] = 2
+                        map["subType"] = 4//题卷本
+                        map["grade"] = book.grade
+                        map["bookId"] = book.bookId
+                        map["bgResId"] = book.imageUrl
                         mPresenter.addType(map)
-                    }
-                    else{
-                        showToast("已经设置为作业")
+                    } else {
+                        showToast("请勿重复设置")
                     }
                 }
             }
@@ -208,49 +202,51 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     /**
      * 每天上传书籍
      */
-    fun upload(tokenStr:String){
+    fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks= mutableListOf<Book>()
-        val books= BookGreenDaoManager.getInstance().queryAllTextBook()
-        for (book in books){
-            if (System.currentTimeMillis()>=book.time+ Constants.halfYear){
-                val subTypeId=DataBeanManager.textbookType.indexOf(book.subtypeStr)
-                maxBooks.add(book)
-                //判读是否存在手写内容
-                if (File(book.bookDrawPath).exists()){
-                    FileUploadManager(tokenStr).apply {
-                        startUpload(book.bookDrawPath,book.bookId.toString())
-                        setCallBack{
-                            cloudList.add(CloudListBean().apply {
-                                type=2
-                                zipUrl=book.downloadUrl
-                                downloadUrl=it
-                                subType=subTypeId
-                                subTypeStr=book.subtypeStr
-                                date=System.currentTimeMillis()
-                                listJson= Gson().toJson(book)
-                                bookId=book.bookId
-                                bookTypeId=book.typeId
-                            })
-                            if (cloudList.size==maxBooks.size)
-                                mCloudUploadPresenter.upload(cloudList)
-                        }
+        val maxBooks = mutableListOf<Book>()
+        val books = BookGreenDaoManager.getInstance().queryAllTextBook()
+        //遍历获取所有需要上传的书籍数目
+        for (item in books) {
+            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
+                maxBooks.add(item)
+            }
+        }
+        for (book in maxBooks) {
+            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)
+            //判读是否存在手写内容
+            if (FileUtils.isExistContent(book.bookDrawPath)) {
+                FileUploadManager(tokenStr).apply {
+                    startUpload(book.bookDrawPath, book.bookId.toString())
+                    setCallBack {
+                        cloudList.add(CloudListBean().apply {
+                            type = 2
+                            zipUrl = book.downloadUrl
+                            downloadUrl = it
+                            subType = subTypeId
+                            subTypeStr = book.subtypeStr
+                            date = System.currentTimeMillis()
+                            listJson = Gson().toJson(book)
+                            bookId = book.bookId
+                            bookTypeId = book.typeId
+                        })
+                        if (cloudList.size == maxBooks.size)
+                            mCloudUploadPresenter.upload(cloudList)
                     }
                 }
-                else{
-                    cloudList.add(CloudListBean().apply {
-                        type=2
-                        zipUrl=book.downloadUrl
-                        subType=subTypeId
-                        subTypeStr=book.subtypeStr
-                        date=System.currentTimeMillis()
-                        listJson= Gson().toJson(book)
-                        bookId=book.bookId
-                        bookTypeId=book.typeId
-                    })
-                    if (cloudList.size==maxBooks.size)
-                        mCloudUploadPresenter.upload(cloudList)
-                }
+            } else {
+                cloudList.add(CloudListBean().apply {
+                    type = 2
+                    zipUrl = book.downloadUrl
+                    subType = subTypeId
+                    subTypeStr = book.subtypeStr
+                    date = System.currentTimeMillis()
+                    listJson = Gson().toJson(book)
+                    bookId = book.bookId
+                    bookTypeId = book.typeId
+                })
+                if (cloudList.size == maxBooks.size)
+                    mCloudUploadPresenter.upload(cloudList)
             }
         }
     }
@@ -258,8 +254,8 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     //上传完成后删除书籍
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
-        for (item in cloudList){
-            val bookBean=BookGreenDaoManager.getInstance().queryTextBookByBookID(item.bookTypeId,item.bookId)
+        for (item in cloudList) {
+            val bookBean = BookGreenDaoManager.getInstance().queryTextBookByBookID(item.bookTypeId, item.bookId)
             //删除书籍
             FileUtils.deleteFile(File(bookBean.bookPath))
             FileUtils.deleteFile(File(bookBean.bookDrawPath))
@@ -275,16 +271,15 @@ class TextbookFragment : BaseFragment() , IContractView.ITextbookView {
     }
 
     override fun fetchData() {
-        if (tabId==5){
-            val map=HashMap<String,Any>()
+        if (tabId == 5) {
+            val map = HashMap<String, Any>()
             map["page"] = pageIndex
             map["size"] = pageSize
-            map["grade"]=grade
+            map["grade"] = grade
             mPresenter.getHandoutsList(map)
-        }
-        else{
-            books = BookGreenDaoManager.getInstance().queryAllTextBook( textBook, pageIndex, 9)
-            val total = BookGreenDaoManager.getInstance().queryAllTextBook( textBook)
+        } else {
+            books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, 9)
+            val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
             setPageNumber(total.size)
             mAdapter?.setNewData(books)
         }
