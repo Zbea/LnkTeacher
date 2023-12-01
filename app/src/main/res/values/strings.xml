@@ -55,7 +55,7 @@
     <string name="main_exam_title">考试</string>
 
     <string name="textbook_tab_text">我的课本</string>
-    <string name="textbook_tab_course">解析课本</string>
+    <string name="textbook_tab_course">参考课本</string>
     <string name="textbook_tab_homework">我的教辅</string>
     <string name="textbook_tab_homework_other">参考教辅</string>
     <string name="textbook_tab_teaching">教学教育</string>

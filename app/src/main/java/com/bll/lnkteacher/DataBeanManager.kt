@@ -4,7 +4,6 @@ import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.Group
-import com.bll.lnkteacher.utils.ToolUtils
 import java.util.*
 
 object DataBeanManager {
@@ -18,6 +17,7 @@ object DataBeanManager {
     var typeGrades = mutableListOf<Grade>()
     var courses = mutableListOf<ItemList>()
     var provinces = mutableListOf<AreaBean>()
+    var versions = mutableListOf<ItemList>()
 
     private val listTitle = arrayOf(
         R.string.main_home_title,
@@ -245,34 +245,6 @@ object DataBeanManager {
             })
             return list
         }
-
-    //封面
-    val homeworkCover: MutableList<ModuleBean>
-        get() {
-            val list = mutableListOf<ModuleBean>()
-            val moduleBean = ModuleBean()
-            moduleBean.resId = R.mipmap.icon_homework_cover_1
-            val moduleBean1 = ModuleBean()
-            moduleBean1.resId = R.mipmap.icon_homework_cover_2
-            val moduleBean2 = ModuleBean()
-            moduleBean2.resId = R.mipmap.icon_homework_cover_3
-            val moduleBean3 = ModuleBean()
-            moduleBean3.resId = R.mipmap.icon_homework_cover_4
-            list.add(moduleBean)
-            list.add(moduleBean1)
-            list.add(moduleBean2)
-            list.add(moduleBean3)
-            return list
-        }
-
-    /**
-     * 老师下发作业本随机得到背景图
-     */
-    fun getHomeworkCoverStr(): String {
-        val covers = homeworkCover
-        val index = Random().nextInt(covers.size)
-        return ToolUtils.getImageResStr(mContext, covers[index].resId)
-    }
 
     //日记内容选择
     val noteModuleDiary: MutableList<ModuleBean>

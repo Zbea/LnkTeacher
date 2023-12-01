@@ -12,7 +12,10 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.BookDetailsDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -56,7 +59,6 @@ class TextBookStoreActivity : BaseActivity(),
     private var gradeList = mutableListOf<PopupBean>()
     private var tabList = mutableListOf<String>()
     private var subTypeList = mutableListOf<PopupBean>()
-    private var bookVersion = mutableListOf<ItemList>()
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -64,8 +66,11 @@ class TextBookStoreActivity : BaseActivity(),
         //修正数据
         for (book in books){
             when(tabId){
+                0,1->{
+                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
+                }
                 2,3->{
-                    book.version=bookVersion[book.bookVersion-1].desc
+                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
                 }
                 4->{
                     book.id=null
@@ -93,7 +98,6 @@ class TextBookStoreActivity : BaseActivity(),
                 fetchData()
             }
         }
-        bookVersion=bookStoreType.bookVersion
     }
 
     override fun buyBookSuccess() {

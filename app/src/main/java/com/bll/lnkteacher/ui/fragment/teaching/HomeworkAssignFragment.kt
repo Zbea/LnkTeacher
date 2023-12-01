@@ -198,7 +198,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["type"]=2
         map["subType"]=subType
         map["grade"]=grade
-        map["bgResId"]=DataBeanManager.getHomeworkCoverStr()
         mPresenter.addType(map,true)
     }
 

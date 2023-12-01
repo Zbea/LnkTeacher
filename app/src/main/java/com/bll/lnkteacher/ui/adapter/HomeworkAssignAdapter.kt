@@ -1,10 +1,8 @@
 package com.bll.lnkteacher.ui.adapter
 
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.utils.GlideUtils
-import com.bll.lnkteacher.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -12,14 +10,24 @@ class HomeworkAssignAdapter(layoutResId: Int, data: List<TypeBean>?) : BaseQuick
 
     override fun convert(helper: BaseViewHolder, item: TypeBean) {
         if (item.subType==4){
-            helper.setBackgroundRes(R.id.iv_image,R.drawable.bg_black_stroke_10dp_corner)
-            GlideUtils.setImageRoundUrl(mContext,item.bgResId,helper.getView(R.id.iv_image),10)
+            GlideUtils.setImageRoundUrl(mContext,item.bgResId,helper.getView(R.id.iv_image),15)
+            helper.setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
         }
         else{
             helper.setText(R.id.tv_name,item.name)
-            val bg=if (item.bgResId.isNullOrEmpty()) DataBeanManager.getHomeworkCoverStr() else item.bgResId
-            helper.setImageResource(R.id.iv_image,ToolUtils.getImageResId(mContext,bg))
-            helper.setBackgroundRes(R.id.iv_image,R.color.color_transparent)
+            val bg=when(item.subType){
+                1->{
+                    R.mipmap.icon_homework_cover_3
+                }
+                3->{
+                    R.mipmap.icon_homework_cover_2
+                }
+                else->{
+                    R.mipmap.icon_homework_cover_1
+                }
+            }
+            helper.setImageResource(R.id.iv_image,bg)
+            helper.setBackgroundRes(R.id.rl_bg,R.color.color_transparent)
         }
     }
 

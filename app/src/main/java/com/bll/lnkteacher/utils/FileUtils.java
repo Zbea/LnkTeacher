@@ -148,15 +148,15 @@ public class FileUtils {
      */
     public static List<File> getFiles(String path){
         List<File> files = new ArrayList<>();
-        if("".equals(path)){
+        if(path.isEmpty()){
             return null;
         }
         File file = new File(path);
         File[] tempList = file.listFiles();
         if (tempList==null) return null;
-        for (File value : tempList) {
-            if (value.isFile()) {
-                files.add(value);
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
             }
         }
 //        //文件排序
@@ -321,6 +321,7 @@ public class FileUtils {
      * @return
      */
     public static boolean isExistContent(String path){
-        return getFiles(path)!=null;
+        List<File> files=getFiles(path);
+        return files!=null&&files.size()>0;
     }
 }

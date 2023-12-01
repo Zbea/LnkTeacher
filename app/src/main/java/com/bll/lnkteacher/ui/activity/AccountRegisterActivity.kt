@@ -51,6 +51,8 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         popCourses=DataBeanManager.popupCourses
         if (!commonData.typeGrade.isNullOrEmpty())
             DataBeanManager.typeGrades=commonData.typeGrade
+        if (!commonData.version.isNullOrEmpty())
+            DataBeanManager.versions=commonData.version
     }
 
 
