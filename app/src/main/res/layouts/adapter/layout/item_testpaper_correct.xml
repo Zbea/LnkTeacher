@@ -33,11 +33,10 @@
                 android:layout_marginStart="@dimen/dp_30"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
-                android:text="期中考试卷"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/tv_group_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:layout_weight="1"

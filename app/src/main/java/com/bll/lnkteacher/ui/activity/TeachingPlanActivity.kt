@@ -3,10 +3,8 @@ package com.bll.lnkteacher.ui.activity
 import PopupClick
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.dialog.MainTeachingCopyDialog
-import com.bll.lnkteacher.dialog.MainTeachingDeleteDialog
-import com.bll.lnkteacher.dialog.MainTeachingMoveDialog
-import com.bll.lnkteacher.dialog.MainTeachingPlanDialog
+import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.mvp.model.PopupBean
@@ -20,14 +18,21 @@ import kotlinx.android.synthetic.main.ac_date.*
 /**
  * 教学计划
  */
-class TeachingPlanActivity:DateActivity() {
+class TeachingPlanActivity:BaseActivity() {
 
     private var classGroup: ClassGroup?=null
     private var pops= mutableListOf<PopupBean>()
     private var mAdapter: MainTeachingDateAdapter?=null
+    private var yearPop:PopupDateSelector?=null
+    private var monthPop:PopupDateSelector?=null
+    private var yearNow=DateUtils.getYear()
+    private var monthNow=DateUtils.getMonth()
+    private var dates= mutableListOf<Date>()
 
+    override fun layoutId(): Int {
+        return R.layout.ac_date
+    }
     override fun initData() {
-        super.initData()
         classGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
 
         pops.add(PopupBean(0, "教学移动", false))
@@ -36,9 +41,48 @@ class TeachingPlanActivity:DateActivity() {
     }
 
     override fun initView() {
-        super.initView()
         setPageTitle("${classGroup?.name}  教学计划")
         showView(iv_manager)
+
+        tv_year.text=yearNow.toString()
+        tv_month.text=monthNow.toString()
+
+        tv_year.setOnClickListener {
+            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
+            if (yearPop==null){
+                yearPop= PopupDateSelector(this,tv_year,list,0).builder()
+                yearPop ?.setOnSelectorListener {
+                    tv_year.text=it
+                    yearNow=it.toInt()
+                    getDates()
+                }
+                yearPop?.show()
+            }
+            else{
+                yearPop?.show()
+            }
+        }
+
+        tv_month.setOnClickListener {
+            val list= mutableListOf<Int>()
+            for (i in 1..12)
+            {
+                list.add(i)
+            }
+            if (monthPop==null){
+                monthPop= PopupDateSelector(this,tv_month,list,1).builder()
+                monthPop?.setOnSelectorListener {
+                    tv_month.text=it
+                    monthNow=it.toInt()
+                    getDates()
+                }
+                monthPop?.show()
+            }
+            else{
+                monthPop?.show()
+            }
+        }
+
 
         iv_manager.setOnClickListener {
             PopupClick(this, pops, iv_manager,10).builder()
@@ -57,9 +101,11 @@ class TeachingPlanActivity:DateActivity() {
                 }
         }
 
+        initRecyclerView()
+        getDates()
     }
 
-    override fun initRecycler() {
+    private fun initRecyclerView() {
         mAdapter = MainTeachingDateAdapter(R.layout.item_main_teaching_plan, null)
         rv_list.layoutManager = GridLayoutManager(this,7)
         rv_list.adapter = mAdapter
@@ -70,19 +116,83 @@ class TeachingPlanActivity:DateActivity() {
                 MainTeachingPlanDialog(this,classGroup?.classId!!,dateBean.time).builder()
                     ?.setOnClickListener{
                        dateBean.dateEvent=it
-                        mAdapter?.notifyItemChanged(position)
+                       mAdapter?.notifyItemChanged(position)
                     }
             }
         }
     }
 
-    override fun getDates() {
-        super.getDates()
+    //根据月份获取当月日期
+    private fun getDates(){
+        dates.clear()
+        val lastYear: Int
+        val lastMonth: Int
+        val nextYear: Int
+        val nextMonth: Int
+
+        when (monthNow) {
+            //当月为一月份时候
+            1 -> {
+                lastYear=yearNow-1
+                lastMonth=12
+                nextYear=yearNow
+                nextMonth=monthNow+1
+            }
+            //当月为12月份时候
+            12 -> {
+                lastYear=yearNow
+                lastMonth=monthNow-1
+                nextYear=yearNow+1
+                nextMonth=1
+            }
+            else -> {
+                lastYear=yearNow
+                lastMonth=monthNow-1
+                nextYear=yearNow
+                nextMonth=monthNow+1
+            }
+        }
+
+        var week=DateUtils.getMonthOneDayWeek(yearNow,monthNow-1)
+        if (week==1)
+            week=8
+
+        //补齐上月差数
+        for (i in 0 until week-2){
+//            //上月天数
+//            val maxDay=DateUtils.getMonthMaxDay(lastYear,lastMonth-1)
+//            val day=maxDay-(week-2)+(i+1)
+//            dates.add(getDateBean(lastYear,lastMonth,day,false))
+            dates.add(Date())
+        }
+
+        val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
+        for (i in 1 .. max)
+        {
+            dates.add(getDateBean(yearNow,monthNow,i,true))
+        }
+
+        if (dates.size>35){
+            //补齐下月天数
+            for (i in 0 until 42-dates.size){
+//                val day=i+1
+//                dates.add(getDateBean(nextYear,nextMonth,day,false))
+                dates.add(Date())
+            }
+        }
+        else{
+            for (i in 0 until 35-dates.size){
+//                val day=i+1
+//                dates.add(getDateBean(nextYear,nextMonth,day,false))
+                dates.add(Date())
+            }
+        }
+
         mAdapter?.setNewData(dates)
+
     }
 
-    override fun getDateBean(year: Int, month: Int, day: Int, isMonth: Boolean): Date {
-
+    private fun getDateBean(year: Int, month: Int, day: Int, isMonth: Boolean): Date {
         val solar= Solar()
         solar.solarYear=year
         solar.solarMonth=month
@@ -101,7 +211,6 @@ class TeachingPlanActivity:DateActivity() {
         date.dateEvent= DateEventDaoManager.getInstance().queryBean(classGroup?.classId!!,date.time)
 
         return date
-
     }
 
     private fun move(){

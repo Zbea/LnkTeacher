@@ -55,8 +55,7 @@ class AppFragment:BaseFragment() {
     }
 
     private fun initData() {
-        apps.clear()
-        apps.addAll(AppUtils.scanLocalInstallAppList(activity))
+        apps=AppUtils.scanLocalInstallAppList(activity)
         mAdapter?.setNewData(apps)
     }
 

@@ -19,7 +19,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
             else->"校群联考"+"  "+if (item.examList.isNullOrEmpty())  "" else item.examList[0].examName
         }
         helper.setText(tv_exam_type,type)
-        helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time*1000))
+        helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time))
         helper.setText(tv_group_name,item.name)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
@@ -40,7 +40,8 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}人")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
-                setVisible(tv_save,item.status==2&&item.totalSubmitStudent>0)
+                setText(tv_correct_number,"${item.totalUpdate}")
+                setGone(tv_save,item.status==2&&item.totalUpdate>0)
                 addOnClickListener(ll_content, tv_save)
             }
         }

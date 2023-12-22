@@ -55,7 +55,6 @@ class NoteFragment : BaseFragment() {
 
         popupBeans.add(PopupBean(0, "笔记本管理", true))
         popupBeans.add(PopupBean(1, "新建笔记本", false))
-        popupBeans.add(PopupBean(2, "新建主题", false))
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
@@ -66,13 +65,6 @@ class NoteFragment : BaseFragment() {
                     when (item.id) {
                         0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
                         1 -> createNoteBookType()
-                        else -> {
-                            NoteModuleAddDialog(requireContext(), 1).builder()
-                                ?.setOnDialogClickListener { moduleBean ->
-                                    createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
-                                }
-                        }
-
                     }
                 }
         }
@@ -111,16 +103,19 @@ class NoteFragment : BaseFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                mAdapter?.remove(position)
                                 //删除笔记本
                                 NoteDaoManager.getInstance().deleteBean(note)
                                 //删除笔记本中的所有笔记
                                 NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.title)
                                 val path= FileAddress().getPathNote(note.typeStr,note.title)
                                 FileUtils.deleteFile(File(path))
+
+                                notes.remove(note)
+                                if (pageIndex>1&&notes.size==0){
+                                    pageIndex-=1
+                                }
                                 EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                             }
-
                         })
                 }
                 R.id.iv_edit -> {
@@ -134,7 +129,6 @@ class NoteFragment : BaseFragment() {
                             NoteContentDaoManager.getInstance().editNotes(note.typeStr,note.title,string)
                             note.title = string
                             NoteDaoManager.getInstance().insertOrReplace(note)
-                            mAdapter?.notifyItemChanged(position)
                             EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
                         }
                 }
@@ -147,6 +141,14 @@ class NoteFragment : BaseFragment() {
                 }
             }
         }
+        val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
+        view.setOnClickListener {
+            NoteModuleAddDialog(requireContext(), 1).builder()
+                ?.setOnDialogClickListener { moduleBean ->
+                    createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
+                }
+        }
+        mAdapter?.addFooterView(view)
     }
 
     /**
@@ -190,8 +192,11 @@ class NoteFragment : BaseFragment() {
                 note.date = System.currentTimeMillis()
                 note.typeStr = typeStr
                 note.contentResId = resId
-                pageIndex=1
                 NoteDaoManager.getInstance().insertOrReplace(note)
+
+                if(notes.size==10){
+                    pageIndex+=1
+                }
                 EventBus.getDefault().post(NOTE_EVENT)
             }
     }

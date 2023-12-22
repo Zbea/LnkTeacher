@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.utils;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -239,6 +242,7 @@ public class AppUtils {
      *
      * @return 设备ID
      */
+    @SuppressLint("MissingPermission")
     public static String getAndroidID(Context context) {
         BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
         return myDevice.getName();
@@ -335,29 +339,45 @@ public class AppUtils {
 
     public static List<AppBean> scanLocalInstallAppList(Context context) {
         PackageManager packageManager=context.getPackageManager();
-        List myAppInfos = new ArrayList();
+        List<AppBean> apps = new ArrayList();
         try {
-            List packageInfos = packageManager.getInstalledPackages(0);
+            List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
             for (int i = 0; i < packageInfos.size(); i++) {
-                PackageInfo packageInfo = (PackageInfo) packageInfos.get(i);
+                PackageInfo packageInfo = packageInfos.get(i);
                 //过滤掉系统app
-                if ((ApplicationInfo.FLAG_SYSTEM & packageInfo.applicationInfo.flags) > 0) {
+                if (isSystemApp(packageInfo)) {
                     continue;
                 }
-                if (!packageInfo.packageName.equals(context.getPackageName()))
-                {
-                    AppBean myAppInfo = new AppBean();
-                    myAppInfo.appName= packageInfo.applicationInfo.loadLabel(packageManager).toString();
-                    myAppInfo.packageName=packageInfo.packageName;
-                    myAppInfo.imageByte=BitmapUtils.drawableToByte(packageInfo.applicationInfo.loadIcon(packageManager));
-                    myAppInfos.add(myAppInfo);
+                AppBean appBean = new AppBean();
+                appBean.appName = packageInfo.applicationInfo.loadLabel(packageManager).toString();
+                appBean.packageName = packageInfo.packageName;
+                Drawable drawable=packageInfo.applicationInfo.loadIcon(packageManager);
+                if (drawable!=null){
+                    if (drawable instanceof android.graphics.drawable.AdaptiveIconDrawable){
+                        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas =new Canvas(bitmap);
+                        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        drawable.draw(canvas);
+                        appBean.imageByte=BitmapUtils.drawableToByte(bitmap);
+                    }
+                    else {
+                        appBean.imageByte=BitmapUtils.drawableToByte(drawable);
+                    }
                 }
+                apps.add(appBean);
             }
         } catch (Exception e) {
-            Log.e("TAG", "获取应用包信息失败");
+            throw new RuntimeException(e);
         }
-        return myAppInfos;
+        return apps;
     }
+
+    private static boolean isSystemApp(PackageInfo pi) {
+        boolean isSysApp = (pi.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 1;
+        boolean isSysUpd = (pi.applicationInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) == 1;
+        return isSysApp || isSysUpd;
+    }
+
 
     /**
      * 查看本地应用图标
@@ -365,21 +385,38 @@ public class AppUtils {
      * @param packageName
      * @return
      */
-    public static Drawable scanLocalInstallAppDrawable(Context context, String packageName) {
+    public static byte[] scanLocalInstallAppDrawable(Context context, String packageName) {
         PackageManager packageManager=context.getPackageManager();
+        byte[] btyes = new byte[0];
         Drawable drawable=null;
+        Bitmap bitmap=null;
         try {
             List<PackageInfo> packageInfos = packageManager.getInstalledPackages(0);
             for (int i = 0; i < packageInfos.size(); i++) {
-                PackageInfo packageInfo = (PackageInfo) packageInfos.get(i);
+                PackageInfo packageInfo = packageInfos.get(i);
                 if (packageInfo.packageName.equals(packageName))
                 {
                     drawable=packageInfo.applicationInfo.loadIcon(packageManager);
+                    if (drawable instanceof android.graphics.drawable.AdaptiveIconDrawable){
+                        bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                        Canvas canvas =new Canvas(bitmap);
+                        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+                        drawable.draw(canvas);
+                        btyes=BitmapUtils.drawableToByte(bitmap);
+                    }
+                    else {
+                        btyes=BitmapUtils.drawableToByte(drawable);
+                    }
                 }
             }
-        } catch (Exception e) {
-            Log.e("TAG", "获取应用包信息失败");
+        } catch (Exception ignored) {
         }
-        return drawable;
+        finally {
+            if (bitmap!=null){
+                bitmap.recycle();
+                bitmap=null;
+            }
+        }
+        return btyes;
     }
 }

@@ -33,8 +33,9 @@ open class DateActivity: BaseActivity() {
 
     override fun initView() {
         setPageTitle("日历")
+        showView(ll_plan)
 
-        initRecycler()
+        initRecyclerView()
         getDates()
 
         tv_year.text=yearNow.toString()
@@ -76,10 +77,14 @@ open class DateActivity: BaseActivity() {
             }
         }
 
+        tv_plan.setOnClickListener {
+            startActivity(Intent(this,PlanOverviewActivity::class.java))
+        }
+
 
     }
 
-    open fun initRecycler(){
+    private fun initRecyclerView(){
         mAdapter = DateAdapter(R.layout.item_date, null)
         rv_list.layoutManager = GridLayoutManager(this,7)
         rv_list.adapter = mAdapter
@@ -100,12 +105,12 @@ open class DateActivity: BaseActivity() {
 
 
     //根据月份获取当月日期
-    open fun getDates(){
+    private fun getDates(){
         dates.clear()
-        var lastYear: Int
-        var lastMonth: Int
-        var nextYear: Int
-        var nextMonth: Int
+        val lastYear: Int
+        val lastMonth: Int
+        val nextYear: Int
+        val nextMonth: Int
 
         when (monthNow) {
             //当月为一月份时候
@@ -149,27 +154,16 @@ open class DateActivity: BaseActivity() {
             dates.add(getDateBean(yearNow,monthNow,i,true))
         }
 
-        if (dates.size>35){
-            //补齐下月天数
-            for (i in 0 until 42-dates.size){
+        for (i in 0 until 42-dates.size){
 //                val day=i+1
 //                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
-            }
+            dates.add(Date())
         }
-        else{
-            for (i in 0 until 35-dates.size){
-//                val day=i+1
-//                dates.add(getDateBean(nextYear,nextMonth,day,false))
-                dates.add(Date())
-            }
-        }
-
         mAdapter?.setNewData(dates)
 
     }
 
-    open fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
+    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month

@@ -13,12 +13,14 @@
 
         <TextView
             android:id="@+id/tv_name"
-            android:layout_width="182dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_60"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.5"
-            android:layout_centerVertical="true"
+            android:lines="1"
+            android:ellipsize="end"
             android:textColor="@color/black"
             android:textSize="30sp"
             android:textStyle="bold" />

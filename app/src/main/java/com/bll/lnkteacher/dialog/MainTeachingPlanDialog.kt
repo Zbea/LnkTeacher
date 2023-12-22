@@ -10,6 +10,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.mvp.model.DateEvent
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.KeyboardUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,7 +50,7 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
         cancleTv?.setOnClickListener { dialog.dismiss() }
         okTv?.setOnClickListener {
             val contentStr=etContent?.text.toString()
-            if (contentStr.isNullOrEmpty())
+            if (contentStr.isEmpty())
                 return@setOnClickListener
             if (dateEvent==null){
                 dateEvent=DateEvent()
@@ -64,6 +65,10 @@ class MainTeachingPlanDialog(private val context: Context, private val classId:I
             DateEventDaoManager.getInstance().insertOrReplace(dateEvent)
             listener?.onClick(dateEvent!!)
             dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            KeyboardUtils.hideSoftKeyboard(context)
         }
 
         return this

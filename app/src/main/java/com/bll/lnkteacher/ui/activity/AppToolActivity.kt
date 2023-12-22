@@ -41,11 +41,7 @@ class AppToolActivity:BaseActivity() {
                     }
                 }
             }
-            for (item in apps){
-                item.isCheck=false
-            }
-            mAdapter?.notifyDataSetChanged()
-
+            setData()
             setMenuData()
         }
         tv_out.setOnClickListener {
@@ -55,7 +51,7 @@ class AppToolActivity:BaseActivity() {
                     AppDaoManager.getInstance().insertOrReplace(item)
                 }
             }
-
+            setData()
             setMenuData()
         }
 
@@ -70,14 +66,14 @@ class AppToolActivity:BaseActivity() {
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(6,50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            if (position>0){
-                val packageName= apps[position].packageName
+            val packageName= apps[position].packageName
+            if (packageName!=Constants.PACKAGE_GEOMETRY){
                 AppUtils.startAPP(this,packageName)
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=apps[position]
-            if (view.id==R.id.cb_check){
+            if (view.id==R.id.ll_name){
                 item.isCheck=!item.isCheck
                 mAdapter?.notifyItemChanged(position)
             }
@@ -109,11 +105,17 @@ class AppToolActivity:BaseActivity() {
             })
         }
         apps=AppDaoManager.getInstance().queryList()
+        for (item in apps){
+            item.isCheck=false
+        }
         mAdapter?.setNewData(apps)
     }
 
     private fun setMenuData(){
         menuApps=AppDaoManager.getInstance().queryTool()
+        for (item in menuApps){
+            item.isCheck=false
+        }
         mMenuAdapter?.setNewData(menuApps)
     }
 

@@ -9,13 +9,14 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
+import com.bll.lnkteacher.ui.activity.PlanOverviewActivity
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context,val type:Int) {
+class AppToolDialog(val context: Context) {
 
     private var dialog:Dialog?=null
 
@@ -31,16 +32,13 @@ class AppToolDialog(val context: Context,val type:Int) {
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()
-        if (type==0){
-            var pos=-1
-            for (list in lists){
-                if (list.packageName==Constants.PACKAGE_GEOMETRY){
-                    pos=lists.indexOf(list)
-                }
+        if (context is PlanOverviewActivity){
+            val appBean= AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
+            if (appBean!=null){
+                lists.remove(appBean)
             }
-            if (pos>=0)
-                lists.removeAt(pos)
         }
+
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
         val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)

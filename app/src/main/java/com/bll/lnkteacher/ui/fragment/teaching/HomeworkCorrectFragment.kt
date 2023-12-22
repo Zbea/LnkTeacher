@@ -74,16 +74,10 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity, 30f)))
             setOnItemChildClickListener { adapter, view, position ->
-                val item = items[position]
+                this@HomeworkCorrectFragment.position = position
                 when (view.id) {
                     R.id.iv_delete -> {
-                        this@HomeworkCorrectFragment.position = position
                         deleteCorrect()
-                    }
-                    R.id.tv_student -> {
-                        if (item.sendStatus == 2) {
-                            mPresenter.sendGroup(item.id)
-                        }
                     }
                 }
             }

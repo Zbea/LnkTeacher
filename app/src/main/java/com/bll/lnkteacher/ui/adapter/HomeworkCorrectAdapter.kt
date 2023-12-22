@@ -19,8 +19,7 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
         else{
             helper.setText(R.id.tv_title,item.title)
         }
-        helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time*1000))
-        helper.setVisible(R.id.tv_student,item.subType!=3)
+        helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time))
         val rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         val mAdapter = TypeAdapter(R.layout.item_testpaper_correct_class_type,item.examList)
@@ -29,8 +28,6 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(view,helper.adapterPosition,position)
         }
-
-        helper.addOnClickListener(R.id.iv_delete,R.id.tv_student)
     }
 
     class TypeAdapter(layoutResId: Int,data: List<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
@@ -39,10 +36,10 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
             helper.setText(R.id.tv_class_name,item.name)
             helper.setText(R.id.tv_number,"${item.totalStudent}人")
             helper.setText(R.id.tv_receive_number,"${item.totalSubmitStudent}")
+            helper.setText(R.id.tv_correct_number,"${item.totalUpdate}")
             helper.setVisible(R.id.tv_end_date,true)
-            helper.setText(R.id.tv_end_date,DateUtils.longToStringWeek(item.endTime*1000))
-
-            helper.setVisible(R.id.tv_save,item.status==2&&item.totalSubmitStudent>0)
+            helper.setText(R.id.tv_end_date,DateUtils.longToStringWeek(item.endTime))
+            helper.setGone(R.id.tv_save,item.status==2&&item.totalUpdate>0)
             helper.addOnClickListener(R.id.ll_content, R.id.tv_save)
         }
 

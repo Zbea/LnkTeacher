@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import PopupClick
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -34,8 +33,6 @@ import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
 import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
-import com.bll.lnkteacher.utils.date.LunarSolarConverter
-import com.bll.lnkteacher.utils.date.Solar
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -61,7 +58,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
 
-    private var popNotes= mutableListOf<PopupBean>()
     private var uploadType=0//上传类型
 
     override fun onList(message: Message) {
@@ -87,10 +83,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
     override fun initView() {
         setTitle(R.string.main_home_title)
 
-        popNotes.add(PopupBean(0,"随笔",R.mipmap.icon_freenote))
-        popNotes.add(PopupBean(1,"日记",R.mipmap.icon_diary))
-        popNotes.add(PopupBean(2,"总览",R.mipmap.icon_plan))
-
         tv_date_today.setOnClickListener {
             startActivity(Intent(activity, DateActivity::class.java))
         }
@@ -115,26 +107,18 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
             }
         }
 
-        iv_manager.setOnClickListener {
-            PopupClick(requireActivity(),popNotes,iv_manager,5).builder().setOnSelectListener{
-                when (it.id) {
-                    0 -> {
-                        startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
-                    }
-                    1->{
-                        if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                            PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
-                            }
-                        } else{
-                            startActivity(Intent(requireActivity(),DiaryActivity::class.java))
-                        }
-                    }
-                    else -> {
-                        startActivity(Intent(requireActivity(),PlanOverviewActivity::class.java))
-                    }
+        tv_diary.setOnClickListener {
+            if (privacyPassword!=null&&privacyPassword?.isSet==true){
+                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                    startActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
+            } else{
+                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
+        }
+
+        tv_free_note.setOnClickListener {
+            startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
         }
 
         initMessageView()
@@ -173,29 +157,29 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
 
     //日历相关内容设置
     private fun initDateView() {
-
-        val dates= DateUtils.getDateNumber(Date().time)
-        val solar= Solar()
-        solar.solarYear=dates[0]
-        solar.solarMonth=dates[1]
-        solar.solarDay=dates[2]
-        val lunar= LunarSolarConverter.SolarToLunar(solar)
-
-        val str = if (!solar.solar24Term.isNullOrEmpty()) {
-            "24节气   "+solar.solar24Term
-        } else {
-            if (!solar.solarFestivalName.isNullOrEmpty()) {
-                "节日   "+solar.solarFestivalName
-            } else {
-                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
-                    "节日   "+lunar.lunarFestivalName
-                }
-                else{
-                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
-                }
-            }
-        }
-        tv_date_today.text=SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date().time)+"  "+str
+//
+//        val dates= DateUtils.getDateNumber(Date().time)
+//        val solar= Solar()
+//        solar.solarYear=dates[0]
+//        solar.solarMonth=dates[1]
+//        solar.solarDay=dates[2]
+//        val lunar= LunarSolarConverter.SolarToLunar(solar)
+//
+//        val str = if (!solar.solar24Term.isNullOrEmpty()) {
+//            "24节气   "+solar.solar24Term
+//        } else {
+//            if (!solar.solarFestivalName.isNullOrEmpty()) {
+//                "节日   "+solar.solarFestivalName
+//            } else {
+//                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
+//                    "节日   "+lunar.lunarFestivalName
+//                }
+//                else{
+//                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
+//                }
+//            }
+//        }
+        tv_date_today.text=SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date().time)
     }
 
     //消息相关处理

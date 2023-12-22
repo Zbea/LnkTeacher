@@ -6,7 +6,7 @@
     android:paddingEnd="@dimen/dp_40"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_content"
         android:layout_width="152dp"
         android:layout_height="@dimen/dp_195"
@@ -16,11 +16,29 @@
         >
 
         <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:text="@string/send"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            />
+
+        <TextView
             android:id="@+id/tv_class_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_40"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             />
@@ -29,19 +47,11 @@
             android:id="@+id/tv_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_class_name"
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="50dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
             />
 
         <TextView
@@ -52,9 +62,11 @@
             android:layout_marginTop="5dp"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_16"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/dp_5"
             />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,37 +79,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/receive"
+            android:text="提交"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             />
         <TextView
             android:id="@+id/tv_receive_number"
-            android:layout_width="match_parent"
-            android:layout_marginStart="5dp"
+            android:layout_width="0dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             />
 
         <TextView
-            android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send"
+            android:layout_marginStart="@dimen/dp_5"
+            android:text="批改"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:visibility="invisible"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:textSize="@dimen/sp_18"
             />
+        <TextView
+            android:id="@+id/tv_correct_number"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_line_bottom"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
+            />
+
     </LinearLayout>
 
 </LinearLayout>

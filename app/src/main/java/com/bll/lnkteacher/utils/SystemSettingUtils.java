@@ -78,7 +78,6 @@ public class SystemSettingUtils {
         view.setDrawingCacheEnabled(true);
         Bitmap bitmap = view.getDrawingCache();
         BitmapUtils.saveBmpGallery(context,bitmap, new FileAddress().getPathCourse("course"),picName);
-        SToast.showText("截图成功");
     }
 
     //获取最大多媒体音量

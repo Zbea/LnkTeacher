@@ -12,5 +12,6 @@ public class CorrectClassBean implements Serializable {
     public long endTime;
     public int totalStudent;
     public int totalSubmitStudent;
+    public int totalUpdate;
     public int grade;
 }

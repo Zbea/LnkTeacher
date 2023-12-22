@@ -5,6 +5,7 @@ import com.bll.lnkteacher.Constants.Companion.weekTime
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.DateCalendarDialog
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
@@ -29,7 +30,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initData() {
     }
     override fun initView() {
-        setPageTitle("计划总览")
+        setPageTitle("月周计划")
         elik=v_content.pwInterFace
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
@@ -80,6 +81,22 @@ class PlanOverviewActivity: BaseDrawingActivity() {
                 weekEndDate+=weekTime
             }
             setChangeDate()
+        }
+
+        tv_date.setOnClickListener {
+            DateCalendarDialog(this,45f,190f).builder().setOnDateListener{
+                if (type==1){
+                    val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
+                    nowYear=dateStr[0].toInt()
+                    nowMonth=dateStr[1].toInt()
+                }
+                else{
+                    val weekLong=DateUtils.getCurrentWeekTimeFrame(it)
+                    weekStartDate=weekLong[0]
+                    weekEndDate=weekLong[1]
+                }
+                setChangeDate()
+            }
         }
 
     }
