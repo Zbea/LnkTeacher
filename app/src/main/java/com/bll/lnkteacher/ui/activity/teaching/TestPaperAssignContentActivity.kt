@@ -7,7 +7,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
+import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
@@ -25,14 +25,10 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private var mAdapter: TestPaperAssignContentAdapter? = null
     private var typeBean:TypeBean?=null
     private var items = mutableListOf<ContentListBean>()
-    private var popGroupNames= mutableListOf<PopupBean>()
     private var popGroups= mutableListOf<PopupBean>()
-    private var type=1 //班群校群id
-    private var subtype=0 //选中群id
+    private var classSelectGroups= mutableListOf<PopupBean>()
     private var grade=0
-    private var timeDialog:DateTimeSelectorDialog?=null
     private var commitTime=0L
-    private var position=0
 
     override fun onType(typeList: TypeList?) {
     }
@@ -72,16 +68,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         grade=typeBean?.grade!!
         fetchData()
 
-        popGroupNames.add(PopupBean(1,getString(R.string.teaching_testpaper_group_class),true))
-        popGroupNames.add(PopupBean(2,getString(R.string.teaching_testpaper_group_school),false))
-        tv_group_name.text=popGroupNames[0].name
         popGroups=DataBeanManager.getGradeClassGroups(grade)
-        if (popGroups.size>0){
-            tv_group.text=popGroups[0].name
-            subtype=popGroups[0].id
-            popGroups[0].isCheck=true
-        }
-
         presenter.getGroupTypes()
     }
 
@@ -107,27 +94,25 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 }
             }
             setOnItemLongClickListener { adapter, view, position ->
-                this@TestPaperAssignContentActivity.position=position
-                delete()
+                CommonDialog(this@TestPaperAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        val item=items[position]
+                        val ids= arrayListOf(item.taskId)
+                        presenter.deletePapers(ids)
+                    }
+                })
                 true
             }
         }
 
         tv_time.setOnClickListener {
-            if (timeDialog==null){
-                timeDialog=DateTimeSelectorDialog(this)
-                timeDialog?.builder()?.setOnDateListener { timeStr, timeLong ->
-                    tv_time.text=DateUtils.longToStringNoYear(timeLong)
-                    commitTime=timeLong
-                }
+            DateTimeSelectorDialog(this).builder().setOnDateListener { timeStr, timeLong ->
+                tv_time.text=DateUtils.longToStringNoYear(timeLong)
+                commitTime=timeLong
             }
-            else{
-                timeDialog?.show()
-            }
-        }
-
-        tv_group_name.setOnClickListener {
-            selectorName()
         }
 
         tv_group.setOnClickListener {
@@ -135,33 +120,37 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         }
 
         tv_commit.setOnClickListener {
-            if (getCheckedItems().size>0&&subtype!=0&&commitTime>0){
-                val ids= mutableListOf<Int>()
-                for (item in getCheckedItems()){
-                    ids.add(item.taskId)
-                }
-                val map=HashMap<String,Any>()
-                map["type"]=type
-                map["groupId"]=subtype
-                map["ids"]=ids.toIntArray()
-                map["grade"]=typeBean?.grade!!
-                map["endTime"]=commitTime
-                presenter.sendPapers(map)
+            if (classSelectGroups.size==0){
+                showToast("未选择班级")
+                return@setOnClickListener
             }
-        }
-    }
+            if (getCheckedItems().size==0){
+                showToast("未选择试卷")
+                return@setOnClickListener
+            }
+            if (commitTime<=System.currentTimeMillis()){
+                showToast("提交时间错误")
+                return@setOnClickListener
+            }
 
-    private fun delete(){
-        CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
+            val ids= mutableListOf<Int>()
+            for (item in getCheckedItems()){
+                ids.add(item.taskId)
             }
-            override fun ok() {
-                val item=items[position]
-                val ids= arrayListOf(item.taskId)
-                presenter.deletePapers(ids)
+
+            val classIds= mutableListOf<Int>()
+            for (item in classSelectGroups){
+                classIds.add(item.id)
             }
-        })
+
+            val map=HashMap<String,Any>()
+            map["type"]=1
+            map["ids"]=ids.toIntArray()
+            map["classIds"]=classIds.toIntArray()
+            map["grade"]=typeBean?.grade!!
+            map["endTime"]=commitTime
+            presenter.sendPapers(map)
+        }
     }
 
     /**
@@ -176,31 +165,9 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         return lists
     }
 
-
-    private fun selectorName() {
-        PopupRadioList(this, popGroupNames, tv_group_name,tv_group_name.width,  5).builder()
-            .setOnSelectListener { item ->
-                type=item.id
-                tv_group_name.text = item.name
-                popGroups = when(item.id){
-                    1->{
-                        DataBeanManager.getGradeClassGroups(grade)
-                    }
-                    else->{
-                        DataBeanManager.popSchoolGroups
-                    }
-                }
-                tv_group.text=popGroups[0].name
-                subtype=popGroups[0].id
-                popGroups[0].isCheck=true
-            }
-    }
-
     private fun selectorGroup() {
-        PopupRadioList(this, popGroups, tv_group,  5).builder()
-         .setOnSelectListener { item ->
-             tv_group.text = item.name
-             subtype=item.id
+        PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder()?.setOnSelectListener{
+            classSelectGroups= it as MutableList<PopupBean>
         }
     }
 

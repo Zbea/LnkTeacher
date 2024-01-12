@@ -1,8 +1,8 @@
 package com.bll.lnkteacher.mvp.presenter
 
+import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
 import com.bll.lnkteacher.net.BaseResult
@@ -28,22 +28,6 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
     }
 
-    fun getGroups() {
-
-        val list = RetrofitManager.service.getGroupList()
-        doRequest(list, object : Callback<MutableList<Group>>(view) {
-            override fun failed(tBaseResult: BaseResult<MutableList<Group>>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<MutableList<Group>>) {
-                if (!tBaseResult.data.isNullOrEmpty())
-                    view.onGroupList(tBaseResult.data)
-            }
-        }, false)
-
-    }
-
     fun getCommon() {
 
         val editName = RetrofitManager.service.getCommonGrade()
@@ -61,5 +45,18 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
     }
 
+    //获取更新信息
+    fun getAppUpdate() {
+        val list= RetrofitManager.service.onAppUpdate()
+        doRequest(list, object : Callback<AppUpdateBean>(view) {
+            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
+                if (tBaseResult.data!=null)
+                    view.onAppUpdate(tBaseResult.data)
+            }
+        }, false)
+    }
 
 }

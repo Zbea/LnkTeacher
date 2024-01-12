@@ -47,7 +47,6 @@
     <string name="main_home_title">首页</string>
     <string name="main_textbook_title">教学</string>
     <string name="main_classgroup_title">班群</string>
-    <string name="main_classgroup_fragment_title">群管理</string>
     <string name="main_homework_title">作业</string>
     <string name="main_note_title">笔记</string>
     <string name="main_bookcase_title">书架</string>
@@ -106,15 +105,13 @@
     <string name="teaching_pop_assign_details">布置详情</string>
     <string name="teaching_pop_create_book">新增作业本</string>
     <string name="teaching_pop_create_reel">新增作业卷</string>
-    <string name="teaching_pop_create_testpaper">新增测试卷</string>
+    <string name="teaching_pop_create_testpaper">新增测验卷</string>
     <string name="teaching_book">作业本</string>
     <string name="teaching_reel">作业卷</string>
     <string name="teaching_assign_time">布置时间</string>
     <string name="teaching_assign_success">布置成功</string>
     <string name="teaching_correct_success">批改成功</string>
     <string name="teaching_testpaper_correct_undone">测卷未改完</string>
-    <string name="teaching_testpaper_group_class">班群单考</string>
-    <string name="teaching_testpaper_group_school">校群联考</string>
     <string name="teaching_testpaper_analyse">数据统计</string>
     <string name="teaching_testpaper_score">成绩统计</string>
     <string name="teaching_testpaper_send">发送学生</string>

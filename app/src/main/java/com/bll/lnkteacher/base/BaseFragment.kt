@@ -10,15 +10,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.MethodManager
-import com.bll.lnkteacher.R
+import com.bll.lnkteacher.*
+import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -26,6 +23,7 @@ import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.NoteDrawingActivity
 import com.bll.lnkteacher.utils.*
+import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
@@ -62,6 +60,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
     var pageSize=0 //一页数据
     var privacyPassword:PrivacyPassword?=null
     var cloudList= mutableListOf<CloudListBean>()
+    private var updateDialog: AppUpdateDialog?=null
 
     override fun onSuccess(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
@@ -73,10 +72,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
         DataBeanManager.classGroups=groups
         onClassGroupEvent()
     }
-    override fun onGroupList(groups: MutableList<Group>) {
-        DataBeanManager.schoolGroups=groups
-        onGroupEvent()
-    }
+
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
         {
@@ -88,6 +84,13 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
             DataBeanManager.typeGrades=commonData.typeGrade
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
+    }
+
+    override fun onAppUpdate(item: AppUpdateBean) {
+        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
+            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+            downLoadStart(item)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -299,6 +302,32 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
         return radioButton
     }
 
+    //下载应用
+    private fun downLoadStart(bean: AppUpdateBean){
+        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+            FileDownManager.SingleTaskCallBack {
+            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                if (task != null && task.isRunning) {
+                    requireActivity().runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                        updateDialog?.setUpdateBtn(s)
+                    }
+                }
+            }
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+            }
+            override fun completed(task: BaseDownloadTask?) {
+                updateDialog?.dismiss()
+                AppUtils.installApp(requireActivity(), targetFileStr)
+            }
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                updateDialog?.dismiss()
+            }
+        })
+    }
+
     /**
      * 跳转笔记写作
      */
@@ -349,7 +378,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
 
     fun fetchCommonData(){
         mCommonPresenter.getClassGroups()
-        mCommonPresenter.getGroups()
         if (DataBeanManager.grades.size==0)
             mCommonPresenter.getCommon()
     }
@@ -400,13 +428,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
      */
     open fun onClassGroupEvent(){
     }
-
-    /**
-     * 群事件
-     */
-    open fun onGroupEvent(){
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)

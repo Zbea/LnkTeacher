@@ -202,7 +202,7 @@ class HomeworkManagerFragment : BaseFragment(){
     private fun showCreateTestPaperName() {
         InputContentDialog(requireContext(), getString(R.string.teaching_pop_create_testpaper)).builder()
             .setOnDialogClickListener { str ->
-                testPaperAssignFragment?.addType(str+"测试卷")
+                testPaperAssignFragment?.addType(str+"测验卷")
             }
     }
 

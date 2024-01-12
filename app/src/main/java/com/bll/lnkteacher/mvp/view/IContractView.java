@@ -3,6 +3,7 @@ package com.bll.lnkteacher.mvp.view;
 import com.bll.lnkteacher.mvp.model.AccountList;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.AppList;
+import com.bll.lnkteacher.mvp.model.AppUpdateBean;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CloudList;
@@ -13,8 +14,6 @@ import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
-import com.bll.lnkteacher.mvp.model.group.Group;
-import com.bll.lnkteacher.mvp.model.group.GroupUser;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails;
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent;
@@ -82,19 +81,11 @@ public interface IContractView {
         void onStatusSuccess();
     }
 
-    //校群
-    interface IGroupView extends IBaseView{
-        void onCreateGroupSuccess();
-        void onAddSuccess();
-        void onQuitSuccess();
-        void getGroupUser(List<GroupUser> users);
-    }
-
     //主页
     interface ICommonView extends IBaseView{
         void onClassList(List<ClassGroup> classGroups);
-        void onGroupList(List<Group> groups);
         void onCommon(CommonData commonData);
+        void onAppUpdate(AppUpdateBean item);
     }
 
     interface ISchoolView extends IBaseView{

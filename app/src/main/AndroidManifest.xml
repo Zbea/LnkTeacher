@@ -116,7 +116,7 @@
             />
         <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"/>
         <activity android:name=".ui.activity.teaching.TestPaperGradeActivity"/>
-        <activity android:name=".ui.activity.group.ClassGroupUserActivity"/>
+        <activity android:name=".ui.activity.ClassGroupUserActivity"/>
         <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity"/>
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"/>
         <activity android:name=".ui.activity.teaching.TestPaperCorrectActivity"

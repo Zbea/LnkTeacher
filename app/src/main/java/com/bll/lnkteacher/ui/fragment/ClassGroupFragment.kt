@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.group
+package com.bll.lnkteacher.ui.fragment
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,10 +11,11 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.group.ClassGroupUserActivity
+import com.bll.lnkteacher.ui.activity.ClassGroupUserActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 import org.greenrobot.eventbus.EventBus
 
@@ -44,12 +45,22 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_group_manager
     }
 
     override fun initView() {
+        setTitle(R.string.main_classgroup_title)
+
+        showView(iv_create)
+
         initRecyclerView()
         onClassGroupEvent()
+
+
+        iv_create.setOnClickListener {
+            createClassGroup()
+        }
+
     }
     override fun lazyLoad() {
         fetchCommonData()
@@ -83,7 +94,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     /**
      * 创建班群
      */
-    fun createClassGroup(){
+    private fun createClassGroup(){
         ClassGroupCreateDialog(requireContext(),null).builder()
             .setOnDialogClickListener {name,grade,job->
                 mGroupPresenter.createClassGroup(name,grade,job)

@@ -102,7 +102,10 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         initRecyclerView()
-        getDates()
+
+        Thread{
+            getDates()
+        }.start()
     }
 
     private fun initRecyclerView() {
@@ -125,33 +128,33 @@ class TeachingPlanActivity:BaseActivity() {
     //根据月份获取当月日期
     private fun getDates(){
         dates.clear()
-        val lastYear: Int
-        val lastMonth: Int
-        val nextYear: Int
-        val nextMonth: Int
-
-        when (monthNow) {
-            //当月为一月份时候
-            1 -> {
-                lastYear=yearNow-1
-                lastMonth=12
-                nextYear=yearNow
-                nextMonth=monthNow+1
-            }
-            //当月为12月份时候
-            12 -> {
-                lastYear=yearNow
-                lastMonth=monthNow-1
-                nextYear=yearNow+1
-                nextMonth=1
-            }
-            else -> {
-                lastYear=yearNow
-                lastMonth=monthNow-1
-                nextYear=yearNow
-                nextMonth=monthNow+1
-            }
-        }
+//        val lastYear: Int
+//        val lastMonth: Int
+//        val nextYear: Int
+//        val nextMonth: Int
+//
+//        when (monthNow) {
+//            //当月为一月份时候
+//            1 -> {
+//                lastYear=yearNow-1
+//                lastMonth=12
+//                nextYear=yearNow
+//                nextMonth=monthNow+1
+//            }
+//            //当月为12月份时候
+//            12 -> {
+//                lastYear=yearNow
+//                lastMonth=monthNow-1
+//                nextYear=yearNow+1
+//                nextMonth=1
+//            }
+//            else -> {
+//                lastYear=yearNow
+//                lastMonth=monthNow-1
+//                nextYear=yearNow
+//                nextMonth=monthNow+1
+//            }
+//        }
 
         var week=DateUtils.getMonthOneDayWeek(yearNow,monthNow-1)
         if (week==1)
@@ -188,8 +191,9 @@ class TeachingPlanActivity:BaseActivity() {
             }
         }
 
-        mAdapter?.setNewData(dates)
-
+        runOnUiThread {
+            mAdapter?.setNewData(dates)
+        }
     }
 
     private fun getDateBean(year: Int, month: Int, day: Int, isMonth: Boolean): Date {
@@ -203,7 +207,7 @@ class TeachingPlanActivity:BaseActivity() {
         date.month=month
         date.day=day
         date.time= DateUtils.dateToStamp("$year-$month-$day")
-        date.isNow=day== DateUtils.getDay()
+        date.isNow=day== DateUtils.getDay()&&DateUtils.getMonth()==month
         date.isNowMonth=isMonth
         date.solar= solar
         date.week= DateUtils.getWeek(date.time)

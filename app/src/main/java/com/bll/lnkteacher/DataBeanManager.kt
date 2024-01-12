@@ -3,13 +3,11 @@ package com.bll.lnkteacher
 import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.Group
 import java.util.*
 
 object DataBeanManager {
 
     var classGroups = mutableListOf<ClassGroup>()
-    var schoolGroups = mutableListOf<Group>()
 
     var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
 
@@ -47,10 +45,6 @@ object DataBeanManager {
         mContext.getString(R.string.teaching_tab_testpaper_correct)
     )
 
-    var groupStrs = arrayOf(
-        mContext.getString(R.string.group_tab_class), mContext.getString(R.string.group_tab_school)
-    )
-
     var groupJobs = arrayOf(
         mContext.getString(R.string.classGroup_headteacher),
         mContext.getString(R.string.classGroup_teacher)
@@ -74,16 +68,6 @@ object DataBeanManager {
                 popClasss.add(PopupBean(item.classId, item.name, false))
             }
             return popClasss
-        }
-
-    val popSchoolGroups: MutableList<PopupBean>
-        get() {
-            val popSchools = mutableListOf<PopupBean>()
-            for (i in 0 until schoolGroups.size) {
-                val item = schoolGroups[i]
-                popSchools.add(PopupBean(item.id, item.schoolName, i == 0))
-            }
-            return popSchools
         }
 
     val popupGrades: MutableList<PopupBean>

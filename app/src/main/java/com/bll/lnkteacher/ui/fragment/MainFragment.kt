@@ -136,9 +136,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
             findHomework()
             findMessages()
             fetchCommonData()
-        }
-        else{
-            showToast(R.string.net_work_error)
+            mCommonPresenter.getAppUpdate()
         }
         initDateView()
     }

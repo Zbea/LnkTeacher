@@ -3,8 +3,6 @@ package com.bll.lnkteacher
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
-import com.bll.lnkteacher.mvp.model.group.Group
-import com.bll.lnkteacher.mvp.model.group.GroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.net.BaseResult
@@ -23,6 +21,11 @@ interface APIService{
     fun getQiniuToken(): Observable<BaseResult<String>>
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
+    /**
+     * 获取更新
+     */
+    @GET("app/info/one?type=2")
+    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
     /**
      * 获取云列表
      */
@@ -197,41 +200,6 @@ interface APIService{
     @POST("class/removeStudent")
     fun outClassGroupUser(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-
-    /**
-     * 创建校群、际群
-     */
-    @POST("group/insert")
-    fun createGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-    /**
-     * 加入校群、际群
-     */
-    @POST("group/addGroup")
-    fun addGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-    /**
-     * 获取校群、际群列表
-     */
-    @GET("group/list")
-    fun getGroupList(): Observable<BaseResult<MutableList<Group>>>
-
-    /**
-     * 退出、解散校群
-     */
-    @POST("group/quitGroup")
-    fun quitGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
-    /**
-     * 查看校群的班级列表
-     */
-    @GET("group/classList")
-    fun checkGroupUser(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<GroupUser>>>
-    /**
-     * 退出校群
-     */
-    @POST("group/quitGroupOne")
-    fun quitGroupClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取考卷分类
      */

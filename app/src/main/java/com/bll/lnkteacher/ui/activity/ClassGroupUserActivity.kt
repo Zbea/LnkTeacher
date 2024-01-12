@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity.group
+package com.bll.lnkteacher.ui.activity
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager

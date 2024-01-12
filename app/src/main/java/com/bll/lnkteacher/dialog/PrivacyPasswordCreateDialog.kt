@@ -100,6 +100,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             checkPassword.question=tvQuestion.text.toString()
             checkPassword.answer=answerStr
             checkPassword.password= MD5Utils.digest(passwordStr)
+            checkPassword.isSet=true
             val user= SPUtil.getObj("user", User::class.java)
             SPUtil.putObj("${user?.accountId}CheckPassword",checkPassword)
 

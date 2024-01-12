@@ -10,11 +10,11 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
+import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.Group
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
@@ -41,8 +41,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
 
     override fun onClassList(classGroups: MutableList<ClassGroup>?) {
     }
-    override fun onGroupList(groups: MutableList<Group>?) {
-    }
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
             DataBeanManager.grades=commonData.grade
@@ -53,6 +51,9 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
             DataBeanManager.typeGrades=commonData.typeGrade
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
+    }
+
+    override fun onAppUpdate(item: AppUpdateBean?) {
     }
 
 

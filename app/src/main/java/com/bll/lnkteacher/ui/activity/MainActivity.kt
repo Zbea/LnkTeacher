@@ -34,7 +34,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     private var lastFragment: Fragment? = null
     private var mainFragment: MainFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
-    private var groupManagerFragment: GroupManagerFragment? = null
+    private var classGroupFragment: ClassGroupFragment? = null
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
@@ -74,7 +74,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         mainFragment = MainFragment()
         textbookFragment= TextbookFragment()
         bookcaseFragment = BookCaseFragment()
-        groupManagerFragment= GroupManagerFragment()
+        classGroupFragment= ClassGroupFragment()
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()
@@ -95,7 +95,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
                 0 -> switchFragment(lastFragment, mainFragment)
                 1 -> switchFragment(lastFragment, bookcaseFragment)
                 2 -> switchFragment(lastFragment, textbookFragment)
-                3 -> switchFragment(lastFragment, groupManagerFragment)
+                3 -> switchFragment(lastFragment, classGroupFragment)
                 4 -> switchFragment(lastFragment, homeworkManagerFragment)
                 5 -> switchFragment(lastFragment, examFragment)
                 6 -> switchFragment(lastFragment, noteFragment)
