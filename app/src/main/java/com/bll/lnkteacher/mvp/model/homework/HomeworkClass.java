@@ -1,6 +1,8 @@
 package com.bll.lnkteacher.mvp.model.homework;
 
-public class HomeworkClass {
+import java.io.Serializable;
+
+public class HomeworkClass implements Serializable {
     public int classId;
     public String className;
     public boolean isCheck;

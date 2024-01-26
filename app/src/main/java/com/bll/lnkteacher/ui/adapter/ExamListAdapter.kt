@@ -25,7 +25,7 @@ class ExamListAdapter(layoutResId: Int, data: List<ExamList.ExamBean>?) : BaseQu
                 listener?.onClick(view,helper.adapterPosition,position)
             }
         }
-        helper.addOnClickListener(tv_data,tv_analyse,iv_delete)
+        helper.addOnClickListener(tv_analyse,iv_delete)
 
     }
 

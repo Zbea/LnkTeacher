@@ -2,22 +2,24 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.util.Log
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
 import com.bll.lnkteacher.widget.SpaceItemDeco
 
-class HomeworkPublishDialog(val context: Context,val grade: Int) {
+class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) {
 
     private var selectClasss= mutableListOf<HomeworkClass>()
-    private var datas= mutableListOf<HomeworkClass>()
+    private var initDatas= mutableListOf<HomeworkClass>()
 
     fun builder(): HomeworkPublishDialog {
 
@@ -26,15 +28,23 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val classs= DataBeanManager.classGroups
-        Log.d("debug",classs.size.toString())
+        val classs= DataBeanManager.getGradeClassGroups(grade)
+        val homeworkClasss=MethodManager.getCommitClass(typeId)
 
         for (item in classs){
-            if (item.grade==grade){
-                datas.add(HomeworkClass().apply {
+            initDatas.add(HomeworkClass().apply {
                     className=item.name
-                    classId=item.classId
-                })
+                    classId=item.id
+                    date= DateUtils.getStartOfDayInMillis()+ Constants.dayLong
+            })
+        }
+
+        for (item in initDatas){
+            for (selectItem in homeworkClasss){
+                if (item.classId==selectItem.classId){
+                    item.isCheck=selectItem.isCheck
+                    item.isCommit=selectItem.isCommit
+                }
             }
         }
 
@@ -45,18 +55,18 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
         val mAdapter= HomeworkPublishClassGroupSelectDialog.MyAdapter(
             R.layout.item_publish_classgroup_selector,
-            datas
+            initDatas
         )
         rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
         rvList.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
         rvList.addItemDecoration(SpaceItemDeco(0,0,0, 20))
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
-            val item=datas[position]
+            val item=initDatas[position]
             when (view.id){
                 R.id.tv_date->{
-                    DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
-                        item.date=dateTim
+                    DateCalendarDialog1(context,item.date).builder().setOnDateListener{
+                        item.date=it
                         mAdapter?.notifyDataSetChanged()
                     }
                 }
@@ -104,8 +114,10 @@ class HomeworkPublishDialog(val context: Context,val grade: Int) {
      */
     private fun getSelectClass():MutableList<HomeworkClass>{
         val items= mutableListOf<HomeworkClass>()
-        for (item in datas){
+        for (item in initDatas){
             if (item.isCheck){
+                if (!item.isCommit)
+                    item.date=0
                 items.add(item)
             }
         }

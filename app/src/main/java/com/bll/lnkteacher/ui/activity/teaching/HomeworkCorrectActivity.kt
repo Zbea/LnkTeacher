@@ -1,17 +1,13 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.graphics.Rect
 import android.media.MediaPlayer
 import android.os.Handler
-import android.view.EinkPWInterface
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
@@ -30,7 +26,7 @@ import kotlinx.android.synthetic.main.ac_homework_work.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
+class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
     private var id = 0
     private var subType = 0
     private val mUploadPresenter = FileUploadPresenter(this)
@@ -46,11 +42,9 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
 
-    private var elik: EinkPWInterface? = null
     private val commitItems = mutableListOf<ItemList>()
 
     override fun onToken(token: String) {
-        showLoading()
         val commitPaths = mutableListOf<String>()
         for (item in commitItems) {
             commitPaths.add(item.url)
@@ -112,7 +106,6 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     }
 
     override fun initView() {
-        elik = iv_image.pwInterFace
         elik?.setPWEnabled(false,false)
 
         setPageTitle("${getString(R.string.teaching_tab_homework_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
@@ -199,7 +192,6 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     }
 
     private fun initRecyclerView() {
-
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
@@ -243,7 +235,7 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
                 3->{
                     showView(tv_save)
                     elik?.setPWEnabled(false,false)
-                    iv_image.setImageResource(0)
+                    v_content.setImageResource(0)
                 }
             }
         } else {
@@ -263,27 +255,20 @@ class HomeworkCorrectActivity : BaseActivity(), IContractView.ITestPaperCorrectD
     private fun setContentImage() {
         //批改成功后删掉原来，加载提交后的图片
         if (userItems[posUser].status == 2) {
-            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), iv_image, 10)
+            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), v_content, 10)
         } else {
             elik?.setPWEnabled(true,true)
             val masterImage = "${getPath()}/${posImage + 1}.png"//原图
-            GlideUtils.setImageFile(this, File(masterImage), iv_image)
+            GlideUtils.setImageFile(this, File(masterImage), v_content)
         }
         tv_page.text = "${posImage + 1}/${getImageSize()}"
 
         val drawPath = getPathDrawStr(posImage + 1)
         elik?.setLoadFilePath(drawPath, true)
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEvent {
-            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean) {
-            }
+    }
 
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: ArrayList<Point>?) {
-            }
-
-            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                elik?.saveBitmap(true) {}
-            }
-        })
+    override fun onElikSave() {
+        elik?.saveBitmap(true) {}
     }
 
 

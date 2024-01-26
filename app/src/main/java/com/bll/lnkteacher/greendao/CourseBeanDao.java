@@ -26,9 +26,11 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property ViewId = new Property(2, int.class, "viewId", false, "VIEW_ID");
-        public final static Property Name = new Property(3, String.class, "name", false, "NAME");
-        public final static Property Type = new Property(4, int.class, "type", false, "TYPE");
+        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
+        public final static Property ClassGroupId = new Property(3, int.class, "classGroupId", false, "CLASS_GROUP_ID");
+        public final static Property ViewId = new Property(4, int.class, "viewId", false, "VIEW_ID");
+        public final static Property Name = new Property(5, String.class, "name", false, "NAME");
+        public final static Property Mode = new Property(6, int.class, "mode", false, "MODE");
     }
 
 
@@ -46,9 +48,11 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"COURSE_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USER_ID\" INTEGER NOT NULL ," + // 1: userId
-                "\"VIEW_ID\" INTEGER NOT NULL UNIQUE ," + // 2: viewId
-                "\"NAME\" TEXT," + // 3: name
-                "\"TYPE\" INTEGER NOT NULL );"); // 4: type
+                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
+                "\"CLASS_GROUP_ID\" INTEGER NOT NULL ," + // 3: classGroupId
+                "\"VIEW_ID\" INTEGER NOT NULL UNIQUE ," + // 4: viewId
+                "\"NAME\" TEXT," + // 5: name
+                "\"MODE\" INTEGER NOT NULL );"); // 6: mode
     }
 
     /** Drops the underlying database table. */
@@ -66,13 +70,15 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getViewId());
+        stmt.bindLong(3, entity.getType());
+        stmt.bindLong(4, entity.getClassGroupId());
+        stmt.bindLong(5, entity.getViewId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(6, name);
         }
-        stmt.bindLong(5, entity.getType());
+        stmt.bindLong(7, entity.getMode());
     }
 
     @Override
@@ -84,13 +90,15 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindLong(2, entity.getUserId());
-        stmt.bindLong(3, entity.getViewId());
+        stmt.bindLong(3, entity.getType());
+        stmt.bindLong(4, entity.getClassGroupId());
+        stmt.bindLong(5, entity.getViewId());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(4, name);
+            stmt.bindString(6, name);
         }
-        stmt.bindLong(5, entity.getType());
+        stmt.bindLong(7, entity.getMode());
     }
 
     @Override
@@ -103,9 +111,11 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
         CourseBean entity = new CourseBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getLong(offset + 1), // userId
-            cursor.getInt(offset + 2), // viewId
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
-            cursor.getInt(offset + 4) // type
+            cursor.getInt(offset + 2), // type
+            cursor.getInt(offset + 3), // classGroupId
+            cursor.getInt(offset + 4), // viewId
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // name
+            cursor.getInt(offset + 6) // mode
         );
         return entity;
     }
@@ -114,9 +124,11 @@ public class CourseBeanDao extends AbstractDao<CourseBean, Long> {
     public void readEntity(Cursor cursor, CourseBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
-        entity.setViewId(cursor.getInt(offset + 2));
-        entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setType(cursor.getInt(offset + 4));
+        entity.setType(cursor.getInt(offset + 2));
+        entity.setClassGroupId(cursor.getInt(offset + 3));
+        entity.setViewId(cursor.getInt(offset + 4));
+        entity.setName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setMode(cursor.getInt(offset + 6));
      }
     
     @Override

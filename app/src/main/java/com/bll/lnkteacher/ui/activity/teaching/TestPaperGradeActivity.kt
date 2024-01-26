@@ -45,7 +45,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
 
     override fun initData() {
         correctBean=intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
-
+        popClasss.add(PopupBean(0,"全部班级",true))
         for (item in correctBean?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
@@ -59,6 +59,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
         initRecyclerView()
         showView(tv_class)
 
+        tv_class.text=popClasss[0].name
         tv_class.setOnClickListener {
             showClassGroup()
         }
@@ -84,7 +85,7 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
             tv_class.text=item.name
             val items= mutableListOf<TestPaperGrade>()
             for (ite in datas){
-                if (item.id==ite.examChangeId){
+                if (item.id==ite.examChangeId||item.id==0){
                     items.add(ite)
                 }
             }

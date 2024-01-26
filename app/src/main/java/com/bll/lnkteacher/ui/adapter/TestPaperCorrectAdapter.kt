@@ -14,13 +14,8 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        val type=when(item.type){
-            1-> "班级单考"+"  "+if (item.examList.isNullOrEmpty())  "" else item.examList[0].examName
-            else->"校群联考"+"  "+if (item.examList.isNullOrEmpty())  "" else item.examList[0].examName
-        }
-        helper.setText(tv_exam_type,type)
+        helper.setText(tv_exam_type,item.title+"  "+item.taskName)
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time))
-        helper.setText(tv_group_name,item.name)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         ClassAdapter(R.layout.item_testpaper_correct_class_type, item.examList).apply {
@@ -30,7 +25,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
                 listener?.onClick(view,helper.adapterPosition,position)
             }
         }
-        helper.addOnClickListener(tv_data,tv_analyse,iv_delete)
+        helper.addOnClickListener(tv_analyse,iv_delete)
 
     }
 

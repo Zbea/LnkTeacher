@@ -8,6 +8,7 @@ import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.Book;
 import com.bll.lnkteacher.mvp.model.User;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClass;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.MainActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
@@ -24,6 +25,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class MethodManager {
+
+    private static User user=SPUtil.INSTANCE.getObj("user", User.class);
+
+    public static void getUser(){
+        user=SPUtil.INSTANCE.getObj("user", User.class);
+    }
 
     /**
      * 退出登录
@@ -84,6 +91,21 @@ public class MethodManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
+    }
+
+    /**
+     * 根据作业本id保存当前作业的最后一次提交
+     */
+    public static void saveCommitClass(int typeId,List<HomeworkClass> items){
+        SPUtil.INSTANCE.putCommitClasss(typeId+"CommitClass",items);
+    }
+
+    /**
+     * 得到作业最后一次提交所选班级信息
+     * @return
+     */
+    public static List<HomeworkClass> getCommitClass(int typeId){
+        return SPUtil.INSTANCE.getCommitClasss(typeId+"CommitClass");
     }
     
 }

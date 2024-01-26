@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.mvp.model.User
@@ -35,6 +36,8 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         intent.putExtra("userId", user.accountId)
         intent.action = Constants.LOGIN_BROADCAST_EVENT
         sendBroadcast(intent)
+
+        MethodManager.getUser()
 
         finish()
     }

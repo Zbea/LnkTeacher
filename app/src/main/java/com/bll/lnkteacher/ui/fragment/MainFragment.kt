@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,7 +16,6 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
@@ -80,6 +80,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
         return R.layout.fragment_main
     }
 
+    @SuppressLint("WrongConstant")
     override fun initView() {
         setTitle(R.string.main_home_title)
 
@@ -92,20 +93,11 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
         }
 
         ll_course.setOnClickListener {
-            val courseType = SPUtil.getInt("courseType")
-            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .putExtra("courseType", courseType)
+            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+                .putExtra("classGroupId", 0)
             )
         }
 
-        tv_course_module.setOnClickListener {
-            CourseModuleDialog(requireActivity()).builder().setOnClickListener { type ->
-                startActivity(
-                    Intent(activity, MainCourseActivity::class.java).setFlags(0)
-                        .putExtra("courseType", type)
-                )
-            }
-        }
 
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){

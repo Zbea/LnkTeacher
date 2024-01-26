@@ -28,20 +28,13 @@
 
             <TextView
                 android:id="@+id/tv_exam_type"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginStart="@dimen/dp_30"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22"
                 android:textStyle="bold" />
-            <TextView
-                android:id="@+id/tv_group_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_30"
-                android:layout_weight="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
 
             <TextView
                 android:id="@+id/tv_analyse"
@@ -51,17 +44,6 @@
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="@string/teaching_testpaper_analyse"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_18" />
-
-            <TextView
-                android:id="@+id/tv_data"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
-                android:gravity="center"
-                android:text="@string/teaching_testpaper_score"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18" />
 

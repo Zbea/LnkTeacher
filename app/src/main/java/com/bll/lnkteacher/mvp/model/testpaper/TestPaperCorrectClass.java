@@ -34,5 +34,6 @@ public class TestPaperCorrectClass implements Serializable {
         public int type;
         public String name;
         public boolean isCheck;
+        public String question;//题目数据
     }
 }

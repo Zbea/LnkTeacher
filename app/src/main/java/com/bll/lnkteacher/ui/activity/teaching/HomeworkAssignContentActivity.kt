@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -40,6 +41,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         ImageDialog(this,images).builder()
     }
     override fun onCommitSuccess() {
+        MethodManager.saveCommitClass(typeBean!!.id,selectClasss)
         showToast(R.string.teaching_assign_success)
         finish()
     }
@@ -91,7 +93,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
 
         tv_class_name.setOnClickListener {
             if (selectDialog==null){
-                selectDialog=HomeworkPublishClassGroupSelectDialog(this, grade).builder()
+                selectDialog=HomeworkPublishClassGroupSelectDialog(this, grade, typeBean?.id!!).builder()
                 selectDialog?.setOnDialogClickListener {
                     selectClasss= it
                 }

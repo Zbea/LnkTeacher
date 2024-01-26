@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.DateDialog
+import com.bll.lnkteacher.dialog.DateCalendarDialog1
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.mvp.model.FreeNoteBean
@@ -85,9 +85,9 @@ class PopupFreeNoteList(var context: Context, var view: View) {
         }
 
         tv_date?.setOnClickListener {
-            DateDialog(context).builder().setOnDateListener { dateStr, dateTim ->
-                dayStartTime=dateTim
-                dayEndTime=DateUtils.getEndOfDayInMillis(dateTim)
+            DateCalendarDialog1(context).builder().setOnDateListener{
+                dayStartTime=it
+                dayEndTime=DateUtils.getEndOfDayInMillis(it)
                 setChangeContent()
             }
         }

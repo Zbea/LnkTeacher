@@ -21,32 +21,27 @@ public class CourseBean implements Serializable {
     @Id(autoincrement = true)
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public int type;//1排课表2课程表
+    public int classGroupId;//班群id
     @Unique
     public int viewId;//对应textview  ID
     public String name;//科目名称
-    public int type;//五天六节课类型
-    @Transient
-    public Boolean isSelect=false;//是否存在加错
-    @Transient
-    public int imageId;//图片资源id
-    @Transient
-    public int courseId;//科目id
-    @Transient
-    public int mainCourseId;//首页课业进度背景图
+    public int mode;//五天六节课类型
 
-    @Generated(hash = 1270664387)
-    public CourseBean(Long id, long userId, int viewId, String name, int type) {
+    @Generated(hash = 334632421)
+    public CourseBean(Long id, long userId, int type, int classGroupId, int viewId, String name,
+            int mode) {
         this.id = id;
         this.userId = userId;
+        this.type = type;
+        this.classGroupId = classGroupId;
         this.viewId = viewId;
         this.name = name;
-        this.type = type;
+        this.mode = mode;
     }
-
     @Generated(hash = 858107730)
     public CourseBean() {
     }
-
     public Long getId() {
         return this.id;
     }
@@ -58,6 +53,18 @@ public class CourseBean implements Serializable {
     }
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
+    }
+    public int getClassGroupId() {
+        return this.classGroupId;
+    }
+    public void setClassGroupId(int classGroupId) {
+        this.classGroupId = classGroupId;
     }
     public int getViewId() {
         return this.viewId;
@@ -71,11 +78,12 @@ public class CourseBean implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    public int getType() {
-        return this.type;
+    public int getMode() {
+        return this.mode;
     }
-    public void setType(int type) {
-        this.type = type;
+    public void setMode(int mode) {
+        this.mode = mode;
     }
+
 
 }

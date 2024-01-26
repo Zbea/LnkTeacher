@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +8,7 @@
     >
 
     <RelativeLayout
+        android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_120">
 
@@ -16,12 +17,13 @@
             />
 
         <LinearLayout
+            android:id="@+id/ll_score"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:gravity="center_vertical"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="@dimen/dp_40"
+            android:layout_marginEnd="160dp"
             android:orientation="horizontal"
             >
 
@@ -33,28 +35,14 @@
                 android:textColor="@color/black"
                 />
 
-            <EditText
-                android:id="@+id/et_score"
+            <TextView
+                android:id="@+id/tv_score"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_24"
                 android:gravity="center"
-                android:inputType="phone"
                 android:textColor="@color/black"
                 android:background="@drawable/bg_line_bottom"
-                />
-
-            <TextView
-                android:id="@+id/tv_save"
-                android:layout_width="100dp"
-                android:layout_height="45dp"
-                android:layout_marginStart="25dp"
-                android:text="@string/save"
-                android:textSize="@dimen/sp_22"
-                android:gravity="center"
-                android:background="@drawable/bg_gary_arch"
-                android:textColor="@color/black"
-
                 />
 
         </LinearLayout>
@@ -64,6 +52,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/rl_title"
         android:layout_marginBottom="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal"
@@ -78,7 +67,7 @@
             >
 
             <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/iv_image"
+                android:id="@+id/v_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -94,12 +83,20 @@
                 android:layout_alignParentBottom="true"
                 >
                 <ImageView
+                    android:id="@+id/iv_erasure"
+                    android:layout_width="32dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="44dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/icon_draw_erasure" />
+
+                <ImageView
                     android:id="@+id/iv_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/dp_50"
+                    android:layout_marginStart="120dp"
                     android:src="@mipmap/icon_draw_page_up"/>
 
                 <TextView
@@ -116,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/dp_50"
+                    android:layout_marginEnd="120dp"
                     android:src="@mipmap/icon_draw_page_down"/>
             </RelativeLayout>
 
@@ -133,5 +130,89 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_score_content"
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone"
+        >
 
-</LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_score"
+            android:layout_width="750dp"
+            android:layout_height="wrap_content"
+            />
+
+        <ImageView
+            android:id="@+id/iv_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_add"
+            android:layout_margin="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/bg_black_stroke_0dp_corner"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_5"
+                android:paddingEnd="@dimen/dp_5"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总分"
+                    android:textSize="@dimen/sp_22"
+                    android:textColor="@color/black"
+                    />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:layout_marginStart="5dp"
+                    />
+
+                <EditText
+                    android:id="@+id/et_total"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
+                    android:gravity="center"
+                    android:background="@color/color_transparent"
+                    android:inputType="phone"
+                    />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:text="@string/save"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_black_stroke_0dp_corner"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

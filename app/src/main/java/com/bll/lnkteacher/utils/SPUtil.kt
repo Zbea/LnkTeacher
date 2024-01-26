@@ -3,7 +3,10 @@ package com.bll.lnkteacher.utils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
+import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.schedulers.Schedulers
 import java.io.*
 
@@ -19,6 +22,10 @@ object SPUtil {
     private lateinit var map: ArrayMap<String, Any>
     private val gson = Gson()
     private lateinit var rootFile: File
+
+    fun getUserId():String{
+        return getObj("user", User::class.java)?.accountId!!.toString()
+    }
 
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -75,6 +82,16 @@ object SPUtil {
             map[key] = result
         }
         return result as Boolean
+    }
+
+    fun putCommitClasss(key: String,list: MutableList<HomeworkClass>){
+        val listStr= gson.toJson(list)
+        putString(getUserId()+key,listStr)
+    }
+
+    fun getCommitClasss(key: String): MutableList<HomeworkClass> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<HomeworkClass>>() {}.type)
+            ?: return mutableListOf()
     }
 
     fun putObj(key: String, any: Any) {

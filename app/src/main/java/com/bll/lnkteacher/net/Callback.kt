@@ -8,7 +8,10 @@ import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 
-abstract class Callback<T>(private var IBaseView: IBaseView) : Observer<BaseResult<T>> {
+//isShow=false 不关闭加载，用于继续请求
+abstract class Callback<T>(private var IBaseView: IBaseView,private var isShow:Boolean) : Observer<BaseResult<T>> {
+
+    constructor(IBaseView: IBaseView):this(IBaseView,true)
 
 
     override fun onSubscribe(@NonNull d: Disposable) {
@@ -36,7 +39,8 @@ abstract class Callback<T>(private var IBaseView: IBaseView) : Observer<BaseResu
     }
 
     override fun onComplete() {
-        IBaseView.hideLoading()
+        if (isShow)
+            IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {

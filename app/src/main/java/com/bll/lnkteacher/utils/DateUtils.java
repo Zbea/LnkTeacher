@@ -366,7 +366,7 @@ public class DateUtils {
         Calendar a = Calendar.getInstance();
         a.setTime(new Date(date));
         int year = a.get(Calendar.YEAR);
-        int month = a.get(Calendar.MONTH) + 1;
+        int month = a.get(Calendar.MONTH);
         int day=a.get(Calendar.DAY_OF_MONTH);
         return new int[]{year,month,day};
     }

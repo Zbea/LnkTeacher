@@ -9,12 +9,12 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.dialog.CourseTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.manager.CourseGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CourseBean
 import com.bll.lnkteacher.mvp.model.ItemList
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_course.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -22,11 +22,11 @@ import org.greenrobot.eventbus.EventBus
 
 //课程表
 class MainCourseActivity : BaseActivity() {
-
-    private var type = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
+    private var type=1
+    private var classGroupId=0
+    private var mode = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
     private var row = 11
     private var column = 7
-    private var isAdd = true //是否是重新编辑课表
     private var selectLists = mutableListOf<CourseBean>()//已经选择了的课程
 
     private var timeWidth = 60
@@ -46,10 +46,46 @@ class MainCourseActivity : BaseActivity() {
     }
 
     override fun initData() {
-        isAdd = intent.flags == 0
-        type = intent.getIntExtra("courseType", 0)
+        type = intent.flags
+        classGroupId=intent.getIntExtra("classGroupId",0)
+    }
 
-        when (type) {
+    override fun initView() {
+        setPageTitle(if (type==1)"排课表   编辑" else "课程表    编辑")
+        showView(tv_custom,iv_manager)
+        iv_manager.setImageResource(R.mipmap.icon_save)
+        tv_custom.text="模板"
+
+        tv_custom.setOnClickListener {
+            CourseModuleDialog(this).builder().setOnClickListener { type ->
+                mode=type
+                selectLists.clear()
+                grid.removeAllViews()
+                setData()
+            }
+        }
+
+        iv_manager?.setOnClickListener {
+            if (selectLists.size == 0) return@setOnClickListener
+            CourseGreenDaoManager.getInstance().delete(type, classGroupId)
+            CourseGreenDaoManager.getInstance().insertAll(selectLists)
+            SystemSettingUtils.saveScreenShot(this, grid, "course")
+            EventBus.getDefault().post(Constants.COURSE_EVENT)
+            finish()
+        }
+
+        val oldCourses=CourseGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)
+        if (oldCourses.size>0){
+            mode=oldCourses[0].mode
+        }
+        setData()
+    }
+
+    /**
+     * 设置数据
+     */
+    private fun setData(){
+        when (mode) {
             0 -> {//五天六节课
                 row = 11
                 column = 7
@@ -98,38 +134,20 @@ class MainCourseActivity : BaseActivity() {
         }
         grid.columnCount = column
         grid.rowCount = row
-    }
 
-    override fun initView() {
-
-        setPageTitle("排课表   编辑")
-        showView(iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_save)
-
-        iv_manager?.setOnClickListener {
-            if (selectLists.size == 0) return@setOnClickListener
-            CourseGreenDaoManager.getInstance().deleteAll()//清除以前存储的课程
-            CourseGreenDaoManager.getInstance().insertAll(selectLists)
-            SystemSettingUtils.saveScreenShot(this, grid, "course")
-            EventBus.getDefault().post(Constants.COURSE_EVENT)
-            SPUtil.putInt("courseType", type)
-            finish()
-        }
 
         addTimeLayout()
         addWeekLayout()
         addLessonsLayout()
         addContentLayout()
-
     }
 
     //添加时间布局在第一列
-
     private fun addTimeLayout() {
 
         var heightTime1: Int
         var heightTime2: Int
-        when (type) {
+        when (mode) {
             0, 1 -> {
                 heightTime1=weekHeight + dividerHeight + 4 * height
                 heightTime2=dividerHeight * 2 + 2 * height
@@ -144,7 +162,7 @@ class MainCourseActivity : BaseActivity() {
 
                 val view1 = getDateView("下午")
                 val params1 = GridLayout.LayoutParams()
-                params1.rowSpec = GridLayout.spec(if (type==4||type==5) 6 else 7, row - 7)
+                params1.rowSpec = GridLayout.spec(if (mode==4||mode==5) 6 else 7, row - 7)
                 params1.width = timeWidth
                 params1.height = heightTime2
                 params1.columnSpec = GridLayout.spec(0, 1)
@@ -164,7 +182,7 @@ class MainCourseActivity : BaseActivity() {
 
                 val view1 = getDateView("下午")
                 val params1 = GridLayout.LayoutParams()
-                params1.rowSpec = GridLayout.spec(if (type==4||type==5) 6 else 7, row - 7)
+                params1.rowSpec = GridLayout.spec(if (mode==4||mode==5) 6 else 7, row - 7)
                 params1.width = timeWidth
                 params1.height = heightTime2
                 params1.columnSpec = GridLayout.spec(0, 1)
@@ -228,7 +246,7 @@ class MainCourseActivity : BaseActivity() {
     //添加第二列课节布局
     private fun addLessonsLayout() {
 
-        val lessons = when (type) {
+        val lessons = when (mode) {
             0, 1 -> {
                 arrayOf(
                     "第一节",
@@ -274,7 +292,7 @@ class MainCourseActivity : BaseActivity() {
         for (i in 1 until row) {
             val id = "1$i".toInt()
             //根据id 查询是否已经存储了对应的时间
-            val course = CourseGreenDaoManager.getInstance().queryID(id)
+            val course = CourseGreenDaoManager.getInstance().queryID(type,classGroupId,id)
             val index = i - 1
 
             val view = getLessonsView(lessons[index])
@@ -285,18 +303,15 @@ class MainCourseActivity : BaseActivity() {
                 selectTime(tvTime, id)
             }
 
-            //不重置
-            if (!isAdd) {
-                if (course != null) {
-                    tvTime.text = course.name
-                    selectLists.add(course)//将已经存在的加入课程集合
-                }
+            if (course != null) {
+                tvTime.text = course.name
+                selectLists.add(course)//将已经存在的加入课程集合
             }
 
             val params = GridLayout.LayoutParams()
             params.width = lessonsWidth
 
-            if (type == 0 || type == 1) {
+            if (mode == 0 || mode == 1) {
 
                 when (i) {
                     3, 8, 10 -> {
@@ -316,7 +331,7 @@ class MainCourseActivity : BaseActivity() {
                     }
                 }
 
-            } else if (type == 2 || type == 3) {
+            } else if (mode == 2 || mode == 3) {
 
                 when (i) {
                     3, 10 -> {
@@ -364,12 +379,12 @@ class MainCourseActivity : BaseActivity() {
     private fun addContentLayout() {
         for (i in 2 until column) {
             for (j in 1 until row) {
-                var view: TextView? = null
+                var view: TextView?
                 val id = (i.toString() + j.toString()).toInt()
                 //根据textview id 查询是否已经存储了对应的课程
-                val course = CourseGreenDaoManager.getInstance().queryID(id)
+                val course = CourseGreenDaoManager.getInstance().queryID(type,classGroupId,id)
 
-                if (type == 0 || type == 1) {
+                if (mode == 0 || mode == 1) {
 
                     if (j == 3 || j == 6 || j == 8 || j == 10) {
                         view = getCourseView1()
@@ -410,7 +425,7 @@ class MainCourseActivity : BaseActivity() {
                     grid.addView(view, params)
 
                 }
-                else if (type == 2 || type == 3) {
+                else if (mode == 2 || mode == 3) {
 
                     if (j == 3 || j == 6 || j == 10) {
                         view = getCourseView1()
@@ -486,12 +501,9 @@ class MainCourseActivity : BaseActivity() {
 
                 view.id = id
 
-                //不重置
-                if (!isAdd) {
-                    if (course != null) {
-                        view.text = course.name
-                        selectLists.add(course)//将已经存在的加入课程集合
-                    }
+                if (course != null) {
+                    view.text = course.name
+                    selectLists.add(course)//将已经存在的加入课程集合
                 }
             }
 
@@ -556,9 +568,11 @@ class MainCourseActivity : BaseActivity() {
             tvStart.text = "$startStr~$endStr"
 
             val course = CourseBean().apply {
+                type=this@MainCourseActivity.type
+                classGroupId=this@MainCourseActivity.classGroupId
                 name = "$startStr~$endStr"
                 viewId = id
-                type = this@MainCourseActivity.type
+                mode = this@MainCourseActivity.mode
             }
 
             //删除已经存在了的
@@ -580,19 +594,27 @@ class MainCourseActivity : BaseActivity() {
      * 输入课程
      */
     private fun inputContent(v: TextView) {
-        val classGroups=DataBeanManager.classGroups
-        val lists= mutableListOf<ItemList>()
-        for (item in classGroups){
-            lists.add(ItemList(item.classId,item.name))
+        var lists= mutableListOf<ItemList>()
+        if (type==1){
+            val classGroups=DataBeanManager.classGroups
+            for (item in classGroups){
+                lists.add(ItemList(item.classId,item.name))
+            }
         }
+        else{
+            lists=DataBeanManager.courses
+        }
+
         ItemSelectorDialog(this,"班级选择",lists).builder().setOnDialogClickListener{
-            val classGroup=classGroups[it]
-            v.text = classGroup.name
+            val contentStr=lists[it].name
+            v.text = contentStr
 
             val course = CourseBean().apply {
+                type=this@MainCourseActivity.type
+                classGroupId=this@MainCourseActivity.classGroupId
                 viewId = v.id
-                name = classGroup.name
-                type = this@MainCourseActivity.type
+                name = contentStr
+                mode = this@MainCourseActivity.mode
             }
             //删除已经存在了的
             if (selectLists.size > 0) {

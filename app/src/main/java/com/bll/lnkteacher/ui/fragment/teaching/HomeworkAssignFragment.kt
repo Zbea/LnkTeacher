@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -35,6 +36,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
     private var grade=0
+    private var selectCommitClass= mutableListOf<HomeworkClass>()
 
     override fun onTypeList(list:  TypeList) {
         setPageNumber(list.total)
@@ -60,6 +62,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         mAdapter?.remove(position)
     }
     override fun onCommitSuccess() {
+        MethodManager.saveCommitClass(types[position].id,selectCommitClass)
         showToast(R.string.teaching_assign_success)
     }
     override fun onDetails(details: HomeworkAssignDetails) {
@@ -121,8 +124,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                     startActivity(intent)
                 }
                 else{
-                    HomeworkPublishDialog(requireContext(),grade).builder().setOnDialogClickListener{
+                    HomeworkPublishDialog(requireContext(),grade,item.id).builder().setOnDialogClickListener{
                             contentStr,homeClasss->
+                        selectCommitClass= homeClasss as MutableList<HomeworkClass>
                         commitHomework(item,contentStr,homeClasss)
                     }
                 }

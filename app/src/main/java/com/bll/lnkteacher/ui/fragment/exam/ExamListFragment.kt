@@ -33,12 +33,11 @@ class ExamListFragment:BaseFragment(){
     }
 
     private fun initRecyclerView(){
-        val layoutParams=
-            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(
             DP2PX.dip2px(activity,40f),
-            DP2PX.dip2px(activity,40f),
+            DP2PX.dip2px(activity,30f),
             DP2PX.dip2px(activity,40f),0)
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())

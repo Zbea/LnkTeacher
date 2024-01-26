@@ -15,7 +15,6 @@ import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
-import com.bll.lnkteacher.ui.activity.teaching.TestPaperGradeActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -60,7 +59,7 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
 
         val layoutParams=LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
-        layoutParams.setMargins(DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,40f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,30f),DP2PX.dip2px(activity,40f),0)
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
@@ -75,18 +74,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                     R.id.tv_analyse->{
                         if (item.sendStatus==2){
                             val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
-                            val bundle=Bundle()
-                            bundle.putSerializable("paperCorrect",item)
-                            intent.putExtra("bundle",bundle)
-                            startActivity(intent)
-                        }
-                        else{
-                            showToast(R.string.teaching_testpaper_correct_undone)
-                        }
-                    }
-                    R.id.tv_data->{
-                        if (item.sendStatus==2){
-                            val intent=Intent(requireActivity(), TestPaperGradeActivity::class.java)
                             val bundle=Bundle()
                             bundle.putSerializable("paperCorrect",item)
                             intent.putExtra("bundle",bundle)

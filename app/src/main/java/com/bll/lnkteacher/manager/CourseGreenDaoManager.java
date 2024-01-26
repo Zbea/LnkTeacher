@@ -61,20 +61,22 @@ public class CourseGreenDaoManager {
         courseDao.insertOrReplaceInTx(lists);
     }
 
+    public List<CourseBean> queryByTypeLists(int type,int classGroupId){
+        WhereCondition whereCondition1= CourseBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition2= CourseBeanDao.Properties.ClassGroupId.eq(classGroupId);
+        return courseDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
+    }
+
     //根据Id 查询
-    public CourseBean queryID(int id) {
-        WhereCondition whereCondition1= CourseBeanDao.Properties.ViewId.eq(id);
-        return  courseDao.queryBuilder().where(whereUser,whereCondition1).build().unique();
+    public CourseBean queryID(int type,int classGroupId,int viewId) {
+        WhereCondition whereCondition1= CourseBeanDao.Properties.Type.eq(type);
+        WhereCondition whereCondition2= CourseBeanDao.Properties.ClassGroupId.eq(classGroupId);
+        WhereCondition whereCondition3= CourseBeanDao.Properties.ViewId.eq(viewId);
+        return  courseDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2,whereCondition3).build().unique();
     }
 
-    //删除
-    public void deleteCourse(CourseBean bean){
-        courseDao.delete(bean);
-    }
-
-    //全部删除
-    public void deleteAll(){
-        courseDao.deleteAll();
+    public void delete(int type,int classGroupId){
+        courseDao.deleteInTx(queryByTypeLists(type,classGroupId));
     }
 
     public void clear(){

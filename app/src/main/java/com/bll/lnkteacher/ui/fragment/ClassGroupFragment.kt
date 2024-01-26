@@ -56,7 +56,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
         initRecyclerView()
         onClassGroupEvent()
 
-
         iv_create.setOnClickListener {
             createClassGroup()
         }

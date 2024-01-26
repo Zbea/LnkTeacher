@@ -10,6 +10,7 @@ class HomeworkAssignAdapter(layoutResId: Int, data: List<TypeBean>?) : BaseQuick
 
     override fun convert(helper: BaseViewHolder, item: TypeBean) {
         if (item.subType==4){
+            helper.setText(R.id.tv_name,"")
             GlideUtils.setImageRoundUrl(mContext,item.bgResId,helper.getView(R.id.iv_image),15)
             helper.setBackgroundRes(R.id.rl_bg,R.drawable.bg_black_stroke_10dp_corner)
         }

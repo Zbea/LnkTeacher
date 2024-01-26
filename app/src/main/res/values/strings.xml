@@ -112,7 +112,7 @@
     <string name="teaching_assign_success">布置成功</string>
     <string name="teaching_correct_success">批改成功</string>
     <string name="teaching_testpaper_correct_undone">测卷未改完</string>
-    <string name="teaching_testpaper_analyse">数据统计</string>
+    <string name="teaching_testpaper_analyse">数据分析</string>
     <string name="teaching_testpaper_score">成绩统计</string>
     <string name="teaching_testpaper_send">发送学生</string>
     <string name="toast_delete_success">删除成功</string>

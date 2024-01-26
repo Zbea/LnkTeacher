@@ -139,16 +139,6 @@
                     android:textStyle="bold"
                     app:drawableLeftCompat="@mipmap/icon_main_course" />
 
-                <TextView
-                    android:id="@+id/tv_course_module"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="模板"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/black"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    />
-
             </LinearLayout>
             <View
                 android:layout_width="match_parent"

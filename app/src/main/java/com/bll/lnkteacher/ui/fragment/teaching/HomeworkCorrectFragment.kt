@@ -62,7 +62,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         layoutParams.weight = 1f
         layoutParams.setMargins(
             DP2PX.dip2px(activity, 40f),
-            DP2PX.dip2px(activity, 40f),
+            DP2PX.dip2px(activity, 30f),
             DP2PX.dip2px(activity, 40f),
             0
         )

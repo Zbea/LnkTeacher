@@ -40,16 +40,6 @@
                 android:textSize="@dimen/sp_22"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_analyse"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
-                android:gravity="center"
-                android:text="@string/teaching_testpaper_analyse"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_18" />
 
             <ImageView
                 android:id="@+id/iv_delete"
