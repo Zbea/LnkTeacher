@@ -6,5 +6,6 @@ public class ClassGroupList{
 
     public List<ClassGroup> list;
     public int totalCount;
+    public List<ClassGroupTeacher> teacherList;
 
 }

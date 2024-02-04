@@ -2,22 +2,16 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
+class ClassGroupCreateDialog(val context: Context,private val name:String,private var grade: Int,private var type:Int) {
 
-    private var grade=0
-    private var job=0
-    private var tv_grade:TextView?=null
-    private var tv_job:TextView?=null
-    private var jobBeans= mutableListOf<PopupBean>()
-    private var grades= mutableListOf<PopupBean>()
+    constructor(context: Context):this(context, "",0,0)
 
     fun builder(): ClassGroupCreateDialog {
 
@@ -28,36 +22,26 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        tv_grade = dialog.findViewById(R.id.tv_grade)
-        tv_job = dialog.findViewById(R.id.tv_job)
-
-        btn_ok.text=if (classGroup==null) "确定" else "修改"
-
-        grades=if (classGroup==null) DataBeanManager.popupGrades else DataBeanManager.popupGrades(classGroup?.grade!!)
-        for (i in DataBeanManager.groupJobs.indices){
-            jobBeans.add(PopupBean(i+1,DataBeanManager.groupJobs[i],if (classGroup==null) false else i==classGroup?.job!!-1))
+        val tv_grade = dialog.findViewById<TextView>(R.id.tv_grade)
+        if (grade!=0){
+            tv_grade.text=DataBeanManager.getGradeStr(grade)
         }
 
-        if (classGroup!=null)
-        {
-            grade=classGroup?.grade!!
-            job=classGroup?.job!!
-            et_name.setText(classGroup?.name)
-            tv_grade?.text=DataBeanManager.getGradeStr(classGroup?.grade!!)
-            tv_job?.text=if (classGroup?.job==1) context.getString(R.string.classGroup_headteacher) else context.getString(R.string.classGroup_teacher)
+        if (name.isNotEmpty()){
+            et_name.setText(name)
+            et_name.setSelection(name.length)
         }
+
+        if (type==1){
+            tv_grade.visibility= View.GONE
+        }
+
+        val grades=DataBeanManager.popupGrades(grade)
 
         tv_grade?.setOnClickListener {
-            PopupRadioList(context, grades, tv_grade!!,tv_grade?.width!!,  5).builder().setOnSelectListener { item ->
-                tv_grade?.text=item.name
+            PopupRadioList(context, grades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
+                tv_grade.text=item.name
                 grade=item.id
-            }
-        }
-
-        tv_job?.setOnClickListener {
-            PopupRadioList(context, jobBeans, tv_job!!,tv_job?.width!!,  5).builder().setOnSelectListener { item ->
-                tv_job?.text=item.name
-                job=item.id
             }
         }
 
@@ -69,7 +53,7 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
             if (name.isNotEmpty()&&grade>0)
             {
                 dialog.dismiss()
-                listener?.onClick(name,grade,job)
+                listener?.onClick(name,grade)
             }
         }
 
@@ -82,7 +66,7 @@ class ClassGroupCreateDialog(val context: Context,var classGroup:ClassGroup?) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(str: String,grade:Int,job:Int)
+        fun onClick(str: String,grade:Int)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

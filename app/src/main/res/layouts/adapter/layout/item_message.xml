@@ -2,47 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/cb_check"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_10"
-        android:button="@drawable/bg_check_selector"
-        android:clickable="false" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:id="@+id/cb_check"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_check_nor" />
+
+        <TextView
+            android:id="@+id/tv_student_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="@dimen/dp_50"
+        android:lines="1"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22" />
-
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_22" />
-
-    <TextView
-        android:id="@+id/tv_student_name"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_22"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        />
-
 
 </LinearLayout>

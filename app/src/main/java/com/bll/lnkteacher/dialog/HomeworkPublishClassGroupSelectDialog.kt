@@ -56,7 +56,7 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
             val item=initDatas[position]
             when (view.id){
                 R.id.tv_date->{
-                    DateCalendarDialog1(mContext,item.date).builder().setOnDateListener{
+                    DateCalendarDialog(mContext,item.date).builder().setOnDateListener{
                         item.date=it
                         mAdapter?.notifyDataSetChanged()
                     }

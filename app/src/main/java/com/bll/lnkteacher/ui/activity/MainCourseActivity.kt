@@ -7,6 +7,7 @@ import android.widget.GridLayout
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CourseModuleDialog
@@ -15,19 +16,27 @@ import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.manager.CourseGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CourseBean
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
+import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
+import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_course.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
 //课程表
-class MainCourseActivity : BaseActivity() {
+class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassGroupView {
+    private val mUploadPresenter = FileUploadPresenter(this)
+    private val mPresenter=ClassGroupPresenter(this)
     private var type=1
     private var classGroupId=0
     private var mode = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
     private var row = 11
     private var column = 7
     private var selectLists = mutableListOf<CourseBean>()//已经选择了的课程
+    private var lists= mutableListOf<ItemList>()
 
     private var timeWidth = 60
     private var weekHeight = 102
@@ -41,6 +50,29 @@ class MainCourseActivity : BaseActivity() {
     private var height = 120
     private var width = 210
 
+    override fun onToken(token: String) {
+        val commitPaths= mutableListOf<String>()
+        commitPaths.add(FileAddress().getPathCourse("course")+"/course${classGroupId}.png")
+        FileImageUploadManager(token, commitPaths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    mPresenter.uploadClassGroup(classGroupId,urls[0])
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("上传失败")
+                }
+            })
+        }
+    }
+
+    override fun onSuccess() {
+    }
+    override fun onUploadSuccess() {
+        finish()
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_course
     }
@@ -48,6 +80,20 @@ class MainCourseActivity : BaseActivity() {
     override fun initData() {
         type = intent.flags
         classGroupId=intent.getIntExtra("classGroupId",0)
+
+        if (type==1){
+            val classGroups=DataBeanManager.classGroups
+            for (item in classGroups){
+                if (item.state==1)
+                    lists.add(ItemList(item.classId,item.name))
+            }
+        }
+        else{
+            for (item in DataBeanManager.courses){
+                lists.add(ItemList(item.type,item.desc))
+            }
+
+        }
     }
 
     override fun initView() {
@@ -69,9 +115,14 @@ class MainCourseActivity : BaseActivity() {
             if (selectLists.size == 0) return@setOnClickListener
             CourseGreenDaoManager.getInstance().delete(type, classGroupId)
             CourseGreenDaoManager.getInstance().insertAll(selectLists)
-            SystemSettingUtils.saveScreenShot(this, grid, "course")
-            EventBus.getDefault().post(Constants.COURSE_EVENT)
-            finish()
+            SystemSettingUtils.saveScreenShot(this, grid, "course${classGroupId}")
+            if (type==1) {
+                EventBus.getDefault().post(Constants.COURSE_EVENT)
+                finish()
+            }
+            else{
+                mUploadPresenter.getToken()
+            }
         }
 
         val oldCourses=CourseGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)
@@ -594,18 +645,8 @@ class MainCourseActivity : BaseActivity() {
      * 输入课程
      */
     private fun inputContent(v: TextView) {
-        var lists= mutableListOf<ItemList>()
-        if (type==1){
-            val classGroups=DataBeanManager.classGroups
-            for (item in classGroups){
-                lists.add(ItemList(item.classId,item.name))
-            }
-        }
-        else{
-            lists=DataBeanManager.courses
-        }
-
-        ItemSelectorDialog(this,"班级选择",lists).builder().setOnDialogClickListener{
+        val titleStr=if (type==1) "班级选择" else "科目选择"
+        ItemSelectorDialog(this,titleStr,lists).builder().setOnDialogClickListener{
             val contentStr=lists[it].name
             v.text = contentStr
 
@@ -628,5 +669,7 @@ class MainCourseActivity : BaseActivity() {
             selectLists.add(course)
         }
     }
+
+
 
 }

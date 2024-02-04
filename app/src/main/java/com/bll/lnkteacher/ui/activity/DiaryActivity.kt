@@ -54,7 +54,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog(this).builder().setOnDateListener{
+            DateCalendarDialog(this,50f,150f).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
                 changeContent()

@@ -13,6 +13,7 @@ import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
+import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails;
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
@@ -65,20 +66,25 @@ public interface IContractView {
 
     //班群
     interface IClassGroupView extends IBaseView{
-        void onCreateSuccess();
-        void onEditSuccess();
-        void onDissolveSuccess();
+        void onSuccess();
+        void onUploadSuccess();
     }
 
-    //班群学生
     interface IClassGroupUserView extends IBaseView{
         //学生列表
         void onUserList(List<ClassGroupUser> users);
         //踢出学生成功
         void onOutSuccess();
+        void onCreateSuccess();
+        void onAddSuccess();
         //修改学生职位成功
         void onEditSuccess();
-        void onStatusSuccess();
+    }
+
+    interface IClassGroupTeacherView extends IBaseView{
+        void onUserList(List<ClassGroupTeacher> users);
+        void onOutSuccess();
+        void onTransferSuccess();
     }
 
     //主页

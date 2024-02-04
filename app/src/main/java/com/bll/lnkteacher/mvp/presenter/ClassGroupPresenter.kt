@@ -7,12 +7,11 @@ import com.bll.lnkteacher.net.*
 
 class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<IContractView.IClassGroupView>(view) {
 
-    fun createClassGroup(name: String,grade:Int,job:Int) {
+    fun createClassGroup(name: String,grade:Int) {
 
         val body = RequestUtils.getBody(
             Pair.create("name", name),
             Pair.create("grade", grade),
-            Pair.create("job", job)
         )
         val createGroup = RetrofitManager.service.createClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view) {
@@ -20,36 +19,54 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCreateSuccess()
+                view.onSuccess()
             }
         }, true)
 
     }
 
-    fun editClassGroup(classId: Int,name: String,job: Int,grade: Int) {
-
+    fun editClassGroup(name: String,grade:Int,classId: Int) {
         val body = RequestUtils.getBody(
             Pair.create("name", name),
-            Pair.create("job", job),
             Pair.create("grade", grade),
-            Pair.create("classId", classId)
+            Pair.create("classGroupId", classId)
         )
-        val createGroup = RetrofitManager.service.editClassGroup(body)
+        val createGroup = RetrofitManager.service.createClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onEditSuccess()
+                view.onSuccess()
             }
         }, true)
 
     }
 
+    fun addClassGroup(id: Int) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("id", id),
+        )
+        val createGroup = RetrofitManager.service.addClassGroup(body)
+        doRequest(createGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSuccess()
+            }
+        }, true)
+
+    }
+
+    /**
+     * 创建者解散班群
+     */
     fun dissolveClassGroup(classId: Int) {
 
         val body = RequestUtils.getBody(
-            Pair.create("classId", classId)
+            Pair.create("id", classId)
         )
         val createGroup = RetrofitManager.service.dissolveClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view) {
@@ -57,7 +74,46 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onDissolveSuccess()
+                view.onSuccess()
+            }
+        }, true)
+    }
+
+
+    /**
+     * 添加课程表
+     */
+    fun uploadClassGroup(classId: Int,imageUrl:String) {
+        val body = RequestUtils.getBody(
+            Pair.create("id", classId),
+            Pair.create("imageUrl", imageUrl)
+        )
+        val createGroup = RetrofitManager.service.uploadClassGroup(body)
+        doRequest(createGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onUploadSuccess()
+            }
+        }, true)
+    }
+
+    /**
+     * 老师退出班群
+     */
+    fun outClassGroup(classId: Int) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("id", classId)
+        )
+        val createGroup = RetrofitManager.service.outClassGroup(body)
+        doRequest(createGroup, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSuccess()
             }
         }, true)
     }

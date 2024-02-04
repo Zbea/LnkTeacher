@@ -32,7 +32,7 @@ class MessageSendDialog(private val context: Context) {
 
         val groups= mutableListOf<ClassGroup>()
         for (item in DataBeanManager.classGroups){
-            if (item.studentCount>0){
+            if (item.studentCount>0&&item.state==1){
                 groups.add(item)
             }
         }

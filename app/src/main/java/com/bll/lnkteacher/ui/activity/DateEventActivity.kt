@@ -4,7 +4,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.DateCalendarDialog1
+import com.bll.lnkteacher.dialog.DateCalendarDialog
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
@@ -14,7 +14,6 @@ import java.util.*
 
 class DateEventActivity:BaseDrawingActivity() {
     private var mDate: Date?=null
-    private var dayLong = 24 * 60 * 60 * 1000
     private var nowLong=0L
     private var isDraw=false
 
@@ -32,17 +31,17 @@ class DateEventActivity:BaseDrawingActivity() {
         setContentView()
 
         iv_up.setOnClickListener {
-            nowLong-=dayLong
+            nowLong-=Constants.dayLong
             setContentView()
         }
 
         iv_down.setOnClickListener {
-            nowLong+=dayLong
+            nowLong+=Constants.dayLong
             setContentView()
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog1(this).builder().setOnDateListener{
+            DateCalendarDialog(this,45f,190f).builder().setOnDateListener{
                 nowLong=it
                 setContentView()
             }

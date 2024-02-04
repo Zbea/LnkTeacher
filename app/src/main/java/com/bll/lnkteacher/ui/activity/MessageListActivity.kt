@@ -46,7 +46,6 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
         fetchData()
     }
 
-
     override fun layoutId(): Int {
         return R.layout.ac_list
     }
@@ -63,9 +62,8 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
         iv_manager.setImageResource(R.mipmap.icon_save)
 
         iv_setting.setOnClickListener {
-            val datas=mAdapter?.data
             val ids= mutableListOf<Int>()
-            for (item in datas!!){
+            for (item in lists){
                 if (item.isCheck){
                     ids.add(item.id)
                 }
@@ -74,9 +72,6 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
                 val map=HashMap<String,Any>()
                 map["ids"]=ids.toIntArray()
                 mPresenter.deleteMessages(map)
-            }
-            else{
-                showToast(R.string.toast_selector_message)
             }
         }
 
@@ -101,7 +96,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,50f), DP2PX.dip2px(this,20f),
+            DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),
             DP2PX.dip2px(this,50f),DP2PX.dip2px(this,20f))
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
@@ -112,6 +107,10 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, 40))
+            setOnItemChildClickListener { adapter, view, position ->
+                lists[position].isCheck=!lists[position].isCheck
+                notifyItemChanged(position)
+            }
         }
     }
 

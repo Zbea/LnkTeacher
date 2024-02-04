@@ -158,47 +158,83 @@ interface APIService{
     /**
      * 创建班群
      */
-    @POST("class/create")
+    @POST("class/group/insert")
     fun createClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 修改班群
+     */
+    @POST("class/group/edit")
+    fun editClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 创建班群
+     */
+    @POST("class/group/join")
+    fun addClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 班群列表
      */
     @GET("class/page")
     fun getListClassGroup(): Observable<BaseResult<ClassGroupList>>
-    /**
-     * 修改班群名
-     */
-    @POST("class/updateClassName")
-    fun editClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 解散班群
      */
-    @POST("class/disbandClass")
+    @POST("class/group/delete")
     fun dissolveClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
+    /**
+     * 老师退出班群
+     */
+    @POST("class/group/quit")
+    fun outClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 班群添加课程表
+     */
+    @POST("class/group/uploadCourse")
+    fun uploadClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取班群学生列表
      */
     @POST("class/classInfo")
     fun getClassGroupUserList(@Body requestBody: RequestBody): Observable<BaseResult<List<ClassGroupUser>>>
+
+    /**
+     * 老师创建子群
+     */
+    @POST("class/group/createOther")
+    fun createClassGroupUserGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 老师子群添加学生
+     */
+    @POST("class/group/joinSubGroup")
+    fun addClassGroupUserGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 学生安排职位
      */
     @POST("class/changeJob")
     fun changeJob(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 学生是否双通
-     */
-    @POST("class/enableSend")
-    fun changeStatus(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 班群学生踢出
      */
-    @POST("class/removeStudent")
+    @POST("class/group/removeStudent")
     fun outClassGroupUser(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 获取老师列表
+     */
+    @GET("class/group/info")
+    fun getClassGroupTeacherList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ClassGroupList>>
+    /**
+     * 班群踢出老师
+     */
+    @POST("class/group/removeTeacher")
+    fun outTeacher(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 转让班主任
+     */
+    @POST("class/group/transfer")
+    fun transferTeacher(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 获取考卷分类

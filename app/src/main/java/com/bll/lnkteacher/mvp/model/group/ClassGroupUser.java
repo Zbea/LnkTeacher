@@ -12,5 +12,5 @@ public class ClassGroupUser {
     public String parentTel;
     public String parentAddr;
     public String job;
-    public int status;
+    public boolean isCheck;
 }

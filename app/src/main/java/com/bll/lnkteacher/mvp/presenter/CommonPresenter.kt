@@ -12,16 +12,14 @@ import com.bll.lnkteacher.net.RetrofitManager
 
 class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContractView.ICommonView>(view) {
 
-
     fun getClassGroups() {
-
         val list = RetrofitManager.service.getListClassGroup()
         doRequest(list, object : Callback<ClassGroupList>(view) {
             override fun failed(tBaseResult: BaseResult<ClassGroupList>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                if (!tBaseResult.data?.list.isNullOrEmpty())
+                if (tBaseResult.data!=null)
                     view.onClassList(tBaseResult.data?.list)
             }
         }, false)

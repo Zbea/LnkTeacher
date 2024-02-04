@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import java.util.regex.Pattern
 
 
 abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
@@ -44,7 +45,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private var isScale=false//是否选中刻度
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
-    private var angle_num=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -279,14 +279,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                 elik?.setShifted(isCurrent&&isParallel)
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
-                //如果当前是角度，需要画完后才能设置刻度
-                if (currentGeometry==8){
-                    angle_num+=1
-                    if (isEven(angle_num))
+                if (elik?.curDrawObjStatus == true){
                         reDrawGeometry(elik!!)
-                }
-                else{
-                    reDrawGeometry(elik!!)
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
@@ -296,20 +290,13 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 是否是偶数
-     */
-    private fun isEven(number: Int): Boolean {
-        return number and 1 == 0
-    }
-
-    /**
      * 设置刻度重绘
      */
     private fun reDrawGeometry(elik:EinkPWInterface){
         if (isErasure)
             return
         if (isScale){
-            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==8||currentGeometry==9){
+            if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
                 GeometryScaleDialog(this,currentGeometry,circlePos).builder()
                     ?.setOnDialogClickListener{
                             width, height ->
@@ -317,8 +304,12 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                             2, 5 -> {
                                 elik.reDrawShape(width,height)
                             }
+                            7->{
+                                val info=elik.curHandlerInfo
+                                elik.reDrawShape(if (getAValue(info)>0) width else -width ,info.split("&")[1].toFloat())
+                            }
                             9 -> {
-                                elik.reDrawShape(height,width)
+                                elik.reDrawShape(width,5f)
                             }
                             else -> {
                                 elik.reDrawShape(width,-1f)
@@ -327,6 +318,19 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
                     }
             }
         }
+    }
+
+    /**
+     * 获取a值
+     */
+    private fun getAValue(info:String):Float{
+        val list= mutableListOf<String>()
+        val pattern= Pattern.compile("-?\\d+(\\.\\d+)") // 编译正则表达式，匹配连续的数字
+        val matcher= pattern.matcher(info) // 创建匹配器对象
+        while (matcher.find()){
+            list.add(matcher.group())
+        }
+        return list[0].toFloat()
     }
 
     /**

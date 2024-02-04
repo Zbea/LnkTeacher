@@ -45,10 +45,6 @@ object DataBeanManager {
         mContext.getString(R.string.teaching_tab_testpaper_correct)
     )
 
-    var groupJobs = arrayOf(
-        mContext.getString(R.string.classGroup_headteacher),
-        mContext.getString(R.string.classGroup_teacher)
-    )
 
     fun getGradeClassGroups(grade: Int): MutableList<PopupBean> {
         val popClasss = mutableListOf<PopupBean>()

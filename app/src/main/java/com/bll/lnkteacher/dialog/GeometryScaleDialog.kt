@@ -45,13 +45,17 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                 et_width.hint = "输入椭圆半宽度(mm)"
                 et_height.hint = "输入椭圆半高度(mm)"
             }
+            7->{
+                et_width.hint = "输入抛物线大小"
+                et_height.visibility= View.GONE
+            }
             8->{
                 et_width.hint = "输入角度"
                 et_height.visibility= View.GONE
             }
             9->{
                 et_width.hint = "输入每格刻度"
-                et_height.hint = "输入每格长度(mm)"
+                et_height.visibility= View.GONE
             }
         }
 

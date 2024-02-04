@@ -6,11 +6,8 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.AUTO_REFRESH_EVENT
-import com.bll.lnkteacher.Constants.Companion.CLASSGROUP_EVENT
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
-import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
-import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
 import com.bll.lnkteacher.Constants.Companion.PRIVACY_PASSWORD_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
@@ -20,17 +17,12 @@ import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
-import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
-import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
-import com.bll.lnkteacher.ui.adapter.MainHomeworkAdapter
 import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
-import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -41,20 +33,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Date
 
+class MainFragment : BaseFragment(),IContractView.IMessageView {
 
-/**
- * 首页
- */
-class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHomeworkCorrectView {
-
-    private var mPresenter= HomeworkCorrectPresenter(this)
     private var mMessagePresenter=MessagePresenter(this)
-
-    private var mHomeworkAdapter: MainHomeworkAdapter? = null
     private var mTeachingAdapter: MainTeachingAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
-
-    private var mainNoteAdapter: MainNoteAdapter? = null
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
 
@@ -67,13 +50,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
     override fun onSend() {
     }
     override fun onDeleteSuccess() {
-    }
-
-    override fun onList(list: CorrectList) {
-        mHomeworkAdapter?.setNewData(list.list)
-    }
-    override fun onSendSuccess() {
-        showToast(R.string.toast_send_success)
     }
 
     override fun getLayoutId(): Int {
@@ -98,7 +74,6 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
             )
         }
 
-
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
@@ -114,18 +89,15 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
         }
 
         initMessageView()
-        initHomeworkView()
+
         initTeachingView()
         initCourse()
-        initNote()
 
-        findNotes()
         onClassGroupEvent()
     }
 
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
-            findHomework()
             findMessages()
             fetchCommonData()
             mCommonPresenter.getAppUpdate()
@@ -136,7 +108,7 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
 
     //课程表相关处理
     private fun initCourse() {
-        val path=FileAddress().getPathCourse("course") + "/course.png"
+        val path=FileAddress().getPathCourse("course") + "/course0.png"
         if (File(path).exists()){
             GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
         }
@@ -179,25 +151,15 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
             rv_main_message.adapter = this
             bindToRecyclerView(rv_main_message)
         }
-
-    }
-
-    //收到作业
-    private fun initHomeworkView() {
-        rv_main_homework.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
-        mHomeworkAdapter = MainHomeworkAdapter(R.layout.item_main_homework, null)
-        rv_main_homework.adapter = mHomeworkAdapter
-        mHomeworkAdapter?.bindToRecyclerView(rv_main_homework)
-        rv_main_homework.addItemDecoration(SpaceGridItemDeco(2, 35))
     }
 
     //教学进度
     private fun initTeachingView() {
-        rv_main_teaching.layoutManager = GridLayoutManager(activity, 2)//创建布局管理
+        rv_main_teaching.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
         rv_main_teaching.adapter = mTeachingAdapter
         mTeachingAdapter?.bindToRecyclerView(rv_main_teaching)
-        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(2, 35))
+        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(3, 30))
         mTeachingAdapter?.setOnItemClickListener { _, _, position ->
             val intent = Intent(activity, TeachingPlanActivity::class.java)
             val bundle = Bundle()
@@ -205,53 +167,20 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
             intent.putExtra("bundle", bundle)
             startActivity(intent)
         }
-
-    }
-
-    //笔记
-    private fun initNote(){
-        mainNoteAdapter = MainNoteAdapter(R.layout.item_main_note, null)
-        rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        rv_main_note.adapter = mainNoteAdapter
-        mainNoteAdapter?.bindToRecyclerView(rv_main_note)
-        mainNoteAdapter?.setOnItemClickListener { adapter, view, position ->
-            gotoNote(mainNoteAdapter?.data?.get(position)!!)
-        }
-
-    }
-
-    /**
-     * 查找笔记
-     */
-    private fun findNotes(){
-        mainNoteAdapter?.setNewData(NoteDaoManager.getInstance().queryListOther(8))
     }
 
     private fun findMessages(){
         val map=HashMap<String,Any>()
         map["page"]=1
-        map["size"]=2
+        map["size"]=4
         map["type"]=1
         mMessagePresenter.getList(map,false)
-    }
-
-    private fun findHomework(){
-        val map=HashMap<String,Any>()
-        map["size"] = 6
-        map["taskType"]=1
-        mPresenter.getList(map)
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             COURSE_EVENT -> {
                 initCourse()
-            }
-            NOTE_EVENT,NOTE_BOOK_MANAGER_EVENT -> {
-                findNotes()
-            }
-            CLASSGROUP_EVENT -> {
-                onClassGroupEvent()
             }
             MESSAGE_EVENT -> {
                 findMessages()
@@ -271,7 +200,12 @@ class MainFragment : BaseFragment(),IContractView.IMessageView,IContractView.IHo
     }
 
     override fun onClassGroupEvent() {
-        classGroups=DataBeanManager.classGroups
+        classGroups= mutableListOf()
+        for (item in DataBeanManager.classGroups){
+            if (item.state==1){
+                classGroups.add(item)
+            }
+        }
         mTeachingAdapter?.setNewData(classGroups)
     }
 

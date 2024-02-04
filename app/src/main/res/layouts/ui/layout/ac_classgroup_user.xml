@@ -18,6 +18,14 @@
         android:orientation="horizontal">
 
         <TextView
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            />
+
+        <TextView
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -82,16 +90,6 @@
         <TextView
             android:layout_width="@dimen/dp_50"
             android:layout_height="wrap_content"
-            android:text="双通"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            />
-
-        <TextView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="wrap_content"
-            android:text="踢出"
             android:gravity="center"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"

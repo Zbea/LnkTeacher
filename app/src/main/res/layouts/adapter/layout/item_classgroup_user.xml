@@ -7,6 +7,14 @@
     android:background="@drawable/bg_line_bottom"
     >
 
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:src="@mipmap/icon_check_nor"
+        />
+
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="80dp"
@@ -72,14 +80,6 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"
-        />
-
-    <ImageView
-        android:id="@+id/iv_check"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:src="@mipmap/icon_check_nor"
         />
 
     <TextView
