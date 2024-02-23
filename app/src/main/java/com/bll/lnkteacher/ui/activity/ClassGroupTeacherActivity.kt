@@ -36,8 +36,10 @@ class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherV
     override fun onTransferSuccess() {
         showToast("转让班主任成功")
         isCreate=false
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.setChange(false)
+        mPresenter.getClassList(mClassGroup?.classGroupId!!)
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_CHANGE_EVENT)
     }
 
     override fun layoutId(): Int {

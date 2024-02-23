@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
             android:visibility="gone"
-            android:src="@mipmap/icon_add"/>
+            android:src="@mipmap/icon_group_add"/>
 
         <ImageView
             android:id="@+id/iv_create"
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
             android:visibility="gone"
-            android:src="@mipmap/icon_group_create"/>
+            android:src="@mipmap/icon_add"/>
 
 
         <ImageView

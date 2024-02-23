@@ -30,6 +30,10 @@ public class ProgressDialog {
         window.setBackgroundDrawableResource(android.R.color.transparent);
     }
 
+    public void setOutside(boolean b){
+        mDialog.setCanceledOnTouchOutside(b);
+    }
+
     public void show() {
         Activity activity= (Activity) context;
         if (activity!=null && !activity.isFinishing() && !activity.isDestroyed() &&

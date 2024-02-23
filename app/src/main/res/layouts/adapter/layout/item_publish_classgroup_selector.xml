@@ -13,9 +13,11 @@
 
         <CheckBox
             android:id="@+id/cb_class"
-            android:layout_width="150dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="  班群名称"
+            android:lines="1"
             android:gravity="center_vertical"
             android:textSize="@dimen/sp_20"
             android:textColor="@color/black"
@@ -24,9 +26,9 @@
 
         <CheckBox
             android:id="@+id/cb_commit"
-            android:layout_width="150dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="  是否提交"
+            android:text="  提交"
             android:gravity="center_vertical"
             android:button="@drawable/bg_check_selector"
             android:textSize="@dimen/sp_20"
@@ -35,7 +37,7 @@
 
         <TextView
             android:id="@+id/tv_date"
-            android:layout_width="match_parent"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="选择时间"
             android:gravity="center"

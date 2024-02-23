@@ -16,9 +16,11 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 /**
  * type=0绘图目录 type=1书籍目录
  */
-class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:Int=0) {
+class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:Int=0,val startCount:Int) {
 
     private var dialog:Dialog?=null
+
+    constructor(context: Context, list: List<Any>):this(context, list, 0, 0)
 
     fun builder(): DrawingCatalogDialog {
 
@@ -26,10 +28,17 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
         dialog?.setContentView(R.layout.dialog_drawing_catalog)
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
-        window.decorView.setPadding(0, 0, 0, 0)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
-        layoutParams.y=DP2PX.dip2px(context,32f)
+        if (type==1){
+            layoutParams.gravity = Gravity.BOTTOM or  Gravity.END
+            layoutParams.y=DP2PX.dip2px(context,5f)
+            layoutParams.x=DP2PX.dip2px(context,42f)
+        }
+        else{
+            layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
+            layoutParams.y=DP2PX.dip2px(context,38f)
+            layoutParams.x=DP2PX.dip2px(context,5f)
+        }
         dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)
@@ -47,7 +56,7 @@ class DrawingCatalogDialog(val context: Context, val list: List<Any> ,val type:I
             }
         }
         else{
-            val mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>)
+            val mAdapter = BookCatalogAdapter(list as List<MultiItemEntity>,startCount)
             rv_list?.adapter = mAdapter
             mAdapter.bindToRecyclerView(rv_list)
             mAdapter.setOnCatalogClickListener(object : BookCatalogAdapter.OnCatalogClickListener {

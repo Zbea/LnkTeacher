@@ -31,7 +31,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView) : BasePresenter<I
             Pair.create("grade", grade),
             Pair.create("classGroupId", classId)
         )
-        val createGroup = RetrofitManager.service.createClassGroup(body)
+        val createGroup = RetrofitManager.service.editClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false

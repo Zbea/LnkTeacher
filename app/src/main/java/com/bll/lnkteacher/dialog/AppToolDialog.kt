@@ -16,19 +16,26 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context) {
+class AppToolDialog(val context: Context,val type:Int) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): AppToolDialog? {
+    fun builder(): AppToolDialog {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
-        layoutParams.x=DP2PX.dip2px(context,10f)
-        layoutParams.y= DP2PX.dip2px(context,46f)
+        if (type==1){
+            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
+            layoutParams.x=DP2PX.dip2px(context,42f)
+            layoutParams.y= DP2PX.dip2px(context,5f)
+        }
+        else{
+            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
+            layoutParams.x=DP2PX.dip2px(context,5f)
+            layoutParams.y= DP2PX.dip2px(context,38f)
+        }
         dialog?.show()
 
         val lists=AppDaoManager.getInstance().queryTool()

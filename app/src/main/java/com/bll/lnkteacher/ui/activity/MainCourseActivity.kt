@@ -103,8 +103,9 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
         tv_custom.text="模板"
 
         tv_custom.setOnClickListener {
-            CourseModuleDialog(this).builder().setOnClickListener { type ->
-                mode=type
+            CourseModuleDialog(this).builder().setOnClickListener {
+                mode=it
+                CourseGreenDaoManager.getInstance().editByTypeLists(type, classGroupId, mode)
                 selectLists.clear()
                 grid.removeAllViews()
                 setData()
@@ -196,8 +197,8 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
     //添加时间布局在第一列
     private fun addTimeLayout() {
 
-        var heightTime1: Int
-        var heightTime2: Int
+        val heightTime1: Int
+        val heightTime2: Int
         when (mode) {
             0, 1 -> {
                 heightTime1=weekHeight + dividerHeight + 4 * height
@@ -576,7 +577,7 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
         return TextView(this).also {
             it.setTextColor(Color.BLACK)
             it.text=str
-            it.textSize = 30f
+            it.textSize = 28f
             it.gravity = Gravity.CENTER
             it.setBackgroundResource(R.drawable.bg_course)
         }
@@ -585,8 +586,8 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
     private fun getCourseView(): TextView {
         return TextView(this).apply {
             setTextColor(Color.BLACK)
-            textSize = 30f
-//          setSingleLine(true)
+            textSize = 24f
+            setLines(1)
             gravity = Gravity.CENTER
         }
     }

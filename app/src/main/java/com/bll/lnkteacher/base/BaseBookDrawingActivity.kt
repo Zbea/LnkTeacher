@@ -17,26 +17,22 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.utils.*
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.ac_book_details.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
-import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
+abstract class BaseBookDrawingActivity : AppCompatActivity(), IBaseView {
 
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var elik: EinkPWInterface? = null
     var isErasure=false
-    var isTitleClick=true//标题是否可以编
     private var circlePos=0
     private var axisPos=0
     private var isGeometry=false//是否处于几何绘图
@@ -85,8 +81,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
 
-        iv_back?.setOnClickListener { finish() }
-
         iv_tool?.setOnClickListener {
             showDialogAppTool()
         }
@@ -99,16 +93,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
             else{
                 stopErasure()
-            }
-        }
-
-        tv_page_title?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_page_title.text.toString()
-                InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                    tv_page_title.text = string
-                    setDrawingTitle(string)
-                }
             }
         }
 
@@ -415,18 +399,10 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 设置标题是否可以编辑
-     */
-    fun setDrawingTitleClick(boolean: Boolean){
-        isTitleClick=boolean
-    }
-
-
-    /**
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,0).builder()?.setDialogClickListener{
+        AppToolDialog(this,1).builder()?.setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -498,19 +474,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         isGeometry=false
     }
 
-    fun setPageTitle(title: String){
-        tv_title?.text=title
-    }
 
-    /**
-     * 标题a操作
-     */
-    open fun setDrawingTitle(title:String){
-    }
-
-    fun getUser(): User?{
-        return SPUtil.getObj("user", User::class.java)
-    }
     /**
      * 显示view
      */

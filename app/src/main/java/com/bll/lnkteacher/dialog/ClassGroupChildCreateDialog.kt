@@ -4,51 +4,50 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.EditText
 import android.widget.TextView
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.utils.KeyboardUtils
+import com.bll.lnkteacher.utils.SToast
 
-class ClassGroupCreateDialog(val context: Context,private val name:String,private var grade: Int) {
+class ClassGroupChildCreateDialog(val context: Context,val titleStr:String,val user:MutableList<ClassGroupUser>) {
+    var ids= mutableListOf<Int>()
 
-    constructor(context: Context):this(context, "",0)
-
-    fun builder(): ClassGroupCreateDialog {
+    fun builder(): ClassGroupChildCreateDialog {
 
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_classgroup_create)
+        dialog.setContentView(R.layout.dialog_classgroup_child_create)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
+        val tv_select = dialog.findViewById<TextView>(R.id.tv_select)
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        val tv_grade = dialog.findViewById<TextView>(R.id.tv_grade)
-        if (grade!=0){
-            tv_grade.text=DataBeanManager.getGradeStr(grade)
-        }
 
-        if (name.isNotEmpty()){
-            et_name.setText(name)
-            et_name.setSelection(name.length)
-        }
-
-        val grades=DataBeanManager.popupGrades(grade)
-
-        tv_grade?.setOnClickListener {
-            PopupRadioList(context, grades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
-                tv_grade.text=item.name
-                grade=item.id
-            }
+        if (titleStr.isNotEmpty()){
+            et_name.setText(titleStr)
+            et_name.setSelection(titleStr.length)
         }
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()
         }
+
+        tv_select.setOnClickListener {
+            ClassGroupUserSelectorDialog(context,user).builder().setOnDialogClickListener{
+                ids= it as MutableList<Int>
+            }
+        }
+
         btn_ok.setOnClickListener {
             val name=et_name.text.toString()
-            if (name.isNotEmpty()&&grade>0)
+            if (name.isNotEmpty())
             {
+                if (ids.size==0){
+                    SToast.showText("请添加学生")
+                    return@setOnClickListener
+                }
                 dialog.dismiss()
-                listener?.onClick(name,grade)
+                listener?.onClick(name, ids)
             }
         }
 
@@ -61,7 +60,7 @@ class ClassGroupCreateDialog(val context: Context,private val name:String,privat
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(str: String,grade:Int)
+        fun onClick(str: String,ids:MutableList<Int>)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

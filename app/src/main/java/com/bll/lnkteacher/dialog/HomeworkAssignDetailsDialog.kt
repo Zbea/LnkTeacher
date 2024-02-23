@@ -67,7 +67,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
         override fun convert(helper: BaseViewHolder, item: DetailsBean) {
             helper.setText(R.id.tv_homework_type,item.name)
             helper.setText(R.id.tv_message,item.info)
-            helper.setText(R.id.tv_date,DateUtils.longToStringWeek(item.time*1000))
+            helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYear(item.time))
 
             val selects= mutableListOf<HomeworkClassSelect>()
             val jsonArray=JsonParser().parse(item.classInfo).asJsonArray

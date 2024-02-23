@@ -68,7 +68,11 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         grade=typeBean?.grade!!
         fetchData()
 
-        popGroups=DataBeanManager.getGradeClassGroups(grade)
+        for (item in DataBeanManager.classGroups){
+            if (item.state==1&&item.grade==grade){
+                popGroups.add(PopupBean(item.classId,item.name,false))
+            }
+        }
         presenter.getGroupTypes()
     }
 
@@ -166,7 +170,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     private fun selectorGroup() {
-        PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder()?.setOnSelectListener{
+        PopupCheckList(this, popGroups, tv_group,  5).builder()?.setOnSelectListener{
             classSelectGroups= it as MutableList<PopupBean>
         }
     }

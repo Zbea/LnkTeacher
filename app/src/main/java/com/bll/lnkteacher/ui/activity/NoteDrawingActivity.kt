@@ -43,14 +43,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
 
     override fun initView() {
+        disMissView(iv_btn)
         v_content.setImageResource(ToolUtils.getImageResId(this,note?.contentResId))//设置背景
-        elik = v_content.pwInterFace
         changeContent()
-
-        iv_catalog.setOnClickListener {
-            showCatalog()
-        }
-
     }
 
     override fun setDrawingTitle(title: String) {
@@ -59,10 +54,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
     }
 
-    /**
-     * 弹出目录
-     */
-    private fun showCatalog(){
+    override fun onCatalog() {
         var titleStr=""
         val list= mutableListOf<ItemList>()
         for (item in noteContents){

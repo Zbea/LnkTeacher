@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import PopupClick
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +11,10 @@ import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.ui.activity.ClassGroupChildActivity
 import com.bll.lnkteacher.ui.activity.ClassGroupUserActivity
 import com.bll.lnkteacher.ui.activity.MainCourseActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
@@ -29,8 +28,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     private var classGroups= mutableListOf<ClassGroup>()
     private var mAdapter:ClassGroupAdapter?=null
     private var position=0
-    private var popClassHeader= mutableListOf<PopupBean>()
-    private var popClass= mutableListOf<PopupBean>()
 
     override fun onSuccess() {
         fetchCommonData()
@@ -45,13 +42,6 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     override fun initView() {
         setTitle(R.string.main_classgroup_title)
         showView(iv_create,iv_add)
-
-        popClassHeader.add(PopupBean(0,"课程表",true))
-        popClassHeader.add(PopupBean(1,"编    辑",false))
-        popClassHeader.add(PopupBean(2,"解    散",false))
-
-        popClass.add(PopupBean(0,"课程表",true))
-        popClass.add(PopupBean(1,"退    出",false))
 
         initRecyclerView()
         onClassGroupEvent()
@@ -74,57 +64,49 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(activity,20f)))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(activity,30f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val classGroup=classGroups[position]
+            //是否是班主任
+            val isHeader=classGroup.userId==mUserId
             when(view.id){
-                R.id.tv_info->{
-                    val intent=Intent(activity, ClassGroupUserActivity::class.java)
+                R.id.tv_course->{
+                    if (classGroup.state==1){
+                        if (isHeader){
+                            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                                .putExtra("classGroupId", classGroup.classGroupId)
+                            )
+                        }
+                        else{
+                            ImageDialog(requireActivity(), arrayListOf(classGroup.imageUrl)).builder()
+                        }
+                    }
+                }
+                R.id.tv_edit->{
+                    if (classGroup.state==1&&isHeader){
+                        ClassGroupCreateDialog(requireContext(),classGroup.name,classGroup.grade).builder()
+                            .setOnDialogClickListener {name,grade->
+                                mGroupPresenter.editClassGroup(name,grade,classGroup.classGroupId)
+                            }
+                    }
+                }
+                R.id.tv_child->{
+                    val intent=Intent(activity, ClassGroupChildActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("classGroup",classGroup)
                     intent.putExtra("bundle",bundle)
                     startActivity(intent)
                 }
                 R.id.tv_dissolve->{
-                    if (classGroup.state!=1){
-                        dissolveGroup()
-                    }
-                    else{
-                        //是否是班主任
-                        val isHeader=classGroup.userId==mUserId
-                        val pops=if (isHeader) popClassHeader else popClass
-                        PopupClick(requireActivity(),pops,view,120,5).builder().setOnSelectListener{
-                            if (isHeader){
-                                when(it.id){
-                                    0->{
-                                        startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                                            .putExtra("classGroupId", classGroup.classGroupId)
-                                        )
-                                    }
-                                    1->{
-                                        ClassGroupCreateDialog(requireContext(),classGroup.name,classGroup.grade,0).builder()
-                                            .setOnDialogClickListener {name,grade->
-                                                mGroupPresenter.editClassGroup(name,grade,classGroup.classGroupId)
-                                            }
-                                    }
-                                    2->{
-                                        dissolveGroup()
-                                    }
-                                }
-                            }
-                            else{
-                                when(it.id){
-                                    0->{
-                                        ImageDialog(requireActivity(), arrayListOf(classGroup.imageUrl)).builder()
-                                    }
-                                    1->{
-                                        dissolveGroup()
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    dissolveGroup()
+                }
+                R.id.tv_detail->{
+                    val intent=Intent(activity, ClassGroupUserActivity::class.java)
+                    val bundle= Bundle()
+                    bundle.putSerializable("classGroup",classGroup)
+                    intent.putExtra("bundle",bundle)
+                    startActivity(intent)
                 }
             }
 
@@ -176,18 +158,22 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
 
     override fun onClassGroupEvent() {
-        classGroups=DataBeanManager.classGroups
+        classGroups.clear()
+        for (item in DataBeanManager.classGroups){
+            if (item.state==1){
+                classGroups.add(item)
+            }
+        }
         mAdapter?.setNewData(classGroups)
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         lazyLoad()
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.CLASSGROUP_EVENT){
-            fetchCommonData()
+            lazyLoad()
         }
     }
 

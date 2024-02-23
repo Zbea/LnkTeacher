@@ -72,6 +72,10 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
                 }
                 R.id.cb_class->{
                     item.isCheck=!item.isCheck
+                    if (!item.isCheck){
+                        item.isCommit=false
+                        item.submitStatus=1
+                    }
                     mAdapter?.notifyDataSetChanged()
                 }
                 R.id.cb_commit->{

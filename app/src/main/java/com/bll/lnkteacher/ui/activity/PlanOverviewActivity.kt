@@ -28,10 +28,17 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
 
     override fun initData() {
+        nowYear=DateUtils.getYear()
+        nowMonth=DateUtils.getMonth()
+
+        weekStartDate=DateUtils.getCurrentWeekTimeFrame()[0]
+        weekEndDate=DateUtils.getCurrentWeekTimeFrame()[1]
     }
+
     override fun initView() {
-        setPageTitle("月周计划")
         elik=v_content.pwInterFace
+        disMissView(iv_catalog,iv_btn)
+        setPageTitle("月周计划")
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
@@ -42,11 +49,6 @@ class PlanOverviewActivity: BaseDrawingActivity() {
             setChangeDate()
         }
 
-        nowYear=DateUtils.getYear()
-        nowMonth=DateUtils.getMonth()
-
-        weekStartDate=DateUtils.getCurrentWeekTimeFrame()[0]
-        weekEndDate=DateUtils.getCurrentWeekTimeFrame()[1]
         setChangeDate()
 
         iv_up.setOnClickListener {
@@ -159,6 +161,10 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         tv_page.text = "${posImage + 1}/${images.size}"
 
         elik?.setLoadFilePath(path, true)
+    }
+
+    override fun onElikSave() {
+        elik?.saveBitmap(true) {}
     }
 
 }

@@ -1,6 +1,7 @@
 package com.bll.lnkteacher
 
 import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
@@ -166,6 +167,11 @@ interface APIService{
     @POST("class/group/edit")
     fun editClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改子群
+     */
+    @POST("class/group/editName")
+    fun editClassGroupChild(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 创建班群
      */
     @POST("class/group/join")
@@ -197,7 +203,11 @@ interface APIService{
      */
     @POST("class/classInfo")
     fun getClassGroupUserList(@Body requestBody: RequestBody): Observable<BaseResult<List<ClassGroupUser>>>
-
+    /**
+     * 获取班群所有子群
+     */
+    @GET("class/group/listSubGroup")
+    fun getClassGroupChildList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<ClassGroup>>>
     /**
      * 老师创建子群
      */
@@ -219,7 +229,11 @@ interface APIService{
      */
     @POST("class/group/removeStudent")
     fun outClassGroupUser(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 转移学生
+     */
+    @POST("class/group/moveGroup")
+    fun moveClassGroupUser(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取老师列表
      */

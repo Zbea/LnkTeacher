@@ -67,6 +67,15 @@ public class CourseGreenDaoManager {
         return courseDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2).build().list();
     }
 
+    public void editByTypeLists(int type,int classGroupId,int mode){
+        List<CourseBean> list=queryByTypeLists(type, classGroupId);
+        for (int i = 0; i < list.size(); i++) {
+            CourseBean item = list.get(i);
+            item.mode=mode;
+        }
+        insertAll(list);
+    }
+
     //根据Id 查询
     public CourseBean queryID(int type,int classGroupId,int viewId) {
         WhereCondition whereCondition1= CourseBeanDao.Properties.Type.eq(type);

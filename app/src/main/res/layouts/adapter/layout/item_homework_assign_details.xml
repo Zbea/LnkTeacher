@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_message"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_weight="1"
@@ -25,7 +25,7 @@
         />
     <TextView
         android:id="@+id/tv_date"
-        android:layout_width="160dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:textSize="@dimen/sp_18"
@@ -35,15 +35,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
-        android:layout_width="180dp"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10" />
 
     <ImageView
         android:id="@+id/iv_delete"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_50"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
         android:src="@mipmap/icon_notebook_delete"
         />
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.mvp.model.group;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ClassGroup implements Serializable {
 
@@ -14,4 +15,5 @@ public class ClassGroup implements Serializable {
     public String imageUrl;//课程表
     public String teacher;
     public boolean isCheck;
+    public List<ClassGroupUser> students;
 }

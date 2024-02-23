@@ -17,33 +17,20 @@
         android:layout_marginEnd="@dimen/dp_20"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="姓名"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22" />
 
         <TextView
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="职务"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
-
-        <TextView
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="出生年月"
             android:gravity="center"
             android:textColor="@color/black"
@@ -51,8 +38,9 @@
             />
 
         <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:text="家长"
             android:gravity="center"
             android:textColor="@color/black"
@@ -60,8 +48,9 @@
             />
 
         <TextView
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:text="称谓"
             android:gravity="center"
             android:textColor="@color/black"
@@ -69,8 +58,9 @@
             />
 
         <TextView
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:text="联系方式"
             android:gravity="center"
             android:textColor="@color/black"
@@ -78,17 +68,16 @@
             />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="家庭住址"
             android:gravity="center"
+            android:text="班级职务"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
-            />
+            android:textSize="@dimen/sp_22" />
 
         <TextView
-            android:layout_width="@dimen/dp_50"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"

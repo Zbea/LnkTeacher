@@ -8,8 +8,18 @@
     >
 
     <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_weight="1"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+
+    <TextView
         android:id="@+id/tv_code"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/sp_22"
@@ -17,18 +27,8 @@
         />
 
     <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginStart="@dimen/dp_20"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
-        />
-
-    <TextView
         android:id="@+id/tv_teacher"
-        android:layout_width="100dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="@dimen/sp_22"
@@ -46,11 +46,38 @@
         />
 
     <TextView
-        android:id="@+id/tv_info"
+        android:id="@+id/tv_course"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="课程表"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+    <TextView
+        android:id="@+id/tv_edit"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="编辑"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+    <TextView
+        android:id="@+id/tv_detail"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="详情"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        />
+    <TextView
+        android:id="@+id/tv_child"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="子群"
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
         />

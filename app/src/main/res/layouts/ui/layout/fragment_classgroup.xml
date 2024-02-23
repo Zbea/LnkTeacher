@@ -7,7 +7,100 @@
 
     <include layout="@layout/common_fragment_title"/>
 
-    <include layout="@layout/common_radiogroup"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_40"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="@dimen/dp_20"
+            android:textSize="@dimen/sp_24"
+            android:text="班级名称"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            android:text="班群号"
+            />
+
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            android:text="班主任"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="人数"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="课表"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="编辑"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="详情"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="子群"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="解散"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:textSize="@dimen/sp_24"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
@@ -16,12 +109,8 @@
         android:layout_weight="1"
         android:layout_marginStart="@dimen/dp_40"
         android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
         />
-
-    <include layout="@layout/common_page_number"
-        android:visibility="gone"
-        />
-
 
 </LinearLayout>

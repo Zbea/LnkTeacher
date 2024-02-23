@@ -75,10 +75,15 @@ public interface IContractView {
         void onUserList(List<ClassGroupUser> users);
         //踢出学生成功
         void onOutSuccess();
-        void onCreateSuccess();
-        void onAddSuccess();
         //修改学生职位成功
         void onEditSuccess();
+    }
+
+    interface IClassGroupChildView extends IBaseView{
+        //学生列表
+        void onUserList(List<ClassGroupUser> users);
+        void onClassGroupChildList(List<ClassGroup> classItems);
+        void onSuccess();
     }
 
     interface IClassGroupTeacherView extends IBaseView{

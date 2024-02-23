@@ -50,7 +50,7 @@
         android:id="@+id/tv_out"
         android:layout_width="@dimen/dp_60"
         android:layout_height="wrap_content"
-        android:text="退出"
+        android:text="踢出"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"

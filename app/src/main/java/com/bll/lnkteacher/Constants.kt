@@ -65,6 +65,7 @@ class Constants {
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
+        const val CLASSGROUP_CHANGE_EVENT = "ClassGroupChangeEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val HOMEWORK_CORRECT_EVENT = "HomeworkCorrectEvent"
         const val EXAM_CORRECT_EVENT = "ExamCorrectEvent"

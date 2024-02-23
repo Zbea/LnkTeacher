@@ -137,6 +137,8 @@ class TextBookStoreActivity : BaseActivity(),
         setPageTitle("教材")
         showView(tv_province,tv_course,tv_grade,tv_semester)
 
+        mDialog?.setOutside(true)
+
         initRecyclerView()
         initTab()
     }
@@ -147,9 +149,9 @@ class TextBookStoreActivity : BaseActivity(),
      */
     private fun initSelectorView() {
         tv_province.text = provinceStr
-        tv_grade.text = gradeList[0].name
+        tv_grade.text = DataBeanManager.getGradeStr(gradeId)
         tv_semester.text = DataBeanManager.popupSemesters[semester-1].name
-        tv_course.text = subjectList[0].name
+        tv_course.text = DataBeanManager.getGradeStr(courseId)
         tv_type.text=subTypeList[0].name
 
         tv_grade.setOnClickListener {
