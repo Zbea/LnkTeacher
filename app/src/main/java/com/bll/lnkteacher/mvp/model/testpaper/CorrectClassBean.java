@@ -13,5 +13,6 @@ public class CorrectClassBean implements Serializable {
     public int totalStudent;
     public int totalSubmitStudent;
     public int totalUpdate;
+    public int totalSend;
     public int grade;
 }

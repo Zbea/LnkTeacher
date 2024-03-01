@@ -12,7 +12,9 @@ import java.util.List;
 public class TestPaperCorrectClass implements Serializable {
 
     public int total;
-    public int doneNumber;
+    public int totalSend;
+    public int totalSubmit;
+    public int totalUpdate;
     public List<UserBean> list;
 
     public static class UserBean {

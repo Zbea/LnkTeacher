@@ -38,6 +38,9 @@ class TestPaperGradeActivity:BaseActivity(),IContractView.ITestPaperCorrectDetai
     override fun onCorrectSuccess() {
     }
 
+    override fun onSendSuccess() {
+    }
+
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_grade

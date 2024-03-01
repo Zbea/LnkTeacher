@@ -8,7 +8,6 @@ import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.net.BaseResult
 import io.reactivex.Observable
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
@@ -43,12 +42,6 @@ interface APIService{
     @POST("cloud/data/delete")
     fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-    /**
-     * 文件上传
-     */
-    @Multipart
-    @POST("file/manyUpload")
-    fun upload(@Part parts: List<MultipartBody.Part>): Observable<BaseResult<List<String>>>
 
     /**
      * 公共年级接口
@@ -286,11 +279,6 @@ interface APIService{
      */
     @POST("task/delete")
     fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 得到考卷班群分类信息
-     */
-    @GET("task/group/types")
-    fun getPaperGroupTypes(): Observable<BaseResult<TestPaperGroupType>>
     /**
      * 布置考卷
      */

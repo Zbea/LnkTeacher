@@ -51,8 +51,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         items.removeAll(getCheckedItems())
         mAdapter?.setNewData(items)
     }
-    override fun onGroupTypes() {
-    }
     override fun onSendSuccess() {
         showToast(R.string.teaching_assign_success)
         finish()
@@ -73,7 +71,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 popGroups.add(PopupBean(item.classId,item.name,false))
             }
         }
-        presenter.getGroupTypes()
     }
 
     override fun initView() {

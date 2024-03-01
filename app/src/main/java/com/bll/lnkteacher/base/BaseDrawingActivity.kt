@@ -120,7 +120,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             onPageDown()
         }
 
-        iv_catalog.setOnClickListener {
+        iv_catalog?.setOnClickListener {
             onCatalog()
         }
 

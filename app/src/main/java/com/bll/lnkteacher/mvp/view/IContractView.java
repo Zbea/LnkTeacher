@@ -128,10 +128,6 @@ public interface IContractView {
          */
         void onDeleteSuccess();
         /**
-         * 获取考卷 班级、群分组
-         */
-        void onGroupTypes();
-        /**
          * 发送考卷成功
          */
         void onSendSuccess();
@@ -148,10 +144,6 @@ public interface IContractView {
          * 删除考卷批改
          */
         void onDeleteSuccess();
-        /**
-         * 发送 已批改考卷
-         */
-        void onSendSuccess();
     }
 
     //考卷批改
@@ -175,6 +167,7 @@ public interface IContractView {
          * 老师提交批改
          */
         void onCorrectSuccess();
+        void onSendSuccess();
     }
 
     //文件上传
@@ -240,10 +233,6 @@ public interface IContractView {
          * 删除作业批改
          */
         void onDeleteSuccess();
-        /**
-         * 发送 已批改作业
-         */
-        void onSendSuccess();
     }
 
     interface IMessageView extends IBaseView{

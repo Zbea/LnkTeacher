@@ -34,7 +34,11 @@ public class BitmapUtils {
             Log.e(TAG, "backBitmap=" + backBitmap + ";frontBitmap=" + frontBitmap);
             return null;
         }
-        Bitmap bitmap = backBitmap.copy(Bitmap.Config.ARGB_8888, true);
+//        Bitmap bitmap=Bitmap.createBitmap(frontBitmap.getWidth(),frontBitmap.getHeight(),frontBitmap.getConfig());
+//        Canvas canvas=new Canvas(bitmap);
+//        canvas.drawBitmap(backBitmap,0,0,null);
+//        canvas.drawBitmap(frontBitmap,0,0,null);
+        Bitmap bitmap = backBitmap.copy(backBitmap.getConfig(), true);
         Canvas canvas = new Canvas(bitmap);
         Rect baseRect  = new Rect(0, 0, backBitmap.getWidth(), backBitmap.getHeight());
         Rect frontRect = new Rect(0, 0, frontBitmap.getWidth(), frontBitmap.getHeight());

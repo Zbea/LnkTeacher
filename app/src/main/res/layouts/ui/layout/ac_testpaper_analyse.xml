@@ -38,6 +38,25 @@
             android:textSize="@dimen/sp_26" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:text="已批改："
+            android:textSize="@dimen/sp_26"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/tv_correct_number"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_26"
+            android:gravity="center"
+            android:textColor="@color/black_30"
+            android:background="@drawable/bg_line_bottom"
+            />
+
+        <TextView
             android:id="@+id/tv_score_pop"
             android:layout_width="@dimen/dp_120"
             android:layout_height="wrap_content"
@@ -118,7 +137,7 @@
 
             <TextView
                 android:id="@+id/tv_num_down"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"

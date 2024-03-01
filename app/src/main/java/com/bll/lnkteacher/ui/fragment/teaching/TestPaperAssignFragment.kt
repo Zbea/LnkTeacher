@@ -44,8 +44,6 @@ class TestPaperAssignFragment:BaseFragment(),IContractView.ITestPaperAssignView 
     }
     override fun onDeleteSuccess() {
     }
-    override fun onGroupTypes() {
-    }
     override fun onSendSuccess() {
     }
 

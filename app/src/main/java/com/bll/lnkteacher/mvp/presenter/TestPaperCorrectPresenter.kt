@@ -39,35 +39,4 @@ class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BaseP
         }, true)
     }
 
-    fun sendClass(id:Int) {
-        val map=HashMap<String,Any>()
-        map["examChangeId"]=id
-        val body=RequestUtils.getBody(map)
-        val type = RetrofitManager.service.sendPaperCorrectClass(body)
-        doRequest(type, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSendSuccess()
-            }
-        }, true)
-    }
-
-    fun sendGroup(id:Int) {
-        val map=HashMap<String,Any>()
-        map["id"]=id
-        val body=RequestUtils.getBody(map)
-        val type = RetrofitManager.service.sendPaperCorrectGroup(body)
-        doRequest(type, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSendSuccess()
-            }
-        }, true)
-    }
-
-
 }

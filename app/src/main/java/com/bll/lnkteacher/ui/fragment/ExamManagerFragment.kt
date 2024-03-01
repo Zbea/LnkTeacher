@@ -8,6 +8,7 @@ import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.fragment.exam.ExamCorrectFragment
 import com.bll.lnkteacher.ui.fragment.exam.ExamListFragment
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
@@ -41,9 +42,6 @@ class ExamManagerFragment:BaseFragment() {
         switchFragment(lastFragment, examListFragment)
 
         tv_grade.setOnClickListener {
-            if (popGrades.size==0){
-                popGrades =DataBeanManager.popupGrades
-            }
             PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
                 tv_grade?.text=item.name
                 SPUtil.putInt("grade",item.id)
@@ -54,6 +52,8 @@ class ExamManagerFragment:BaseFragment() {
     }
 
     override fun lazyLoad() {
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchCommonData()
     }
 
     /**
@@ -68,9 +68,11 @@ class ExamManagerFragment:BaseFragment() {
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 0 -> {
+                    showView(tv_grade)
                     switchFragment(lastFragment, examListFragment)
                 }
                 1 -> {
+                    disMissView(tv_grade)
                     switchFragment(lastFragment, examCorrectFragment)
                 }
             }

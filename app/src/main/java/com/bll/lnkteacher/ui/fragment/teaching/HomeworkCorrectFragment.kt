@@ -14,6 +14,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IHomeworkCorrectView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -36,9 +37,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         showToast(R.string.delete_success)
         mAdapter?.remove(position)
     }
-    override fun onSendSuccess() {
-        showToast(R.string.toast_send_success)
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching_list
@@ -55,17 +53,9 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
 
     private fun initRecyclerView() {
 
-        val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
-        )
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight = 1f
-        layoutParams.setMargins(
-            DP2PX.dip2px(activity, 40f),
-            DP2PX.dip2px(activity, 30f),
-            DP2PX.dip2px(activity, 40f),
-            0
-        )
+        layoutParams.setMargins(DP2PX.dip2px(activity, 40f), DP2PX.dip2px(activity, 30f), DP2PX.dip2px(activity, 40f), 0)
         rv_list.layoutParams = layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
@@ -75,9 +65,17 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
             rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity, 30f)))
             setOnItemChildClickListener { adapter, view, position ->
                 this@HomeworkCorrectFragment.position = position
+                val item=items[position]
                 when (view.id) {
                     R.id.iv_delete -> {
                         deleteCorrect()
+                    }
+                    R.id.tv_analyse->{
+                        val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
+                        val bundle=Bundle()
+                        bundle.putSerializable("paperCorrect",item)
+                        intent.putExtra("bundle",bundle)
+                        startActivity(intent)
                     }
                 }
             }
@@ -90,9 +88,6 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                     intent.putExtra("subType",items[parentPos].subType)
                     intent.flags=items[parentPos].id
                     startActivity(intent)
-                }
-                if (view.id==R.id.tv_save){
-                    mPresenter.sendClass(items[parentPos].examList[position].examChangeId)
                 }
             }
 

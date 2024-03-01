@@ -15,10 +15,10 @@ class ExamListAdapter(layoutResId: Int, data: List<ExamList.ExamBean>?) : BaseQu
 
     override fun convert(helper: BaseViewHolder, item: ExamList.ExamBean) {
         helper.setText(tv_exam_type,item.examName)
-        helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time*1000))
+        helper.setText(tv_date_create,"考试时间："+ DateUtils.longToStringWeek(item.time))
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        ClassAdapter(R.layout.item_testpaper_correct_class_type, item.examList).apply {
+        ClassAdapter(R.layout.item_exam_correct_class_type, item.examList).apply {
             rvList.adapter = this
             bindToRecyclerView(rvList)
             setOnItemChildClickListener { adapter, view, position ->
@@ -35,8 +35,7 @@ class ExamListAdapter(layoutResId: Int, data: List<ExamList.ExamBean>?) : BaseQu
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}人")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
-                setVisible(tv_save,item.status==2&&item.totalSubmitStudent>0)
-                addOnClickListener(ll_content, tv_save)
+                addOnClickListener(ll_content, tv_send)
             }
         }
 

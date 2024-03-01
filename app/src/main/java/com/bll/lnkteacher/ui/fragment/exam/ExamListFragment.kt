@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.mvp.model.exam.ExamList
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
 import com.bll.lnkteacher.ui.adapter.ExamListAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -25,10 +26,30 @@ class ExamListFragment:BaseFragment(){
     }
 
     override fun lazyLoad() {
-        items.add(ExamList().ExamBean())
-        items.add(ExamList().ExamBean())
-        items.add(ExamList().ExamBean())
-        setPageNumber(3)
+
+        val classs= mutableListOf<CorrectClassBean>()
+        classs.add(CorrectClassBean().apply {
+            name="三年(1)班"
+            totalStudent=50
+            totalSubmitStudent=50
+        })
+        classs.add(CorrectClassBean().apply {
+            name="三年(2)班"
+            totalStudent=50
+            totalSubmitStudent=50
+        })
+
+        items.add(ExamList().ExamBean().apply {
+            examName="（语文）期中考试卷"
+            time=System.currentTimeMillis()
+            examList=classs
+        })
+        items.add(ExamList().ExamBean().apply {
+            examName="（语文）期中考试卷"
+            time=System.currentTimeMillis()
+            examList=classs
+        })
+        setPageNumber(2)
         mAdapter?.setNewData(items)
     }
 

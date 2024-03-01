@@ -36,18 +36,6 @@
             android:textSize="@dimen/sp_18"
             />
 
-        <TextView
-            android:id="@+id/tv_end_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_5"
-            />
-
     </RelativeLayout>
 
     <LinearLayout
@@ -67,9 +55,7 @@
             />
         <TextView
             android:id="@+id/tv_receive_number"
-            android:layout_width="0dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
@@ -77,23 +63,24 @@
             android:textSize="@dimen/sp_18"
             />
 
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            />
+
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_send"
+            android:layout_width="45dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:text="发送"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
-            />
-        <TextView
-            android:id="@+id/tv_correct_number"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_line_bottom"
+            android:textSize="@dimen/sp_16"
             android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
+            android:background="@drawable/bg_gray_stroke_5dp_corner"
             />
 
     </LinearLayout>

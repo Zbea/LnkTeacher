@@ -115,7 +115,9 @@
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/activityCustom"
             />
-        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"/>
+        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.teaching.TestPaperGradeActivity"/>
         <activity android:name=".ui.activity.ClassGroupUserActivity"
             android:windowSoftInputMode="adjustPan"

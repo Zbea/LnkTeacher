@@ -14,11 +14,10 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
         if (item.examList.isNotEmpty()){
-            helper.setText(R.id.tv_title,item.examList[0].examName+"  "+item.title)
-        }
-        else{
+            helper.setText(R.id.tv_type,item.examList[0].examName)
             helper.setText(R.id.tv_title,item.title)
         }
+        helper.setGone(R.id.tv_analyse,item.subType!=3)
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time))
         val rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
@@ -28,6 +27,7 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(view,helper.adapterPosition,position)
         }
+        helper.addOnClickListener(R.id.tv_analyse,R.id.iv_delete)
     }
 
     class TypeAdapter(layoutResId: Int,data: List<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
@@ -36,11 +36,10 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
             helper.setText(R.id.tv_class_name,item.name)
             helper.setText(R.id.tv_number,"${item.totalStudent}人")
             helper.setText(R.id.tv_receive_number,"${item.totalSubmitStudent}")
-            helper.setText(R.id.tv_correct_number,"${item.totalUpdate}")
+            helper.setText(R.id.tv_correct_number,"${item.totalSend}")
             helper.setVisible(R.id.tv_end_date,true)
             helper.setText(R.id.tv_end_date,DateUtils.longToStringWeek(item.endTime))
-            helper.setGone(R.id.tv_save,item.status==2&&item.totalUpdate>0)
-            helper.addOnClickListener(R.id.ll_content, R.id.tv_save)
+            helper.addOnClickListener(R.id.ll_content)
         }
 
     }

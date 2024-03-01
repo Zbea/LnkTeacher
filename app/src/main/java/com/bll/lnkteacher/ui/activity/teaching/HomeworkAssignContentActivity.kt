@@ -59,6 +59,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         pageSize=12
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
         grade=typeBean?.grade!!
+        selectClasss=MethodManager.getCommitClass(typeBean?.id!!)
         fetchData()
     }
 
@@ -127,7 +128,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     /**
      * 发送作业本消息
      */
-    private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClass>){
+     private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClass>){
         val selects= mutableListOf<HomeworkClassSelect>()
         var isCommit=false
         for (ite in homeClasss){

@@ -37,9 +37,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
         showToast(R.string.delete_success)
         mAdapter?.remove(pos)
     }
-    override fun onSendSuccess() {
-        showToast(R.string.toast_send_success)
-    }
 
 
     override fun getLayoutId(): Int {
@@ -72,16 +69,11 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                 val item=items[position]
                 when(view.id){
                     R.id.tv_analyse->{
-                        if (item.sendStatus==2){
-                            val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
-                            val bundle=Bundle()
-                            bundle.putSerializable("paperCorrect",item)
-                            intent.putExtra("bundle",bundle)
-                            startActivity(intent)
-                        }
-                        else{
-                            showToast(R.string.teaching_testpaper_correct_undone)
-                        }
+                        val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
+                        val bundle=Bundle()
+                        bundle.putSerializable("paperCorrect",item)
+                        intent.putExtra("bundle",bundle)
+                        startActivity(intent)
                     }
                     R.id.iv_delete->{
                         deleteCorrect()
@@ -96,9 +88,6 @@ class TestPaperCorrectFragment:BaseFragment(),IContractView.ITestPaperCorrectVie
                     intent.putExtra("bundle",bundle)
                     intent.flags=items[parentPos].id
                     startActivity(intent)
-                }
-                if (view.id==R.id.tv_save){
-                    mPresenter.sendClass(items[parentPos].examList[position].examChangeId)
                 }
             }
         }

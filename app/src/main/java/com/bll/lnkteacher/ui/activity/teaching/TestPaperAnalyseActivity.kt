@@ -122,6 +122,7 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             }
         }
 
+        tv_correct_number.text=bean.totalUpdate.toString()
         tv_score_pop.text=popScore[1].name+"分"
         tv_score_info.text="以上"
         tv_num.text=popScore[1].id.toString()
@@ -145,6 +146,9 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     }
     override fun onCorrectSuccess() {
+    }
+
+    override fun onSendSuccess() {
     }
 
 
@@ -231,6 +235,9 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
      * 获取平均数
      */
     private fun getAverageNum(number: Double):String{
+        if (number==0.0){
+            return "0"
+        }
         val decimalFormat = DecimalFormat("#.00")
         return decimalFormat.format(number)
     }

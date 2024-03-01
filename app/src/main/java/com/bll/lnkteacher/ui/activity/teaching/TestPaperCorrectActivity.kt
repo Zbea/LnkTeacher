@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.graphics.BitmapFactory
-import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -24,6 +23,7 @@ import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -45,6 +45,8 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     private var examScoreItems= mutableListOf<ExamScoreItem>()//已填题目分数
 
     private var mScoreAdapter:ExamScoreAdapter?=null
+    private var userCorrect=0
+    private var userSend=0
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -76,16 +78,21 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     }
     override fun onClassPapers(bean: TestPaperCorrectClass?) {
         userItems=bean?.list!!
+        userCorrect=bean.totalUpdate
+        userSend=bean.totalSend
         if (userItems.size>0){
             userItems[posUser].isCheck=true
             setContentView()
         }
+        tv_correct_number.text=userCorrect.toString()+"人"
         mAdapter?.setNewData(userItems)
     }
     override fun onGrade(list: MutableList<TestPaperGrade>?) {
     }
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
+        userCorrect+=1
+        tv_correct_number.text=userCorrect.toString()+"人"
         userItems[posUser].score=tv_score.text.toString().toInt()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
@@ -97,7 +104,11 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
     }
 
-
+    override fun onSendSuccess() {
+        showToast(R.string.toast_send_success)
+        mPresenter.getClassPapers(mClassBean?.examChangeId!!)
+    }
+    
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
     }
@@ -113,9 +124,16 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         elik?.setPWEnabled(false,false)
 
         setPageTitle("${getString(R.string.teaching_tab_testpaper_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
+        showView(tv_custom)
+        tv_custom.text="发送批改"
 
         initRecyclerView()
         initRecyclerViewScore()
+
+        tv_custom.setOnClickListener {
+            if (userCorrect>userSend)
+                mPresenter.sendClass(mClassBean?.examChangeId!!)
+        }
 
         iv_up.setOnClickListener {
             if (posImage>0){
@@ -140,11 +158,10 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     }
                 }
                 showLoading()
-                Handler().postDelayed({
-                    commitPapers()
-                },1000)
+                commitPapers()
             }
             disMissView(ll_score_content)
+            hideKeyboard()
         }
 
         iv_add.setOnClickListener {
@@ -161,7 +178,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             val item=userItems[posUser]
             when(item.status){
                 1->{
-                    initScoreData()
                     showView(ll_score_content)
                 }
                 2->{
@@ -181,7 +197,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(this@TestPaperCorrectActivity,20f)))
+            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(this@TestPaperCorrectActivity,10f)))
             setOnItemClickListener { adapter, view, position ->
                 if (position==posUser)
                     return@setOnItemClickListener
@@ -196,6 +212,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 disMissView(ll_score_content)
                 when(item.status){
                     1,3->{
+                        initScoreData()
                         tv_score.text=""
                         et_total.setText("")
                     }

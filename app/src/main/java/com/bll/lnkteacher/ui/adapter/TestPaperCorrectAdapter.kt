@@ -14,7 +14,8 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(tv_exam_type,item.title+"  "+item.taskName)
+        helper.setText(tv_exam_type,item.title)
+        helper.setText(tv_title,item.taskName)
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time))
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
@@ -35,9 +36,8 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}人")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
-                setText(tv_correct_number,"${item.totalUpdate}")
-                setGone(tv_save,item.status==2&&item.totalUpdate>0)
-                addOnClickListener(ll_content, tv_save)
+                setText(tv_correct_number,"${item.totalSend}")
+                addOnClickListener(ll_content)
             }
         }
 

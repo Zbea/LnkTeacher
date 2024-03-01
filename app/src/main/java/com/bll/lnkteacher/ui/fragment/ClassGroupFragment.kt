@@ -19,6 +19,7 @@ import com.bll.lnkteacher.ui.activity.ClassGroupUserActivity
 import com.bll.lnkteacher.ui.activity.MainCourseActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
@@ -30,7 +31,7 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
     private var position=0
 
     override fun onSuccess() {
-        fetchCommonData()
+        lazyLoad()
     }
     override fun onUploadSuccess() {
     }
@@ -56,7 +57,8 @@ class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
 
     }
     override fun lazyLoad() {
-        fetchCommonData()
+        if (NetworkUtil.isNetworkAvailable(requireActivity()))
+            fetchCommonData()
     }
 
     private fun initRecyclerView(){
