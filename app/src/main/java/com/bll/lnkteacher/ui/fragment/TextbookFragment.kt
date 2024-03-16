@@ -7,7 +7,7 @@ import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.fragment_textbook.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextbookFragment : BaseFragment(), IContractView.ITextbookView {
+class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private val mPresenter = TextbookPresenter(this)
     private var mAdapter: BookAdapter? = null

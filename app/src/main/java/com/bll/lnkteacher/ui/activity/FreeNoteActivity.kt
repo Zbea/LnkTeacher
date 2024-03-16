@@ -34,7 +34,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik=v_content.pwInterFace
+        elik_b=v_content.pwInterFace
         disMissView(tv_page_title,iv_catalog,iv_btn)
         setPageTitle("随笔")
         tv_name.text=freeNoteBean?.title
@@ -65,7 +65,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
                     bgResList= freeNoteBean?.bgRes as MutableList<String>
                     images= freeNoteBean?.paths as MutableList<String>
                     tv_name.text=freeNoteBean?.title
-                    setContentImage()
+                    onChangeContent()
                 }
             }
             else{
@@ -76,7 +76,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
         if (posImage>=bgResList.size){
             bgResList.add(bgRes)
         }
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageDown() {
@@ -85,20 +85,17 @@ class FreeNoteActivity:BaseDrawingActivity() {
             bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
             bgResList.add(bgRes)
         }
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if (posImage>0){
             posImage-=1
-            setContentImage()
+            onChangeContent()
         }
     }
 
-    /**
-     * 更换内容
-     */
-    private fun setContentImage(){
+    override fun onChangeContent() {
         v_content.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
         //判断路径是否已经创建
@@ -107,11 +104,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
         }
         tv_page.text="${posImage+1}/${images.size}"
 
-        elik?.setLoadFilePath(path, true)
-    }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
+        elik_b?.setLoadFilePath(path, true)
     }
 
 

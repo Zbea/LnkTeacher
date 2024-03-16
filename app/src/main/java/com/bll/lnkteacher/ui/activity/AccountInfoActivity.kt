@@ -57,7 +57,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     }
 
     override fun initData() {
-        privacyPassword=SPUtil.getObj("${mUser?.accountId}PrivacyPassword", PrivacyPassword::class.java)
+        privacyPassword=MethodManager.getPrivacyPassword()
         mSchoolPresenter.getSchool()
     }
 
@@ -121,7 +121,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
                 privacyPassword=it
                 showView(tv_check_pad)
                 btn_psd_check.text="取消密码"
-                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
+                MethodManager.savePrivacyPassword(privacyPassword)
                 EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
             }
         }
@@ -129,7 +129,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
                 privacyPassword?.isSet=!privacyPassword?.isSet!!
                 btn_psd_check.text=if (privacyPassword?.isSet==true) "取消密码" else "设置密码"
-                SPUtil.putObj("${mUser?.accountId}PrivacyPassword",privacyPassword!!)
+                MethodManager.savePrivacyPassword(privacyPassword)
                 EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
             }
         }

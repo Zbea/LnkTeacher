@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.activity
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.manager.AppDaoManager
@@ -104,7 +105,7 @@ class AppToolActivity:BaseActivity() {
                 packageName=Constants.PACKAGE_GEOMETRY
             })
         }
-        apps=AppDaoManager.getInstance().queryList()
+        apps=MethodManager.getAppTools(this,1)
         for (item in apps){
             item.isCheck=false
         }
@@ -112,7 +113,7 @@ class AppToolActivity:BaseActivity() {
     }
 
     private fun setMenuData(){
-        menuApps=AppDaoManager.getInstance().queryTool()
+        menuApps=MethodManager.getAppTools(this,2)
         for (item in menuApps){
             item.isCheck=false
         }

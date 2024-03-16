@@ -8,11 +8,26 @@ import io.reactivex.Observer
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 
-//isShow=false 不关闭加载，用于继续请求
-abstract class Callback<T>(private var IBaseView: IBaseView,private var isShow:Boolean) : Observer<BaseResult<T>> {
+abstract class Callback<T> : Observer<BaseResult<T>> {
 
-    constructor(IBaseView: IBaseView):this(IBaseView,true)
+    private var IBaseView: IBaseView
+    private var screen=0
+    private var isComplete=true
 
+    constructor(IBaseView: IBaseView) {
+        this.IBaseView = IBaseView
+    }
+
+    constructor(IBaseView: IBaseView,screen:Int) {
+        this.IBaseView = IBaseView
+        this.screen=screen
+    }
+
+    constructor(IBaseView: IBaseView,screen:Int,isComplete: Boolean) {
+        this.IBaseView = IBaseView
+        this.screen=screen
+        this.isComplete=isComplete
+    }
 
     override fun onSubscribe(@NonNull d: Disposable) {
         IBaseView.addSubscription(d)
@@ -39,28 +54,32 @@ abstract class Callback<T>(private var IBaseView: IBaseView,private var isShow:B
     }
 
     override fun onComplete() {
-        if (isShow)
+        if (isComplete)
             IBaseView.hideLoading()
     }
 
     override fun onError(@NonNull e: Throwable) {
         e.printStackTrace()
 
-        val code = ExceptionHandle.handleException(e).code
-        if (code == ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION) {
-            SToast.showText(MyApplication.mContext.getString(R.string.net_work_error))
-        } else if (code == ExceptionHandle.ERROR.NETWORD_ERROR || code == ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.connect_server_timeout))
-        } else if (code == ExceptionHandle.ERROR.PARSE_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.parse_data_error))
-        } else if (code == ExceptionHandle.ERROR.HTTP_ERROR) {
-            SToast.showText(MyApplication.mContext.getString(R.string.connect_error))
-        }else if(code==401)
-        {
-            IBaseView.login()
-        }
-        else {
-            SToast.showText(MyApplication.mContext.getString(R.string.on_server_error))
+        when (ExceptionHandle.handleException(e).code) {
+            ExceptionHandle.ERROR.UNKONW_HOST_EXCEPTION -> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
+            }
+            ExceptionHandle.ERROR.NETWORD_ERROR-> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.net_work_error))
+            }
+            ExceptionHandle.ERROR.SERVER_ADDRESS_ERROR -> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_server_timeout))
+            }
+            ExceptionHandle.ERROR.PARSE_ERROR -> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.parse_data_error))
+            }
+            ExceptionHandle.ERROR.HTTP_ERROR -> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.connect_error))
+            }
+            else -> {
+                SToast.showText(screen,MyApplication.mContext.getString(R.string.on_server_error))
+            }
         }
         IBaseView.hideLoading()
     }

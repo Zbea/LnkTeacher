@@ -2,21 +2,30 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
 
-class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int) {
-
+class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val type:Int,val location:Int) {
 
     fun builder(): GeometryScaleDialog? {
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_geometry_scale)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog.window!!
+        val layoutParams=window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        if (location==1){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+        }
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
@@ -77,7 +86,7 @@ class GeometryScaleDialog(val context: Context, val currentGeometry: Int,val typ
                 else{
                     val num=width.toFloat()
                     if (currentGeometry==8&&num>360){
-                        SToast.showText("角度需要小于360°")
+                        SToast.showText(location,"角度需要小于360°")
                     }
                     else{
                         dialog.dismiss()

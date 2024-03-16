@@ -6,6 +6,7 @@ import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
@@ -16,7 +17,11 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context,val type:Int) {
+/**
+ * type=1 书籍 type=2其他
+ * 1左 2 右
+ */
+class AppToolDialog(val context: Context,val type:Int, val screenPos:Int) {
 
     private var dialog:Dialog?=null
 
@@ -27,37 +32,44 @@ class AppToolDialog(val context: Context,val type:Int) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
         if (type==1){
-            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
-            layoutParams.x=DP2PX.dip2px(context,42f)
-            layoutParams.y= DP2PX.dip2px(context,5f)
+            layoutParams?.gravity = Gravity.BOTTOM or Gravity.END
+            layoutParams?.x=DP2PX.dip2px(context,42f)
+            layoutParams?.y=DP2PX.dip2px(context,5f)
         }
         else{
-            layoutParams.gravity = Gravity.BOTTOM or Gravity.END
-            layoutParams.x=DP2PX.dip2px(context,5f)
-            layoutParams.y= DP2PX.dip2px(context,38f)
+            layoutParams?.gravity = Gravity.BOTTOM or Gravity.RIGHT
+            layoutParams?.x=DP2PX.dip2px(context,5f)
+            layoutParams?.y=DP2PX.dip2px(context,38f)
         }
         dialog?.show()
 
-        val lists=AppDaoManager.getInstance().queryTool()
+        val toolApps= MethodManager.getAppTools(context,1)
         if (context is PlanOverviewActivity){
             val appBean= AppDaoManager.getInstance().queryAllByPackageName(Constants.PACKAGE_GEOMETRY)
             if (appBean!=null){
-                lists.remove(appBean)
+                toolApps.remove(appBean)
             }
         }
 
         val rv_list=dialog?.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = MyAdapter(R.layout.item_app_name_list, lists)
+        val mAdapter = MyAdapter(R.layout.item_app_name_list, toolApps)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            val packageName= lists[position].packageName
+            val packageName= toolApps[position].packageName
             if (packageName.equals(Constants.PACKAGE_GEOMETRY)){
                 listener?.onClick()
             }
             else{
-                AppUtils.startAPP(context,packageName)
+                when(screenPos){
+                    1->{
+                        AppUtils.startAPP(context,packageName,Constants.SCREEN_RIGHT)
+                    }
+                    else->{
+                        AppUtils.startAPP(context,packageName,Constants.SCREEN_LEFT)
+                    }
+                }
             }
             dismiss()
         }
@@ -88,7 +100,7 @@ class AppToolDialog(val context: Context,val type:Int) {
         fun onClick()
     }
 
-    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener?) {
+    fun setDialogClickListener(onDialogClickListener: OnDialogClickListener) {
         listener = onDialogClickListener
     }
 

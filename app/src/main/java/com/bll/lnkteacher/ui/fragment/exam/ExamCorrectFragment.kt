@@ -2,13 +2,13 @@ package com.bll.lnkteacher.ui.fragment.exam
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectBean
 import com.bll.lnkteacher.ui.adapter.ExamCorrectAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
-class ExamCorrectFragment:BaseFragment(){
+class ExamCorrectFragment:BaseMainFragment(){
 
     private var mAdapter:ExamCorrectAdapter?=null
     private var items= mutableListOf<ExamCorrectBean>()

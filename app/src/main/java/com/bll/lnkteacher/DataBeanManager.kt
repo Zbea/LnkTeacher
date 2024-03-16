@@ -163,6 +163,95 @@ object DataBeanManager {
         return list
     }
 
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
+    fun getIndexLeftData(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
+            name = "首页"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
+            name = "书架"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
+            name = "教材"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_group)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_group_check)
+            name = "教辅"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
+            name = "学情"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
+            name = "应用"
+        })
+        return list
+    }
+
+
+    /**
+     * 获取index栏目
+     *
+     * @param context
+     * @return
+     */
+    fun getIndexRightData(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
+            isCheck = true
+            name = "首页"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
+            name = "作业"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
+            name = "测卷"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_paper)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_paper_check)
+            name = "考卷"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
+            name = "讲义"
+        })
+        list.add(ItemList().apply {
+            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
+            name = "笔记"
+        })
+        return list
+    }
+
+
+
+
     /**
      * 获取index栏目
      *

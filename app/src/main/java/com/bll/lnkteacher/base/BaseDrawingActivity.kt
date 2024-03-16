@@ -2,11 +2,14 @@ package com.bll.lnkteacher.base
 
 import PopupClick
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import androidx.annotation.RequiresApi
@@ -20,73 +23,50 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
+import com.bll.lnkteacher.ui.activity.DiaryActivity
+import com.bll.lnkteacher.ui.activity.FreeNoteActivity
+import com.bll.lnkteacher.ui.activity.PlanOverviewActivity
 import com.bll.lnkteacher.utils.*
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
-import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
+import org.greenrobot.eventbus.EventBus
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
+abstract class BaseDrawingActivity : BaseActivity(){
 
-    var mDialog: ProgressDialog? = null
-    var mSaveState:Bundle?=null
-    var elik: EinkPWInterface? = null
+    var isExpand=false
+    var elik_a: EinkPWInterface? = null
+    var elik_b: EinkPWInterface? = null
     var isErasure=false
-    var isTitleClick=true//标题是否可以编
     private var circlePos=0
     private var axisPos=0
     private var isGeometry=false//是否处于几何绘图
     private var isParallel=false//是否选中平行
     private var isCurrent=false//当前支持的几何绘图笔形
     private var isScale=false//是否选中刻度
+    private var revocationList= mutableListOf<Int>()
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        mSaveState=savedInstanceState
-        setContentView(layoutId())
-        initCommonTitle()
-
-        setStatusBarColor(ContextCompat.getColor(this, R.color.white))
-
-        if (v_content!=null){
-            elik = v_content?.pwInterFace
+    override fun initCreate() {
+        if (v_content_a!=null && v_content_b!=null){
+            elik_a = v_content_a?.pwInterFace
+            elik_b = v_content_b?.pwInterFace
         }
 
-        mDialog = ProgressDialog(this)
-        initData()
-        initView()
-
+        if (iv_top!=null){
+            elik_a?.addOnTopView(iv_top)
+            elik_b?.addOnTopView(iv_top)
+        }
+        initClick()
         initGeometryView()
     }
 
-
-    /**
-     *  加载布局
-     */
-    abstract fun layoutId(): Int
-
-    /**
-     * 初始化数据
-     */
-    abstract fun initData()
-
-    /**
-     * 初始化 View
-     */
-    abstract fun initView()
-
-    @SuppressLint("WrongViewCast")
-    fun initCommonTitle() {
-
-        iv_back?.setOnClickListener { finish() }
-
+    private fun initClick(){
         iv_tool?.setOnClickListener {
             showDialogAppTool()
         }
@@ -102,16 +82,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-        tv_page_title?.setOnClickListener {
-            if (isTitleClick){
-                val title=tv_page_title.text.toString()
-                InputContentDialog(this,title).builder().setOnDialogClickListener { string ->
-                    tv_page_title.text = string
-                    setDrawingTitle(string)
-                }
-            }
-        }
-
         iv_page_up?.setOnClickListener {
             onPageUp()
         }
@@ -124,7 +94,11 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             onCatalog()
         }
 
+        iv_expand?.setOnClickListener {
+            onChangeExpandContent()
+        }
     }
+
 
     /**
      * 几何绘图
@@ -223,7 +197,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         }
 
         tv_revocation?.setOnClickListener {
-            elik?.unDo()
+            if (revocationList.size>0){
+                val type=revocationList.last()
+                if (type==1)
+                {
+                    elik_a?.unDo()
+                }
+                else{
+                    elik_b?.unDo()
+                }
+                revocationList.removeLast()
+            }
         }
 
         tv_gray_line?.setOnClickListener {
@@ -243,6 +227,9 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             tv_scale.isSelected=!tv_scale.isSelected
             isScale=tv_scale.isSelected
             tv_scale.setTextColor(getColor(if (isScale) R.color.white else R.color.black))
+            if (currentGeometry==9){
+                setEilkAxis()
+            }
         }
 
         tv_parallel?.setOnClickListener {
@@ -278,48 +265,76 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
             }
         }
 
-        elik?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+        elik_a?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
-                elik?.setShifted(isCurrent&&isParallel)
+                elik_a?.setShifted(isCurrent&&isParallel)
             }
-            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?, ) {
-                if (elik?.curDrawObjStatus == true){
-                        reDrawGeometry(elik!!)
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
+                revocationList.add(1)
+                if (elik_a?.curDrawObjStatus == true){
+                    reDrawGeometry(elik_a!!,1)
                 }
             }
             override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
-                 onElikSave()
+                elik_a?.saveBitmap(true) {}
+                onElikSava_a()
             }
         })
+
+        elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
+            override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
+                elik_b?.setShifted(isCurrent&&isParallel)
+            }
+            override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
+                revocationList.add(2)
+                if (elik_b?.curDrawObjStatus == true){
+                    reDrawGeometry(elik_b!!,2)
+                }
+            }
+            override fun onOneWordDone(p0: Bitmap?, p1: Rect?) {
+                elik_b?.saveBitmap(true) {}
+                onElikSava_b()
+            }
+        })
+
+        this.setTouchAsFocus(true)
     }
 
     /**
      * 设置刻度重绘
      */
-    private fun reDrawGeometry(elik:EinkPWInterface){
+    private fun reDrawGeometry(elik:EinkPWInterface,location: Int){
         if (isErasure)
             return
+        if (location==1){
+            v_content_a.invalidate()
+        }
+        else{
+            v_content_b.invalidate()
+        }
         if (isScale){
             if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
-                GeometryScaleDialog(this,currentGeometry,circlePos).builder()
-                    ?.setOnDialogClickListener{
-                            width, height ->
-                        when (currentGeometry) {
-                            2, 5 -> {
-                                elik.reDrawShape(width,height)
-                            }
-                            7->{
-                                val info=elik.curHandlerInfo
-                                elik.reDrawShape(if (getAValue(info)>0) width else -width ,info.split("&")[1].toFloat())
-                            }
-                            9 -> {
-                                elik.reDrawShape(width,5f)
-                            }
-                            else -> {
-                                elik.reDrawShape(width,-1f)
+                Handler().postDelayed({
+                    GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
+                        ?.setOnDialogClickListener{
+                                width, height ->
+                            when (currentGeometry) {
+                                2, 5 -> {
+                                    elik.reDrawShape(width,height)
+                                }
+                                7->{
+                                    val info=elik.curHandlerInfo
+                                    elik.reDrawShape(if (setA(info)>0) width else -width ,info.split("&")[1].toFloat())
+                                }
+                                9 -> {
+                                    elik.reDrawShape(width,5f)
+                                }
+                                else -> {
+                                    elik.reDrawShape(width,-1f)
+                                }
                             }
                         }
-                    }
+                },300)
             }
         }
     }
@@ -327,7 +342,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     /**
      * 获取a值
      */
-    private fun getAValue(info:String):Float{
+    private fun setA(info:String):Float{
         val list= mutableListOf<String>()
         val pattern= Pattern.compile("-?\\d+(\\.\\d+)") // 编译正则表达式，匹配连续的数字
         val matcher= pattern.matcher(info) // 创建匹配器对象
@@ -356,7 +371,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private fun setEilkAxis(){
         setCheckView(ll_axis)
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik?.setDrawAxisProperty(axisPos+1, 10,5, isScale)
+        elik_a?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
+        elik_b?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
         currentGeometry=9
     }
 
@@ -366,16 +382,25 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     private fun setLine(type: Int){
         when(type){
             0->{
-                elik?.penColor = Color.BLACK
-                elik?.setPaintEffect(0)
+                elik_a?.penColor = Color.BLACK
+                elik_a?.setPaintEffect(0)
+
+                elik_b?.penColor = Color.BLACK
+                elik_b?.setPaintEffect(0)
             }
             1->{
-                elik?.penColor = Color.parseColor("#999999")
-                elik?.setPaintEffect(0)
+                elik_a?.penColor = Color.parseColor("#999999")
+                elik_a?.setPaintEffect(0)
+
+                elik_b?.penColor = Color.parseColor("#999999")
+                elik_b?.setPaintEffect(0)
             }
             else->{
-                elik?.penColor = Color.BLACK
-                elik?.setPaintEffect(1)
+                elik_a?.penColor = Color.BLACK
+                elik_a?.setPaintEffect(1)
+
+                elik_b?.penColor = Color.BLACK
+                elik_b?.setPaintEffect(1)
             }
         }
     }
@@ -409,24 +434,21 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 设置笔类型
      */
     private fun setDrawOjectType(type:Int){
-        elik?.drawObjectType = type
+        elik_a?.drawObjectType = type
+        elik_b?.drawObjectType = type
         if (type!=PWDrawObjectHandler.DRAW_OBJ_CHOICERASE)
             currentDrawObj=type
     }
 
     /**
-     * 设置标题是否可以编辑
-     */
-    fun setDrawingTitleClick(boolean: Boolean){
-        isTitleClick=boolean
-    }
-
-
-    /**
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,0).builder()?.setDialogClickListener{
+        var type=1
+        if (this is PlanOverviewActivity || this is DiaryActivity || this is FreeNoteActivity){
+            type=0
+        }
+        AppToolDialog(this,type,getCurrentScreenPos()).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -438,7 +460,8 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      * 设置不能手写
      */
     fun setViewElikUnable(view:View){
-        elik?.addOnTopView(view)
+        elik_a?.addOnTopView(view)
+        elik_b?.addOnTopView(view)
     }
 
     /**
@@ -446,7 +469,6 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
      */
     open fun onPageDown(){
     }
-
     /**
      * 上一页
      */
@@ -460,11 +482,17 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
     }
 
     /**
-     * 抬笔保存
+     * 左屏抬笔
      */
-    open fun onElikSave(){
-
+    open fun onElikSava_a(){
     }
+
+    /**
+     * 右屏抬笔
+     */
+    open fun onElikSava_b(){
+    }
+
 
     /**
      * 设置擦除
@@ -486,7 +514,7 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
 
     /**
      * 恢复手写
-      */
+     */
     private fun setDrawing(){
         setCheckView(ll_pen)
         setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN)
@@ -498,133 +526,65 @@ abstract class BaseDrawingActivity : AppCompatActivity(), IBaseView {
         isGeometry=false
     }
 
-    fun setPageTitle(title: String){
-        tv_title?.text=title
-    }
-
     /**
-     * 标题a操作
+     * 自动收屏后自动取消橡皮擦
      */
-    open fun setDrawingTitle(title:String){
-    }
-
-    fun getUser(): User?{
-        return SPUtil.getObj("user", User::class.java)
-    }
-    /**
-     * 显示view
-     */
-    protected fun showView(view: View?) {
-        if (view != null && view.visibility != View.VISIBLE) {
-            view.visibility = View.VISIBLE
+    fun changeErasure(){
+        if (isErasure){
+            isErasure=false
+            stopErasure()
         }
     }
 
     /**
-     * 显示view
+     * 单双屏切换以及创建新数据
      */
-    protected fun showView(vararg views: View?) {
-        for (view in views) {
-            if (view != null && view.visibility != View.VISIBLE) {
-                view.visibility = View.VISIBLE
+    fun onChangeExpandView() {
+        ll_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
+    }
+
+    /**
+     * 单双屏切换
+     */
+    open fun onChangeExpandContent(){
+
+    }
+
+    /**
+     * 内容变化
+     */
+    open fun onChangeContent(){
+
+    }
+
+    /**
+     * 单双屏展开
+     */
+    fun moveToScreen(isExpand:Boolean){
+        moveToScreen(if (isExpand) 3 else screenPos )
+    }
+
+    /**
+     * 换屏 0默认左屏幕 1左屏幕 2右屏幕 3全屏
+     */
+    fun moveToScreen(scree: Int){
+        moveToScreenPanel(scree)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        //屏蔽长按切焦点造成原手写翻页
+        if (getKeyEventStatus()==17||getKeyEventStatus()==34){
+            return super.onKeyUp(keyCode, event)
+        }
+        when(keyCode){
+            KeyEvent.KEYCODE_PAGE_DOWN->{
+                onPageDown()
+            }
+            KeyEvent.KEYCODE_PAGE_UP->{
+                onPageUp()
             }
         }
-    }
-
-
-    /**
-     * 消失view
-     */
-    protected fun disMissView(view: View?) {
-        if (view != null && view.visibility != View.GONE) {
-            view.visibility = View.GONE
-        }
-    }
-
-    /**
-     * 消失view
-     */
-    protected fun disMissView(vararg views: View?) {
-        for (view in views) {
-            if (view != null && view.visibility != View.GONE) {
-                view.visibility = View.GONE
-            }
-        }
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    protected fun setStatusBarColor(statusColor: Int) {
-        val window = window
-        //取消状态栏透明
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        //添加Flag把状态栏设为可绘制模式
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        //设置状态栏颜色
-        window.statusBarColor = statusColor
-        //设置系统状态栏处于可见状态
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        //让view不根据系统窗口来调整自己的布局
-        val mContentView = window.findViewById<View>(Window.ID_ANDROID_CONTENT) as ViewGroup
-        val mChildView = mContentView.getChildAt(0)
-        if (mChildView != null) {
-            ViewCompat.setFitsSystemWindows(mChildView, false)
-            ViewCompat.requestApplyInsets(mChildView)
-        }
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun hideKeyboard(){
-        KeyboardUtils.hideSoftKeyboard(this)
-    }
-
-    fun showToast(s:String){
-        SToast.showText(s)
-    }
-
-    fun showToast(sId:Int){
-        SToast.showText(sId)
-    }
-
-    fun showLog(s:String){
-        Log.d("debug",s)
-    }
-    fun showLog(sId:Int){
-        Log.d("debug",getString(sId))
-    }
-
-    override fun addSubscription(d: Disposable) {
-    }
-    override fun login() {
-        SToast.showText(R.string.login_timeout)
-        MethodManager.logout(this)
-    }
-
-    override fun hideLoading() {
-        mDialog?.dismiss()
-    }
-
-    override fun showLoading() {
-        mDialog!!.show()
-    }
-
-    override fun fail(msg: String) {
-        showToast(msg)
-    }
-
-    override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
-        showLog(R.string.connect_server_timeout)
-    }
-    override fun onComplete() {
-        showLog(R.string.request_success)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mDialog!!.dismiss()
-        hideKeyboard()
+        return super.onKeyUp(keyCode, event)
     }
 
 }

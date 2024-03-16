@@ -34,30 +34,30 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik=v_content.pwInterFace
+        elik_b=v_content.pwInterFace
         disMissView(tv_page_title)
-        elik?.addOnTopView(ll_date)
-        elik?.addOnTopView(tv_digest)
+        elik_b?.addOnTopView(ll_date)
+        elik_b?.addOnTopView(tv_digest)
 
-        changeContent()
+        onChangeContent()
 
         iv_up.setOnClickListener {
             saveDiary()
             nowLong -= Constants.dayLong
-            changeContent()
+            onChangeContent()
         }
 
         iv_down.setOnClickListener {
             saveDiary()
             nowLong += Constants.dayLong
-            changeContent()
+            onChangeContent()
         }
 
         tv_date.setOnClickListener {
             DateCalendarDialog(this,50f,150f).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
-                changeContent()
+                onChangeContent()
             }
         }
 
@@ -82,12 +82,12 @@ class DiaryActivity:BaseDrawingActivity() {
             override fun onClick(diaryBean: DiaryBean) {
                 saveDiary()
                 nowLong=diaryBean.date
-                changeContent()
+                onChangeContent()
             }
             override fun onDelete(diaryBean: DiaryBean) {
                 for (i in 0.until(diaryBean.size)){
                     val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
-                    elik?.freeCachePWBitmapFilePath(path, true)
+                    elik_b?.freeCachePWBitmapFilePath(path, true)
                 }
                 FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
                 DiaryDaoManager.getInstance().delete(diaryBean)
@@ -107,10 +107,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
     }
 
-    /**
-     * 切换日记
-     */
-    private fun changeContent(){
+    override fun onChangeContent() {
         images.clear()
         posImage=0
         diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
@@ -143,11 +140,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
         tv_page.text = "${posImage + 1}/${images.size}"
 
-        elik?.setLoadFilePath(path, true)
-    }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
+        elik_b?.setLoadFilePath(path, true)
     }
 
     private fun saveDiary() {

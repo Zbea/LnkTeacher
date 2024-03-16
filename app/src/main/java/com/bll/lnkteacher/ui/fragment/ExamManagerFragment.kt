@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.fragment
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.fragment.exam.ExamCorrectFragment
@@ -13,7 +13,7 @@ import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
-class ExamManagerFragment:BaseFragment() {
+class ExamManagerFragment:BaseMainFragment() {
 
     private var examCorrectFragment: ExamCorrectFragment? = null
     private var examListFragment: ExamListFragment? = null

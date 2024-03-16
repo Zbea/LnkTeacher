@@ -57,7 +57,7 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initView() {
-        tv_xdmoney.text="学豆：${mUser?.balance}"
+        tv_xdmoney.text="青豆：${mUser?.balance}"
 
         tv_buy.setOnClickListener {
             if (xdList.size>0){

@@ -183,7 +183,7 @@ class BookTypeListActivity : BaseActivity() {
             .setOnDialogClickListener {
                 if (it==0){
                     mAdapter?.remove(pos)
-                    deleteBook(book)
+                    MethodManager.deleteBook(book)
                 }
                 else{
                     book.subtypeStr=""

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
@@ -28,7 +28,7 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
-class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
+class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignView {
 
     private val mPresenter=HomeworkAssignPresenter(this)
     private var mAdapter:HomeworkAssignAdapter?=null

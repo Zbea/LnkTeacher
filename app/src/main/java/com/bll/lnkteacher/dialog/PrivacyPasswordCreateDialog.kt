@@ -5,13 +5,12 @@ import android.content.Context
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.PrivacyPassword
-import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 
 
@@ -79,21 +78,21 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
                 return@setOnClickListener
             }
             if (answerStr.isEmpty()){
-                SToast.showText("请输入密保问题")
+                SToast.showText(1,"请输入密保问题")
                 return@setOnClickListener
             }
 
             if (passwordStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(1,"请输入密码")
                 return@setOnClickListener
             }
             if (passwordAgainStr.isEmpty()){
-                SToast.showText("请再次输入密码")
+                SToast.showText(1,"请再次输入密码")
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(1,"密码输入不一致")
                 return@setOnClickListener
             }
             val checkPassword= PrivacyPassword()
@@ -101,8 +100,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             checkPassword.answer=answerStr
             checkPassword.password= MD5Utils.digest(passwordStr)
             checkPassword.isSet=true
-            val user= SPUtil.getObj("user", User::class.java)
-            SPUtil.putObj("${user?.accountId}CheckPassword",checkPassword)
+            MethodManager.savePrivacyPassword(checkPassword)
 
             dialog.dismiss()
             listener?.onClick(checkPassword)

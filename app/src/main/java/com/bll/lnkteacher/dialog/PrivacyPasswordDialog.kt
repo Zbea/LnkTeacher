@@ -5,12 +5,10 @@ import android.content.Context
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
-import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 
 
@@ -45,9 +43,7 @@ class PrivacyPasswordDialog(private val context: Context) {
             if (passwordStr.isEmpty()){
                 return@setOnClickListener
             }
-            val user= SPUtil.getObj("user", User::class.java)
-            val checkPassword=SPUtil.getObj("${user?.accountId}PrivacyPassword",
-                PrivacyPassword::class.java)
+            val checkPassword=MethodManager.getPrivacyPassword()
             if (MD5Utils.digest(passwordStr) != checkPassword?.password){
                 SToast.showText("密码错误")
                 return@setOnClickListener

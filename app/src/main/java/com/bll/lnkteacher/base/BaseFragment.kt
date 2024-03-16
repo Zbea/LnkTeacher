@@ -13,15 +13,14 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.*
 import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
-import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
-import com.bll.lnkteacher.ui.activity.NoteDrawingActivity
+import com.bll.lnkteacher.ui.activity.CloudStorageActivity
+import com.bll.lnkteacher.ui.activity.MainActivity
 import com.bll.lnkteacher.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
@@ -34,11 +33,9 @@ import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.ceil
 
 
-abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
-    IContractView.ICloudUploadView {
+abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     var mCommonPresenter= CommonPresenter(this)
-    var mCloudUploadPresenter= CloudUploadPresenter(this)
     /**
      * 视图是否加载完毕
      */
@@ -58,15 +55,8 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
-    var privacyPassword:PrivacyPassword?=null
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
-
-    override fun onSuccess(cloudIds: MutableList<Int>?) {
-        uploadSuccess(cloudIds)
-    }
-    override fun onDeleteSuccess() {
-    }
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -116,10 +106,9 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
-        privacyPassword=getPrivacyPasswordObj()
         initCommonTitle()
         initView()
-        mDialog = ProgressDialog(activity)
+        initDialog()
         lazyLoadDataIfPrepared()
     }
 
@@ -128,29 +117,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
             lazyLoad()
             hasLoadData = true
         }
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun hideKeyboard(){
-        KeyboardUtils.hideSoftKeyboard(activity)
-    }
-
-    fun showToast(s:String){
-        SToast.showText(s)
-    }
-
-    fun showToast(strId:Int){
-        SToast.showText(strId)
-    }
-
-    fun showLog(s:String){
-        Log.d("debug",s)
-    }
-
-    fun showLog(resId:Int){
-        Log.d("debug",getString(resId))
     }
 
     /**
@@ -168,6 +134,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
      * 懒加载
      */
     abstract fun lazyLoad()
+
 
     @SuppressLint("WrongViewCast")
     fun initCommonTitle() {
@@ -187,6 +154,23 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
 
     }
 
+    private fun initDialog(){
+        mDialog = ProgressDialog(requireActivity(),getScreenPosition())
+    }
+
+    /**
+     * 获取当前屏幕位置
+     */
+    protected fun getScreenPosition():Int{
+        var screenPos=0
+        if (activity is MainActivity){
+            screenPos=(activity as MainActivity).getCurrentScreenPos()
+        }
+        if (activity is CloudStorageActivity){
+            screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
+        }
+        return screenPos
+    }
 
     fun setTitle(pageTitle: String) {
         tv_title?.text = pageTitle
@@ -247,11 +231,34 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
     }
 
     /**
-     * 获取查看密码
+     * 关闭软键盘
      */
-    fun getPrivacyPasswordObj(): PrivacyPassword? {
-        return SPUtil.getObj("${mUser?.accountId}PrivacyPassword",
-            PrivacyPassword::class.java)
+    fun hideKeyboard(){
+        KeyboardUtils.hideSoftKeyboard(activity)
+    }
+
+    fun showToast(s:String){
+        SToast.showText(getScreenPosition(),s)
+    }
+
+    fun showToast(strId:Int){
+        SToast.showText(getScreenPosition(),strId)
+    }
+
+    fun showLog(s:String){
+        Log.d("debug",s)
+    }
+
+    fun showLog(resId:Int){
+        Log.d("debug",getString(resId))
+    }
+
+    /**
+     * 跳转活动(关闭已经打开的)
+     */
+    fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
+        startActivity(intent)
     }
 
     /**
@@ -328,26 +335,11 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
         })
     }
 
-    /**
-     * 跳转笔记写作
-     */
-    fun gotoNote(note: Note) {
-        note.date=System.currentTimeMillis()
-        NoteDaoManager.getInstance().insertOrReplace(note)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-
-        val intent = Intent(activity, NoteDrawingActivity::class.java)
-        val bundle = Bundle()
-        bundle.putSerializable("noteBundle",note)
-        intent.putExtra("bundle",bundle)
-        startActivity(intent)
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
         if (mView==null||activity==null)return
-        SToast.showText(R.string.login_timeout)
+        showToast(R.string.login_timeout)
         MethodManager.logout(requireActivity())
     }
 
@@ -360,7 +352,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
     }
     override fun fail(msg: String) {
         if (mView==null||activity==null)return
-        SToast.showText( msg)
+        showToast(msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
         showLog(R.string.connect_server_timeout)
@@ -407,27 +399,24 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView,
      */
     open fun onRefreshData(){
     }
-
     /**
      * 网络请求数据
      */
     open fun fetchData(){
     }
-    /**
-     * 上传成功(书籍云id) 上传成功后删掉重复上传的数据
-     */
-    open fun uploadSuccess(cloudIds: MutableList<Int>?){
-        if (!cloudIds.isNullOrEmpty())
-        {
-            mCloudUploadPresenter.deleteCloud(cloudIds)
-        }
-    }
 
     /**
-     * 班级事件
+     * 重新初始化屏幕位置
+     */
+    open fun changeInitData(){
+        initDialog()
+    }
+    /**
+     * 班级列表回调事件
      */
     open fun onClassGroupEvent(){
     }
+
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)

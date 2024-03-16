@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -50,6 +51,7 @@ import kotlin.math.ceil
 
 abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
 
+    var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
     var mUser=SPUtil.getObj("user",User::class.java)
@@ -80,7 +82,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         mSaveState=savedInstanceState
         setContentView(layoutId())
         initCommonTitle()
@@ -100,11 +101,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 Manifest.permission.RECORD_AUDIO
             )
         }
-
-        mDialog = ProgressDialog(this)
+        initCreate()
+        screenPos=getCurrentScreenPos()
+        initDialog()
         initData()
         initView()
+    }
 
+    /**
+     * 初始化onCreate
+     */
+    open fun initCreate(){
     }
 
     /**
@@ -140,6 +147,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 fetchData()
             }
         }
+    }
+
+    fun initDialog(){
+        mDialog = ProgressDialog(this,getCurrentScreenPos())
     }
 
 
@@ -215,7 +226,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 设置翻页
      */
-    fun setPageNumber(total:Int){
+    protected fun setPageNumber(total:Int){
         if (ll_page_number!=null){
             pageCount = ceil(total.toDouble() / pageSize).toInt()
             if (total == 0) {
@@ -228,7 +239,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
+    protected fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -244,7 +255,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         return radioButton
     }
 
-    fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
+    protected fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
         val radioButton =
             layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
         radioButton.text = str
@@ -261,14 +272,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
-     * 删除书本
+     * 得到当前屏幕位置
      */
-    fun deleteBook(book: Book){
-        BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-        FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-        if (File(book.bookDrawPath).exists())
-            FileUtils.deleteFile(File(book.bookDrawPath))
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
+    fun getCurrentScreenPos():Int{
+        return getCurrentScreenPanel()
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -291,48 +298,36 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-
-    /**
-     * 打卡软键盘
-     */
-    fun openKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN)
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-    }
-
     /**
      * 关闭软键盘
      */
-    fun closeKeyBord(mEditText: EditText, mContext: Context) {
-        val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(mEditText.windowToken, 0)
-    }
-
-    /**
-     * 关闭软键盘
-     */
-    fun hideKeyboard(){
+    protected fun hideKeyboard(){
         KeyboardUtils.hideSoftKeyboard(this)
     }
 
-    fun showToast(s:String){
-        SToast.showText(s)
+    protected fun showToast(s:String){
+        SToast.showText(getCurrentScreenPos(),s)
     }
 
-    fun showToast(resId:Int){
-        SToast.showText(resId)
+    protected fun showToast(resId:Int){
+        SToast.showText(getCurrentScreenPos(),resId)
     }
 
-    fun showLog(s:String){
+    protected fun showLog(s:String){
         Log.d("debug",s)
     }
 
-    fun showLog(resId:Int){
+    protected fun showLog(resId:Int){
         Log.d("debug",getString(resId))
     }
 
-
+    /**
+     * 跳转活动 已经打开过则关闭
+     */
+    protected fun customStartActivity(intent: Intent){
+        ActivityManager.getInstance().finishActivity(intent.component?.className)
+        startActivity(intent)
+    }
 
     /**
      * 重写要申请权限的Activity或者Fragment的onRequestPermissionsResult()方法，
@@ -381,7 +376,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun showMissingPermissionDialog() {
+    protected fun showMissingPermissionDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("提示")
         builder.setMessage("当前应用缺少必要权限。请点击\"设置\"-\"权限\"-打开所需权限。")
@@ -407,7 +402,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
-        SToast.showText(R.string.login_timeout)
+        SToast.showText(getCurrentScreenPos(),R.string.login_timeout)
         MethodManager.logout(this)
     }
 
@@ -454,6 +449,19 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        screenPos=getCurrentScreenPos()
+        initDialog()
+        initChangeData()
+    }
+
+    /**
+     * 切屏后，重新初始化数据（用于数据请求弹框显示正确的位置）
+     */
+    open fun initChangeData(){
     }
 
 }

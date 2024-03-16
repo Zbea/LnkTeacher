@@ -25,9 +25,15 @@ import android.os.Environment
 class Constants {
 
     companion object {
+
+            const val WIDTH = 1404
+            const val HEIGHT = 1872 //38->52 50->69
         const val halfYear=180*24*60*60*1000
         const val dayLong=24*60*60*1000
         const val weekTime=7*24*60*60*1000
+        const val SCREEN_LEFT=1//左屏
+        const val SCREEN_RIGHT=2//右屏
+        const val SCREEN_FULL=3//全屏
 
 //                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
@@ -85,6 +91,8 @@ class Constants {
         const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"
         const val ACTION_UPLOAD_REFRESH = "com.bll.lnkteacher.upload"//每天3自动更新
         const val ACTION_UPLOAD_YEAR = "com.bll.lnkteacher.upload.year"//每年12月31 3点自动上传
+
+            const val INTENT_SCREEN_LABEL="android.intent.extra.LAUNCH_SCREEN"
     }
 
 }

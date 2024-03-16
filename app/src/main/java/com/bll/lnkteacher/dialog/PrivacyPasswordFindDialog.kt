@@ -5,12 +5,10 @@ import android.content.Context
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
-import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 
 
@@ -23,9 +21,7 @@ class PrivacyPasswordFindDialog(private val context: Context) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val user= SPUtil.getObj("user", User::class.java)
-        val checkPassword=SPUtil.getObj("${user?.accountId}PrivacyPassword",
-            PrivacyPassword::class.java)
+        val checkPassword=MethodManager.getPrivacyPassword()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -44,25 +40,25 @@ class PrivacyPasswordFindDialog(private val context: Context) {
             val passwordFindStr=etPasswordFind?.text.toString()
 
             if (passwordFindStr.isEmpty()){
-                SToast.showText("请输入密保")
+                SToast.showText(1,"请输入密保")
                 return@setOnClickListener
             }
 
             if (passwordFindStr!=checkPassword?.answer){
-                SToast.showText("密保错误")
+                SToast.showText(1,"密保错误")
                 return@setOnClickListener
             }
             if (passwordStr.isEmpty()||passwordAgainStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(1,"请输入密码")
                 return@setOnClickListener
             }
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(1,"密码输入不一致")
                 return@setOnClickListener
             }
 
             checkPassword.password= MD5Utils.digest(passwordStr)
-            SPUtil.putObj("${user?.accountId}PrivacyPassword",checkPassword)
+            MethodManager.savePrivacyPassword(checkPassword)
             dialog.dismiss()
             listener?.onClick()
 

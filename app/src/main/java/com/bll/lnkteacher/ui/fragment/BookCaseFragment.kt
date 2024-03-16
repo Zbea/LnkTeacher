@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudListBean
@@ -24,7 +24,7 @@ import java.io.File
 /**
  * 书架
  */
-class BookCaseFragment : BaseFragment() {
+class BookCaseFragment : BaseMainFragment() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()//所有数据

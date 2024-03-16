@@ -33,7 +33,7 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountList.ListBea
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceGridItemDeco(4,40))
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            mAdapter?.setItemView(position)
+            mAdapter.setItemView(position)
             id= list[position].id
         }
 

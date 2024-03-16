@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -24,7 +24,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
-class ClassGroupFragment:BaseFragment(),IContractView.IClassGroupView {
+class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
     private var mGroupPresenter=ClassGroupPresenter(this)
     private var classGroups= mutableListOf<ClassGroup>()
     private var mAdapter:ClassGroupAdapter?=null

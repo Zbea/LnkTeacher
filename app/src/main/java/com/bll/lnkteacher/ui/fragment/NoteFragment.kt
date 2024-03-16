@@ -8,8 +8,9 @@ import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
 import com.bll.lnkteacher.Constants.Companion.PRIVACY_PASSWORD_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
@@ -17,10 +18,7 @@ import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.mvp.model.CloudListBean
-import com.bll.lnkteacher.mvp.model.ItemTypeBean
-import com.bll.lnkteacher.mvp.model.Note
-import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
 import com.bll.lnkteacher.utils.DateUtils
@@ -37,7 +35,7 @@ import java.io.File
 /**
  * 笔记
  */
-class NoteFragment : BaseFragment() {
+class NoteFragment : BaseMainFragment() {
     private var popupBeans = mutableListOf<PopupBean>()
     private var notebooks = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
@@ -45,6 +43,7 @@ class NoteFragment : BaseFragment() {
     private var position = 0 //当前笔记标记
     private var positionType = 0//当前笔记本标记
     private var typeStr=""
+    private var privacyPassword:PrivacyPassword?=null
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_note
@@ -58,6 +57,8 @@ class NoteFragment : BaseFragment() {
 
         setTitle(R.string.main_note_title)
         showView(iv_manager)
+
+        privacyPassword=MethodManager.getPrivacyPassword()
 
         iv_manager?.setOnClickListener {
             PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder()
@@ -86,11 +87,11 @@ class NoteFragment : BaseFragment() {
             val note = notes[position]
             if (positionType==0&&privacyPassword!=null&&privacyPassword?.isSet==true&&!note.isCancelPassword){
                 PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                    gotoNote(note)
+                    MethodManager.gotoNote(requireActivity(),note)
                 }
             }
             else{
-                gotoNote(note)
+                MethodManager.gotoNote(requireActivity(),note)
             }
         }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
@@ -240,7 +241,7 @@ class NoteFragment : BaseFragment() {
                 fetchData()
             }
             PRIVACY_PASSWORD_EVENT->{
-                privacyPassword=getPrivacyPasswordObj()
+                privacyPassword=MethodManager.getPrivacyPassword()
                 fetchData()
             }
         }

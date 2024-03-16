@@ -4,12 +4,10 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.Button
 import android.widget.EditText
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
-import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 
 
@@ -22,9 +20,7 @@ class PrivacyPasswordEditDialog(private val context: Context) {
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
-        val user= SPUtil.getObj("user", User::class.java)
-        val checkPassword=SPUtil.getObj("${user?.accountId}PrivacyPassword",
-            PrivacyPassword::class.java)
+        val checkPassword=MethodManager.getPrivacyPassword()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -41,19 +37,19 @@ class PrivacyPasswordEditDialog(private val context: Context) {
             val passwordOldStr=etPasswordOld?.text.toString()
 
             if (MD5Utils.digest(passwordOldStr)!=checkPassword?.password){
-                SToast.showText("原密码输入错误")
+                SToast.showText(1,"原密码输入错误")
                 return@setOnClickListener
             }
             if (passwordStr.isEmpty()||passwordAgainStr.isEmpty()){
-                SToast.showText("请输入密码")
+                SToast.showText(1,"请输入密码")
                 return@setOnClickListener
             }
             if (passwordStr!=passwordAgainStr){
-                SToast.showText("密码输入不一致")
+                SToast.showText(1,"密码输入不一致")
                 return@setOnClickListener
             }
             checkPassword?.password= MD5Utils.digest(checkPassword?.password)
-            SPUtil.putObj("${user?.accountId}PrivacyPassword",checkPassword!!)
+            MethodManager.savePrivacyPassword(checkPassword)
             dialog.dismiss()
             listener?.onClick()
 

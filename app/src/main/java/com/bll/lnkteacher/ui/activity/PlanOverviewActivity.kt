@@ -36,7 +36,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik=v_content.pwInterFace
+        elik_b=v_content.pwInterFace
         disMissView(iv_catalog,iv_btn)
         setPageTitle("月周计划")
 
@@ -160,11 +160,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         }
         tv_page.text = "${posImage + 1}/${images.size}"
 
-        elik?.setLoadFilePath(path, true)
-    }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
+        elik_b?.setLoadFilePath(path, true)
     }
 
 }

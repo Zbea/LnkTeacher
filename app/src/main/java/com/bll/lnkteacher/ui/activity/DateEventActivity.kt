@@ -29,7 +29,7 @@ class DateEventActivity:BaseDrawingActivity() {
     override fun initView() {
         setPageTitle("日程")
         setContentView()
-        elik=v_content.pwInterFace
+        elik_b=v_content.pwInterFace
 
         iv_up.setOnClickListener {
             nowLong-=Constants.dayLong
@@ -53,11 +53,10 @@ class DateEventActivity:BaseDrawingActivity() {
     private fun setContentView(){
         tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(nowLong)
         val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowLong))+"/draw.tch"
-        elik?.setLoadFilePath(path, true)
+        elik_b?.setLoadFilePath(path, true)
     }
 
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
+    override fun onElikSava_b() {
         isDraw=true
     }
 

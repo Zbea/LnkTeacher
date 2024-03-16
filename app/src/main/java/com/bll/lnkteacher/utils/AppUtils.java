@@ -20,6 +20,7 @@ import android.util.Log;
 
 import androidx.core.content.FileProvider;
 
+import com.bll.lnkteacher.Constants;
 import com.bll.lnkteacher.mvp.model.AppBean;
 
 import java.io.File;
@@ -313,6 +314,15 @@ public class AppUtils {
     public static void startAPP(Context context, String appPackageName) throws Exception {
         if (isAvailable(context,appPackageName)){
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+            context.startActivity(intent);
+        }
+    }
+
+    public static void startAPP(Context context, String appPackageName,int screen) throws Exception {
+        if (isAvailable(context,appPackageName)){
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(appPackageName);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,screen);
             context.startActivity(intent);
         }
     }

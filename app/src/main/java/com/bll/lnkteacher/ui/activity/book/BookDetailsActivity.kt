@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseBookDrawingActivity
+import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.DrawingCatalogDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
@@ -17,31 +17,31 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_book_details.*
+import kotlinx.android.synthetic.main.ac_book_details.v_content_a
+import kotlinx.android.synthetic.main.ac_drawing.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 
-class BookDetailsActivity:BaseBookDrawingActivity() {
+class BookDetailsActivity:BaseDrawingActivity() {
     private var book: Book?=null
-    private var catalogMsg: CatalogMsg?=null
-    private var catalogs= mutableListOf<MultiItemEntity>()
-    private var parentItems= mutableListOf<CatalogParentBean>()
-    private var childItems= mutableListOf<CatalogChildBean>()
-
-    private var count = 1
+    private var catalogMsg: CatalogMsg? = null
+    private var catalogs = mutableListOf<MultiItemEntity>()
+    private var parentItems = mutableListOf<CatalogParentBean>()
+    private var childItems = mutableListOf<CatalogChildBean>()
+    private var pageStart=1
     private var page = 0 //当前页码
-    private var startCount=1
 
     override fun layoutId(): Int {
-        return R.layout.ac_book_details
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
         val id=intent.getIntExtra("book_id",0)
         val type=intent.getIntExtra("book_type",0)
         book = BookGreenDaoManager.getInstance().queryTextBookByBookID(type,id)
+        if (book == null) return
         page=book?.pageIndex!!
-
         val cataLogFilePath =FileAddress().getPathTextBookCatalog(book?.bookPath!!)
         if (FileUtils.isExist(cataLogFilePath))
         {
@@ -73,38 +73,68 @@ class BookDetailsActivity:BaseBookDrawingActivity() {
 
     override fun initView() {
         if (catalogMsg!=null){
-            count=catalogMsg?.totalCount!!
-            startCount=catalogMsg?.startCount!!
+            pageCount =catalogMsg?.totalCount!!
+            pageStart =catalogMsg?.startCount!!
         }
-        updateScreen()
+        onContentChanged()
     }
 
     override fun onCatalog() {
-        DrawingCatalogDialog(this,catalogs,1,startCount).builder().
-        setOnDialogClickListener { position ->
-            page = position-1
-            updateScreen()
+        DrawingCatalogDialog(this, catalogs, 1, pageStart).builder().setOnDialogClickListener { position ->
+            page = position - 1
+            onChangeContent()
         }
     }
 
     override fun onPageDown() {
-        if(page<count){
-            page+=1
-            updateScreen()
-        }
+        page += if (isExpand) 2 else 1
+        onChangeContent()
     }
 
     override fun onPageUp() {
-        if (page>1){
-            page-=1
-            updateScreen()
+        if (isExpand) {
+            if (page > 1) {
+                page -= 2
+                onChangeContent()
+            } else {
+                page = 1
+                onChangeContent()
+            }
+        } else {
+            if (page > 0) {
+                page -= 1
+                onChangeContent()
+            }
         }
     }
 
-    //单屏翻页
-    private fun updateScreen(){
-        tv_page.text = if (page+1-(startCount-1)>0) "${page + 1-(startCount-1)}" else ""
-        loadPicture(page,elik!!,v_content)
+    override fun onChangeExpandContent() {
+        changeErasure()
+        isExpand=!isExpand
+        moveToScreen(isExpand)
+        onChangeExpandView()
+        onChangeContent()
+    }
+
+    override fun onChangeContent() {
+        //如果页码超出 则全屏展示最后两页
+        if (page > pageCount - 1) {
+            page =  pageCount - 1
+        }
+
+        if (page==0&&isExpand){
+            page=1
+        }
+
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+        loadPicture(page, elik_b!!, v_content_b)
+        if (isExpand) {
+            loadPicture(page-1, elik_a!!, v_content_a)
+            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+        }
+
+        //设置当前展示页
+        book?.pageUrl = getIndexFile(page)?.path
     }
 
     //加载图片
@@ -118,10 +148,6 @@ class BookDetailsActivity:BaseBookDrawingActivity() {
             val drawPath=book?.bookDrawPath+"/${index+1}.tch"
             elik.setLoadFilePath(drawPath,true)
         }
-    }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
     }
 
     //获得图片地址

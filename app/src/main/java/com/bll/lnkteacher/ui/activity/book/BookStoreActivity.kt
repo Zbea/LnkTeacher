@@ -27,8 +27,7 @@ import kotlinx.android.synthetic.main.common_title.*
 /**
  * 书城
  */
-class BookStoreActivity : BaseActivity(),
-    IContractView.IBookStoreView {
+class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private var tabStr=""
     private var type=0
@@ -92,7 +91,7 @@ class BookStoreActivity : BaseActivity(),
         setPageTitle(tabStr)
         showView(tv_grade,ll_search)
 
-        mDialog?.setOutside(true)
+        mDialog?.setCanceledOutside(true)
 
         initRecyclerView()
 

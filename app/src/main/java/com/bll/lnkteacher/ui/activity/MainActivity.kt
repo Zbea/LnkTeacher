@@ -32,7 +32,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var lastFragment: Fragment? = null
-    private var mainFragment: MainFragment? = null
+    private var mainRightFragment: MainRightFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
     private var classGroupFragment: ClassGroupFragment? = null
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
@@ -52,9 +52,9 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             //每年更新
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
                 noteFragment?.upload(token)
-                mainFragment?.uploadDiary(token)
-                mainFragment?.uploadFreeNote(token)
-                mainFragment?.uploadScreenShot(token)
+                mainRightFragment?.uploadDiary(token)
+                mainRightFragment?.uploadFreeNote(token)
+                mainRightFragment?.uploadScreenShot(token)
             }
         }
     }
@@ -71,7 +71,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun initView() {
 
-        mainFragment = MainFragment()
+        mainRightFragment = MainRightFragment()
         textbookFragment= TextbookFragment()
         bookcaseFragment = BookCaseFragment()
         classGroupFragment= ClassGroupFragment()
@@ -80,7 +80,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         appFragment = AppFragment()
         examFragment= ExamManagerFragment()
 
-        switchFragment(lastFragment, mainFragment)
+        switchFragment(lastFragment, mainRightFragment)
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mHomeAdapter = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexData())
@@ -92,7 +92,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             mHomeAdapter?.updateItem(position, true)//更新新的位置
 
             when (position) {
-                0 -> switchFragment(lastFragment, mainFragment)
+                0 -> switchFragment(lastFragment, mainRightFragment)
                 1 -> switchFragment(lastFragment, bookcaseFragment)
                 2 -> switchFragment(lastFragment, textbookFragment)
                 3 -> switchFragment(lastFragment, classGroupFragment)
@@ -243,7 +243,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
      * 清除本地所有数据
      */
     private fun clearSqlData(){
-        SPUtil.putObj("${mUser?.accountId}PrivacyPassword","")
+        SPUtil.removeObj("PrivacyPassword")
 
         MyApplication.mDaoSession?.clear()
         AppDaoManager.getInstance().clear()

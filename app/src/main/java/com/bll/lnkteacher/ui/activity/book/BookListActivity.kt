@@ -86,7 +86,7 @@ class BookListActivity : BaseActivity() {
         LongClickManageDialog(this, book.bookName,longBeans).builder()
             .setOnDialogClickListener {
                 if (it==0){
-                    deleteBook(book)
+                    MethodManager.deleteBook(book)
                     mAdapter?.remove(pos)
                 }
                 else{

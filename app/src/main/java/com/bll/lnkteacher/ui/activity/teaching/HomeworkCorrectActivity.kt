@@ -109,7 +109,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik?.setPWEnabled(false,false)
+        elik_b?.setPWEnabled(false,false)
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
 
@@ -131,7 +131,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     override fun initView() {
-        elik?.setPWEnabled(false,false)
+        elik_b?.setPWEnabled(false,false)
         setPageTitle("${getString(R.string.teaching_tab_homework_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
         //如果是朗读本
         if (subType == 3) {
@@ -149,19 +149,6 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         tv_custom.setOnClickListener {
             if (userCorrect>userSend)
                 mPresenter.sendClass(mClassBean?.examChangeId!!)
-        }
-
-        iv_up.setOnClickListener {
-            if (posImage > 0) {
-                posImage -= 1
-                setContentImage()
-            }
-        }
-        iv_down.setOnClickListener {
-            if (posImage < getImageSize() - 1) {
-                posImage += 1
-                setContentImage()
-            }
         }
 
         tv_save.setOnClickListener {
@@ -271,6 +258,20 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
     }
 
+    override fun onPageUp() {
+        if (posImage > 0) {
+            posImage -= 1
+            setContentImage()
+        }
+    }
+
+    override fun onPageDown() {
+        if (posImage < getImageSize() - 1) {
+            posImage += 1
+            setContentImage()
+        }
+    }
+
     /**
      * 初始化分数列表数据
      */
@@ -335,13 +336,13 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 2->{
                     currentImages = userItem.submitUrl.split(",").toTypedArray()
                     tv_score.text = userItem.score.toString()
-                    elik?.setPWEnabled(false,false)
+                    elik_b?.setPWEnabled(false,false)
                     setContentImage()
                 }
                 3->{
-                    elik?.setPWEnabled(false,false)
+                    elik_b?.setPWEnabled(false,false)
                     tv_page.text=""
-                    v_content.setImageResource(0)
+                    v_content_b.setImageResource(0)
                 }
             }
         } else {
@@ -361,22 +362,17 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private fun setContentImage() {
         //批改成功后删掉原来，加载提交后的图片
         if (userItems[posUser].status == 2) {
-            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), v_content, 10)
+            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage), v_content_b, 10)
         } else {
-            elik?.setPWEnabled(true,true)
+            elik_b?.setPWEnabled(true,true)
             val masterImage = "${getPath()}/${posImage + 1}.png"//原图
-            GlideUtils.setImageFile(this, File(masterImage), v_content)
+            GlideUtils.setImageFile(this, File(masterImage), v_content_b)
         }
         tv_page.text = "${posImage + 1}/${getImageSize()}"
 
         val drawPath = getPathDrawStr(posImage + 1)
-        elik?.setLoadFilePath(drawPath, true)
+        elik_b?.setLoadFilePath(drawPath, true)
     }
-
-    override fun onElikSave() {
-        elik?.saveBitmap(true) {}
-    }
-
 
     /**
      * 下载学生提交试卷
