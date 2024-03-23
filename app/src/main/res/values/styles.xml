@@ -28,6 +28,8 @@
         <!-- 对话框是否有遮盖 -->
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 
     <style name="styleDialogCustom" >

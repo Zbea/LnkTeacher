@@ -22,6 +22,8 @@ class ExamCorrectFragment:BaseMainFragment(){
         items.add(ExamCorrectBean())
         items.add(ExamCorrectBean())
         initRecyclerView()
+
+        initDialog(2)
     }
 
     override fun lazyLoad() {

@@ -2,14 +2,11 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
+import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
 import com.bll.lnkteacher.Constants.Companion.PRIVACY_PASSWORD_EVENT
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -18,29 +15,27 @@ import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
+import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
 import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
-import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
+import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.utils.*
-import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_main_right.*
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
-import java.util.Date
 
 class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
 
-    private var mMessagePresenter=MessagePresenter(this)
-    private var mTeachingAdapter: MainTeachingAdapter? = null
-    private var classGroups= mutableListOf<ClassGroup>()
+    private var mMessagePresenter=MessagePresenter(this,2)
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
+
+    private var notes= mutableListOf<Note>()
+    private var mNoteAdapter:MainNoteAdapter?=null
 
     private var uploadType=0//上传类型
     private var privacyPassword:PrivacyPassword?=null
@@ -60,20 +55,15 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-        setTitle(R.string.main_home_title)
 
         privacyPassword=MethodManager.getPrivacyPassword()
 
-        tv_date_today.setOnClickListener {
-            startActivity(Intent(activity, DateActivity::class.java))
-        }
-
         ll_message.setOnClickListener {
-            startActivity(Intent(activity, MessageListActivity::class.java))
+            customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
 
         ll_course.setOnClickListener {
-            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+            customStartActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
                 .putExtra("classGroupId", 0)
             )
         }
@@ -81,34 +71,30 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
-                    startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                    customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
             } else{
-                startActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
         }
 
         tv_free_note.setOnClickListener {
-            startActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
+            customStartActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
         }
 
         initMessageView()
-
-        initTeachingView()
         initCourse()
-
-        onClassGroupEvent()
+        initNoteView()
+        initDialog(2)
     }
 
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
             findMessages()
             fetchCommonData()
-            mCommonPresenter.getAppUpdate()
         }
-        initDateView()
+        findNotes()
     }
-
 
     //课程表相关处理
     private fun initCourse() {
@@ -121,32 +107,17 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         }
     }
 
-    //日历相关内容设置
-    private fun initDateView() {
-//
-//        val dates= DateUtils.getDateNumber(Date().time)
-//        val solar= Solar()
-//        solar.solarYear=dates[0]
-//        solar.solarMonth=dates[1]
-//        solar.solarDay=dates[2]
-//        val lunar= LunarSolarConverter.SolarToLunar(solar)
-//
-//        val str = if (!solar.solar24Term.isNullOrEmpty()) {
-//            "24节气   "+solar.solar24Term
-//        } else {
-//            if (!solar.solarFestivalName.isNullOrEmpty()) {
-//                "节日   "+solar.solarFestivalName
-//            } else {
-//                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
-//                    "节日   "+lunar.lunarFestivalName
-//                }
-//                else{
-//                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
-//                }
-//            }
-//        }
-        tv_date_today.text=SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(Date().time)
+    private fun initNoteView(){
+        rv_main_note.layoutManager = LinearLayoutManager(activity)//创建布局管理
+        mNoteAdapter=MainNoteAdapter(R.layout.item_main_note, null).apply {
+            rv_main_note.adapter = this
+            bindToRecyclerView(rv_main_note)
+            setOnItemClickListener { adapter, view, position ->
+                MethodManager.gotoNote(requireActivity(),notes[position])
+            }
+        }
     }
+
 
     //消息相关处理
     private fun initMessageView() {
@@ -154,22 +125,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         mMessageAdapter=MainMessageAdapter(R.layout.item_main_message, null).apply {
             rv_main_message.adapter = this
             bindToRecyclerView(rv_main_message)
-        }
-    }
-
-    //教学进度
-    private fun initTeachingView() {
-        rv_main_teaching.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
-        rv_main_teaching.adapter = mTeachingAdapter
-        mTeachingAdapter?.bindToRecyclerView(rv_main_teaching)
-        rv_main_teaching.addItemDecoration(SpaceGridItemDeco(3, 30))
-        mTeachingAdapter?.setOnItemClickListener { _, _, position ->
-            val intent = Intent(activity, TeachingPlanActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable("classGroup", classGroups[position])
-            intent.putExtra("bundle", bundle)
-            startActivity(intent)
         }
     }
 
@@ -181,6 +136,11 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         mMessagePresenter.getList(map,false)
     }
 
+    private fun findNotes(){
+        notes = NoteDaoManager.getInstance().queryListOther(6)
+        mNoteAdapter?.setNewData(notes)
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             COURSE_EVENT -> {
@@ -189,28 +149,17 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
             MESSAGE_EVENT -> {
                 findMessages()
             }
-            AUTO_REFRESH_EVENT->{
-                initDateView()
-                mTeachingAdapter?.refreshDate()
-            }
             PRIVACY_PASSWORD_EVENT->{
                 privacyPassword=MethodManager.getPrivacyPassword()
+            }
+            NOTE_EVENT->{
+                findNotes()
             }
         }
     }
 
     override fun onRefreshData() {
         lazyLoad()
-    }
-
-    override fun onClassGroupEvent() {
-        classGroups= mutableListOf()
-        for (item in DataBeanManager.classGroups){
-            if (item.state==1){
-                classGroups.add(item)
-            }
-        }
-        mTeachingAdapter?.setNewData(classGroups)
     }
 
 

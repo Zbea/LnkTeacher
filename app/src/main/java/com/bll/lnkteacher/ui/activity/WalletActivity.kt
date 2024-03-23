@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.ac_wallet.*
 
 class WalletActivity:BaseActivity(),IContractView.IWalletView{
 
-    private var walletPresenter=WalletPresenter(this)
+    private lateinit var walletPresenter:WalletPresenter
     private var xdDialog:WalletBuyXdDialog?=null
     private var xdList= mutableListOf<AccountList.ListBean>()
     private var qrCodeDialog:Dialog?=null
@@ -53,7 +53,11 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
     }
 
     override fun initData() {
+        initChangeScreenData()
+    }
 
+    override fun initChangeScreenData() {
+        walletPresenter=WalletPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

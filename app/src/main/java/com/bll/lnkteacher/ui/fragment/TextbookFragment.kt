@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
@@ -8,44 +7,33 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
-import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.CloudListBean
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
-import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
-import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.FileUploadManager
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_textbook.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
-    private val mPresenter = TextbookPresenter(this)
+    private val mPresenter = TextbookPresenter(this,1)
     private var mAdapter: BookAdapter? = null
-    private var mHandoutsAdapter: HandoutsAdapter? = null
     private var books = mutableListOf<Book>()
     private var textBook = ""//用来区分课本类型
     private var tabId = 0
     private var position = 0
-    private var handoutsBeans = mutableListOf<HandoutsList.HandoutsBean>()
-    private var popGrades = mutableListOf<PopupBean>()
-    private var grade = 0
-
-    override fun onHandoutsList(list: HandoutsList) {
-        setPageNumber(list.total)
-        handoutsBeans = list.list
-        mHandoutsAdapter?.setNewData(handoutsBeans)
-    }
 
     override fun onAddHomeworkBook() {
         showToast("设置教辅书成功")
@@ -59,30 +47,12 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun initView() {
+        super.initView()
         pageSize = 12
         setTitle(R.string.main_textbook_title)
 
         initTab()
         initRecyclerView()
-        initRecyclerHandouts()
-
-        grade = SPUtil.getInt("grade")
-        if (grade == 0)
-            grade = 1
-        popGrades = DataBeanManager.popupGrades(grade)
-        tv_grade.text = DataBeanManager.getGradeStr(grade)
-
-        tv_grade.setOnClickListener {
-            if (popGrades.size == 0) {
-                popGrades = DataBeanManager.popupGrades(1)
-            }
-            PopupRadioList(requireActivity(), popGrades, tv_grade, tv_grade.width, 5).builder().setOnSelectListener { item ->
-                tv_grade?.text = item.name
-                grade = item.id
-                pageIndex = 1
-                fetchData()
-            }
-        }
 
         fetchData()
     }
@@ -103,13 +73,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             tabId = id
             textBook = tabStrs[id]
             pageIndex = 1
-            if (tabId == 5) {
-                showView(rv_handouts, tv_grade)
-                disMissView(rv_list)
-            } else {
-                showView(rv_list)
-                disMissView(rv_handouts, tv_grade)
-            }
             fetchData()
         }
     }
@@ -127,10 +90,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             if (tabId == 4) {
                 MethodManager.gotoBookDetails(requireActivity(), book)
             } else {
-                val intent = Intent(activity, BookDetailsActivity::class.java)
-                intent.putExtra("book_id", book.bookId)
-                intent.putExtra("book_type", book.typeId)
-                startActivity(intent)
+                MethodManager.gotoTextBookDetails(requireActivity(),book)
             }
         }
         mAdapter?.onItemLongClickListener =
@@ -141,19 +101,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             }
     }
 
-    private fun initRecyclerHandouts() {
-        rv_handouts.layoutManager = GridLayoutManager(requireActivity(), 3)//创建布局管理
-        mHandoutsAdapter = HandoutsAdapter(R.layout.item_textbook, null).apply {
-            rv_handouts.adapter = this
-            bindToRecyclerView(rv_handouts)
-            setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                val item = handoutsBeans[position]
-                val images = item.paths.split(",")
-                ImageDialog(requireActivity(), images).builder()
-            }
-        }
-    }
 
     //长按显示课本管理
     private fun onLongClick(book: Book) {
@@ -177,11 +124,8 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
             .setOnDialogClickListener {
                 if (it == 0) {
-                    BookGreenDaoManager.getInstance().deleteBook(book) //删除本地数据库
-                    FileUtils.deleteFile(File(book.bookPath))//删除下载的书籍资源
-                    FileUtils.deleteFile(File(book.bookDrawPath))
+                    MethodManager.deleteBook(book,0)
                     mAdapter?.remove(position)
-                    EventBus.getDefault().post(TEXT_BOOK_EVENT)
                 } else {
                     if (!book.isHomework) {
                         val map = HashMap<String, Any>()
@@ -271,18 +215,10 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun fetchData() {
-        if (tabId == 5) {
-            val map = HashMap<String, Any>()
-            map["page"] = pageIndex
-            map["size"] = pageSize
-            map["grade"] = grade
-            mPresenter.getHandoutsList(map)
-        } else {
-            books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, 9)
-            val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
-            setPageNumber(total.size)
-            mAdapter?.setNewData(books)
-        }
+        books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, 9)
+        val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
+        setPageNumber(total.size)
+        mAdapter?.setNewData(books)
     }
 
 }

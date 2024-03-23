@@ -5,7 +5,7 @@ import com.bll.lnkteacher.mvp.model.CloudList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
-class CloudPresenter(view: IContractView.ICloudView) : BasePresenter<IContractView.ICloudView>(view){
+class CloudPresenter(view: IContractView.ICloudView,val screen:Int) : BasePresenter<IContractView.ICloudView>(view){
 
     /**
      * 获取分类
@@ -14,7 +14,7 @@ class CloudPresenter(view: IContractView.ICloudView) : BasePresenter<IContractVi
         val map=HashMap<String,Any>()
         map["type"]=type
         val manager = RetrofitManager.service.getCloudType(map)
-        doRequest(manager, object : Callback<MutableList<String>>(view) {
+        doRequest(manager, object : Callback<MutableList<String>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<String>>): Boolean {
                 return false
             }
@@ -30,7 +30,7 @@ class CloudPresenter(view: IContractView.ICloudView) : BasePresenter<IContractVi
      */
     fun getList(map :HashMap<String,Any>) {
         val type = RetrofitManager.service.getCloudList(map)
-        doRequest(type, object : Callback<CloudList>(view) {
+        doRequest(type, object : Callback<CloudList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<CloudList>): Boolean {
                 return false
             }
@@ -47,7 +47,7 @@ class CloudPresenter(view: IContractView.ICloudView) : BasePresenter<IContractVi
         )
         val delete = RetrofitManager.service.deleteCloudList(body)
 
-        doRequest(delete, object : Callback<Any>(view) {
+        doRequest(delete, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

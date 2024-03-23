@@ -223,9 +223,9 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     bookDetailsDialog?.dismiss()
-                    hideLoading()
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
+                        hideLoading()
                     },500)
                 }
 

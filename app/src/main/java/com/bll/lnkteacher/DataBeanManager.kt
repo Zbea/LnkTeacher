@@ -17,16 +17,6 @@ object DataBeanManager {
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
 
-    private val listTitle = arrayOf(
-        R.string.main_home_title,
-        R.string.main_bookcase_title,
-        R.string.main_textbook_title,
-        R.string.main_classgroup_title,
-        R.string.main_homework_title,
-        R.string.main_exam_title,
-        R.string.main_note_title,
-        R.string.main_app_title
-    )
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","随笔","截图")
 
     val textbookType = arrayOf(
@@ -34,13 +24,15 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_homework),
         mContext.getString(R.string.textbook_tab_homework_other),
-        mContext.getString(R.string.textbook_tab_teaching),
-        mContext.getString(R.string.textbook_tab_handouts)
+        mContext.getString(R.string.textbook_tab_teaching)
     )
 
     var teachingStrs = arrayOf(
         mContext.getString(R.string.teaching_tab_homework_assign),
         mContext.getString(R.string.teaching_tab_homework_correct),
+    )
+
+    var testPaperStrs = arrayOf(
         mContext.getString(R.string.teaching_tab_testpaper_assign),
         mContext.getString(R.string.teaching_tab_testpaper_correct)
     )
@@ -103,6 +95,16 @@ object DataBeanManager {
         return courseId
     }
 
+    fun getCourseStr(courseId: Int): String {
+        var courseStr=""
+        for (item in courses) {
+            if (item.type == courseId){
+                courseStr=item.desc
+            }
+        }
+        return courseStr
+    }
+
     val popupTypeGrades: MutableList<PopupBean>
         get() {
             val list = mutableListOf<PopupBean>()
@@ -136,8 +138,8 @@ object DataBeanManager {
             name = cloudListTitle[0]
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_textbook)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_textbook_check)
+            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
             name = cloudListTitle[1]
         })
         list.add(ItemList().apply {
@@ -186,16 +188,11 @@ object DataBeanManager {
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
-            name = "教材"
+            name = "教学"
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_group)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_group_check)
-            name = "教辅"
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
+            icon = mContext.getDrawable(R.mipmap.icon_tab_learn_condition)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_learn_condition_check)
             name = "学情"
         })
         list.add(ItemList().apply {
@@ -227,8 +224,8 @@ object DataBeanManager {
             name = "作业"
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
+            icon = mContext.getDrawable(R.mipmap.icon_tab_testpaper)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_testpaper_check)
             name = "测卷"
         })
         list.add(ItemList().apply {
@@ -237,74 +234,12 @@ object DataBeanManager {
             name = "考卷"
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
-            name = "讲义"
-        })
-        list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_note)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
             name = "笔记"
         })
         return list
     }
-
-
-
-
-    /**
-     * 获取index栏目
-     *
-     * @param context
-     * @return
-     */
-    fun getIndexData(): MutableList<ItemList> {
-        val list = mutableListOf<ItemList>()
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_home)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_home_check)
-            isCheck = true
-            name = mContext.getString(listTitle[0])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_bookcase)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_bookcase_check)
-            name = mContext.getString(listTitle[1])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_teaching)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_teaching_check)
-            name = mContext.getString(listTitle[2])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_group)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_group_check)
-            name = mContext.getString(listTitle[3])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_homework)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_homework_check)
-            name = mContext.getString(listTitle[4])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_paper)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_paper_check)
-            name = mContext.getString(listTitle[5])
-        })
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_note)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_note_check)
-            name = mContext.getString(listTitle[6])
-        })
-
-        list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
-            name = mContext.getString(listTitle[7])
-        })
-        return list
-    }
-
 
     val notebooks: MutableList<ItemTypeBean>
         get() {

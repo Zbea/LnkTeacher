@@ -2,6 +2,7 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
@@ -25,7 +27,11 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_homework_publish)
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog.window!!
+            window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,600f))/2
         dialog.show()
 
         val classs= DataBeanManager.getGradeClassGroups(grade)

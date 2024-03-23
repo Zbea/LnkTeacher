@@ -2,6 +2,8 @@ package com.bll.lnkteacher.utils;
 
 import android.app.Activity;
 
+import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity;
+
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Stack;
@@ -109,4 +111,25 @@ public class ActivityManager {
             it.remove();
         }
     }
+
+    /**
+     * 获取当前书籍是否已经打开
+     * @param id
+     * @return
+     */
+    public void checkBookIDisExist(int id){
+        Iterator<WeakReference<Activity>> it = stack.iterator();
+        while (it.hasNext()) {
+            WeakReference<Activity> weak = it.next();
+            Activity activity=weak.get();
+            if (activity.getClass().getName().equals(BookDetailsActivity.class.getName())) {
+                int bookId=activity.getIntent().getIntExtra("book_id",0);
+                if (bookId==id){
+                    activity.finish();
+                    it.remove();
+                }
+            }
+        }
+    }
+
 }

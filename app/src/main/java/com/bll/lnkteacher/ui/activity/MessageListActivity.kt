@@ -13,14 +13,13 @@ import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.MessageListAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
-    private val mPresenter=MessagePresenter(this)
+    private lateinit var mPresenter:MessagePresenter
     private var lists = mutableListOf<MessageBean>()
     private var mAdapter: MessageListAdapter? = null
     private var sendDialog: MessageSendDialog? = null
@@ -33,7 +32,6 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
     override fun onSend() {
         showToast(R.string.toast_send_success)
-        //通知首页刷新消息
         EventBus.getDefault().post(MESSAGE_EVENT)
         pageIndex=1
         fetchData()
@@ -51,8 +49,13 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
     }
 
     override fun initData() {
-        pageSize=10
+        initChangeScreenData()
+        pageSize=12
         fetchData()
+    }
+
+    override fun initChangeScreenData() {
+        mPresenter=MessagePresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -97,7 +100,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
             DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),
-            DP2PX.dip2px(this,50f),DP2PX.dip2px(this,20f))
+            DP2PX.dip2px(this,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -106,10 +109,11 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, 40))
             setOnItemChildClickListener { adapter, view, position ->
-                lists[position].isCheck=!lists[position].isCheck
-                notifyItemChanged(position)
+                if (view.id==R.id.cb_check){
+                    lists[position].isCheck=!lists[position].isCheck
+                    notifyItemChanged(position)
+                }
             }
         }
     }

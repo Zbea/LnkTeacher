@@ -3,7 +3,6 @@ package com.bll.lnkteacher.base
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -15,8 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
@@ -26,12 +23,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
-import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
@@ -45,7 +39,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
 import kotlin.math.ceil
 
 
@@ -59,6 +52,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
+    var isClickExpand=false //是否是单双屏切换
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -149,10 +143,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-    fun initDialog(){
+    private fun initDialog(){
         mDialog = ProgressDialog(this,getCurrentScreenPos())
     }
 
+    protected fun initDialog(screen:Int){
+        mDialog = ProgressDialog(this,screen)
+    }
 
     fun showBackView(isShow:Boolean) {
         if (isShow){
@@ -173,13 +170,27 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
+    protected fun setImageSetting(setId:Int){
+        showView(iv_setting)
+        iv_setting?.setImageResource(setId)
+    }
 
-    fun setPageTitle(pageTitle: String) {
+    protected fun setImageManager(setId:Int){
+        showView(iv_manager)
+        iv_manager?.setImageResource(setId)
+    }
+
+    protected fun setPageTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }
 
-    fun setPageTitle(titleId: Int) {
+    protected fun setPageTitle(titleId: Int) {
         tv_title?.setText(titleId)
+    }
+
+    protected fun setPageSetting(str: String){
+        showView(tv_setting)
+        tv_setting.text=str
     }
 
     /**
@@ -453,15 +464,18 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        screenPos=getCurrentScreenPos()
+        if (!isClickExpand){
+            screenPos=getCurrentScreenPos()
+        }
         initDialog()
-        initChangeData()
+        initChangeScreenData()
+        isClickExpand=false
     }
 
     /**
      * 切屏后，重新初始化数据（用于数据请求弹框显示正确的位置）
      */
-    open fun initChangeData(){
+    open fun initChangeScreenData(){
     }
 
 }

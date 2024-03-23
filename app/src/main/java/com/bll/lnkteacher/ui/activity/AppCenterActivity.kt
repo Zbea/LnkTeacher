@@ -25,7 +25,7 @@ import java.io.File
 
 class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
 
-    private var presenter= AppCenterPresenter(this)
+    private lateinit var presenter:AppCenterPresenter
     private var type=1
     private var mAdapter:AppCenterListAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
@@ -60,8 +60,13 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun initData() {
+        initChangeScreenData()
         pageSize=8
         presenter.getTypeList()
+    }
+
+    override fun initChangeScreenData() {
+        presenter= AppCenterPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

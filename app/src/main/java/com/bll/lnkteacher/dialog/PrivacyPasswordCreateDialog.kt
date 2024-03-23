@@ -2,13 +2,16 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.PrivacyPassword
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
@@ -23,6 +26,9 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
         dialog.setContentView(R.layout.dialog_privacy_password_create)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
         popWindowBeans.add(
@@ -78,21 +84,21 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
                 return@setOnClickListener
             }
             if (answerStr.isEmpty()){
-                SToast.showText(1,"请输入密保问题")
+                SToast.showText(2,"请输入密保问题")
                 return@setOnClickListener
             }
 
             if (passwordStr.isEmpty()){
-                SToast.showText(1,"请输入密码")
+                SToast.showText(2,"请输入密码")
                 return@setOnClickListener
             }
             if (passwordAgainStr.isEmpty()){
-                SToast.showText(1,"请再次输入密码")
+                SToast.showText(2,"请再次输入密码")
                 return@setOnClickListener
             }
 
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(1,"密码输入不一致")
+                SToast.showText(2,"密码输入不一致")
                 return@setOnClickListener
             }
             val checkPassword= PrivacyPassword()

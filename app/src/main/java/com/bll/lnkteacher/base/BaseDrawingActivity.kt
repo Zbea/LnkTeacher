@@ -1,38 +1,22 @@
 package com.bll.lnkteacher.base
 
 import PopupClick
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
-import android.os.Build
-import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.*
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.User
-import com.bll.lnkteacher.net.ExceptionHandle
-import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.DiaryActivity
 import com.bll.lnkteacher.ui.activity.FreeNoteActivity
 import com.bll.lnkteacher.ui.activity.PlanOverviewActivity
 import com.bll.lnkteacher.utils.*
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 import java.util.regex.Pattern
 
 
@@ -53,8 +37,10 @@ abstract class BaseDrawingActivity : BaseActivity(){
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
     override fun initCreate() {
-        if (v_content_a!=null && v_content_b!=null){
+        if (v_content_a!=null){
             elik_a = v_content_a?.pwInterFace
+        }
+        if ( v_content_b!=null){
             elik_b = v_content_b?.pwInterFace
         }
 
@@ -95,6 +81,7 @@ abstract class BaseDrawingActivity : BaseActivity(){
         }
 
         iv_expand?.setOnClickListener {
+            isClickExpand=true
             onChangeExpandContent()
         }
     }
@@ -271,6 +258,8 @@ abstract class BaseDrawingActivity : BaseActivity(){
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(1)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
                 if (elik_a?.curDrawObjStatus == true){
                     reDrawGeometry(elik_a!!,1)
                 }
@@ -287,6 +276,8 @@ abstract class BaseDrawingActivity : BaseActivity(){
             }
             override fun onTouchDrawEnd(p0: Bitmap?, p1: Rect?, p2: PWInputPoint?, p3: PWInputPoint?) {
                 revocationList.add(2)
+                if (revocationList.size>2)
+                    revocationList.remove(0)
                 if (elik_b?.curDrawObjStatus == true){
                     reDrawGeometry(elik_b!!,2)
                 }
@@ -306,15 +297,15 @@ abstract class BaseDrawingActivity : BaseActivity(){
     private fun reDrawGeometry(elik:EinkPWInterface,location: Int){
         if (isErasure)
             return
-        if (location==1){
-            v_content_a.invalidate()
-        }
-        else{
-            v_content_b.invalidate()
-        }
         if (isScale){
             if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
                 Handler().postDelayed({
+                    if (location==1){
+                        v_content_a.invalidate()
+                    }
+                    else{
+                        v_content_b.invalidate()
+                    }
                     GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
                         ?.setOnDialogClickListener{
                                 width, height ->
@@ -547,14 +538,12 @@ abstract class BaseDrawingActivity : BaseActivity(){
      * 单双屏切换
      */
     open fun onChangeExpandContent(){
-
     }
 
     /**
      * 内容变化
      */
     open fun onChangeContent(){
-
     }
 
     /**

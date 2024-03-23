@@ -61,7 +61,7 @@ class NoteFragment : BaseMainFragment() {
         privacyPassword=MethodManager.getPrivacyPassword()
 
         iv_manager?.setOnClickListener {
-            PopupClick(requireActivity(), popupBeans, iv_manager, 20).builder()
+            PopupClick(requireActivity(), popupBeans, iv_manager, 5).builder()
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
@@ -120,7 +120,7 @@ class NoteFragment : BaseMainFragment() {
                         })
                 }
                 R.id.iv_edit -> {
-                    InputContentDialog(requireContext(), note.title).builder()
+                    InputContentDialog(requireContext(),2, note.title).builder()
                         .setOnDialogClickListener { string ->
                             if (NoteDaoManager.getInstance().isExist(typeStr,string)){
                                 showToast(R.string.toast_existed)
@@ -144,7 +144,7 @@ class NoteFragment : BaseMainFragment() {
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            NoteModuleAddDialog(requireContext(), 1).builder()
+            NoteModuleAddDialog(requireContext(), 3,1).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                 }
@@ -183,7 +183,7 @@ class NoteFragment : BaseMainFragment() {
     //新建笔记
     private fun createNote(resId:String) {
         val note = Note()
-        InputContentDialog(requireContext(),  "请输入主题").builder()
+        InputContentDialog(requireContext(),  2,"请输入主题").builder()
             .setOnDialogClickListener { string ->
                 if (NoteDaoManager.getInstance().isExist(typeStr,string)){
                     showToast(R.string.toast_existed)
@@ -205,7 +205,7 @@ class NoteFragment : BaseMainFragment() {
 
     //新建笔记分类
     private fun createNoteBookType() {
-        InputContentDialog(requireContext(),  "请输入笔记本").builder()
+        InputContentDialog(requireContext(),  2,"请输入笔记本").builder()
             .setOnDialogClickListener { string ->
                 if (ItemTypeDaoManager.getInstance().isExist(string,1)){
                     showToast(R.string.toast_existed)

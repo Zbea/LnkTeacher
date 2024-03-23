@@ -60,10 +60,10 @@ class ScreenshotManagerActivity:BaseActivity() {
 
     override fun initView() {
         setPageTitle("图库管理")
-        showView(tv_setting,tv_province)
-
-        tv_setting.text="图库列表"
         tv_province.text="分类管理"
+        showView(tv_province)
+
+        setPageSetting("图库列表")
 
         tv_province.setOnClickListener {
             setTopSelectView()

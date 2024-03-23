@@ -8,14 +8,14 @@ import com.bll.lnkteacher.net.*
 /**
  * 应用相关
  */
-class AppCenterPresenter(view: IContractView.IAPPView) : BasePresenter<IContractView.IAPPView>(view) {
+class AppCenterPresenter(view: IContractView.IAPPView,val screen:Int) : BasePresenter<IContractView.IAPPView>(view) {
 
 
     fun getTypeList() {
 
         val app = RetrofitManager.service.getApkTypes()
 
-        doRequest(app, object : Callback<CommonData>(view) {
+        doRequest(app, object : Callback<CommonData>(view,screen) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }
@@ -33,7 +33,7 @@ class AppCenterPresenter(view: IContractView.IAPPView) : BasePresenter<IContract
 
         val app = RetrofitManager.service.getApks(map)
 
-        doRequest(app, object : Callback<AppList>(view) {
+        doRequest(app, object : Callback<AppList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AppList>): Boolean {
                 return false
             }
@@ -52,7 +52,7 @@ class AppCenterPresenter(view: IContractView.IAPPView) : BasePresenter<IContract
         val requestBody= RequestUtils.getBody(map)
         val download = RetrofitManager.service.onBuy(requestBody)
 
-        doRequest(download, object : Callback<Any>(view) {
+        doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

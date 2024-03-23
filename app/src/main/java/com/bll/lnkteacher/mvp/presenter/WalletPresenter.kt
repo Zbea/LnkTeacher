@@ -9,17 +9,17 @@ import com.bll.lnkteacher.net.Callback
 import com.bll.lnkteacher.net.RetrofitManager
 
 
-class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContractView.IWalletView>(view) {
+class WalletPresenter(view: IContractView.IWalletView,val screen:Int) : BasePresenter<IContractView.IWalletView>(view) {
 
     //获取学豆列表
     fun getXdList(boolean: Boolean) {
 
-        var map=HashMap<String,String>()
-        map.put("pageIndex", "1")
-        map.put("pageSize", "10")
+        val map=HashMap<String,String>()
+        map["pageIndex"] = "1"
+        map["pageSize"] = "10"
 
         val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountList>(view) {
+        doRequest(list, object : Callback<AccountList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountList>): Boolean {
                 return false
             }
@@ -37,7 +37,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
     fun postXdOrder(id:String)
     {
         val post = RetrofitManager.service.postOrder(id)
-        doRequest(post, object : Callback<AccountOrder>(view) {
+        doRequest(post, object : Callback<AccountOrder>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
                 return false
             }
@@ -51,7 +51,7 @@ class WalletPresenter(view: IContractView.IWalletView) : BasePresenter<IContract
     fun checkOrder(id:String)
     {
         val order = RetrofitManager.service.getOrderStatus(id)
-        doRequest(order, object : Callback<AccountOrder>(view) {
+        doRequest(order, object : Callback<AccountOrder>(view,screen) {
             override fun failed(tBaseResult: BaseResult<AccountOrder>): Boolean {
                 return false
             }

@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.activity
 
 import PopupClick
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.*
@@ -14,6 +15,7 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.*
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 教学计划
@@ -120,6 +122,7 @@ class TeachingPlanActivity:BaseActivity() {
                     ?.setOnClickListener{
                        dateBean.dateEvent=it
                        mAdapter?.notifyItemChanged(position)
+                        EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
                     }
             }
         }

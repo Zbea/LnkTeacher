@@ -2,11 +2,14 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails.DetailsBean
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -23,7 +26,11 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
 
         dialog = Dialog(mContext)
         dialog?.setContentView(R.layout.dialog_homework_assign_details)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(mContext,720f))/2
         dialog?.show()
 
         val rvList= dialog?.findViewById<RecyclerView>(R.id.rv_list)

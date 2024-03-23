@@ -68,7 +68,7 @@ class BookTypeListActivity : BaseActivity() {
         }
 
         tv_custom?.setOnClickListener {
-            startActivity(Intent(this,BookListActivity::class.java))
+            customStartActivity(Intent(this,BookListActivity::class.java))
         }
 
         initRecycleView()
@@ -183,7 +183,7 @@ class BookTypeListActivity : BaseActivity() {
             .setOnDialogClickListener {
                 if (it==0){
                     mAdapter?.remove(pos)
-                    MethodManager.deleteBook(book)
+                    MethodManager.deleteBook(book,1)
                 }
                 else{
                     book.subtypeStr=""

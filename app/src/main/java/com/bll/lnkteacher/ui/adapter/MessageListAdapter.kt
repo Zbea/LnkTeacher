@@ -14,17 +14,18 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
         helper.setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
         when(item.sendType){
             1->{
-                helper.setVisible(R.id.cb_check,true)
+//                helper.setVisible(R.id.cb_check,true)
                 helper.setText(R.id.tv_student_name,item.classInfo)
             }
             2->{
-                helper.setVisible(R.id.cb_check,false)
+//                helper.setVisible(R.id.cb_check,false)
                 helper.setText(R.id.tv_student_name,item.teacherName+"同学")
             }
             else->{
-                helper.setVisible(R.id.cb_check,false)
+//                helper.setVisible(R.id.cb_check,false)
                 helper.setText(R.id.tv_student_name,"学校通知")
             }
         }
+        helper.addOnClickListener(R.id.cb_check)
     }
 }

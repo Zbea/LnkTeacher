@@ -29,6 +29,15 @@ class CloudStorageActivity:BaseActivity() {
     override fun initData() {
     }
 
+    override fun initChangeScreenData() {
+        bookcaseFragment?.initChangeScreenData()
+        textbookFragment?.initChangeScreenData()
+        noteFragment?.initChangeScreenData()
+        diaryFragment?.initChangeScreenData()
+        freeNoteFragment?.initChangeScreenData()
+        screenshotFragment?.initChangeScreenData()
+    }
+
     override fun initView() {
         setPageTitle("云书库")
 

@@ -9,13 +9,13 @@ import com.bll.lnkteacher.net.*
 /**
  * 考卷批改详细功能
  */
-class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDetailsView):BasePresenter<IContractView.ITestPaperCorrectDetailsView>(view) {
+class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDetailsView,val screen:Int):BasePresenter<IContractView.ITestPaperCorrectDetailsView>(view) {
 
     fun getPaperImages(taskId:Int){
         val map=HashMap<String,Any>()
         map["taskId"]=taskId
         val list = RetrofitManager.service.getPaperCorrectImages(map)
-        doRequest(list, object : Callback<List<ContentListBean>>(view) {
+        doRequest(list, object : Callback<List<ContentListBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ContentListBean>>): Boolean {
                 return false
             }
@@ -30,7 +30,7 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         map["examChangeId"]=taskId
         map["size"]=100
         val list = RetrofitManager.service.getPaperCorrectClassList(map)
-        doRequest(list, object : Callback<TestPaperCorrectClass>(view) {
+        doRequest(list, object : Callback<TestPaperCorrectClass>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TestPaperCorrectClass>): Boolean {
                 return false
             }
@@ -44,7 +44,7 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         val map=HashMap<String,Any>()
         map["id"]=taskId
         val list = RetrofitManager.service.getPaperGrade(map)
-        doRequest(list, object : Callback<List<TestPaperGrade>>(view) {
+        doRequest(list, object : Callback<List<TestPaperGrade>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<TestPaperGrade>>): Boolean {
                 return false
             }
@@ -57,7 +57,7 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
     fun commitPaperStudent(map:HashMap<String,Any>){
         val body=RequestUtils.getBody(map)
         val commit = RetrofitManager.service.commitPaperStudent(body)
-        doRequest(commit, object : Callback<Any>(view) {
+        doRequest(commit, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -72,7 +72,7 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         map["examChangeId"]=id
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.sendPaperCorrectClass(body)
-        doRequest(type, object : Callback<Any>(view) {
+        doRequest(type, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

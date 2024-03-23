@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.teaching
+package com.bll.lnkteacher.ui.fragment.homework
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +26,6 @@ class HomeworkCorrectFragment:BaseMainFragment(),IHomeworkCorrectView {
     private var mAdapter:HomeworkCorrectAdapter?=null
     private var position=0
     private var items= mutableListOf<CorrectBean>()
-    private var grade=0
 
     override fun onList(list: CorrectList) {
         setPageNumber(list.total)
@@ -45,6 +44,7 @@ class HomeworkCorrectFragment:BaseMainFragment(),IHomeworkCorrectView {
     override fun initView() {
         pageSize=3
         initRecyclerView()
+        initDialog(2)
     }
 
     override fun lazyLoad() {

@@ -10,6 +10,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.presenter.LoginPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.ac_account_login_user.*
 
 class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
-    private val presenter=LoginPresenter(this)
+    private val presenter=LoginPresenter(this,1)
     private var token=""
 
     override fun getLogin(user: User?) {
@@ -29,7 +30,6 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
     override fun getAccount(user: User?) {
         user?.token=token
         SPUtil.putObj("user",user!!)
-        startActivity(Intent(this,MainActivity::class.java))
 
         val intent = Intent()
         intent.putExtra("token", token)
@@ -39,6 +39,12 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
         MethodManager.getUser()
 
+        val intent1=Intent(this,MainActivity::class.java)
+        intent1.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent1.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
+        startActivity(intent1)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+
         finish()
     }
 
@@ -47,6 +53,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
     }
 
     override fun initData() {
+        initDialog(1)
     }
 
     @SuppressLint("WrongConstant")

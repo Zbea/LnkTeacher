@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.teaching
+package com.bll.lnkteacher.ui.fragment.test
 
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +25,6 @@ class TestPaperAssignFragment:BaseMainFragment(),IContractView.ITestPaperAssignV
     private var mAdapter: TestPaperAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var addTypeStr=""
-    private var grade=0
 
     override fun onType(typeList: TypeList) {
         setPageNumber(typeList.total)
@@ -55,6 +54,7 @@ class TestPaperAssignFragment:BaseMainFragment(),IContractView.ITestPaperAssignV
     override fun initView() {
         pageSize=6
         initRecyclerView()
+        initDialog(2)
     }
 
     override fun lazyLoad() {

@@ -36,7 +36,6 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik_b=v_content.pwInterFace
         disMissView(iv_catalog,iv_btn)
         setPageTitle("月周计划")
 

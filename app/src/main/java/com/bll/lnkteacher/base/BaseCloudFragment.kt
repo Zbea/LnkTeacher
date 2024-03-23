@@ -7,7 +7,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 
 abstract class BaseCloudFragment : BaseFragment(), IContractView.ICloudView {
 
-    val mCloudPresenter= CloudPresenter(this)
+    var mCloudPresenter= CloudPresenter(this,getScreenPosition())
     var types= mutableListOf<String>()
 
     override fun onList(item: CloudList) {
@@ -20,7 +20,10 @@ abstract class BaseCloudFragment : BaseFragment(), IContractView.ICloudView {
         onCloudDelete()
     }
 
-
+    override fun initChangeScreenData() {
+        super.initChangeScreenData()
+        mCloudPresenter= CloudPresenter(this,getScreenPosition())
+    }
 
     /**
      * 获取云数据

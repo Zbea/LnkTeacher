@@ -1,12 +1,14 @@
-package com.bll.lnkteacher.ui.fragment
+package com.bll.lnkteacher.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -14,59 +16,81 @@ import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.ClassGroupChildActivity
-import com.bll.lnkteacher.ui.activity.ClassGroupUserActivity
-import com.bll.lnkteacher.ui.activity.MainCourseActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_title.*
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import org.greenrobot.eventbus.EventBus
 
-class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
-    private var mGroupPresenter=ClassGroupPresenter(this)
+class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
+
+    private lateinit var mGroupPresenter:ClassGroupPresenter
     private var classGroups= mutableListOf<ClassGroup>()
-    private var mAdapter:ClassGroupAdapter?=null
+    private var mAdapter: ClassGroupAdapter?=null
     private var position=0
 
-    override fun onSuccess() {
-        lazyLoad()
+    override fun onClassList(groups: MutableList<ClassGroup>) {
+        DataBeanManager.classGroups=groups
+        classGroups.clear()
+        for (item in DataBeanManager.classGroups){
+            if (item.state==1){
+                classGroups.add(item)
+            }
+        }
+        mAdapter?.setNewData(classGroups)
     }
+
+    override fun onSuccess() {
+        mGroupPresenter.getClassGroups()
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+    }
+
     override fun onUploadSuccess() {
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.fragment_classgroup
+    override fun layoutId(): Int {
+        return R.layout.ac_list
+    }
+
+    override fun initData() {
+        initChangeScreenData()
+        mGroupPresenter.getClassGroups()
+    }
+
+    override fun initChangeScreenData() {
+        mGroupPresenter= ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
-        setTitle(R.string.main_classgroup_title)
-        showView(iv_create,iv_add)
+        setPageTitle(R.string.main_classgroup_title)
+
+        setImageSetting(R.mipmap.icon_group_add)
+        setImageManager(R.mipmap.icon_add)
 
         initRecyclerView()
-        onClassGroupEvent()
 
-        iv_create.setOnClickListener {
+        iv_setting.setOnClickListener {
             createClassGroup()
         }
 
-        iv_add.setOnClickListener {
+        iv_manager.setOnClickListener {
             addClassGroup()
         }
-
-    }
-    override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
-            fetchCommonData()
     }
 
     private fun initRecyclerView(){
+
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,50f),DP2PX.dip2px(this,30f),DP2PX.dip2px(this,50f),40)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         mAdapter=ClassGroupAdapter(R.layout.item_classgroup,classGroups)
-        rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
+        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(activity,30f)))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(this,30f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val classGroup=classGroups[position]
@@ -76,39 +100,40 @@ class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
                 R.id.tv_course->{
                     if (classGroup.state==1){
                         if (isHeader){
-                            startActivity(Intent(activity, MainCourseActivity::class.java).setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                            customStartActivity(Intent(this, MainCourseActivity::class.java)
+                                .setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                                 .putExtra("classGroupId", classGroup.classGroupId)
                             )
                         }
                         else{
-                            ImageDialog(requireActivity(), arrayListOf(classGroup.imageUrl)).builder()
+                            ImageDialog(this, arrayListOf(classGroup.imageUrl)).builder()
                         }
                     }
                 }
                 R.id.tv_edit->{
                     if (classGroup.state==1&&isHeader){
-                        ClassGroupCreateDialog(requireContext(),classGroup.name,classGroup.grade).builder()
+                        ClassGroupCreateDialog(this,classGroup.name,classGroup.grade).builder()
                             .setOnDialogClickListener {name,grade->
                                 mGroupPresenter.editClassGroup(name,grade,classGroup.classGroupId)
                             }
                     }
                 }
                 R.id.tv_child->{
-                    val intent=Intent(activity, ClassGroupChildActivity::class.java)
+                    val intent= Intent(this, ClassGroupChildActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("classGroup",classGroup)
                     intent.putExtra("bundle",bundle)
-                    startActivity(intent)
+                    customStartActivity(intent)
                 }
                 R.id.tv_dissolve->{
                     dissolveGroup()
                 }
                 R.id.tv_detail->{
-                    val intent=Intent(activity, ClassGroupUserActivity::class.java)
+                    val intent= Intent(this, ClassGroupUserActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("classGroup",classGroup)
                     intent.putExtra("bundle",bundle)
-                    startActivity(intent)
+                    customStartActivity(intent)
                 }
             }
 
@@ -120,7 +145,7 @@ class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
      * 创建班群
      */
     private fun createClassGroup(){
-        ClassGroupCreateDialog(requireContext()).builder()
+        ClassGroupCreateDialog(this).builder()
             .setOnDialogClickListener {name,grade->
                 mGroupPresenter.createClassGroup(name,grade)
             }
@@ -130,7 +155,7 @@ class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
      * 加入班群
      */
     private fun addClassGroup(){
-        ClassGroupAddDialog(requireActivity()).builder().setOnDialogClickListener{
+        ClassGroupAddDialog(this).builder().setOnDialogClickListener{
             mGroupPresenter.addClassGroup(it)
         }
     }
@@ -143,7 +168,7 @@ class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
         val classId=classGroups[position].classId
         val boolean=classGroups[position].userId==mUserId
         val titleStr=if (boolean) "确定解散班群？" else "确定退出班群？"
-        CommonDialog(requireActivity()).setContent(titleStr).builder()
+        CommonDialog(this).setContent(titleStr).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }
@@ -159,24 +184,5 @@ class ClassGroupFragment:BaseMainFragment(),IContractView.IClassGroupView {
     }
 
 
-    override fun onClassGroupEvent() {
-        classGroups.clear()
-        for (item in DataBeanManager.classGroups){
-            if (item.state==1){
-                classGroups.add(item)
-            }
-        }
-        mAdapter?.setNewData(classGroups)
-    }
-
-    override fun onRefreshData() {
-        lazyLoad()
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.CLASSGROUP_EVENT){
-            lazyLoad()
-        }
-    }
 
 }

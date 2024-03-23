@@ -1,13 +1,12 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.graphics.BitmapFactory
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.ExamScoreDetailsDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
@@ -17,12 +16,13 @@ import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.ExamScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.*
-import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -30,8 +30,8 @@ import java.io.File
 class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
 
     private var id=0
-    private val mUploadPresenter=FileUploadPresenter(this)
-    private val mPresenter=TestPaperCorrectDetailsPresenter(this)
+    private val mUploadPresenter=FileUploadPresenter(this,3)
+    private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
     private var mClassBean: CorrectClassBean?=null
     private var userItems= mutableListOf<TestPaperCorrectClass.UserBean>()
 
@@ -60,7 +60,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=tv_score.text.toString().toInt()
+                    map["score"]=et_score.text.toString().toInt()
                     map["submitUrl"]=url
                     map["status"]=2
                     map["question"]=Gson().toJson(examScoreItems)
@@ -84,7 +84,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             userItems[posUser].isCheck=true
             setContentView()
         }
-        tv_correct_number.text=userCorrect.toString()+"人"
         mAdapter?.setNewData(userItems)
     }
     override fun onGrade(list: MutableList<TestPaperGrade>?) {
@@ -92,14 +91,14 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
         userCorrect+=1
-        tv_correct_number.text=userCorrect.toString()+"人"
-        userItems[posUser].score=tv_score.text.toString().toInt()
+        userItems[posUser].score=et_score.text.toString().toInt()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=Gson().toJson(examScoreItems)
         mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
+        elik_a?.setPWEnabled(false,false)
         elik_b?.setPWEnabled(false,false)
         EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
     }
@@ -122,6 +121,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
     override fun initView() {
         elik_b?.setPWEnabled(false,false)
+        disMissView(iv_tool,iv_catalog)
 
         setPageTitle("${getString(R.string.teaching_tab_testpaper_correct)}  ${mClassBean?.examName}  ${mClassBean?.name}")
         showView(tv_custom)
@@ -137,8 +137,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1&&et_total.text.isNotEmpty()){
-                tv_score.text=et_total.text.toString()
+            if (item.status==1&&et_score.text.isNotEmpty()){
                 for (ite in initScores){
                     if (!ite.score.isNullOrEmpty()){
                         examScoreItems.add(ite)
@@ -147,7 +146,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 showLoading()
                 commitPapers()
             }
-            disMissView(ll_score_content)
             hideKeyboard()
         }
 
@@ -161,30 +159,15 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             rv_list_score.scrollToPosition(initScores.size-1)
         }
 
-        tv_score.setOnClickListener {
-            val item=userItems[posUser]
-            when(item.status){
-                1->{
-                    showView(ll_score_content)
-                }
-                2->{
-                    if (!item.question.isNullOrEmpty()){
-                        initScores=Gson().fromJson(item.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                        ExamScoreDetailsDialog(this,item.score,initScores).builder()
-                    }
-                }
-            }
-        }
-
         initScoreData()
     }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this,7)//创建布局管理
         mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(this@TestPaperCorrectActivity,10f)))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(7, 0, 20))
             setOnItemClickListener { adapter, view, position ->
                 if (position==posUser)
                     return@setOnItemClickListener
@@ -196,34 +179,33 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 notifyDataSetChanged()
                 posImage=0
 
-                disMissView(ll_score_content)
                 when(item.status){
                     1,3->{
                         initScoreData()
-                        tv_score.text=""
-                        et_total.setText("")
                     }
                     2->{
-                        tv_score.text=item.score.toString()
+                        if (!item.question.isNullOrEmpty()){
+                            initScores=Gson().fromJson(item.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+                            mScoreAdapter?.setNewData(initScores)
+                        }
                     }
+                }
+                if (isExpand){
+                    isExpand=false
+                    onChangeExpandView()
                 }
                 setContentView()
             }
         }
     }
 
-    override fun onPageUp() {
-        if (posImage > 0) {
-            posImage -= 1
-            setContentImage()
+    private fun initRecyclerViewScore(){
+        rv_list_score.layoutManager = GridLayoutManager(this,5)
+        mScoreAdapter = ExamScoreAdapter(R.layout.item_exam_score, null).apply {
+            rv_list_score.adapter = this
+            bindToRecyclerView(rv_list_score)
         }
-    }
-
-    override fun onPageDown() {
-        if (posImage < getImageSize() - 1) {
-            posImage += 1
-            setContentImage()
-        }
+        rv_list_score.addItemDecoration(SpaceGridItemDeco1(5, 0, 20))
     }
 
     /**
@@ -239,48 +221,53 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         mScoreAdapter?.setNewData(initScores)
     }
 
-    private fun initRecyclerViewScore(){
-        rv_list_score.layoutManager = GridLayoutManager(this,2,LinearLayoutManager.HORIZONTAL,false)
-        mScoreAdapter = ExamScoreAdapter(R.layout.item_exam_score, null).apply {
-            rv_list_score.adapter = this
-            bindToRecyclerView(rv_list_score)
-        }
+    override fun onChangeExpandContent() {
+        changeErasure()
+        isExpand=!isExpand
+        onChangeExpandView()
+        setContentImage()
     }
 
-    /**
-     * 提交学生考卷
-     */
-    private fun commitPapers(){
-        commitItems.clear()
-        //手写,图片合图
-        for (i in currentImages?.indices!!){
-            val index=i+1
-            val masterImage="${getPath()}/${index}.png"//原图
-            val drawPath = getPathDrawStr(index).replace("tch","png")
-            val mergePath = getPath()//合并后的路径
-            var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
-            Thread {
-                val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap!=null){
-                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
-                }
-                else{
-                    mergePathStr=masterImage
-                }
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = mergePathStr
-                })
-                if (commitItems.size==currentImages?.size){
-                    commitItems.sort()
-                    mUploadPresenter.getToken()
-                }
-            }.start()
-
+    override fun onPageUp() {
+        if (isExpand){
+            if (posImage>1){
+                posImage-=2
+            }
+            else if (posImage==1){
+                posImage=0
+            }
         }
+        else{
+            if (posImage > 0) {
+                posImage -= 1
+            }
+        }
+        setContentImage()
     }
+
+    override fun onPageDown() {
+        if (isExpand){
+            if (posImage<getImageSize()-2){
+                posImage+=2
+            }
+            else if (posImage==getImageSize()-2){
+                posImage=getImageSize()-1
+            }
+        }
+        else{
+            if (posImage < getImageSize() - 1) {
+                posImage += 1
+            }
+        }
+        setContentImage()
+    }
+
+
+    private fun setFocusableEdit(boolean: Boolean){
+        et_score.isFocusable = boolean
+        et_score.isFocusableInTouchMode = boolean
+    }
+
 
     /**
      * 设置切换内容展示
@@ -289,18 +276,25 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         val userItem=userItems[posUser]
         when(userItem.status){
             1->{
+                showView(ll_score)
                 currentImages=userItem.studentUrl.split(",").toTypedArray()
+                setFocusableEdit(true)
+                tv_save.visibility= View.VISIBLE
                 loadPapers()
             }
             2->{
                 currentImages=userItem.submitUrl.split(",").toTypedArray()
-                tv_score.text = userItem.score.toString()
-                elik_b?.setPWEnabled(false,false)
+                showView(ll_score)
+                et_score.setText(userItem.score.toString())
+                setFocusableEdit(false)
+                tv_save.visibility= View.INVISIBLE
                 setContentImage()
             }
             3->{
-                elik_b?.setPWEnabled(false,false)
-                tv_page.text=""
+                currentImages= arrayOf()
+                disMissView(ll_score)
+                et_score.setText("")
+                setFocusableEdit(true)
                 v_content_b.setImageResource(0)
             }
         }
@@ -310,19 +304,79 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
-        //批改成功后删掉原来，加载提交后的图片
-        if (userItems[posUser].status==2){
-            GlideUtils.setImageRoundUrl(this, currentImages?.get(posImage) ,v_content_b,10)
+        if (isExpand){
+            when(userItems[posUser].status){
+                1->{
+                    elik_a?.setPWEnabled(true,true)
+                    elik_b?.setPWEnabled(true,true)
+
+                    val masterImage="${getPath()}/${posImage+1}.png"//原图
+                    GlideUtils.setImageFile(this,File(masterImage),v_content_a)
+                    tv_page_a.text="${posImage+1}}"
+                    val drawPath = getPathDrawStr(posImage+1)
+                    elik_a?.setLoadFilePath(drawPath, true)
+
+                    if (posImage+1<getImageSize()){
+                        val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
+                        GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
+                        tv_page.text="${posImage+1+1}}"
+                        val drawPath_b = getPathDrawStr(posImage+1+1)
+                        elik_b?.setLoadFilePath(drawPath_b, true)
+                    }
+                    else{
+                        elik_b?.setPWEnabled(false,false)
+                        v_content_b.setImageResource(0)
+                        tv_page.text=""
+                    }
+                }
+                2->{
+                    elik_a?.setPWEnabled(false,false)
+                    elik_b?.setPWEnabled(false,false)
+
+                    GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_a)
+                    tv_page_a.text="${posImage+1}"
+                    if (posImage+1<getImageSize()){
+                        GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
+                        tv_page.text="${posImage+1+1}"
+                    }
+                    else{
+                        v_content_b.setImageResource(0)
+                        tv_page.text=""
+                    }
+                }
+                3->{
+                    elik_a?.setPWEnabled(false,false)
+                    v_content_a.setImageResource(0)
+                    tv_page_a.text=""
+
+                    elik_b?.setPWEnabled(false,false)
+                    v_content_b.setImageResource(0)
+                    tv_page.text=""
+                }
+            }
         }
         else{
-            elik_b?.setPWEnabled(true,true)
-            val masterImage="${getPath()}/${posImage+1}.png"//原图
-            GlideUtils.setImageFile(this,File(masterImage),v_content_b)
+            when(userItems[posUser].status){
+                1->{
+                    elik_b?.setPWEnabled(true,true)
+                    val masterImage="${getPath()}/${posImage+1}.png"//原图
+                    GlideUtils.setImageFile(this,File(masterImage),v_content_b)
+                    val drawPath = getPathDrawStr(posImage+1)
+                    elik_b?.setLoadFilePath(drawPath, true)
+                    tv_page.text="${posImage+1}}"
+                }
+                2->{
+                    elik_b?.setPWEnabled(false,false)
+                    GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
+                    tv_page.text="${posImage+1}}"
+                }
+                3->{
+                    elik_b?.setPWEnabled(false,false)
+                    v_content_b.setImageResource(0)
+                    tv_page.text=""
+                }
+            }
         }
-        tv_page.text="${posImage+1}/${getImageSize()}"
-
-        val drawPath = getPathDrawStr(posImage+1)
-        elik_b?.setLoadFilePath(drawPath, true)
     }
 
     /**
@@ -363,6 +417,41 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         if (currentImages.isNullOrEmpty())
             return 0
         return currentImages!!.size
+    }
+
+    /**
+     * 提交学生考卷
+     */
+    private fun commitPapers(){
+        commitItems.clear()
+        //手写,图片合图
+        for (i in currentImages?.indices!!){
+            val index=i+1
+            val masterImage="${getPath()}/${index}.png"//原图
+            val drawPath = getPathDrawStr(index).replace("tch","png")
+            val mergePath = getPath()//合并后的路径
+            var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
+            Thread {
+                val oldBitmap = BitmapFactory.decodeFile(masterImage)
+                val drawBitmap = BitmapFactory.decodeFile(drawPath)
+                if (drawBitmap!=null){
+                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
+                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
+                }
+                else{
+                    mergePathStr=masterImage
+                }
+                commitItems.add(ItemList().apply {
+                    id = i
+                    url = mergePathStr
+                })
+                if (commitItems.size==currentImages?.size){
+                    commitItems.sort()
+                    mUploadPresenter.getToken()
+                }
+            }.start()
+
+        }
     }
 
     /**

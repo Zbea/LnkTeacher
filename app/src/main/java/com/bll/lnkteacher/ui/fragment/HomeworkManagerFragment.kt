@@ -6,15 +6,11 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.ui.fragment.teaching.HomeworkAssignFragment
-import com.bll.lnkteacher.ui.fragment.teaching.HomeworkCorrectFragment
-import com.bll.lnkteacher.ui.fragment.teaching.TestPaperAssignFragment
-import com.bll.lnkteacher.ui.fragment.teaching.TestPaperCorrectFragment
+import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
+import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkteacher.utils.NetworkUtil
-import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_radiogroup.*
 
@@ -22,15 +18,11 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
     private var homeworkAssignFragment: HomeworkAssignFragment? = null
     private var homeworkCorrectFragment: HomeworkCorrectFragment? = null
-    private var testPaperAssignFragment: TestPaperAssignFragment? = null
-    private var testPaperCorrectFragment: TestPaperCorrectFragment? = null
 
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
 
     private var homeworkPopBeans = mutableListOf<PopupBean>()
-    private var popGrades= mutableListOf<PopupBean>()
-    private var grade=0
 
 
     override fun getLayoutId(): Int {
@@ -38,14 +30,10 @@ class HomeworkManagerFragment : BaseMainFragment(){
     }
 
     override fun initView() {
+        super.initView()
+
         setTitle(R.string.main_homework_title)
         showView(iv_manager,tv_grade)
-
-        grade=SPUtil.getInt("grade")
-        if (grade>0){
-            tv_grade.text=DataBeanManager.getGradeStr(grade)
-        }
-        popGrades = if (grade==0) DataBeanManager.popupGrades else DataBeanManager.popupGrades(grade)
 
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book), false))
@@ -53,35 +41,11 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
-        testPaperAssignFragment = TestPaperAssignFragment()
-        testPaperCorrectFragment = TestPaperCorrectFragment()
 
         switchFragment(lastFragment, homeworkAssignFragment)
 
         iv_manager?.setOnClickListener {
-            if (lastPosition==2){
-                if (grade==0)
-                {
-                    showToast("请选择年级")
-                    return@setOnClickListener
-                }
-                showCreateTestPaperName()
-            }
-            else{
-                showPopView()
-            }
-        }
-
-        tv_grade.setOnClickListener {
-            if (popGrades.size==0){
-                popGrades =DataBeanManager.popupGrades
-            }
-            PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
-                tv_grade?.text=item.name
-                grade=item.id
-                SPUtil.putInt("grade",grade)
-                onGradeEvent()
-            }
+            showPopView()
         }
 
         initTab()
@@ -113,17 +77,6 @@ class HomeworkManagerFragment : BaseMainFragment(){
                 1 -> {
                     disMissView(iv_manager,tv_grade)
                     switchFragment(lastFragment, homeworkCorrectFragment)
-                }
-
-                2 -> {
-                    showView(tv_grade,iv_manager)
-                    iv_manager.setImageResource(R.mipmap.icon_add)
-                    switchFragment(lastFragment, testPaperAssignFragment)
-                }
-
-                3 -> {
-                    disMissView(iv_manager,tv_grade)
-                    switchFragment(lastFragment, testPaperCorrectFragment)
                 }
             }
             this.lastPosition = i
@@ -195,22 +148,9 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
     }
 
-
-    /**
-     * 新增考试卷
-     */
-    private fun showCreateTestPaperName() {
-        InputContentDialog(requireContext(), getString(R.string.teaching_pop_create_testpaper)).builder()
-            .setOnDialogClickListener { str ->
-                testPaperAssignFragment?.addType(str+"测验卷")
-            }
-    }
-
-    private fun onGradeEvent() {
+    override fun onGradeEvent() {
         homeworkAssignFragment?.changeGrade(grade)
-        testPaperAssignFragment?.changeGrade(grade)
         homeworkCorrectFragment?.changeGrade(grade)
-        testPaperCorrectFragment?.changeGrade(grade)
     }
 
     override fun onRefreshData() {

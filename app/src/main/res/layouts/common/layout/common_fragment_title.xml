@@ -54,30 +54,12 @@
             />
 
         <ImageView
-            android:id="@+id/iv_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:visibility="gone"
-            android:src="@mipmap/icon_group_add"/>
-
-        <ImageView
-            android:id="@+id/iv_create"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:visibility="gone"
-            android:src="@mipmap/icon_add"/>
-
-
-        <ImageView
             android:id="@+id/iv_manager"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
             android:visibility="gone"
             android:src="@mipmap/icon_manager"/>
-
 
     </LinearLayout>
 

@@ -16,6 +16,7 @@ import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.manager.CourseGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CourseBean
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -28,8 +29,8 @@ import org.greenrobot.eventbus.EventBus
 
 //课程表
 class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassGroupView {
-    private val mUploadPresenter = FileUploadPresenter(this)
-    private val mPresenter=ClassGroupPresenter(this)
+    private lateinit var mUploadPresenter :FileUploadPresenter
+    private lateinit var mPresenter:ClassGroupPresenter
     private var type=1
     private var classGroupId=0
     private var mode = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
@@ -67,6 +68,8 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
         }
     }
 
+    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
+    }
     override fun onSuccess() {
     }
     override fun onUploadSuccess() {
@@ -94,6 +97,11 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
             }
 
         }
+    }
+
+    override fun initChangeScreenData() {
+        mUploadPresenter = FileUploadPresenter(this,getCurrentScreenPos())
+        mPresenter=ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

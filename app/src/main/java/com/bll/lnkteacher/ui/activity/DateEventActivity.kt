@@ -29,7 +29,6 @@ class DateEventActivity:BaseDrawingActivity() {
     override fun initView() {
         setPageTitle("日程")
         setContentView()
-        elik_b=v_content.pwInterFace
 
         iv_up.setOnClickListener {
             nowLong-=Constants.dayLong
@@ -47,7 +46,6 @@ class DateEventActivity:BaseDrawingActivity() {
                 setContentView()
             }
         }
-
     }
 
     private fun setContentView(){

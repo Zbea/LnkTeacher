@@ -18,8 +18,8 @@ import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchoolView {
 
-    private val mSchoolPresenter=SchoolPresenter(this)
-    private val presenter=AccountInfoPresenter(this)
+    private lateinit var mSchoolPresenter:SchoolPresenter
+    private lateinit var presenter:AccountInfoPresenter
     private var nickname=""
     private var school=0
     private var schoolBean: SchoolBean?=null
@@ -57,8 +57,14 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     }
 
     override fun initData() {
+        initChangeScreenData()
         privacyPassword=MethodManager.getPrivacyPassword()
         mSchoolPresenter.getSchool()
+    }
+
+    override fun initChangeScreenData() {
+        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
+        presenter=AccountInfoPresenter(this,getCurrentScreenPos())
     }
 
     @SuppressLint("WrongConstant")

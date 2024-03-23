@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus
 
 class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView {
 
-    private val mPresenter = ClassGroupUserPresenter(this)
+    private lateinit var mPresenter :ClassGroupUserPresenter
     private var mClassGroup: ClassGroup? = null
     private var users = mutableListOf<ClassGroupUser>()
     private var mAdapter: ClassGroupUserAdapter? = null
@@ -49,9 +49,14 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
     }
 
     override fun initData() {
+        initChangeScreenData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
         isCreate = mClassGroup?.userId == mUserId
         mPresenter.getClassList(mClassGroup!!.classId)
+    }
+
+    override fun initChangeScreenData() {
+        mPresenter = ClassGroupUserPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

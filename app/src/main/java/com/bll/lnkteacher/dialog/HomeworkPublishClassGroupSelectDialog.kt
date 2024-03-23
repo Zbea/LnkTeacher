@@ -23,7 +23,8 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
 
         dialog = Dialog(mContext)
         dialog?.setContentView(R.layout.dialog_homework_publish_classgroup_select)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 
         val classs= DataBeanManager.getGradeClassGroups(grade)

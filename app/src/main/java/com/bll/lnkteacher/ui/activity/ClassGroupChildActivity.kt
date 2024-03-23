@@ -4,7 +4,6 @@ import PopupClick
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
@@ -22,11 +21,10 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildView {
 
-    private val mPresenter = ClassGroupChildPresenter(this)
+    private lateinit var mPresenter :ClassGroupChildPresenter
     private var mClassGroup: ClassGroup? = null
     private var users = mutableListOf<ClassGroupUser>()
     private var classGroupChilds = mutableListOf<ClassGroup>()
@@ -39,11 +37,12 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
     override fun onClassGroupChildList(classItems: MutableList<ClassGroup>) {
         classGroupChilds = classItems
         mAdapter?.setNewData(classGroupChilds)
+        rv_list.callOnClick()
+//        Handler(mainLooper).post { mAdapter!!.notifyDataSetChanged() }
     }
 
     override fun onSuccess() {
         mPresenter.getClassGroupChild(mClassGroup?.classGroupId!!)
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
     override fun layoutId(): Int {
@@ -51,9 +50,14 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
     }
 
     override fun initData() {
+        initChangeScreenData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
         mPresenter.getClassUser(mClassGroup!!.classId)
         mPresenter.getClassGroupChild(mClassGroup?.classGroupId!!)
+    }
+
+    override fun initChangeScreenData() {
+        mPresenter = ClassGroupChildPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -64,6 +68,9 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
 
         iv_manager.setOnClickListener {
             val titleStr=mClassGroup?.name!!+"(${mUser?.subjectName})"
+            for (user in users){
+                user.isCheck=false
+            }
             ClassGroupChildCreateDialog(this,titleStr ,users).builder().setOnDialogClickListener { name, ids ->
                 mPresenter.createGroup(mClassGroup?.classGroupId!!, name, ids)
             }
@@ -74,7 +81,7 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = ClassGroupChildAdapter(R.layout.item_classgroup_child, classGroupChilds)
+        mAdapter = ClassGroupChildAdapter(R.layout.item_classgroup_child, null)
         rv_list.adapter = mAdapter
         rv_list.addItemDecoration(SpaceItemDeco(0,0,0,60))
         mAdapter?.bindToRecyclerView(rv_list)

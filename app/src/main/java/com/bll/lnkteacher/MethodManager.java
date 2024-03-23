@@ -15,6 +15,7 @@ import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.NoteDrawingActivity;
+import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;
@@ -46,7 +47,9 @@ public class MethodManager {
         SPUtil.INSTANCE.putString("token", "");
         SPUtil.INSTANCE.removeObj("user");
 
-        context.startActivity(new Intent(context, AccountLoginActivity.class));
+        Intent i=new Intent(context, AccountLoginActivity.class);
+        i.putExtra("android.intent.extra.LAUNCH_SCREEN", 3);
+        context.startActivity(i);
         ActivityManager.getInstance().finishOthers(AccountLoginActivity.class);
 
         //发出退出登录广播
@@ -95,17 +98,38 @@ public class MethodManager {
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 2);
         context.startActivity(intent);
     }
 
-    public static void deleteBook(Book book){
+    /**
+     * @param book
+     * @param type 1书籍 0课本
+     */
+    public static void deleteBook(Book book,int type){
         BookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         File file=new File(book.bookDrawPath);
         if (file.exists())
             FileUtils.deleteFile(file);
-        EventBus.getDefault().post(Constants.BOOK_EVENT);
+        if (type==1){
+            EventBus.getDefault().post(Constants.BOOK_EVENT) ;
+        }
+        else {
+            EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
+        }
+
+    }
+
+    /**
+     * 跳转课本详情
+     */
+    public static void gotoTextBookDetails(Context context,Book book){
+        ActivityManager.getInstance().checkBookIDisExist(book.bookId);
+        Intent intent=new Intent(context, BookDetailsActivity.class);
+        intent.putExtra("book_id", book.bookId);
+        intent.putExtra("book_type", book.typeId);
+        intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
+        context.startActivity(intent);
     }
 
     /**
@@ -120,6 +144,7 @@ public class MethodManager {
         Bundle bundle = new Bundle();
         bundle.putSerializable("noteBundle",note);
         intent.putExtra("bundle",bundle);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }
 

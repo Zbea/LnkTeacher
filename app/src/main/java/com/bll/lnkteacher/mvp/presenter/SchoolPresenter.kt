@@ -8,11 +8,11 @@ import com.bll.lnkteacher.net.Callback
 import com.bll.lnkteacher.net.RetrofitManager
 
 
-class SchoolPresenter(view: IContractView.ISchoolView) : BasePresenter<IContractView.ISchoolView>(view) {
+class SchoolPresenter(view: IContractView.ISchoolView,val screen:Int) : BasePresenter<IContractView.ISchoolView>(view) {
 
     fun getSchool() {
         val grade = RetrofitManager.service.getCommonSchool()
-        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view) {
+        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<MutableList<SchoolBean>>): Boolean {
                 return false
             }

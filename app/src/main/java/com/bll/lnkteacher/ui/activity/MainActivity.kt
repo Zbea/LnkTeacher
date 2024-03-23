@@ -29,18 +29,26 @@ import java.util.*
 class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     private val mQiniuPresenter=QiniuPresenter(this)
-    private var lastPosition = 0
-    private var mHomeAdapter: MainListAdapter? = null
-    private var lastFragment: Fragment? = null
+    private var typeEvent=""
+
+    private var mainLeftFragment: MainLeftFragment? = null
     private var mainRightFragment: MainRightFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
-    private var classGroupFragment: ClassGroupFragment? = null
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
     private var textbookFragment: TextbookFragment? = null
     private var examFragment: ExamManagerFragment? = null
-    private var typeEvent=""
+    private var testpaperManagerFragment: TestpaperManagerFragment? = null
+    private var learningConditionFragment: LearningConditionFragment? = null
+
+    private var leftPosition = 0
+    private var mAdapterLeft: MainListAdapter? = null
+    private var leftFragment: Fragment? = null
+
+    private var rightPosition = 0
+    private var mAdapterRight: MainListAdapter? = null
+    private var rightFragment: Fragment? = null
 
     override fun onToken(token: String) {
         when(typeEvent){
@@ -71,43 +79,62 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun initView() {
 
+        mainLeftFragment=MainLeftFragment()
         mainRightFragment = MainRightFragment()
         textbookFragment= TextbookFragment()
         bookcaseFragment = BookCaseFragment()
-        classGroupFragment= ClassGroupFragment()
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()
         examFragment= ExamManagerFragment()
+        testpaperManagerFragment= TestpaperManagerFragment()
+        learningConditionFragment= LearningConditionFragment()
 
-        switchFragment(lastFragment, mainRightFragment)
+        switchFragment(1, mainLeftFragment)
+        switchFragment(2, mainRightFragment)
 
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mHomeAdapter = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexData())
-        rv_list.adapter = mHomeAdapter
-        mHomeAdapter?.bindToRecyclerView(rv_list)
-        mHomeAdapter?.setOnItemClickListener { adapter, view, position ->
-
-            mHomeAdapter?.updateItem(lastPosition, false)//原来的位置去掉勾选
-            mHomeAdapter?.updateItem(position, true)//更新新的位置
-
-            when (position) {
-                0 -> switchFragment(lastFragment, mainRightFragment)
-                1 -> switchFragment(lastFragment, bookcaseFragment)
-                2 -> switchFragment(lastFragment, textbookFragment)
-                3 -> switchFragment(lastFragment, classGroupFragment)
-                4 -> switchFragment(lastFragment, homeworkManagerFragment)
-                5 -> switchFragment(lastFragment, examFragment)
-                6 -> switchFragment(lastFragment, noteFragment)
-                7 -> switchFragment(lastFragment, appFragment)
+        mAdapterLeft = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexLeftData()).apply {
+            rv_list_a.layoutManager = LinearLayoutManager(this@MainActivity)//创建布局管理
+            rv_list_a.adapter = this
+            bindToRecyclerView(rv_list_a)
+            setOnItemClickListener { adapter, view, position ->
+                updateItem(leftPosition, false)//原来的位置去掉勾选
+                updateItem(position, true)//更新新的位置
+                when (position) {
+                    0 -> switchFragment(1,mainLeftFragment)//首页
+                    1 -> switchFragment(1,bookcaseFragment)//书架
+                    2 -> switchFragment(1,textbookFragment)//课本
+                    3 -> switchFragment(1,learningConditionFragment)//义教
+                    4 -> switchFragment(1,appFragment)//应用
+                }
+                leftPosition = position
             }
-
-            lastPosition=position
-
         }
 
-        iv_user.setOnClickListener {
-            startActivity(Intent(this,AccountInfoActivity::class.java))
+        mAdapterRight = MainListAdapter(R.layout.item_main_list, DataBeanManager.getIndexRightData()).apply {
+            rv_list_b.layoutManager = LinearLayoutManager(this@MainActivity)//创建布局管理
+            rv_list_b.adapter = this
+            bindToRecyclerView(rv_list_b)
+            setOnItemClickListener { adapter, view, position ->
+                updateItem(rightPosition, false)//原来的位置去掉勾选
+                updateItem(position, true)//更新新的位置
+                when (position) {
+                    0 -> switchFragment(2,  mainRightFragment)
+                    1 -> switchFragment(2,  homeworkManagerFragment)
+                    2 -> switchFragment(2,  testpaperManagerFragment)
+                    3 -> switchFragment(2,  examFragment)
+                    4 -> switchFragment(2,  noteFragment)
+                }
+                rightPosition = position
+            }
+        }
+
+        iv_user_a.setOnClickListener {
+            customStartActivity(Intent(this,AccountInfoActivity::class.java))
+        }
+
+        iv_classgroup.setOnClickListener {
+            customStartActivity(Intent(this,ClassGroupActivity::class.java))
         }
 
         startRemind()
@@ -217,11 +244,18 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         }
     }
 
-
-    //页码跳转
-    private fun switchFragment(from: Fragment?, to: Fragment?) {
+    private fun switchFragment(type: Int, to: Fragment?) {
+        val from = if (type == 1) {
+            leftFragment
+        } else {
+            rightFragment
+        }
         if (from != to) {
-            lastFragment = to
+            if (type == 1) {
+                leftFragment = to
+            } else {
+                rightFragment = to
+            }
             val fm = supportFragmentManager
             val ft = fm.beginTransaction()
 
@@ -229,7 +263,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
                 if (from != null) {
                     ft.hide(from)
                 }
-                ft.add(R.id.frame_layout, to).commit()
+                ft.add(if (type == 1) R.id.frame_layout_a else R.id.frame_layout_b, to).commit()
             } else {
                 if (from != null) {
                     ft.hide(from)

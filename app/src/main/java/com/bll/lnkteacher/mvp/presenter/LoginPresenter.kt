@@ -5,14 +5,14 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 
-class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractView.ILoginView>(view) {
+class LoginPresenter(view: IContractView.ILoginView,val screen:Int=0) : BasePresenter<IContractView.ILoginView>(view) {
 
     fun login(map: HashMap<String,Any>) {
 
         val body = RequestUtils.getBody(map)
 
         val login = RetrofitManager.service.login(body)
-        doRequest(login, object : Callback<User>(view) {
+        doRequest(login, object : Callback<User>(view,screen) {
             override fun failed(tBaseResult: BaseResult<User>): Boolean {
                 return false
             }
@@ -29,7 +29,7 @@ class LoginPresenter(view: IContractView.ILoginView) : BasePresenter<IContractVi
 
         val account = RetrofitManager.service.accounts()
 
-        doRequest(account, object : Callback<User>(view) {
+        doRequest(account, object : Callback<User>(view,screen) {
             override fun failed(tBaseResult: BaseResult<User>): Boolean {
                 return false
             }

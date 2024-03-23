@@ -34,7 +34,6 @@ class FreeNoteActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik_b=v_content.pwInterFace
         disMissView(tv_page_title,iv_catalog,iv_btn)
         setPageTitle("随笔")
         tv_name.text=freeNoteBean?.title
@@ -47,10 +46,10 @@ class FreeNoteActivity:BaseDrawingActivity() {
         }
 
         tv_theme.setOnClickListener {
-            NoteModuleAddDialog(this,1).builder()
+            NoteModuleAddDialog(this,getCurrentScreenPos(),1).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resFreeNote)
-                    v_content.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    v_content_b.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }
         }
@@ -96,7 +95,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
     }
 
     override fun onChangeContent() {
-        v_content.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        v_content_b.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)){

@@ -10,6 +10,7 @@ import com.bll.lnkteacher.dialog.PopupDateSelector
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.ui.adapter.DateAdapter
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.*
 
@@ -178,9 +179,9 @@ open class DateActivity: BaseActivity() {
         date.time=DateUtils.dateToStamp("$year-$month-$day")
         date.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
         date.isNowMonth=isMonth
-//        date.solar= solar
-//        date.week=DateUtils.getWeek(date.time)
-//        date.lunar=LunarSolarConverter.SolarToLunar(solar)
+        date.solar= solar
+        date.week=DateUtils.getWeek(date.time)
+        date.lunar= LunarSolarConverter.SolarToLunar(solar)
 
         return date
     }

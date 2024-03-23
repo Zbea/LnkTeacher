@@ -2,11 +2,14 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
@@ -19,6 +22,9 @@ class PrivacyPasswordFindDialog(private val context: Context) {
         dialog.setContentView(R.layout.dialog_privacy_password_find)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
         val checkPassword=MethodManager.getPrivacyPassword()
@@ -40,20 +46,20 @@ class PrivacyPasswordFindDialog(private val context: Context) {
             val passwordFindStr=etPasswordFind?.text.toString()
 
             if (passwordFindStr.isEmpty()){
-                SToast.showText(1,"请输入密保")
+                SToast.showText(2,"请输入密保")
                 return@setOnClickListener
             }
 
             if (passwordFindStr!=checkPassword?.answer){
-                SToast.showText(1,"密保错误")
+                SToast.showText(2,"密保错误")
                 return@setOnClickListener
             }
             if (passwordStr.isEmpty()||passwordAgainStr.isEmpty()){
-                SToast.showText(1,"请输入密码")
+                SToast.showText(2,"请输入密码")
                 return@setOnClickListener
             }
             if (passwordStr!=passwordAgainStr){
-                SToast.showText(1,"密码输入不一致")
+                SToast.showText(2,"密码输入不一致")
                 return@setOnClickListener
             }
 

@@ -26,7 +26,10 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.common_fragment_title.tv_title
 import kotlinx.android.synthetic.main.common_page_number.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -158,6 +161,14 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         mDialog = ProgressDialog(requireActivity(),getScreenPosition())
     }
 
+    protected fun initDialog(screen:Int){
+        mDialog = ProgressDialog(requireActivity(),screen)
+    }
+
+    open fun initChangeScreenData(){
+        initDialog()
+    }
+
     /**
      * 获取当前屏幕位置
      */
@@ -172,21 +183,26 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         return screenPos
     }
 
-    fun setTitle(pageTitle: String) {
+    protected fun setTitle(pageTitle: String) {
         tv_title?.text = pageTitle
     }
 
-    fun setTitle(titleResId: Int) {
+    protected fun setTitle(titleResId: Int) {
         tv_title?.text = getString(titleResId)
     }
 
-    fun showSearch(isShow:Boolean) {
+    protected fun showSearch(isShow:Boolean) {
         if (isShow){
             showView(tv_search)
         }
         else{
             disMissView(tv_search)
         }
+    }
+
+    protected fun setImageManager(setId:Int){
+        showView(iv_manager)
+        iv_manager?.setImageResource(setId)
     }
 
     /**

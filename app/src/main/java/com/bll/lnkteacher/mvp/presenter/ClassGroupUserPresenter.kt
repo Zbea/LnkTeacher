@@ -6,7 +6,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 
-class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
+class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView,val screen:Int) :
     BasePresenter<IContractView.IClassGroupUserView>(view) {
 
 
@@ -16,7 +16,7 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
             Pair.create("classId", id)
         )
         val list = RetrofitManager.service.getClassGroupUserList(body)
-        doRequest(list, object : Callback<List<ClassGroupUser>>(view) {
+        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
                 return false
             }
@@ -80,7 +80,7 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
             Pair.create("userId", userId)
         )
         val out = RetrofitManager.service.outClassGroupUser(body)
-        doRequest(out, object : Callback<Any>(view) {
+        doRequest(out, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
@@ -99,7 +99,7 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView) :
             Pair.create("job", job)
         )
         val change = RetrofitManager.service.changeJob(body)
-        doRequest(change, object : Callback<Any>(view) {
+        doRequest(change, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

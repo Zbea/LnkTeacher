@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.teaching
+package com.bll.lnkteacher.ui.fragment.test
 
 import android.content.Intent
 import android.os.Bundle
@@ -26,7 +26,6 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
     private var mAdapter: TestPaperCorrectAdapter?=null
     private var items= mutableListOf<CorrectBean>()
     private var pos=0
-    private var grade=0
 
     override fun onList(bean: CorrectList) {
         setPageNumber(bean.total)
@@ -46,6 +45,7 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
     override fun initView() {
         pageSize=3
         initRecyclerView()
+        initDialog(2)
     }
 
     override fun lazyLoad() {

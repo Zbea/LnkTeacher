@@ -102,18 +102,24 @@
         <activity android:name=".ui.activity.DateActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.DateEventActivity" />
+        <activity android:name=".ui.activity.DateEventActivity"
+            android:theme="@style/activityCustom"
+            />
         <activity android:name=".ui.activity.book.TextBookStoreActivity"/>
-        <activity android:name=".ui.activity.book.BookDetailsActivity"/>
+        <activity android:name=".ui.activity.book.BookDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
         <activity android:name=".ui.activity.MessageListActivity"/>
         <activity android:name=".ui.activity.MainCourseActivity"/>
         <activity android:name=".ui.activity.TeachingPlanActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.NotebookManagerActivity"/>
-        <activity android:name=".ui.activity.NoteDrawingActivity"/>
+        <activity android:name=".ui.activity.NoteDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
         <activity android:name=".ui.activity.WalletActivity"
-            android:theme="@style/activityCustom"
+            android:theme="@style/styleDialogCustom"
             />
         <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
             android:windowSoftInputMode="adjustPan"
@@ -160,7 +166,10 @@
         <activity android:name=".ui.activity.CloudStorageActivity"
             android:launchMode="singleTask"
             />
+        <activity android:name=".ui.activity.ClassGroupActivity"/>
         <activity android:name=".ui.activity.ClassGroupChildActivity"/>
+        <activity android:name=".ui.activity.CalenderListActivity"/>
+        <activity android:name=".ui.activity.CalenderMyActivity"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

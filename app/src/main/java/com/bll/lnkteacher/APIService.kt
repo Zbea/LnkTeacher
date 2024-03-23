@@ -399,4 +399,9 @@ interface APIService{
      */
     @GET("font/draw/list")
     fun getWallpaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<WallpaperList>>
+    /**
+     * 台历列表
+     */
+    @GET("calendar/list")
+    fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
 }

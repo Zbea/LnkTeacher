@@ -2,11 +2,14 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
@@ -19,6 +22,9 @@ class PrivacyPasswordDialog(private val context: Context) {
         dialog.setContentView(R.layout.dialog_privacy_password)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams = window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
@@ -45,7 +51,7 @@ class PrivacyPasswordDialog(private val context: Context) {
             }
             val checkPassword=MethodManager.getPrivacyPassword()
             if (MD5Utils.digest(passwordStr) != checkPassword?.password){
-                SToast.showText("密码错误")
+                SToast.showText(2,"密码错误")
                 return@setOnClickListener
             }
             listener?.onClick()

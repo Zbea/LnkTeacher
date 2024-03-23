@@ -2,9 +2,11 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.ModuleBean
@@ -13,7 +15,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class NoteModuleAddDialog(private val context: Context, private val type: Int) {
+class NoteModuleAddDialog(private val context: Context, val screenPos:Int,private val type: Int) {
 
     private var dialog:Dialog?=null
 
@@ -25,6 +27,10 @@ class NoteModuleAddDialog(private val context: Context, private val type: Int) {
         window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.width=width
+        if (screenPos==3){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            layoutParams.x=(Constants.WIDTH- width)/2
+        }
         dialog?.show()
 
         val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)

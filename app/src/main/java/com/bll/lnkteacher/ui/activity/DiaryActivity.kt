@@ -34,7 +34,6 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        elik_b=v_content.pwInterFace
         disMissView(tv_page_title)
         elik_b?.addOnTopView(ll_date)
         elik_b?.addOnTopView(tv_digest)
@@ -68,11 +67,11 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-            NoteModuleAddDialog(this, 0).builder()
+            NoteModuleAddDialog(this, getCurrentScreenPos(),0).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
-                    v_content.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
                 }
         }
     }
@@ -132,7 +131,7 @@ class DiaryActivity:BaseDrawingActivity() {
      */
     private fun setContentImage() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
-        v_content.setImageResource(ToolUtils.getImageResId(this, bgRes))
+        v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
         val path = FileAddress().getPathDiary(DateUtils.longToString(nowLong)) + "/${posImage + 1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)) {

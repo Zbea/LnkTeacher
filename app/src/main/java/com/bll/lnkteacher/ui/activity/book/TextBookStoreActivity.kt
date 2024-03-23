@@ -151,7 +151,7 @@ class TextBookStoreActivity : BaseActivity(),
         tv_province.text = provinceStr
         tv_grade.text = DataBeanManager.getGradeStr(gradeId)
         tv_semester.text = DataBeanManager.popupSemesters[semester-1].name
-        tv_course.text = DataBeanManager.getGradeStr(courseId)
+        tv_course.text = DataBeanManager.getCourseStr(courseId)
         tv_type.text=subTypeList[0].name
 
         tv_grade.setOnClickListener {
@@ -358,7 +358,6 @@ class TextBookStoreActivity : BaseActivity(),
                         unzip(book, zipPath, fileTargetPath)
                         lock.unlock()
                     }
-                    hideLoading()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
@@ -411,6 +410,7 @@ class TextBookStoreActivity : BaseActivity(),
 
         Handler().postDelayed({
             showToast(book.bookName+getString(R.string.book_download_success))
+            hideLoading()
         },500)
     }
 

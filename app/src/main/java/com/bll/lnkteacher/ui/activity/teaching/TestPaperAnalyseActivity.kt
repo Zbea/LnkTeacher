@@ -169,11 +169,11 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
 
     override fun initView() {
         setPageTitle(R.string.teaching_testpaper_analyse)
-        showView(tv_class,tv_setting)
+        showView(tv_class)
+        setPageSetting("成绩统计")
 
         tv_class.text=popClasss[0].name
         popClasss[0].isCheck=true
-        tv_setting.text="成绩统计"
 
         iv_up.setOnClickListener {
             if (index>0){

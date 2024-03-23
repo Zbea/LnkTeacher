@@ -23,6 +23,7 @@ class ExamListFragment:BaseMainFragment(){
     override fun initView() {
         pageSize=3
         initRecyclerView()
+        initDialog(2)
     }
 
     override fun lazyLoad() {

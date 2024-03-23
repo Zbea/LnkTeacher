@@ -6,6 +6,7 @@ import com.bll.lnkteacher.mvp.model.AppList;
 import com.bll.lnkteacher.mvp.model.AppUpdateBean;
 import com.bll.lnkteacher.mvp.model.BookStore;
 import com.bll.lnkteacher.mvp.model.BookStoreType;
+import com.bll.lnkteacher.mvp.model.CalenderList;
 import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.HandoutsList;
@@ -66,6 +67,7 @@ public interface IContractView {
 
     //班群
     interface IClassGroupView extends IBaseView{
+        void onClassList(List<ClassGroup> classGroups);
         void onSuccess();
         void onUploadSuccess();
     }
@@ -242,7 +244,6 @@ public interface IContractView {
     }
 
     interface ITextbookView extends IBaseView{
-        void onHandoutsList(HandoutsList list);
         void onAddHomeworkBook();
     }
 
@@ -274,6 +275,11 @@ public interface IContractView {
         void onList(CloudList item);
         void onType(List<String> types);
         void onDelete();
+    }
+
+    interface ICalenderView extends IBaseView {
+        void onList(CalenderList list);
+        void buySuccess();
     }
 
 }

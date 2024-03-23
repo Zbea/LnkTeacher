@@ -30,8 +30,8 @@ import kotlinx.android.synthetic.main.common_title.*
 class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView,ICommonView {
 
     private val mCommonPresenter=CommonPresenter(this)
-    private val mSchoolPresenter=SchoolPresenter(this)
-    private val presenter= RegisterOrFindPsdPresenter(this)
+    private lateinit var mSchoolPresenter:SchoolPresenter
+    private lateinit var presenter:RegisterOrFindPsdPresenter
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var school=0
@@ -85,11 +85,17 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     }
 
     override fun initData() {
+        initChangeScreenData()
         flags=intent.flags
         if (flags==0){
             mCommonPresenter.getCommon()
             mSchoolPresenter.getSchool()
         }
+    }
+
+    override fun initChangeScreenData() {
+        presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
+        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {

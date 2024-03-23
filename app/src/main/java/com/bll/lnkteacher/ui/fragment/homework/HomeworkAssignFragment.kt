@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.teaching
+package com.bll.lnkteacher.ui.fragment.homework
 
 import android.content.Intent
 import android.os.Bundle
@@ -35,7 +35,6 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
-    private var grade=0
     private var selectCommitClass= mutableListOf<HomeworkClass>()
 
     override fun onTypeList(list:  TypeList) {
@@ -137,6 +136,8 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
                 true
             }
         }
+
+        initDialog(2)
     }
 
     override fun lazyLoad() {
