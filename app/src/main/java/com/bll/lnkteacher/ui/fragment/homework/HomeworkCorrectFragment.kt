@@ -13,8 +13,8 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IHomeworkCorrectView
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
-import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
+import com.bll.lnkteacher.ui.activity.teaching.AnalyseActivity
+import com.bll.lnkteacher.ui.activity.teaching.CorrectActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -71,23 +71,26 @@ class HomeworkCorrectFragment:BaseMainFragment(),IHomeworkCorrectView {
                         deleteCorrect()
                     }
                     R.id.tv_analyse->{
-                        val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
+                        val intent=Intent(requireActivity(), AnalyseActivity::class.java)
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)
-                        startActivity(intent)
+                        intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
+                        customStartActivity(intent)
                     }
                 }
             }
             setOnChildClickListener { view,parentPos, position ->
                 if (view.id==R.id.ll_content){
-                    val intent= Intent(requireActivity(), HomeworkCorrectActivity::class.java)
+                    val intent= Intent(requireActivity(), CorrectActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("classBean",items[parentPos].examList[position])
                     intent.putExtra("bundle",bundle)
                     intent.putExtra("subType",items[parentPos].subType)
-                    intent.flags=items[parentPos].id
-                    startActivity(intent)
+                    intent.putExtra("id",items[parentPos].id)
+                    intent.flags= Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
+                    customStartActivity(intent)
                 }
             }
 

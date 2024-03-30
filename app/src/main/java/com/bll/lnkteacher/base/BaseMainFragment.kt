@@ -12,17 +12,16 @@ import kotlinx.android.synthetic.main.common_fragment_title.*
 abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView {
 
     var mCloudUploadPresenter= CloudUploadPresenter(this)
-    var grade=0
+    var grade=SPUtil.getInt("grade")
     var popGrades= mutableListOf<PopupBean>()
 
-    override fun onSuccess(cloudIds: MutableList<Int>?) {
+    override fun onSuccessCloudUpload(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
     }
     override fun onDeleteSuccess() {
     }
 
     override fun initView() {
-        grade= SPUtil.getInt("grade")
         if (grade>0){
             tv_grade.text= DataBeanManager.getGradeStr(grade)
         }

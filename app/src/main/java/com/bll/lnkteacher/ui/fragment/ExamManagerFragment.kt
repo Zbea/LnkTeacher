@@ -41,7 +41,7 @@ class ExamManagerFragment:BaseMainFragment() {
     }
 
     override fun onGradeEvent() {
-
+        examListFragment?.onChangeGrade(grade)
     }
 
     /**

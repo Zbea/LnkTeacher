@@ -2,30 +2,37 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.testpaper.*
+import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
+import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ExamScoreAnalyseAdapter
 import com.bll.lnkteacher.utils.GlideUtils
-import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
 
-class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDetailsView {
+class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView {
 
-    private val mPresenter= TestPaperCorrectDetailsPresenter(this)
+    private var mPresenter=TestPaperCorrectDetailsPresenter(this,3)
     private var classId=0
-    private var index=0//当前学生的作业下标
+    private var posImage=0
+    private var imageCount=0
     private var correctList: CorrectBean?=null
     private val popClasss= mutableListOf<PopupBean>()
     private var images= mutableListOf<String>()
@@ -39,10 +46,11 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
             for (item in list){
                 images.add(item.url)
             }
-            setImageContent()
+            imageCount=images.size
+            setContentImage()
         }
     }
-    override fun onClassPapers(bean: TestPaperCorrectClass) {
+    override fun onClassPapers(bean: TestPaperClassUserList) {
         scoreItemMap.clear()
         examScoreItems.clear()
         popScore.clear()
@@ -142,9 +150,6 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
         }
         mAdapter?.setNewData(examScoreItems)
     }
-    override fun onGrade(list: MutableList<TestPaperGrade>?) {
-
-    }
     override fun onCorrectSuccess() {
     }
 
@@ -170,34 +175,24 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     override fun initView() {
         setPageTitle(R.string.teaching_testpaper_analyse)
         showView(tv_class)
+        disMissView(iv_tool,iv_catalog)
         setPageSetting("成绩统计")
 
         tv_class.text=popClasss[0].name
         popClasss[0].isCheck=true
 
-        iv_up.setOnClickListener {
-            if (index>0){
-                index-=1
-                setImageContent()
-            }
-        }
-        iv_down.setOnClickListener {
-            if (index<images.size-1){
-                index+=1
-                setImageContent()
-            }
-        }
-
         tv_setting.setOnClickListener {
-            val intent= Intent(this, TestPaperGradeActivity::class.java)
+            val intent= Intent(this, GradeRankActivity::class.java)
             val bundle= Bundle()
             bundle.putSerializable("paperCorrect",correctList)
             intent.putExtra("bundle",bundle)
-            startActivity(intent)
+            intent.flags=0
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
+            customStartActivity(intent)
         }
 
         tv_class.setOnClickListener {
-            PopupRadioList(this, popClasss, tv_class, tv_class.width ,5).builder()
+            PopupRadioList(this, popClasss, tv_class ,5).builder()
                 .setOnSelectListener { item ->
                     tv_class.text = item.name
                     if (classId!=item.id)
@@ -223,13 +218,88 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
         mAdapter = ExamScoreAnalyseAdapter(R.layout.item_exam_score_analyse, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, 30))
+            rv_list.addItemDecoration(SpaceGridItemDeco(4, 30))
         }
     }
+
+    override fun onChangeExpandContent() {
+        changeErasure()
+        isExpand=!isExpand
+        onChangeExpandView()
+        setContentImage()
+    }
+
+    override fun onPageUp() {
+        if (isExpand){
+            if (posImage>1){
+                posImage-=2
+            }
+            else if (posImage==1){
+                posImage=0
+            }
+        }
+        else{
+            if (posImage > 0) {
+                posImage -= 1
+            }
+        }
+        setContentImage()
+    }
+
+    override fun onPageDown() {
+        if (isExpand){
+            if (posImage<imageCount-2){
+                posImage+=2
+            }
+            else if (posImage==imageCount-2){
+                posImage=imageCount-1
+            }
+        }
+        else{
+            if (posImage < imageCount - 1) {
+                posImage += 1
+            }
+        }
+        setContentImage()
+    }
+
+    /**
+     * 设置学生提交图片展示
+     */
+    private fun setContentImage(){
+        if (isExpand){
+            elik_a?.setPWEnabled(true,true)
+            GlideUtils.setImageUrl(this, images[posImage],v_content_a)
+            tv_page_a.text="${posImage+1}"
+            val drawPath = getPathDrawStr(posImage+1)
+            elik_a?.setLoadFilePath(drawPath, true)
+
+            if (posImage+1<imageCount){
+                elik_b?.setPWEnabled(true,true)
+                GlideUtils.setImageUrl(this, images[posImage+1],v_content_b)
+                tv_page.text="${posImage+1+1}"
+                val drawPath_b = getPathDrawStr(posImage+1+1)
+                elik_b?.setLoadFilePath(drawPath_b, true)
+            }
+            else{
+                elik_b?.setPWEnabled(false,false)
+                v_content_b.setImageResource(0)
+                tv_page.text=""
+            }
+        }
+        else{
+            elik_b?.setPWEnabled(true,true)
+            GlideUtils.setImageUrl(this, images[posImage],v_content_b)
+            val drawPath = getPathDrawStr(posImage+1)
+            elik_b?.setLoadFilePath(drawPath, true)
+            tv_page.text="${posImage+1}"
+        }
+    }
+
 
     /**
      * 获取平均数
@@ -243,13 +313,19 @@ class TestPaperAnalyseActivity:BaseActivity(),IContractView.ITestPaperCorrectDet
     }
 
     /**
-     * 设置作业内容
+     * 文件路径
      */
-    private fun setImageContent(){
-        if (index<images.size){
-            GlideUtils.setImageRoundUrl(this, images[index],iv_image,10)
-            tv_page.text="${index+1}/${images.size}"
-        }
+    private fun getPath():String{
+        return FileAddress().getPathTestPaperDrawing(correctList!!.id)
     }
+
+
+    /**
+     * 得到当前手绘图片
+     */
+    private fun getPathDrawStr(index: Int):String{
+        return getPath()+"/draw${index}.tch"//手绘地址
+    }
+
 
 }

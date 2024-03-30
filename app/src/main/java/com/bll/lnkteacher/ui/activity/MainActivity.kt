@@ -306,18 +306,18 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
-            Constants.SETTING_DATA_EVENT->{
+            Constants.SETTING_DATA_CLEAR_EVENT->{
                 clearSqlData()
             }
             //每天更新
             Constants.AUTO_UPLOAD_DAY_EVENT->{
-                typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
-                mQiniuPresenter.getToken()
+//                typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
+//                mQiniuPresenter.getToken()
             }
             //每年更新
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
-                typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
-                mQiniuPresenter.getToken()
+//                typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
+//                mQiniuPresenter.getToken()
             }
         }
     }

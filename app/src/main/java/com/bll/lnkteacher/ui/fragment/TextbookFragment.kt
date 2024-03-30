@@ -157,7 +157,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             }
         }
         for (book in maxBooks) {
-            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)
+            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)+1
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {

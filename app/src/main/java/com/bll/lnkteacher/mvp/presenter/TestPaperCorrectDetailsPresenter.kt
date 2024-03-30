@@ -1,8 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -30,26 +29,12 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         map["examChangeId"]=taskId
         map["size"]=100
         val list = RetrofitManager.service.getPaperCorrectClassList(map)
-        doRequest(list, object : Callback<TestPaperCorrectClass>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<TestPaperCorrectClass>): Boolean {
+        doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<TestPaperClassUserList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<TestPaperCorrectClass>) {
+            override fun success(tBaseResult: BaseResult<TestPaperClassUserList>) {
                 view.onClassPapers(tBaseResult.data)
-            }
-        }, true)
-    }
-
-    fun getPaperGrade(taskId:Int){
-        val map=HashMap<String,Any>()
-        map["id"]=taskId
-        val list = RetrofitManager.service.getPaperGrade(map)
-        doRequest(list, object : Callback<List<TestPaperGrade>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<TestPaperGrade>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<TestPaperGrade>>) {
-                view.onGrade(tBaseResult.data)
             }
         }, true)
     }

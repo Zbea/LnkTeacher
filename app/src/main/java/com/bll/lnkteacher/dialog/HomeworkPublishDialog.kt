@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
@@ -23,6 +24,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
     private var selectClasss= mutableListOf<HomeworkClass>()
     private var initDatas= mutableListOf<HomeworkClass>()
 
+    @SuppressLint("SuspiciousIndentation")
     fun builder(): HomeworkPublishDialog {
 
         val dialog = Dialog(context)
@@ -80,13 +82,11 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
                     item.isCheck=!item.isCheck
                     if (!item.isCheck){
                         item.isCommit=false
-                        item.submitStatus=1
                     }
                     mAdapter?.notifyDataSetChanged()
                 }
                 R.id.cb_commit->{
                     item.isCommit=!item.isCommit
-                    item.submitStatus=if (item.isCommit) 0 else 1
                     mAdapter?.notifyDataSetChanged()
                 }
             }

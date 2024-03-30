@@ -9,5 +9,5 @@ import java.util.List;
 public class TypeList {
 
     public int total;
-    public List<TypeBean> list=new ArrayList();
+    public List<TypeBean> list;
 }

@@ -2,6 +2,7 @@ package com.bll.lnkteacher
 
 import com.bll.lnkteacher.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
+import com.bll.lnkteacher.Constants.Companion.EXAM_PATH
 import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
@@ -97,7 +98,7 @@ class FileAddress {
     /**
      * 批改学生试卷保存地址
      */
-    fun getPathTestPaper(paperCorrectId: Int?,classId: Int?,userId:Int):String{
+    fun getPathTestPaperDrawing(paperCorrectId: Int?, classId: Int?, userId:Int):String{
         return "$TESTPAPER_PATH/$mUserId/paperCorrectId$paperCorrectId/classId$classId/userId$userId"
     }
     /**
@@ -105,6 +106,24 @@ class FileAddress {
      */
     fun getPathHomework(paperCorrectId: Int?,classId: Int?,userId:Int):String{
         return "$HOMEWORK_PATH/$mUserId/homeworkCorrectId$paperCorrectId/classId$classId/userId$userId"
+    }
+    /**
+     * 批改学生考试保存地址
+     */
+    fun getPathExam(paperCorrectId: Int?,classId: Int?,userId:Int):String{
+        return "$EXAM_PATH/$mUserId/examCorrectId$paperCorrectId/classId$classId/userId$userId"
+    }
+    /**
+     * 得到老师测卷手写地址
+     */
+    fun getPathTestPaperDrawing(id: Int):String{
+        return "$IMAGE_PATH/$mUserId/testDrawing/$id"
+    }
+    /**
+     * 得到老师考试手写地址
+     */
+    fun getPathExamDrawing(id: Int):String{
+        return "$IMAGE_PATH/$mUserId/examDrawing/$id"
     }
 
     /**
@@ -125,13 +144,6 @@ class FileAddress {
      */
     fun getPathDiary(time:String):String{
         return "$IMAGE_PATH/${mUserId}/diary/$time"
-    }
-
-    /**
-     * 朗读作业文件夹路径
-     */
-    fun getPathRecord():String{
-        return "$HOMEWORK_PATH/${mUserId}"
     }
 
     /**

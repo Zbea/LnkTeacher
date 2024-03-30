@@ -17,97 +17,205 @@
         >
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_weight="1">
-            <TextView
-                android:layout_width="140dp"
+            android:layout_marginStart="80dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="姓名"
-                android:gravity="center"
-                />
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="姓名"
+                    android:gravity="center"
+                    />
 
-            <TextView
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="分数"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="排名"
+                    android:gravity="center"
+                    />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="班级名称"
+                    android:gravity="center"
+                    />
+
+            </LinearLayout>
+            <View
                 android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="分数"
-                android:gravity="center"
-                />
+                android:layout_weight="1">
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="排名"
-                android:gravity="center"
-                />
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="姓名"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="分数"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="排名"
+                    android:gravity="center"
+                    />
 
 
-            <TextView
-                android:id="@+id/tv_class_name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="班级名称"
-                android:gravity="center"
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="班级名称"
+                    android:gravity="center"
+                    />
 
+            </LinearLayout>
         </LinearLayout>
+        <View
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"/>
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_40"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="140dp"
+            android:layout_marginEnd="80dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            >
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="姓名"
-                android:gravity="center"
-                />
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="姓名"
+                    android:gravity="center"
+                    />
 
-            <TextView
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="分数"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="排名"
+                    android:gravity="center"
+                    />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="班级名称"
+                    android:gravity="center"
+                    />
+
+            </LinearLayout>
+            <View
                 android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="分数"
-                android:gravity="center"
-                />
+                android:layout_weight="1">
 
-            <TextView
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="排名"
-                android:gravity="center"
-                />
+                <TextView
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="姓名"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="分数"
+                    android:gravity="center"
+                    />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="排名"
+                    android:gravity="center"
+                    />
 
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
-                android:text="班级名称"
-                android:gravity="center"
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:text="班级名称"
+                    android:gravity="center"
+                    />
 
+            </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
 

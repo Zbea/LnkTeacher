@@ -32,6 +32,8 @@
                 android:id="@+id/rv_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
                 android:layout_marginTop="@dimen/dp_50"
                 />
 
@@ -40,6 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_50"
+                android:layout_marginStart="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_20"
                 />
 
             <ImageView
@@ -47,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_add"
-                android:layout_margin="@dimen/dp_20"
+                android:layout_margin="@dimen/dp_50"
                 />
 
             <LinearLayout
@@ -84,7 +88,7 @@
                         />
 
                     <EditText
-                        android:id="@+id/et_score"
+                        android:id="@+id/et_score_num"
                         android:layout_width="64dp"
                         android:layout_height="match_parent"
                         android:textColor="@color/black"
@@ -176,6 +180,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:visibility="gone"
+            android:background="@color/white"
             >
             <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/v_content_a"
@@ -205,6 +210,7 @@
             android:layout_width="@dimen/width"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/white"
             >
 
             <com.android.internal.widget.PreferenceImageView

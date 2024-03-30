@@ -49,7 +49,6 @@ class HomeworkManagerFragment : BaseMainFragment(){
         }
 
         initTab()
-        onGradeEvent()
     }
 
     override fun lazyLoad() {

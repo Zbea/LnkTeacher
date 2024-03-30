@@ -15,7 +15,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.HomeworkPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
-import kotlinx.android.synthetic.main.ac_homework_assgin_content.*
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
 
 class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
 
@@ -52,7 +52,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_homework_assgin_content
+        return R.layout.ac_testpaper_assgin_content
     }
 
     override fun initData() {
@@ -65,6 +65,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
 
     override fun initView() {
         setPageTitle(typeBean?.name!!)
+        disMissView(tv_time)
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, items).apply {
@@ -92,7 +93,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
             }
         }
 
-        tv_class_name.setOnClickListener {
+        tv_group.setOnClickListener {
             if (selectDialog==null){
                 selectDialog=HomeworkPublishClassGroupSelectDialog(this, grade, typeBean?.id!!).builder()
                 selectDialog?.setOnDialogClickListener {
@@ -136,7 +137,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
                 isCommit=true
             selects.add(HomeworkClassSelect().apply {
                 classId=ite.classId
-                submitStatus=ite.submitStatus
+                submitStatus=if (ite.isCommit) 0 else 1
                 endTime=ite.date/1000
             })
         }

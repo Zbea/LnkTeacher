@@ -1,40 +1,79 @@
 package com.bll.lnkteacher.ui.fragment.exam
 
+import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
-import com.bll.lnkteacher.mvp.model.exam.ExamCorrectBean
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
+import com.bll.lnkteacher.mvp.presenter.ExamCorrectListPresenter
+import com.bll.lnkteacher.mvp.view.IContractView.IExamCorrectListView
+import com.bll.lnkteacher.ui.activity.exam.ExamCorrectActivity
 import com.bll.lnkteacher.ui.adapter.ExamCorrectAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_teaching_list.*
 
-class ExamCorrectFragment:BaseMainFragment(){
+class ExamCorrectFragment:BaseMainFragment(),IExamCorrectListView{
 
+    private var mPresenter=ExamCorrectListPresenter(this,2)
     private var mAdapter:ExamCorrectAdapter?=null
-    private var items= mutableListOf<ExamCorrectBean>()
+    private var corrects= mutableListOf<ExamCorrectList.ExamCorrectBean>()
+    private var position=0
+
+    override fun onList(list: ExamCorrectList) {
+        corrects=list.list
+        mAdapter?.setNewData(corrects)
+    }
+
+    override fun onSuccess() {
+        mAdapter?.remove(position)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_teaching_list
     }
 
     override fun initView() {
-        items.add(ExamCorrectBean())
-        items.add(ExamCorrectBean())
-        items.add(ExamCorrectBean())
         initRecyclerView()
-
         initDialog(2)
     }
 
     override fun lazyLoad() {
+        mPresenter.getExamCorrectList()
     }
 
     private fun initRecyclerView(){
-        mAdapter= ExamCorrectAdapter(R.layout.item_exam_correct,items)
+        mAdapter= ExamCorrectAdapter(R.layout.item_exam_correct,null)
         rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(2,100))
+        rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
+        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
+            this.position=position
+            if (view.id==R.id.tv_save){
+                CommonDialog(requireActivity(),2).setContent("确认完成班级批改？").builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        mPresenter.onExamCorrectComplete(corrects[position].id)
+                    }
+                }
+            }
+        }
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            val item=corrects[position]
+            val intent= Intent(requireActivity(), ExamCorrectActivity::class.java)
+            intent.putExtra("id",item.schoolExamJobId)
+            intent.putExtra("classId",item.classId)
+            intent.putExtra("className",item.className)
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
+            customStartActivity(intent)
+        }
+    }
+
+    override fun onRefreshData() {
+        lazyLoad()
     }
 
 }

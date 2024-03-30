@@ -1,13 +1,13 @@
 package com.bll.lnkteacher.ui.adapter
 
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
+import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class TestPaperCorrectUserAdapter(layoutResId: Int, data: List<TestPaperClassUserList.UserBean>?) : BaseQuickAdapter<TestPaperClassUserList.UserBean, BaseViewHolder>(layoutResId, data) {
-    override fun convert(helper: BaseViewHolder, item: TestPaperClassUserList.UserBean) {
-        helper.setText(R.id.tv_name,item.name)
+class ExamCorrectUserAdapter(layoutResId: Int, data: List<ExamClassUserList.UserBean>?) : BaseQuickAdapter<ExamClassUserList.UserBean, BaseViewHolder>(layoutResId, data) {
+    override fun convert(helper: BaseViewHolder, item: ExamClassUserList.UserBean) {
+        helper.setText(R.id.tv_name,item.studentName)
         val resId=when(item.status){
             1->{
                 R.mipmap.icon_student_select_no

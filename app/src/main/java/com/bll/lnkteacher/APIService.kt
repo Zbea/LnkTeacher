@@ -1,6 +1,10 @@
 package com.bll.lnkteacher
 
 import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
+import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
+import com.bll.lnkteacher.mvp.model.exam.ExamList
+import com.bll.lnkteacher.mvp.model.exam.ExamRankList
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
@@ -304,12 +308,12 @@ interface APIService{
      * 获取班级同学提交考卷列表
      */
     @GET("exam/change/edit")
-    fun getPaperCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperCorrectClass>>
+    fun getPaperCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperClassUserList>>
     /**
      * 考试评分
      */
     @GET("task/group/one")
-    fun getPaperGrade(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<TestPaperGrade>>>
+    fun getPaperGrade(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<RankBean>>>
     /**
      * 提交学生批改
      */
@@ -404,4 +408,41 @@ interface APIService{
      */
     @GET("calendar/list")
     fun getCalenderList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CalenderList>>
+
+    /**
+     * 获取考试批改列表
+     */
+    @GET("school/exam/list")
+    fun getExamCorrectList(): Observable<BaseResult<ExamCorrectList>>
+    /**
+     * 班级批改完成
+     */
+    @POST("school/exam/finish")
+    fun onExamCorrectComplete(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取考试列表
+     */
+    @GET("school/exam/teacher")
+    fun getExamList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList>>
+    /**
+     * 获取考试原图
+     */
+    @GET("school/exam/info")
+    fun getExamImage(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList.ExamBean>>
+    /**
+     * 获取班级学生试卷
+     */
+    @GET("school/exam/job")
+    fun getExamClass(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamClassUserList>>
+    /**
+     * 批改完成
+     */
+    @POST("school/exam/update")
+    fun onExamCorrectUserComplete(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取考试所有学生成绩
+     */
+    @GET("school/exam/allJob")
+    fun getExamScores(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamRankList>>
+
 }

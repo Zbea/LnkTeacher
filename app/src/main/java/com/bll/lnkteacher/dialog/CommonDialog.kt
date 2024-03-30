@@ -2,12 +2,15 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.utils.DP2PX
 
 
-class CommonDialog(private val context: Context) {
+class CommonDialog(private val context: Context,private val screenPos:Int) {
 
     private var dialog: Dialog? = null
     private var titleStr = ""
@@ -16,6 +19,8 @@ class CommonDialog(private val context: Context) {
     private var contentStrId = 0
     private var cancelStr = "取消" //取消文案
     private var okStr = "确认" //确认文案
+
+    constructor(context: Context):this(context,0)
 
     fun setTitle(title: String): CommonDialog {
         this.titleStr = title
@@ -50,7 +55,17 @@ class CommonDialog(private val context: Context) {
     fun builder(): CommonDialog {
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_com)
-        dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        val window=dialog?.window!!
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams =window.attributes
+        if (screenPos==1){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.START
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
+        }
+        else{
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
+        }
         dialog?.show()
 
         val titleTv = dialog!!.findViewById<TextView>(R.id.tv_dialog_title)

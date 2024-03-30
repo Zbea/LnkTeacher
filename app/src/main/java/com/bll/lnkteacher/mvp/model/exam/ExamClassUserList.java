@@ -1,0 +1,26 @@
+package com.bll.lnkteacher.mvp.model.exam;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
+
+
+public class ExamClassUserList implements Serializable {
+    public List<UserBean> list;
+
+    public static class UserBean {
+        public int id;
+        public int schoolExamJobId;
+        public int userId;
+        public int classId;
+        public String examUrl;//原图地址
+        public String teacherUrl;
+        public String studentUrl;
+        public int status;//3学生未提交1已提交未批改2已批改
+        public int score;
+        public String studentName;
+        public boolean isCheck;
+        public String question;//题目数据
+    }
+}

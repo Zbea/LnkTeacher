@@ -9,10 +9,13 @@ import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CalenderList;
 import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
-import com.bll.lnkteacher.mvp.model.HandoutsList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
+import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList;
+import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList;
+import com.bll.lnkteacher.mvp.model.exam.ExamList;
+import com.bll.lnkteacher.mvp.model.exam.ExamRankList;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
@@ -20,8 +23,8 @@ import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails;
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent;
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperCorrectClass;
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperGrade;
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList;
+import com.bll.lnkteacher.mvp.model.testpaper.RankBean;
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.net.IBaseView;
@@ -159,17 +162,17 @@ public interface IContractView {
          * 获取班级学生已提交考卷
          * @param bean
          */
-        void onClassPapers(TestPaperCorrectClass bean);
-        /**
-         * 获取学生成绩
-         * @param list
-         */
-        void onGrade(List<TestPaperGrade> list);
+        void onClassPapers(TestPaperClassUserList bean);
         /**
          * 老师提交批改
          */
         void onCorrectSuccess();
         void onSendSuccess();
+    }
+
+    interface ITestPaperRankView extends IBaseView{
+        void onGrade(List<RankBean> list);
+        void onExamGrade(ExamRankList list);
     }
 
     //文件上传
@@ -267,7 +270,7 @@ public interface IContractView {
      * 云书库上传
      */
     interface ICloudUploadView extends IBaseView{
-        void onSuccess(List<Integer> cloudIds);
+        void onSuccessCloudUpload(List<Integer> cloudIds);
         void onDeleteSuccess();
     }
 
@@ -280,6 +283,22 @@ public interface IContractView {
     interface ICalenderView extends IBaseView {
         void onList(CalenderList list);
         void buySuccess();
+    }
+
+    interface IExamCorrectListView extends IBaseView {
+        void onList(ExamCorrectList list);
+        void onSuccess();
+    }
+
+    interface IExamListView extends IBaseView {
+        void onList(ExamList list);
+        void onExamImage(ExamList.ExamBean url);
+        void onExamClassUser(ExamClassUserList classUserList);
+    }
+
+    interface IExamCorrectView extends IBaseView {
+        void onExamClassUser(ExamClassUserList classUserList);
+        void onCorrectSuccess();
     }
 
 }

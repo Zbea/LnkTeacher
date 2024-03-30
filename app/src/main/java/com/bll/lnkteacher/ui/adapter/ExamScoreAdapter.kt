@@ -15,34 +15,39 @@ class ExamScoreAdapter(layoutResId: Int, data: List<ExamScoreItem>?) : BaseQuick
         val bt_up=helper.getView<LongClickButton>(R.id.bt_up)
         et_score.text=""
         var score=10
-
-        bt_up.setLongClickRepeatListener ({
-            if (score<99){
-                score+=1
-                et_score.text= score.toString()
-                item.score=et_score.text.toString()
-            }
-        },400)
-        bt_up.setOnClickListener {
-            if (score<99){
-                score+=1
-                et_score.text= score.toString()
-                item.score=et_score.text.toString()
-            }
+        if (item.score!=null){
+            et_score.text=item.score
+            score=item.score.toInt()
         }
-        val bt_down=helper.getView<LongClickButton>(R.id.bt_down)
-        bt_down.setLongClickRepeatListener ({
-            if (score>0){
-                score-=1
-                et_score.text= score.toString()
-                item.score=et_score.text.toString()
+        else{
+            bt_up.setLongClickRepeatListener ({
+                if (score<99){
+                    score+=1
+                    et_score.text= score.toString()
+                    item.score=et_score.text.toString()
+                }
+            },400)
+            bt_up.setOnClickListener {
+                if (score<99){
+                    score+=1
+                    et_score.text= score.toString()
+                    item.score=et_score.text.toString()
+                }
             }
-        },400)
-        bt_down.setOnClickListener {
-            if (score>0){
-                score-=1
-                et_score.text= score.toString()
-                item.score=et_score.text.toString()
+            val bt_down=helper.getView<LongClickButton>(R.id.bt_down)
+            bt_down.setLongClickRepeatListener ({
+                if (score>0){
+                    score-=1
+                    et_score.text= score.toString()
+                    item.score=et_score.text.toString()
+                }
+            },400)
+            bt_down.setOnClickListener {
+                if (score>0){
+                    score-=1
+                    et_score.text= score.toString()
+                    item.score=et_score.text.toString()
+                }
             }
         }
     }

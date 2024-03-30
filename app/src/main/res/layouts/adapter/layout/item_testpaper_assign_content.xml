@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="205dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     >
+
+    <LinearLayout
+        android:layout_width="205dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
     <ImageView
         android:id="@+id/iv_image"
@@ -15,15 +21,15 @@
 
     <CheckBox
         android:id="@+id/cb_check"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:ellipsize="end"
         android:button="@drawable/bg_check_selector"
         android:textSize="@dimen/sp_20"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_40"
         android:clickable="false"
         android:lines="1"/>
-
+    </LinearLayout>
 </LinearLayout>

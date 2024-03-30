@@ -44,7 +44,6 @@ class TestpaperManagerFragment : BaseMainFragment(){
         }
 
         initTab()
-        onGradeEvent()
     }
 
     override fun lazyLoad() {

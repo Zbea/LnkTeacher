@@ -69,20 +69,6 @@
             android:layout_height="0dp"
             />
 
-        <TextView
-            android:id="@+id/tv_send"
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_5"
-            android:text="发送"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:gravity="center"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
     </LinearLayout>
 
 </LinearLayout>

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.R.id.*
 import com.bll.lnkteacher.mvp.model.exam.ExamList
-import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -15,27 +14,28 @@ class ExamListAdapter(layoutResId: Int, data: List<ExamList.ExamBean>?) : BaseQu
 
     override fun convert(helper: BaseViewHolder, item: ExamList.ExamBean) {
         helper.setText(tv_exam_type,item.examName)
-        helper.setText(tv_date_create,"考试时间："+ DateUtils.longToStringWeek(item.time))
+        helper.setGone(iv_delete,false)
+        helper.setText(tv_date_create,"考试时间："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        ClassAdapter(R.layout.item_exam_correct_class_type, item.examList).apply {
+        ClassAdapter(R.layout.item_exam_correct_class_type, item.classList).apply {
             rvList.adapter = this
             bindToRecyclerView(rvList)
             setOnItemChildClickListener { adapter, view, position ->
                 listener?.onClick(view,helper.adapterPosition,position)
             }
         }
-        helper.addOnClickListener(tv_analyse,iv_delete)
+        helper.addOnClickListener(tv_analyse)
 
     }
 
-    class ClassAdapter(layoutResId: Int,data: MutableList<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
+    class ClassAdapter(layoutResId: Int,data: MutableList<ExamList.ClassBean>?) : BaseQuickAdapter<ExamList.ClassBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: ExamList.ClassBean) {
             helper.apply {
-                setText(tv_class_name,item.name)
-                setText(tv_number,"${item.totalStudent}人")
-                setText(tv_receive_number,"${item.totalSubmitStudent}")
-                addOnClickListener(ll_content, tv_send)
+                setText(tv_class_name,item.className)
+                setText(tv_number,"${item.studentCount}人")
+                setText(tv_receive_number,"${item.sendCount}")
+                addOnClickListener(ll_content)
             }
         }
 

@@ -73,7 +73,7 @@
                 <action android:name="com.bll.lnkteacher.upload"/>
                 <action android:name="com.bll.lnkteacher.upload.year"/>
                 <action android:name="com.bll.lnkteacher.refresh"/>
-                <action android:name="com.android.settings.importdatasgl"/>
+                <action android:name="com.android.settings.cleardata"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>
@@ -121,16 +121,13 @@
         <activity android:name=".ui.activity.WalletActivity"
             android:theme="@style/styleDialogCustom"
             />
-        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
-        <activity android:name=".ui.activity.teaching.TestPaperGradeActivity"/>
+        <activity android:name=".ui.activity.teaching.GradeRankActivity"/>
         <activity android:name=".ui.activity.ClassGroupUserActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity"/>
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"/>
-        <activity android:name=".ui.activity.teaching.TestPaperCorrectActivity"
+        <activity android:name=".ui.activity.teaching.CorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookTypeListActivity"
@@ -138,7 +135,7 @@
             />
         <activity android:name=".ui.activity.book.BookListActivity" />
         <activity android:name=".ui.activity.ClassGroupTeacherActivity"/>
-        <activity android:name=".ui.activity.teaching.TestPaperAnalyseActivity"
+        <activity android:name=".ui.activity.teaching.AnalyseActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
@@ -170,6 +167,12 @@
         <activity android:name=".ui.activity.ClassGroupChildActivity"/>
         <activity android:name=".ui.activity.CalenderListActivity"/>
         <activity android:name=".ui.activity.CalenderMyActivity"/>
+        <activity android:name=".ui.activity.exam.ExamCorrectActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
+        <activity android:name=".ui.activity.exam.ExamAnalyseActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

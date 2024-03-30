@@ -22,7 +22,7 @@ class CloudUploadPresenter(view: IContractView.ICloudUploadView):
                 return false
             }
             override fun success(tBaseResult: BaseResult<MutableList<Int>>) {
-                view.onSuccess(tBaseResult.data)
+                view.onSuccessCloudUpload(tBaseResult.data)
             }
         }, false)
     }

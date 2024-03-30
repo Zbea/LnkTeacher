@@ -179,7 +179,7 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
                 isCommit=true
             selects.add(HomeworkClassSelect().apply {
                 classId=ite.classId
-                submitStatus=ite.submitStatus
+                submitStatus=if (ite.isCommit) 0 else 1
                 endTime=ite.date/1000
             })
         }

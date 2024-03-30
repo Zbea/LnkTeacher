@@ -35,7 +35,7 @@ class Constants {
         const val SCREEN_RIGHT = 2//右屏
         const val SCREEN_FULL = 3//全屏
 
-        //                        const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
@@ -46,6 +46,7 @@ class Constants {
 
         val TESTPAPER_PATH = MyApplication.mContext.getExternalFilesDir("TestPaper")?.path
         val HOMEWORK_PATH = MyApplication.mContext.getExternalFilesDir("Homework")?.path
+            val EXAM_PATH = MyApplication.mContext.getExternalFilesDir("Exam")?.path
         val TEXTBOOK_PATH = MyApplication.mContext.getExternalFilesDir("TextBookFile")!!.path
         val TEXTBOOK_CATALOG_TXT = "catalog.txt" //book文本信息的json文件
         val TEXTBOOK_PICTURE_FILES = "contents" //图片资源的最确路径
@@ -80,7 +81,7 @@ class Constants {
         const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"
         const val PRIVACY_PASSWORD_EVENT = "PrivacyPasswordEvent"
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"
-        const val SETTING_DATA_EVENT = "SettingDataEvent" //系统设置 一键下载
+        const val SETTING_DATA_CLEAR_EVENT = "SettingDataClearEvent" //一键清除
         const val CLASSGROUP_TEACHING_PLAN_EVENT = "ClassGroupTeachingPlanEvent"
         const val CALENDER_EVENT = "CalenderEvent"
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
@@ -89,7 +90,7 @@ class Constants {
         const val PACKAGE_GEOMETRY = "com.geometry"
 
         //广播
-        const val DATA_BROADCAST_EVENT = "com.android.settings.importdatasgl"
+        const val DATA_CLEAR_BROADCAST_EVENT = "com.android.settings.cleardata"
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkteacher.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkteacher.account.logout"
         const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"

@@ -193,7 +193,7 @@
         android:paddingEnd="7dp"
         android:paddingBottom="7dp"
         android:orientation="vertical"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:background="@mipmap/icon_main_content_left_bottom_bg"
         >
         <TextView
             android:layout_width="match_parent"

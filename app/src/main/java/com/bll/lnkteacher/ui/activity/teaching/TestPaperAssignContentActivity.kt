@@ -167,7 +167,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     private fun selectorGroup() {
-        PopupCheckList(this, popGroups, tv_group,  5).builder()?.setOnSelectListener{
+        PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder()?.setOnSelectListener{
             classSelectGroups= it as MutableList<PopupBean>
         }
     }
