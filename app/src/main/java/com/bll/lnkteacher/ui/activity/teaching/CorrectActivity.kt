@@ -365,14 +365,14 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
                     GlideUtils.setImageFile(this,File(masterImage),v_content_a)
-                    tv_page_a.text="${posImage+1}"
+                    tv_page_a.text="${posImage+1}/${getImageSize()}"
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
                     if (posImage+1<getImageSize()){
                         val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
                         GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
-                        tv_page.text="${posImage+1+1}"
+                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                         val drawPath_b = getPathDrawStr(posImage+1+1)
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
@@ -387,10 +387,10 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     elik_b?.setPWEnabled(false,false)
 
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_a)
-                    tv_page_a.text="${posImage+1}"
+                    tv_page_a.text="${posImage+1}/${getImageSize()}"
                     if (posImage+1<getImageSize()){
                         GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
-                        tv_page.text="${posImage+1+1}"
+                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                     }
                     else{
                         v_content_b.setImageResource(0)
@@ -407,12 +407,12 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     GlideUtils.setImageFile(this,File(masterImage),v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
-                    tv_page.text="${posImage+1}"
+                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
                 2->{
                     elik_b?.setPWEnabled(false,false)
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
-                    tv_page.text="${posImage+1}"
+                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
             }
         }

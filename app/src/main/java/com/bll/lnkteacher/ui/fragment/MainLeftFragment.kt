@@ -16,13 +16,11 @@ import com.bll.lnkteacher.ui.activity.CalenderListActivity
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
 import com.bll.lnkteacher.ui.activity.DateActivity
 import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
-import com.bll.lnkteacher.ui.activity.book.BookStoreTypeActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import java.io.File
 
@@ -85,11 +83,6 @@ class MainLeftFragment:BaseFragment() {
                 nowDayPos+=1
                 setCalenderBg()
             }
-        }
-
-        showSearch(true)
-        tv_search.setOnClickListener {
-            customStartActivity(Intent(requireActivity(),BookStoreTypeActivity::class.java))
         }
 
         initDialog(1)

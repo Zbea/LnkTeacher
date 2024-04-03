@@ -35,8 +35,8 @@ class Constants {
         const val SCREEN_RIGHT = 2//右屏
         const val SCREEN_FULL = 3//全屏
 
-//                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.101.100:10800/v1/"
+                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.101.100:10800/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
