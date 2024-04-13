@@ -1,17 +1,13 @@
 package com.bll.lnkteacher.ui.activity
 
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.DateCalendarDialog
-import com.bll.lnkteacher.dialog.DiaryListDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.CalendarDiaryDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.mvp.model.DiaryBean
 import com.bll.lnkteacher.utils.DateUtils
-import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.*
 import kotlinx.android.synthetic.main.common_drawing_bottom.*
@@ -31,42 +27,58 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun initData() {
         nowLong=DateUtils.getStartOfDayInMillis()
+
+        diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
+        if (diaryBean==null){
+            initCurrentDiaryBean()
+        }
     }
 
     override fun initView() {
-        disMissView(tv_page_title)
+        disMissView(iv_btn,iv_catalog)
         elik_b?.addOnTopView(ll_date)
-        elik_b?.addOnTopView(tv_digest)
-
-        onChangeContent()
+        elik_b?.addOnTopView(tv_theme)
 
         iv_up.setOnClickListener {
-            saveDiary()
-            nowLong -= Constants.dayLong
-            onChangeContent()
+            val lastDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,0)
+            if (lastDiaryBean!=null){
+                saveDiary()
+                diaryBean=lastDiaryBean
+                nowLong=lastDiaryBean.date
+                changeContent()
+            }
         }
 
         iv_down.setOnClickListener {
-            saveDiary()
-            nowLong += Constants.dayLong
-            onChangeContent()
+            val nextDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,1)
+            if (nextDiaryBean!=null){
+                saveDiary()
+                diaryBean=nextDiaryBean
+                nowLong=nextDiaryBean.date
+                changeContent()
+            }
+            else{
+                if (nowLong<DateUtils.getStartOfDayInMillis()){
+                    nowLong=DateUtils.getStartOfDayInMillis()
+                    initCurrentDiaryBean()
+                    changeContent()
+                }
+            }
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog(this,50f,150f).builder().setOnDateListener{
+            CalendarDiaryDialog(this,getCurrentScreenPos()).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
-                onChangeContent()
+                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
+                if (diaryBean==null){
+                    initCurrentDiaryBean()
+                }
+                changeContent()
             }
         }
 
-        tv_digest.setOnClickListener {
-            InputContentDialog(this,diaryBean?.title!!).builder().setOnDialogClickListener{
-                diaryBean?.title=it
-            }
-        }
-
-        iv_btn.setOnClickListener {
+        tv_theme.setOnClickListener {
             NoteModuleAddDialog(this, getCurrentScreenPos(),0).builder()
                 ?.setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
@@ -74,24 +86,21 @@ class DiaryActivity:BaseDrawingActivity() {
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
                 }
         }
+
+        changeContent()
     }
 
-    override fun onCatalog() {
-        DiaryListDialog(this,nowLong).builder()?.setOnDialogClickListener(object : DiaryListDialog.OnDialogClickListener {
-            override fun onClick(diaryBean: DiaryBean) {
-                saveDiary()
-                nowLong=diaryBean.date
-                onChangeContent()
-            }
-            override fun onDelete(diaryBean: DiaryBean) {
-                for (i in 0.until(diaryBean.size)){
-                    val path=FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date)) + "/${i + 1}.tch"
-                    elik_b?.freeCachePWBitmapFilePath(path, true)
-                }
-                FileUtils.deleteFile(File(FileAddress().getPathDiary(DateUtils.longToString(diaryBean.date))))
-                DiaryDaoManager.getInstance().delete(diaryBean)
-            }
-        })
+    /**
+     * 初始化
+     */
+    private fun initCurrentDiaryBean(){
+        bgRes=ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1)
+        diaryBean= DiaryBean()
+        diaryBean?.date=nowLong
+        diaryBean?.title=DateUtils.longToStringDataNoYear(nowLong)
+        diaryBean?.year=DateUtils.getYear()
+        diaryBean?.month=DateUtils.getMonth()
+        diaryBean?.bgRes=bgRes
     }
 
     override fun onPageDown() {
@@ -106,23 +115,13 @@ class DiaryActivity:BaseDrawingActivity() {
         }
     }
 
-    override fun onChangeContent() {
-        images.clear()
+    /**
+     * 切换日记
+     */
+    private fun changeContent(){
         posImage=0
-        diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
-        if (diaryBean!=null){
-            bgRes=diaryBean?.bgRes.toString()
-            for (i in 0.until(diaryBean?.size!!)){
-                val path=FileAddress().getPathDiary(DateUtils.longToString(nowLong)) + "/${i + 1}.tch"
-                images.add(path)
-            }
-        } else{
-            bgRes=ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1)
-            diaryBean= DiaryBean()
-            diaryBean?.date=nowLong
-            diaryBean?.title=DateUtils.longToStringDataNoYear(nowLong)
-            diaryBean?.bgRes=bgRes
-        }
+        bgRes=diaryBean?.bgRes.toString()
+        images= diaryBean?.paths as MutableList<String>
         setContentImage()
     }
 
@@ -132,7 +131,7 @@ class DiaryActivity:BaseDrawingActivity() {
     private fun setContentImage() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
         v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        val path = FileAddress().getPathDiary(DateUtils.longToString(nowLong)) + "/${posImage + 1}.tch"
+        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)
@@ -142,10 +141,14 @@ class DiaryActivity:BaseDrawingActivity() {
         elik_b?.setLoadFilePath(path, true)
     }
 
+    override fun onElikSava_b() {
+        elik_b?.saveBitmap(true) {}
+    }
+
     private fun saveDiary() {
-        val path=FileAddress().getPathDiary(DateUtils.longToString(nowLong))
+        val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong))
         if (!File(path).list().isNullOrEmpty()){
-            diaryBean?.size = images.size
+            diaryBean?.paths = images
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
         }
     }

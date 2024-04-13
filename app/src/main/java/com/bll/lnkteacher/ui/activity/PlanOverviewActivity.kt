@@ -5,7 +5,7 @@ import com.bll.lnkteacher.Constants.Companion.weekTime
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.DateCalendarDialog
+import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
@@ -85,7 +85,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         }
 
         tv_date.setOnClickListener {
-            DateCalendarDialog(this,45f,190f).builder().setOnDateListener{
+            CalendarSingleDialog(this,45f,190f).builder().setOnDateListener{
                 if (type==1){
                     val dateStr=DateUtils.longToStringDataNoHour(it).split("-")
                     nowYear=dateStr[0].toInt()

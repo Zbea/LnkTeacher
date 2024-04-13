@@ -109,7 +109,7 @@ interface APIService{
      * //获取学豆列表
      */
     @GET("wallets/list")
-    fun getSMoneyList(@QueryMap map: HashMap<String,String>): Observable<BaseResult<AccountList>>
+    fun getQdList(): Observable<BaseResult<MutableList<AccountQdBean>>>
     /**
      * 提交学豆订单
      */
@@ -376,11 +376,6 @@ interface APIService{
      */
     @GET("message/inform/list")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
-    /**
-     * 我的讲义
-     */
-    @GET("teaching/list")
-    fun getHandouts(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<HandoutsList>>
 
     /**
      * 应用列表

@@ -7,11 +7,11 @@ import android.widget.RadioButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.AccountList
+import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.ui.adapter.AccountXdAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 
-class WalletBuyXdDialog(val context: Context, val list: List<AccountList.ListBean>) {
+class WalletBuyXdDialog(val context: Context, val list: List<AccountQdBean>) {
 
     private var dialog:Dialog?=null
     private var id=0
@@ -29,7 +29,7 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountList.ListBea
         val rb_wx = dialog!!.findViewById<RadioButton>(R.id.rb_wx)
 
         recyclerview.layoutManager = GridLayoutManager(context,4)//创建布局管理
-        var mAdapter = AccountXdAdapter(R.layout.item_account_smoney, list)
+        val mAdapter = AccountXdAdapter(R.layout.item_account_smoney, list)
         recyclerview.adapter = mAdapter
         recyclerview.addItemDecoration(SpaceGridItemDeco(4,40))
         mAdapter.setOnItemClickListener { adapter, view, position ->

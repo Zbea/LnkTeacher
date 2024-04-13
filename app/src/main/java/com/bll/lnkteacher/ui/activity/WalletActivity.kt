@@ -7,8 +7,8 @@ import android.widget.ImageView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.WalletBuyXdDialog
-import com.bll.lnkteacher.mvp.model.AccountList
 import com.bll.lnkteacher.mvp.model.AccountOrder
+import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.mvp.presenter.WalletPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.SPUtil
@@ -19,13 +19,13 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
 
     private lateinit var walletPresenter:WalletPresenter
     private var xdDialog:WalletBuyXdDialog?=null
-    private var xdList= mutableListOf<AccountList.ListBean>()
+    private var xdList= mutableListOf<AccountQdBean>()
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
 
-    override fun getXdList(list: AccountList?) {
-        xdList= list?.list as MutableList<AccountList.ListBean>
+    override fun getXdList(list: MutableList<AccountQdBean>) {
+        xdList= list
     }
 
     override fun onXdOrder(order: AccountOrder?) {

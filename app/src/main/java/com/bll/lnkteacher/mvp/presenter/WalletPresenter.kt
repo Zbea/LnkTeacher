@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.AccountList
 import com.bll.lnkteacher.mvp.model.AccountOrder
+import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
 import com.bll.lnkteacher.net.BaseResult
@@ -13,17 +13,12 @@ class WalletPresenter(view: IContractView.IWalletView,val screen:Int) : BasePres
 
     //获取学豆列表
     fun getXdList(boolean: Boolean) {
-
-        val map=HashMap<String,String>()
-        map["pageIndex"] = "1"
-        map["pageSize"] = "10"
-
-        val list = RetrofitManager.service.getSMoneyList(map)
-        doRequest(list, object : Callback<AccountList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<AccountList>): Boolean {
+        val list = RetrofitManager.service.getQdList()
+        doRequest(list, object : Callback<MutableList<AccountQdBean>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<MutableList<AccountQdBean>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AccountList>) {
+            override fun success(tBaseResult: BaseResult<MutableList<AccountQdBean>>) {
                 view.getXdList(tBaseResult.data)
             }
 

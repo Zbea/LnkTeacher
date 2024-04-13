@@ -1,11 +1,11 @@
 package com.bll.lnkteacher.ui.activity
 
-import PopupFreeNoteList
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.PopupFreeNoteList
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.mvp.model.FreeNoteBean
 import com.bll.lnkteacher.utils.DateUtils
@@ -21,7 +21,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
     private var posImage=0
     private var images= mutableListOf<String>()//手写地址
     private var bgResList= mutableListOf<String>()//背景地址
-    private var freeNotePopWindow:PopupFreeNoteList?=null
+    private var freeNotePopWindow: PopupFreeNoteList?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_free_note
@@ -35,7 +35,6 @@ class FreeNoteActivity:BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(tv_page_title,iv_catalog,iv_btn)
-        setPageTitle("随笔")
         tv_name.text=freeNoteBean?.title
 
         tv_name.setOnClickListener {
@@ -56,7 +55,7 @@ class FreeNoteActivity:BaseDrawingActivity() {
 
         tv_free_list.setOnClickListener {
             if (freeNotePopWindow==null){
-                freeNotePopWindow=PopupFreeNoteList(this,tv_free_list).builder()
+                freeNotePopWindow= PopupFreeNoteList(this,tv_free_list).builder()
                 freeNotePopWindow?.setOnSelectListener{
                     saveFreeNote()
                     posImage=0

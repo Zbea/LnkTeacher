@@ -311,13 +311,13 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             }
             //每天更新
             Constants.AUTO_UPLOAD_DAY_EVENT->{
-//                typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
-//                mQiniuPresenter.getToken()
+                typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
+                mQiniuPresenter.getToken()
             }
             //每年更新
             Constants.AUTO_UPLOAD_YEAR_EVENT->{
-//                typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
-//                mQiniuPresenter.getToken()
+                typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
+                mQiniuPresenter.getToken()
             }
         }
     }

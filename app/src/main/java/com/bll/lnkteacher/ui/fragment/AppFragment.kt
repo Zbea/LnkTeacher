@@ -42,7 +42,7 @@ class AppFragment:BaseMainFragment() {
             AppUtils.startAPP(activity,packageName)
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
-            CommonDialog(requireActivity()).setContent("卸载应用？").builder().setDialogClickListener(object :
+            CommonDialog(requireActivity(),1).setContent("卸载应用？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
                 override fun cancel() {
                 }

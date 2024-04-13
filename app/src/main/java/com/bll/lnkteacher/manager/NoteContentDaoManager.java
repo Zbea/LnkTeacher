@@ -63,8 +63,16 @@ public class NoteContentDaoManager {
         return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
-    public void editNotes(String type, String noteTitle,String editType){
-        List<NoteContent> noteContents=queryAll(type,noteTitle);
+    public void editNoteTitles(String type, String notebookTitle,String editTitle){
+        List<NoteContent> noteContents=queryAll(type,notebookTitle);
+        for (NoteContent noteContent: noteContents) {
+            noteContent.noteTitle=editTitle;
+        }
+        dao.insertOrReplaceInTx(noteContents);
+    }
+
+    public void editNoteTypes(String type, String notebookTitle,String editType){
+        List<NoteContent> noteContents=queryAll(type,notebookTitle);
         for (NoteContent noteContent: noteContents) {
             noteContent.typeStr=editType;
         }

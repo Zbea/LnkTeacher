@@ -127,7 +127,7 @@ class NoteFragment : BaseMainFragment() {
                                 return@setOnDialogClickListener
                             }
                             //修改内容分类
-                            NoteContentDaoManager.getInstance().editNotes(note.typeStr,note.title,string)
+                            NoteContentDaoManager.getInstance().editNoteTitles(note.typeStr,note.title,string)
                             note.title = string
                             NoteDaoManager.getInstance().insertOrReplace(note)
                             EventBus.getDefault().post(NOTE_EVENT)//更新全局通知

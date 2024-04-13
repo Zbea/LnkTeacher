@@ -108,7 +108,7 @@ class NotebookManagerActivity : BaseActivity() {
             //修改笔记、内容分类
             val notes=NoteDaoManager.getInstance().queryAll(noteBook.title)
             for (note in notes){
-                NoteContentDaoManager.getInstance().editNotes(noteBook.title,note.title,string)
+                NoteContentDaoManager.getInstance().editNoteTypes(noteBook.title,note.title,string)
             }
             NoteDaoManager.getInstance().editNotes(noteBook.title,string)
 

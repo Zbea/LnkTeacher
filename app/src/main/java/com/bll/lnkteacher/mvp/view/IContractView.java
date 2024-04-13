@@ -1,6 +1,6 @@
 package com.bll.lnkteacher.mvp.view;
 
-import com.bll.lnkteacher.mvp.model.AccountList;
+import com.bll.lnkteacher.mvp.model.AccountQdBean;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.AppList;
 import com.bll.lnkteacher.mvp.model.AppUpdateBean;
@@ -56,7 +56,7 @@ public interface IContractView {
 
     //钱包页面回调
     interface IWalletView extends IBaseView {
-        void getXdList(AccountList list);
+        void getXdList(List<AccountQdBean> list);
         void onXdOrder(AccountOrder order);
         void checkOrder(AccountOrder order);
     }
