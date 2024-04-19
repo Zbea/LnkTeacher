@@ -4,16 +4,22 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.CloudUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 
-abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView {
+abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView,IContractView.IQiniuView {
 
+    val mQiniuPresenter= QiniuPresenter(this)
     var mCloudUploadPresenter= CloudUploadPresenter(this)
     var grade=SPUtil.getInt("grade")
     var popGrades= mutableListOf<PopupBean>()
+
+    override fun onToken(token: String) {
+        onUpload(token)
+    }
 
     override fun onSuccessCloudUpload(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
@@ -44,6 +50,12 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
     }
 
+    /**
+     * 开始上传
+     */
+    open fun onUpload(token: String){
+
+    }
     /**
      * 上传成功(书籍云id) 上传成功后删掉重复上传的数据
      */

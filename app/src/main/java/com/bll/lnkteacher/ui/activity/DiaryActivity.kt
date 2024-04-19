@@ -35,7 +35,7 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn,iv_catalog)
+        disMissView(iv_btn,iv_catalog,tv_page_title)
         elik_b?.addOnTopView(ll_date)
         elik_b?.addOnTopView(tv_theme)
 

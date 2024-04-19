@@ -17,7 +17,7 @@ import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
 
 
-class PrivacyPasswordCreateDialog(private val context: Context) {
+class PrivacyPasswordCreateDialog(private val context: Context,private val type:Int=0) {
 
     private val popWindowBeans= mutableListOf<PopupBean>()
 
@@ -27,35 +27,35 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
         popWindowBeans.add(
             PopupBean(
                 0,
-                "您的姓名是？",
+                "好友姓名？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 1,
-                "父亲姓名是？",
+                "父亲姓名？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 2,
-                "您的生日是？",
+                "您的生日？",
                 false
             )
         )
         popWindowBeans.add(
             PopupBean(
                 3,
-                "最喜欢电影？",
+                "最爱电影？",
                 false
             )
         )
@@ -106,7 +106,7 @@ class PrivacyPasswordCreateDialog(private val context: Context) {
             checkPassword.answer=answerStr
             checkPassword.password= MD5Utils.digest(passwordStr)
             checkPassword.isSet=true
-            MethodManager.savePrivacyPassword(checkPassword)
+            MethodManager.savePrivacyPassword(type,checkPassword)
 
             dialog.dismiss()
             listener?.onClick(checkPassword)

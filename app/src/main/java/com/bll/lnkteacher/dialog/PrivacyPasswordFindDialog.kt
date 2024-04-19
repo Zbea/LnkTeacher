@@ -15,19 +15,19 @@ import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
 
 
-class PrivacyPasswordFindDialog(private val context: Context) {
+class PrivacyPasswordFindDialog(private val context: Context,private val type:Int=0) {
 
-    fun builder(): PrivacyPasswordFindDialog? {
+    fun builder(): PrivacyPasswordFindDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_privacy_password_find)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
-        val checkPassword=MethodManager.getPrivacyPassword()
+        val checkPassword=MethodManager.getPrivacyPassword(type)
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
@@ -64,7 +64,7 @@ class PrivacyPasswordFindDialog(private val context: Context) {
             }
 
             checkPassword.password= MD5Utils.digest(passwordStr)
-            MethodManager.savePrivacyPassword(checkPassword)
+            MethodManager.savePrivacyPassword(type,checkPassword)
             dialog.dismiss()
             listener?.onClick()
 

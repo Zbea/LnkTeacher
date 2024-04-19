@@ -16,7 +16,6 @@ import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
-import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
@@ -29,8 +28,6 @@ import java.util.*
 class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     private val mQiniuPresenter=QiniuPresenter(this)
-    private var typeEvent=""
-
     private var mainLeftFragment: MainLeftFragment? = null
     private var mainRightFragment: MainRightFragment? = null
     private var bookcaseFragment: BookCaseFragment? = null
@@ -51,20 +48,10 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     private var rightFragment: Fragment? = null
 
     override fun onToken(token: String) {
-        when(typeEvent){
-            //每天更新
-            Constants.AUTO_UPLOAD_DAY_EVENT->{
-                bookcaseFragment?.upload(token)
-                textbookFragment?.upload(token)
-            }
-            //每年更新
-            Constants.AUTO_UPLOAD_YEAR_EVENT->{
-                noteFragment?.upload(token)
-                mainRightFragment?.uploadDiary(token)
-                mainRightFragment?.uploadFreeNote(token)
-                mainRightFragment?.uploadScreenShot(token)
-            }
-        }
+        bookcaseFragment?.upload(token)
+        textbookFragment?.upload(token)
+        mainRightFragment?.uploadDiary(token)
+        mainRightFragment?.uploadScreenShot(token)
     }
 
     override fun layoutId(): Int {
@@ -138,8 +125,6 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         }
 
         startRemind()
-        startRemindDayUpload()
-        startRemind12Month()
     }
 
 
@@ -170,76 +155,6 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,
                 AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-        }
-    }
-
-    /**
-     * 开始每天定时自动上传
-     */
-    private fun startRemindDayUpload() {
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.HOUR_OF_DAY, 15)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            var selectLong = timeInMillis
-            if (currentTimeMillisLong > selectLong) {
-                add(Calendar.DAY_OF_MONTH, 1)
-                selectLong = timeInMillis
-            }
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_REFRESH
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                AlarmManager.INTERVAL_DAY, pendingIntent
-            )
-        }
-    }
-
-
-    /**
-     * 每年12月31 3点执行
-     */
-    private fun startRemind12Month() {
-        val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
-        val date=allDay*24*60*60*1000L
-        Calendar.getInstance().apply {
-            val currentTimeMillisLong = System.currentTimeMillis()
-            timeInMillis = currentTimeMillisLong
-            timeZone = TimeZone.getTimeZone("GMT+8")
-            set(Calendar.MONTH,11)
-            set(Calendar.DAY_OF_MONTH,31)
-            set(Calendar.HOUR_OF_DAY,15)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-
-            var selectLong = timeInMillis
-            if (System.currentTimeMillis()>selectLong){
-                set(Calendar.YEAR, DateUtils.getYear()+1)
-                selectLong=timeInMillis
-            }
-
-            val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
-            intent.action = Constants.ACTION_UPLOAD_YEAR
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT)
-
-            val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
-                date, pendingIntent
             )
         }
     }
@@ -306,28 +221,17 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
-            Constants.SETTING_DATA_CLEAR_EVENT->{
-                clearSqlData()
-            }
-            //每天更新
-            Constants.AUTO_UPLOAD_DAY_EVENT->{
-                typeEvent=Constants.AUTO_UPLOAD_DAY_EVENT
-                mQiniuPresenter.getToken()
-            }
-            //每年更新
-            Constants.AUTO_UPLOAD_YEAR_EVENT->{
-                typeEvent=Constants.AUTO_UPLOAD_YEAR_EVENT
+            //上传
+            Constants.DATA_UPLOAD_EVENT->{
                 mQiniuPresenter.getToken()
             }
         }
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        return if (event.keyCode == KeyEvent.KEYCODE_BACK) {
-            true
-        } else {
-            super.dispatchKeyEvent(event)
-        }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK || keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
+            false
+        } else super.onKeyDown(keyCode, event)
     }
 
 }

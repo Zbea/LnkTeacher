@@ -62,8 +62,7 @@ class Constants {
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
-        const val AUTO_UPLOAD_DAY_EVENT = "AutoUploadDayEvent" //每天3点自动上传
-        const val AUTO_UPLOAD_YEAR_EVENT = "AutoUploadYearEvent" //每天3点自动上传
+        const val DATA_UPLOAD_EVENT = "AutoUploadEvent"
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"
@@ -79,9 +78,7 @@ class Constants {
         const val APP_INSTALL_EVENT = "AppInstallEvent"
         const val APP_INSTALL_INSERT_EVENT = "AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"
-        const val PRIVACY_PASSWORD_EVENT = "PrivacyPasswordEvent"
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"
-        const val SETTING_DATA_CLEAR_EVENT = "SettingDataClearEvent" //一键清除
         const val CLASSGROUP_TEACHING_PLAN_EVENT = "ClassGroupTeachingPlanEvent"
         const val CALENDER_EVENT = "CalenderEvent"
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
@@ -90,12 +87,10 @@ class Constants {
         const val PACKAGE_GEOMETRY = "com.geometry"
 
         //广播
-        const val DATA_CLEAR_BROADCAST_EVENT = "com.android.settings.cleardata"
+        const val DATA_UPLOAD_BROADCAST_EVENT = "com.htfyun.blackwhitebar.uploaddata"
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkteacher.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkteacher.account.logout"
         const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"
-        const val ACTION_UPLOAD_REFRESH = "com.bll.lnkteacher.upload"//每天3自动更新
-        const val ACTION_UPLOAD_YEAR = "com.bll.lnkteacher.upload.year"//每年12月31 3点自动上传
 
         const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"
     }

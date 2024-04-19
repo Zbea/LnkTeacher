@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
-import com.bll.lnkteacher.Constants.Companion.PRIVACY_PASSWORD_EVENT
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
@@ -56,7 +57,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        privacyPassword=MethodManager.getPrivacyPassword()
+        privacyPassword=MethodManager.getPrivacyPassword(0)
 
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
@@ -70,13 +71,37 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
 
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder()?.setOnDialogClickListener{
+                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                     customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
                 }
             } else{
                 customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
             }
         }
+
+        tv_diary.setOnLongClickListener {
+            if (privacyPassword==null){
+                PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                    privacyPassword=it
+                    showToast("日记密码设置成功")
+                }
+            }
+            else{
+                val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword!!.isSet=!privacyPassword!!.isSet
+                            MethodManager.savePrivacyPassword(0,privacyPassword)
+                        }
+                    }
+                })
+            }
+            return@setOnLongClickListener true
+        }
+
 
         tv_free_note.setOnClickListener {
             customStartActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
@@ -149,9 +174,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
             MESSAGE_EVENT -> {
                 findMessages()
             }
-            PRIVACY_PASSWORD_EVENT->{
-                privacyPassword=MethodManager.getPrivacyPassword()
-            }
             NOTE_EVENT->{
                 findNotes()
             }
@@ -179,11 +201,12 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=4
-                            subType=-1
+                            subType=ToolUtils.getDateId()
                             subTypeStr="日记"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(diaryBean)
+                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传
@@ -250,7 +273,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         itemTypeBean.title="未分类"
         itemTypeBean.date=System.currentTimeMillis()
         itemTypeBean.path=FileAddress().getPathScreen("未分类")
-        screenTypes.add(itemTypeBean)
+        screenTypes.add(0,itemTypeBean)
         for (item in screenTypes){
             val fileName=DateUtils.longToString(item.date)
             val path=item.path
@@ -260,11 +283,12 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=6
-                            subType=-1
+                            subType=ToolUtils.getDateId()
                             subTypeStr=item.title
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)
+                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传

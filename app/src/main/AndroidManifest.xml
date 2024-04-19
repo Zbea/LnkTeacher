@@ -70,10 +70,8 @@
             android:exported="true"
             >
             <intent-filter>
-                <action android:name="com.bll.lnkteacher.upload"/>
-                <action android:name="com.bll.lnkteacher.upload.year"/>
                 <action android:name="com.bll.lnkteacher.refresh"/>
-                <action android:name="com.android.settings.cleardata"/>
+                <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>

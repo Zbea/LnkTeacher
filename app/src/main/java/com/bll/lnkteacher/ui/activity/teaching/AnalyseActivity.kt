@@ -88,20 +88,20 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                 if (userItem.score<60){
                     score0+=1
                 }
-                else if (userItem.score>=60){
-                    score60+=1
-                }
-                else if (userItem.score>=70){
-                    score70+=1
-                }
-                else if (userItem.score>=80){
-                    score80+=1
-                }
-                else if (userItem.score>=90){
-                    score90+=1
-                }
                 else{
-                    score100+=1
+                    score60+=1
+                    if (userItem.score>=70){
+                        score70+=1
+                        if (userItem.score>=80){
+                            score80+=1
+                            if (userItem.score>=90){
+                                score90+=1
+                                if (userItem.score>=100){
+                                    score100+=1
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

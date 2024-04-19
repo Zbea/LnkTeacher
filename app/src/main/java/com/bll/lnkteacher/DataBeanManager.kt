@@ -17,7 +17,7 @@ object DataBeanManager {
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
 
-    private val cloudListTitle = arrayOf("书架","教材","笔记","日记","随笔","截图")
+    private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
     val textbookType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),
@@ -153,14 +153,9 @@ object DataBeanManager {
             name = cloudListTitle[3]
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_freenote)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_freenote_check)
-            name = cloudListTitle[4]
-        })
-        list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_screenshot)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_screenshot_check)
-            name = cloudListTitle[5]
+            name = cloudListTitle[4]
         })
         return list
     }

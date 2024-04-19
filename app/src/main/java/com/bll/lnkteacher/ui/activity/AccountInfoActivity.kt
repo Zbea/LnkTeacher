@@ -1,12 +1,10 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.*
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
@@ -14,7 +12,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
-import org.greenrobot.eventbus.EventBus
 
 class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchoolView {
 
@@ -24,7 +21,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     private var school=0
     private var schoolBean: SchoolBean?=null
     private var schools= mutableListOf<SchoolBean>()
-    private var privacyPassword:PrivacyPassword?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
 
     override fun onLogout() {
@@ -58,7 +54,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
 
     override fun initData() {
         initChangeScreenData()
-        privacyPassword=MethodManager.getPrivacyPassword()
         mSchoolPresenter.getSchool()
     }
 
@@ -83,16 +78,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             tv_area.text = schoolArea
         }
 
-        if (privacyPassword!=null){
-            showView(tv_check_pad)
-            if (privacyPassword?.isSet == true){
-                btn_psd_check.text="取消密码"
-            }
-            else{
-                btn_psd_check.text="设置密码"
-            }
-        }
-
         btn_edit_name.setOnClickListener {
             editName()
         }
@@ -111,36 +96,8 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
                 }
             })
         }
-
-        btn_psd_check.setOnClickListener {
-            setPassword()
-        }
-
     }
 
-    /**
-     * 设置查看密码
-     */
-    private fun setPassword(){
-        if (privacyPassword==null){
-            PrivacyPasswordCreateDialog(this).builder().setOnDialogClickListener{
-                privacyPassword=it
-                showView(tv_check_pad)
-                btn_psd_check.text="取消密码"
-                MethodManager.savePrivacyPassword(privacyPassword)
-                EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
-            }
-        }
-        else{
-            PrivacyPasswordDialog(this).builder()?.setOnDialogClickListener{
-                privacyPassword?.isSet=!privacyPassword?.isSet!!
-                btn_psd_check.text=if (privacyPassword?.isSet==true) "取消密码" else "设置密码"
-                MethodManager.savePrivacyPassword(privacyPassword)
-                EventBus.getDefault().post(Constants.PRIVACY_PASSWORD_EVENT)
-            }
-        }
-
-    }
 
     /**
      * 修改名称

@@ -15,15 +15,15 @@ import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.SToast
 
 
-class PrivacyPasswordDialog(private val context: Context) {
+class PrivacyPasswordDialog(private val context: Context,private val type:Int=0) {
 
-    fun builder(): PrivacyPasswordDialog? {
+    fun builder(): PrivacyPasswordDialog {
         val dialog= Dialog(context)
         dialog.setContentView(R.layout.dialog_privacy_password)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,500f))/2
         dialog.show()
 
@@ -47,9 +47,10 @@ class PrivacyPasswordDialog(private val context: Context) {
         btn_ok?.setOnClickListener {
             val passwordStr=etPassword?.text.toString()
             if (passwordStr.isEmpty()){
+                SToast.showText(2,"请输入密码")
                 return@setOnClickListener
             }
-            val checkPassword=MethodManager.getPrivacyPassword()
+            val checkPassword=MethodManager.getPrivacyPassword(type)
             if (MD5Utils.digest(passwordStr) != checkPassword?.password){
                 SToast.showText(2,"密码错误")
                 return@setOnClickListener

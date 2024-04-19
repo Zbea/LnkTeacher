@@ -14,4 +14,5 @@ public class CloudListBean {
     public String contentJson;//内容json
     public String contentSubtypeJson;//子内容json
     public int bookTypeId;//教材区分 课本、作业本、教学
+    public int skip;//为1时可以重复
 }

@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity.exam
 
 import android.graphics.BitmapFactory
+import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -272,7 +273,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         when(userItem.status){
             1->{
-                showView(ll_score)
                 currentImages=userItem.studentUrl.split(",").toTypedArray()
                 setFocusableEdit(true)
                 showView(ll_score,rv_list_score,iv_add,tv_save)
@@ -280,11 +280,11 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             }
             2->{
                 currentImages=userItem.teacherUrl.split(",").toTypedArray()
-                showView(ll_score)
                 et_score_num.setText(userItem.score.toString())
                 setFocusableEdit(false)
-                showView(ll_score,rv_list_score,iv_add)
+                showView(ll_score,rv_list_score)
                 disMissView(tv_save)
+                iv_add.visibility= View.INVISIBLE
                 setContentImage()
             }
             3->{

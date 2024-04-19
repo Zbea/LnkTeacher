@@ -22,7 +22,6 @@ import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -76,6 +75,7 @@ class CloudNoteFragment: BaseCloudFragment() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
+                this@CloudNoteFragment.position=position
                 val note=notes[position]
                 if (NoteDaoManager.getInstance().isExistCloud(note.typeStr,note.title,note.date)){
                     showToast("已下载")
@@ -84,21 +84,26 @@ class CloudNoteFragment: BaseCloudFragment() {
                     downloadNote(note)
                 }
             }
-            onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
+            setOnItemChildClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
-                CommonDialog(requireActivity()).setContent("确定删除").builder()
-                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val ids= mutableListOf<Int>()
-                            ids.add(notes[position].cloudId)
-                            mCloudPresenter.deleteCloud(ids)
-                        }
-                    })
-                true
+                if (view.id==R.id.iv_delete){
+                    CommonDialog(requireActivity()).setContent("确定删除").builder()
+                        .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                deleteItem()
+                            }
+                        })
+                }
             }
         }
+    }
+
+    private fun deleteItem(){
+        val ids= mutableListOf<Int>()
+        ids.add(notes[position].cloudId)
+        mCloudPresenter.deleteCloud(ids)
     }
 
     /**
@@ -106,8 +111,9 @@ class CloudNoteFragment: BaseCloudFragment() {
      */
     private fun downloadNote(item: Note){
         showLoading()
+        val titleStr=item.title+"副本"
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title)
+        val fileTargetPath=FileAddress().getPathNote(item.typeStr,titleStr)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -118,18 +124,34 @@ class CloudNoteFragment: BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     ZipUtils.unzip(zipPath, fileTargetPath, object : IZipCallback {
                         override fun onFinish() {
-                            addNote(item)
-                            //添加笔记内容
+                            if (item.typeStr!="我的密本"&&!ItemTypeDaoManager.getInstance().isExist(item.typeStr,1)){
+                                val noteType = ItemTypeBean().apply {
+                                    title = item.typeStr
+                                    type=1
+                                    date=System.currentTimeMillis()
+                                }
+                                ItemTypeDaoManager.getInstance().insertOrReplace(noteType)
+                            }
+
+                            //添加笔记
+                            item.id=null//设置数据库id为null用于重新加入
+                            item.title=titleStr
+                            NoteDaoManager.getInstance().insertOrReplace(item)
+
                             val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                             for (json in jsonArray){
                                 val contentBean= Gson().fromJson(json, NoteContent::class.java)
-                                contentBean.id=null//设置数据库id为null用于重新加入
+                                contentBean.id=null
+                                contentBean.filePath=contentBean.filePath.replace(contentBean.noteTitle,titleStr)
+                                contentBean.noteTitle=titleStr
                                 NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
                             }
+
                             //删掉本地zip文件
                             FileUtils.deleteFile(File(zipPath))
                             Handler().postDelayed({
-                                EventBus.getDefault().post(Constants.NOTE_EVENT)
+                                EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
+                                deleteItem()
                                 showToast("下载成功")
                                 hideLoading()
                             },500)
@@ -149,23 +171,6 @@ class CloudNoteFragment: BaseCloudFragment() {
                     showToast("下载失败")
                 }
             })
-    }
-
-    /**
-     * 添加笔记（如果下载的笔记分类本地不存在则添加）
-     */
-    private fun addNote(item: Note){
-        item.id=null//设置数据库id为null用于重新加入
-        if (!ItemTypeDaoManager.getInstance().isExist(item.typeStr,1)){
-            val noteType = ItemTypeBean().apply {
-                title = item.typeStr
-                type=1
-                date=System.currentTimeMillis()
-            }
-            ItemTypeDaoManager.getInstance().insertOrReplace(noteType)
-        }
-        //添加笔记
-        NoteDaoManager.getInstance().insertOrReplace(item)
     }
 
     override fun fetchData() {
