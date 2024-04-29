@@ -7,6 +7,7 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.DrawingCatalogDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
+import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.NoteContent
@@ -29,15 +30,15 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initData() {
-        val bundle = intent.getBundleExtra("bundle")
-        note = bundle?.getSerializable("noteBundle") as Note
+        val id = intent.getLongExtra("noteId",0)
+        note= NoteDaoManager.getInstance().queryBean(id)
         typeStr = note?.typeStr.toString()
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr, note?.title)
 
         if (noteContents.size > 0) {
             noteContent = noteContents[noteContents.size - 1]
-            page = noteContents.size - 1
+            page = note?.page!!
         } else {
             newNoteContent()
         }
@@ -197,6 +198,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContent?.id = id
 
         noteContents.add(noteContent!!)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        note?.page=page
+        NoteDaoManager.getInstance().insertOrReplace(note)
     }
 
 }

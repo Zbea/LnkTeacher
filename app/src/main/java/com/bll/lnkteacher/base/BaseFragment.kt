@@ -21,10 +21,13 @@ import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.CloudStorageActivity
 import com.bll.lnkteacher.ui.activity.MainActivity
+import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.widget.FlowLayoutManager
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_bookstore.*
+import kotlinx.android.synthetic.main.ac_list_type.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import kotlinx.android.synthetic.main.common_fragment_title.tv_title
@@ -60,6 +63,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var pageSize=0 //一页数据
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
+    var mTabTypeAdapter: TabTypeAdapter?=null
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -110,6 +114,9 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         EventBus.getDefault().register(this)
         isViewPrepare = true
         initCommonTitle()
+        if (rv_tab!=null){
+            initTabView()
+        }
         initView()
         initDialog()
         lazyLoadDataIfPrepared()
@@ -246,6 +253,31 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         }
     }
 
+    private fun initTabView(){
+        rv_tab.layoutManager = FlowLayoutManager()//创建布局管理
+        mTabTypeAdapter = TabTypeAdapter(R.layout.item_tab_type, null).apply {
+            rv_tab.adapter = this
+            bindToRecyclerView(rv_tab)
+            setOnItemClickListener { adapter, view, position ->
+                for (item in mTabTypeAdapter?.data!!){
+                    item.isCheck=false
+                }
+                val item=mTabTypeAdapter?.data!![position]
+                item.isCheck=true
+                mTabTypeAdapter?.notifyDataSetChanged()
+
+                onTabClickListener(view,position)
+            }
+        }
+    }
+
+    /**
+     * tab点击监听
+     */
+    open fun onTabClickListener(view:View, position:Int){
+
+    }
+
     /**
      * 关闭软键盘
      */
@@ -327,7 +359,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     //下载应用
     private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk(bean.versionCode.toString())
+        val targetFileStr= FileAddress().getPathApk("lnktecher")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {
             override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -393,15 +425,14 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(msgFlag: String) {
-//        when(msgFlag){
-//            Constants.USER_EVENT->{
-//                mUser= SPUtil.getObj("user", User::class.java)
-//            }
-//            else->{
-//                onEventBusMessage(msgFlag)
-//            }
-//        }
-        onEventBusMessage(msgFlag)
+        when(msgFlag){
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                lazyLoad()
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
     }
 
     /**

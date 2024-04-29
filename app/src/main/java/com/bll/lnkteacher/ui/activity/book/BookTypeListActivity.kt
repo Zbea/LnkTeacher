@@ -1,7 +1,9 @@
 package com.bll.lnkteacher.ui.activity.book
 
 import PopupClick
-import android.content.Intent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
 import com.bll.lnkteacher.MethodManager
@@ -20,7 +22,7 @@ import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_book_type_list.*
+import kotlinx.android.synthetic.main.ac_list_type.*
 import kotlinx.android.synthetic.main.common_title.*
 
 /**
@@ -32,136 +34,70 @@ class BookTypeListActivity : BaseActivity() {
     private var books = mutableListOf<Book>()
     private var typeStr = ""//当前分类
     private var pos = 0 //当前书籍位置
+    private val mBookDaoManager=BookGreenDaoManager.getInstance()
     private var bookTypes= mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
 
     override fun layoutId(): Int {
-        return R.layout.ac_book_type_list
+        return R.layout.ac_list_type
     }
 
     override fun initData() {
         pageSize = 12
-        popupBeans.add(PopupBean(0, "创建分类", false))
+        popupBeans.add(PopupBean(0,"创建分类", false))
         popupBeans.add(PopupBean(1, "删除分类", false))
-
-        longBeans.add(ItemList().apply {
-            name="删除"
-            resId=R.mipmap.icon_setting_delete
-        })
-        longBeans.add(ItemList().apply {
-            name="移出"
-            resId=R.mipmap.icon_setting_out
-        })
-
     }
 
     override fun initView() {
         setPageTitle("分类展示")
-        showView(tv_custom,tv_province)
+        showView(iv_manager)
 
-        tv_custom.text="书籍列表"
-        tv_province.text="分类管理"
-
-        tv_province?.setOnClickListener {
+        iv_manager?.setOnClickListener {
             setTopSelectView()
-        }
-
-        tv_custom?.setOnClickListener {
-            customStartActivity(Intent(this,BookListActivity::class.java))
         }
 
         initRecycleView()
         initTab()
     }
 
-    //顶部弹出选择
-    private fun setTopSelectView() {
-        PopupClick(this, popupBeans, tv_province,tv_province.width, 5).builder().setOnSelectListener { item ->
-            when (item.id) {
-                0 -> {
-                    InputContentDialog(this,"创建书籍分类").builder().setOnDialogClickListener{
-                        if (ItemTypeDaoManager.getInstance().isExist(it,2)){
-                            showToast("已存在")
-                            return@setOnDialogClickListener
-                        }
-                        val bookTypeBean= ItemTypeBean()
-                        bookTypeBean.type=2
-                        bookTypeBean.date=System.currentTimeMillis()
-                        bookTypeBean.title=it
-                        ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-
-                        rg_group.addView(getRadioButton(bookTypes.size, it, bookTypes.size==0))
-                        //更新tab
-                        if (bookTypes.isEmpty()){
-                            bookTypes.add(bookTypeBean)
-                            typeStr=it
-                            fetchData()
-                        }
-                    }
-                }
-                1 -> {
-                    val types=ItemTypeDaoManager.getInstance().queryAll(2)
-                    val lists= mutableListOf<ItemList>()
-                    for (i in types.indices){
-                        lists.add(ItemList(i,types[i].title))
-                    }
-                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
-                        val typeNameStr=types[it].title
-                        val books = BookGreenDaoManager.getInstance().queryAllBook(typeNameStr)
-                        if (books.size>0){
-                            showToast("分类存在书籍，无法删除")
-                            return@setOnDialogClickListener
-                        }
-                        ItemTypeDaoManager.getInstance().deleteBean(types[it])
-                        var index=0
-                        for (i in bookTypes.indices){
-                            if (typeNameStr == bookTypes[i].title){
-                                index=i
-                            }
-                        }
-                        rg_group.removeViewAt(index)
-                        if (typeStr==typeNameStr){
-                            if (bookTypes.size>0){
-                                rg_group.check(0)
-                            }
-                            else{
-                                books.clear()
-                                mAdapter?.notifyDataSetChanged()
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun initTab() {
         bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
-        if (bookTypes.isEmpty()){
-            return
-        }
-        rg_group.removeAllViews()
-        typeStr = bookTypes[0].title
-        for (i in bookTypes.indices) {
-            rg_group.addView(getRadioButton(i, bookTypes[i].title, i==0))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            pageIndex = 1
-            typeStr=bookTypes[id].title
-            fetchData()
-        }
+        bookTypes.add(0, ItemTypeBean().apply {
+            title = "全部"
+            isCheck = true
+        })
+        mTabTypeAdapter?.setNewData(bookTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        pageIndex = 1
+        typeStr = bookTypes[position].title
+        if (position == 0)
+            typeStr = ""
         fetchData()
     }
 
     private fun initRecycleView(){
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this, 28f), DP2PX.dip2px(this, 20f),
+            DP2PX.dip2px(this, 28f), 0
+        )
+        layoutParams.weight = 1f
+        rv_list.layoutParams = layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             rv_list?.addItemDecoration(
-                SpaceGridItemDeco1(4, DP2PX.dip2px(this@BookTypeListActivity, 22f), DP2PX.dip2px(this@BookTypeListActivity, 35f))
+                SpaceGridItemDeco1(4,
+                    DP2PX.dip2px(this@BookTypeListActivity, 22f),
+                    DP2PX.dip2px(this@BookTypeListActivity, 25f)
+                )
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
@@ -173,22 +109,106 @@ class BookTypeListActivity : BaseActivity() {
                 true
             }
         }
+    }
 
+    //顶部弹出选择
+    private fun setTopSelectView() {
+        PopupClick(this, popupBeans, iv_manager, 5).builder().setOnSelectListener { item ->
+            when (item.id) {
+                0 -> {
+                    InputContentDialog(this,"创建分类").builder().setOnDialogClickListener{
+                        if (ItemTypeDaoManager.getInstance().isExist(it,2)){
+                            showToast("已存在")
+                            return@setOnDialogClickListener
+                        }
+                        val bookTypeBean=ItemTypeBean()
+                        bookTypeBean.type=2
+                        bookTypeBean.date=System.currentTimeMillis()
+                        bookTypeBean.title=it
+                        ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
+                        mTabTypeAdapter?.addData(bookTypeBean)
+                    }
+                }
+                1 -> {
+                    val types=ItemTypeDaoManager.getInstance().queryAll(2)
+                    val lists= mutableListOf<ItemList>()
+                    for (i in types.indices){
+                        lists.add(ItemList(i,types[i].title))
+                    }
+                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
+                        val typeNameStr=types[it].title
+                        val books = mBookDaoManager.queryAllBook(typeNameStr)
+                        if (books.size>0){
+                            showToast("分类存在书籍，无法删除")
+                            return@setOnDialogClickListener
+                        }
+                        ItemTypeDaoManager.getInstance().deleteBean(types[it])
+                        var index = 0
+                        for (i in bookTypes.indices) {
+                            if (typeNameStr == bookTypes[i].title) {
+                                index = i
+                            }
+                        }
+                        mTabTypeAdapter?.remove(index)
+                        if (typeStr==typeNameStr){
+                            bookTypes[0].isCheck=true
+                            typeStr=""
+                            mTabTypeAdapter?.notifyItemChanged(0)
+                            fetchData()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //删除书架书籍
     private fun onLongClick() {
         val book=books[pos]
+        longBeans.clear()
+        longBeans.add(ItemList().apply {
+            name="删除"
+            resId=R.mipmap.icon_setting_delete
+        })
+        if (typeStr==""){
+            longBeans.add(ItemList().apply {
+                name="分类"
+                resId=R.mipmap.icon_setting_set
+            })
+        }
+        else{
+            longBeans.add(ItemList().apply {
+                name="移出"
+                resId=R.mipmap.icon_setting_out
+            })
+        }
+
         LongClickManageDialog(this, book.bookName,longBeans).builder()
             .setOnDialogClickListener {
                 if (it==0){
                     mAdapter?.remove(pos)
                     MethodManager.deleteBook(book,1)
+                    fetchData()
                 }
                 else{
-                    book.subtypeStr=""
-                    BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
-                    mAdapter?.remove(pos)
+                    if (typeStr==""){
+                        val types= ItemTypeDaoManager.getInstance().queryAll(2)
+                        val lists= mutableListOf<ItemList>()
+                        for (i in types.indices){
+                            lists.add(ItemList(i,types[i].title))
+                        }
+                        ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{
+                            val typeStr=types[it].title
+                            book.subtypeStr=typeStr
+                            mBookDaoManager.insertOrReplaceBook(book)
+                            fetchData()
+                        }
+                    }
+                    else{
+                        book.subtypeStr=""
+                        mBookDaoManager.insertOrReplaceBook(book)
+                        fetchData()
+                    }
                 }
             }
     }
@@ -200,14 +220,10 @@ class BookTypeListActivity : BaseActivity() {
     }
 
     override fun fetchData() {
-        if (bookTypes.isEmpty()){
-            return
-        }
-        books=BookGreenDaoManager.getInstance().queryAllBook(typeStr, pageIndex, pageSize)
-        val total = BookGreenDaoManager.getInstance().queryAllBook(typeStr)
+        books=mBookDaoManager.queryAllBook(typeStr, pageIndex, pageSize)
+        val total = mBookDaoManager.queryAllBook(typeStr)
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }
-
 
 }

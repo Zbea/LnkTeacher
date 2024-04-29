@@ -2,10 +2,10 @@ package com.bll.lnkteacher.ui.fragment
 
 import PopupClick
 import android.content.Intent
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -22,7 +22,6 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 import kotlinx.android.synthetic.main.fragment_note.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -66,7 +65,7 @@ class NoteFragment : BaseMainFragment() {
         }
 
         initRecyclerView()
-        findTabs()
+        initTabs()
     }
 
     override fun lazyLoad() {
@@ -180,29 +179,29 @@ class NoteFragment : BaseMainFragment() {
     /**
      * tab数据设置
      */
-    private fun findTabs() {
-        notebooks=DataBeanManager.notebooks
-        notebooks.addAll(ItemTypeDaoManager.getInstance().queryAll(1))
+    private fun initTabs() {
+        notebooks.clear()
+        notebooks=ItemTypeDaoManager.getInstance().queryAll(1)
+        notebooks.add(0,ItemTypeBean().apply {
+            title = getString(R.string.note_tab_diary)
+        })
         if (positionType>=notebooks.size){
             positionType=0
         }
+        for (item in notebooks){
+            item.isCheck=false
+        }
+        notebooks[positionType].isCheck=true
         typeStr = notebooks[positionType].title
-        initTab()
         fetchData()
+        mTabTypeAdapter?.setNewData(notebooks)
     }
 
-    //设置头部索引
-    private fun initTab() {
-        rg_group.removeAllViews()
-        for (i in notebooks.indices) {
-            rg_group.addView(getRadioButton(i,positionType, notebooks[i].title, notebooks.size - 1))
-        }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            positionType=id
-            typeStr=notebooks[positionType].title
-            pageIndex=1
-            fetchData()
-        }
+    override fun onTabClickListener(view: View, position: Int) {
+        positionType=position
+        typeStr=notebooks[position].title
+        pageIndex=1
+        fetchData()
     }
 
     //新建笔记
@@ -240,9 +239,8 @@ class NoteFragment : BaseMainFragment() {
                     noteBook.type=1
                     noteBook.title = string
                     noteBook.date=System.currentTimeMillis()
-                    notebooks.add(noteBook)
                     ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
-                    initTab()
+                    mTabTypeAdapter?.addData(noteBook)
                 }
             }
     }
@@ -257,7 +255,7 @@ class NoteFragment : BaseMainFragment() {
     override fun onEventBusMessage(msgFlag: String) {
         when(msgFlag){
             NOTE_BOOK_MANAGER_EVENT->{
-                findTabs()
+                initTabs()
             }
             NOTE_EVENT->{
                 fetchData()

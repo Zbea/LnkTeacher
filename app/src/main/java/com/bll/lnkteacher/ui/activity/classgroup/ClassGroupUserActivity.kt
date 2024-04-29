@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.classgroup
 
 import android.content.Intent
 import android.os.Bundle

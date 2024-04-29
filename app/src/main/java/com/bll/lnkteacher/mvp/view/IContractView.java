@@ -9,8 +9,10 @@ import com.bll.lnkteacher.mvp.model.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CalenderList;
 import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
+import com.bll.lnkteacher.mvp.model.FriendList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
+import com.bll.lnkteacher.mvp.model.ShareNoteList;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList;
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList;
@@ -49,9 +51,11 @@ public interface IContractView {
 
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
-        void onLogout();
         void onEditNameSuccess();
         void onEditSchool();
+        void onBind();
+        void onUnbind();
+        void onListFriend(FriendList list);
     }
 
     //钱包页面回调
@@ -240,6 +244,11 @@ public interface IContractView {
         void onDeleteSuccess();
     }
 
+    interface IMainView extends IBaseView{
+        void onList(Message message);
+        void onListFriend(FriendList list);
+    }
+
     interface IMessageView extends IBaseView{
         void onList(Message message);
         void onSend();
@@ -299,6 +308,13 @@ public interface IContractView {
     interface IExamCorrectView extends IBaseView {
         void onExamClassUser(ExamClassUserList classUserList);
         void onCorrectSuccess();
+    }
+
+    interface IShareNoteView extends IBaseView{
+        void onList(ShareNoteList list);
+        void onToken(String token);
+        void onDeleteSuccess();
+        void onShare();
     }
 
 }

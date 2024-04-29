@@ -58,7 +58,7 @@ class BookCaseFragment : BaseMainFragment() {
             rv_list.layoutManager = GridLayoutManager(activity, 4)//创建布局管理
             rv_list.adapter = mAdapter
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity, 23f), 28))
+            rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity, 22f), 30))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean = books[position]
                 MethodManager.gotoBookDetails(requireActivity(), bookBean)
@@ -125,7 +125,7 @@ class BookCaseFragment : BaseMainFragment() {
                             zipUrl = book.downloadUrl
                             downloadUrl = it
                             subType = -1
-                            subTypeStr = book.subtypeStr.ifEmpty { "默认" }
+                            subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
@@ -139,7 +139,7 @@ class BookCaseFragment : BaseMainFragment() {
                     type = 1
                     zipUrl = book.downloadUrl
                     subType = -1
-                    subTypeStr = book.subtypeStr.ifEmpty { "默认" }
+                    subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
                     bookId = book.bookId

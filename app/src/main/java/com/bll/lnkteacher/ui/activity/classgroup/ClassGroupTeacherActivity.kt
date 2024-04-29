@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.classgroup
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants

@@ -48,7 +48,7 @@ class PrivacyPasswordCreateDialog(private val context: Context,private val type:
         popWindowBeans.add(
             PopupBean(
                 2,
-                "您的生日？",
+                "我的爱好？",
                 false
             )
         )

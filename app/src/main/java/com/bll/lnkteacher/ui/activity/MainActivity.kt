@@ -14,6 +14,7 @@ import com.bll.lnkteacher.manager.*
 import com.bll.lnkteacher.mvp.model.AreaBean
 import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.ui.activity.classgroup.ClassGroupActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
 import com.bll.lnkteacher.utils.FileUtils
@@ -121,7 +122,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         }
 
         iv_classgroup.setOnClickListener {
-            customStartActivity(Intent(this,ClassGroupActivity::class.java))
+            customStartActivity(Intent(this, ClassGroupActivity::class.java))
         }
 
         startRemind()

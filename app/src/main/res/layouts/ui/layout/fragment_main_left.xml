@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
@@ -48,6 +49,13 @@
                     android:textSize="@dimen/sp_24"
                     android:textStyle="bold" />
 
+                <ImageView
+                    android:id="@+id/iv_plan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/icon_plan"
+                    />
+
             </LinearLayout>
 
 
@@ -62,36 +70,38 @@
                 android:layout_height="match_parent"
                 android:padding="1dp">
 
-                <ImageView
+                <com.bll.lnkteacher.widget.RoundImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitCenter"
                     android:src="@mipmap/icon_date_event_bg"
+                    app:leftBottomRadius="@dimen/dp_20"
+                    app:rightBottomRadius="@dimen/dp_20"
                     />
+
                 <ImageView
                     android:id="@+id/iv_date"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerInside"
+                    android:scaleType="fitCenter"
                     />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    >
-                    <View
-                        android:id="@+id/v_date_up"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                <ImageView
+                    android:id="@+id/v_date_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/icon_main_up"/>
 
-                    <View
-                        android:id="@+id/v_date_down"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
-                </LinearLayout>
+                <ImageView
+                    android:id="@+id/v_date_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="5dp"
+                    android:src="@mipmap/icon_main_down"/>
 
             </RelativeLayout>
 
@@ -159,25 +169,24 @@
                     android:id="@+id/iv_calender"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerInside" />
+                    android:scaleType="fitCenter" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    >
-                    <View
-                        android:id="@+id/v_calender_up"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/v_calender_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/icon_main_up"/>
 
-                    <View
-                        android:id="@+id/v_calender_down"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"/>
-                </LinearLayout>
+            <ImageView
+                android:id="@+id/v_calender_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="5dp"
+                android:src="@mipmap/icon_main_down"/>
 
             </RelativeLayout>
 

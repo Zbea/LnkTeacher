@@ -49,6 +49,11 @@ public class FreeNoteDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public FreeNoteBean queryBean() {
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.IsSave.eq(false);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().unique();
+    }
+
     public List<FreeNoteBean> queryList() {
         return dao.queryBuilder().where(whereUser).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
     }

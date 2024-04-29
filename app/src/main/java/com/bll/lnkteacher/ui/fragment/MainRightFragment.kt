@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -18,7 +19,7 @@ import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
-import com.bll.lnkteacher.mvp.presenter.MessagePresenter
+import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
 import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
@@ -29,9 +30,9 @@ import kotlinx.android.synthetic.main.fragment_main_right.*
 import java.io.File
 import java.util.*
 
-class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
+class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
-    private var mMessagePresenter=MessagePresenter(this,2)
+    private var mPresenter=MainPresenter(this,2)
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
 
@@ -45,10 +46,11 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         messages=message.list
         mMessageAdapter?.setNewData(messages)
     }
-    override fun onSend() {
+
+    override fun onListFriend(list: FriendList) {
+        DataBeanManager.friends=list.list
     }
-    override fun onDeleteSuccess() {
-    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
@@ -116,6 +118,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
             findMessages()
+            mPresenter.getFriends()
             fetchCommonData()
         }
         findNotes()
@@ -158,7 +161,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
         map["page"]=1
         map["size"]=4
         map["type"]=1
-        mMessagePresenter.getList(map,false)
+        mPresenter.getList(map)
     }
 
     private fun findNotes(){
@@ -284,7 +287,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMessageView {
                         cloudList.add(CloudListBean().apply {
                             type=6
                             subType=ToolUtils.getDateId()
-                            subTypeStr=item.title
+                            subTypeStr="截图"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)

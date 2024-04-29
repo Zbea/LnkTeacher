@@ -119,9 +119,9 @@ class DiaryActivity:BaseDrawingActivity() {
      * 切换日记
      */
     private fun changeContent(){
-        posImage=0
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
+        posImage=diaryBean?.page!!
         setContentImage()
     }
 
@@ -149,6 +149,7 @@ class DiaryActivity:BaseDrawingActivity() {
         val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong))
         if (!File(path).list().isNullOrEmpty()){
             diaryBean?.paths = images
+            diaryBean?.page=posImage
             DiaryDaoManager.getInstance().insertOrReplace(diaryBean)
         }
     }

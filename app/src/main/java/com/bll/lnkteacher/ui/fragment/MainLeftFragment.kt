@@ -12,14 +12,9 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.CalenderDaoManager
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.ui.activity.CalenderListActivity
-import com.bll.lnkteacher.ui.activity.CalenderMyActivity
-import com.bll.lnkteacher.ui.activity.DateActivity
-import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
+import com.bll.lnkteacher.ui.activity.*
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
-import com.bll.lnkteacher.utils.date.LunarSolarConverter
-import com.bll.lnkteacher.utils.date.Solar
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import java.io.File
@@ -45,6 +40,16 @@ class MainLeftFragment:BaseFragment() {
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
+        }
+
+        iv_plan.setOnClickListener {
+            customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+        }
+
+        iv_date.setOnClickListener {
+            val intent = Intent(requireActivity(), DateEventActivity::class.java)
+            intent.putExtra("date",nowDate)
+            customStartActivity(intent)
         }
 
         v_date_up.setOnClickListener{
@@ -87,9 +92,6 @@ class MainLeftFragment:BaseFragment() {
 
         initDialog(1)
 
-        nowDate=DateUtils.getStartOfDayInMillis()
-        setDateView()
-        setCalenderView()
         initTeachingView()
     }
 
@@ -98,32 +100,35 @@ class MainLeftFragment:BaseFragment() {
             fetchCommonData()
             mCommonPresenter.getAppUpdate()
         }
+        nowDate=DateUtils.getStartOfDayInMillis()
+        setDateView()
+        setCalenderView()
     }
 
     /**
      * 设置当天时间日历
      */
     private fun setDateView(){
-        val solar= Solar()
-        solar.solarYear= DateUtils.getYear()
-        solar.solarMonth=DateUtils.getMonth()
-        solar.solarDay=DateUtils.getDay()
-        val lunar= LunarSolarConverter.SolarToLunar(solar)
-
-        val str = if (!solar.solar24Term.isNullOrEmpty()) {
-            "24节气   "+solar.solar24Term
-        } else {
-            if (!solar.solarFestivalName.isNullOrEmpty()) {
-                "节日  "+solar.solarFestivalName
-            } else {
-                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
-                    "节日   "+lunar.lunarFestivalName
-                }
-                else{
-                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
-                }
-            }
-        }
+//        val solar= Solar()
+//        solar.solarYear= DateUtils.getYear()
+//        solar.solarMonth=DateUtils.getMonth()
+//        solar.solarDay=DateUtils.getDay()
+//        val lunar= LunarSolarConverter.SolarToLunar(solar)
+//
+//        val str = if (!solar.solar24Term.isNullOrEmpty()) {
+//            "24节气   "+solar.solar24Term
+//        } else {
+//            if (!solar.solarFestivalName.isNullOrEmpty()) {
+//                "节日  "+solar.solarFestivalName
+//            } else {
+//                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
+//                    "节日   "+lunar.lunarFestivalName
+//                }
+//                else{
+//                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
+//                }
+//            }
+//        }
         tv_date_today.text=DateUtils.longToStringWeek(nowDate)
         setDateDrawingView()
     }
@@ -131,7 +136,7 @@ class MainLeftFragment:BaseFragment() {
     private fun setDateDrawingView(){
         val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_date)
+            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
         }
         else{
             iv_date.setImageResource(0)
@@ -143,10 +148,12 @@ class MainLeftFragment:BaseFragment() {
         nowDayPos=calenderUtils.elapsedTime()
         val item= CalenderDaoManager.getInstance().queryCalenderBean()
         if (item!=null){
+            showView(v_calender_up,v_calender_down)
             calenderPath=item.path
             setCalenderBg()
         }
         else{
+            disMissView(v_calender_up,v_calender_down)
             iv_calender.setImageResource(0)
         }
     }
@@ -159,7 +166,7 @@ class MainLeftFragment:BaseFragment() {
         else{
             listFiles[listFiles.size-1]
         }
-        GlideUtils.setImageFile(requireActivity(),file,iv_calender)
+        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
 
     private fun initTeachingView() {

@@ -98,6 +98,7 @@ public class MethodManager {
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
         context.startActivity(intent);
     }
 
@@ -141,9 +142,7 @@ public class MethodManager {
         EventBus.getDefault().post(Constants.NOTE_EVENT);
 
         Intent intent = new Intent(context, NoteDrawingActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("noteBundle",note);
-        intent.putExtra("bundle",bundle);
+        intent.putExtra("noteId",note.id);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }

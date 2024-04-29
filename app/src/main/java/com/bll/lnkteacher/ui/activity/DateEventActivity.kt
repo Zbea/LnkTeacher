@@ -5,7 +5,6 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
-import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.utils.DateUtils
 import kotlinx.android.synthetic.main.ac_date_event.*
 import org.greenrobot.eventbus.EventBus
@@ -13,7 +12,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DateEventActivity:BaseDrawingActivity() {
-    private var mDate: Date?=null
     private var nowLong=0L
     private var isDraw=false
 
@@ -22,8 +20,7 @@ class DateEventActivity:BaseDrawingActivity() {
     }
 
     override fun initData() {
-        mDate = intent.getBundleExtra("bundle")?.getSerializable("dateBean") as Date
-        nowLong=mDate?.time!!
+        nowLong=intent.getLongExtra("date",0)
     }
 
     override fun initView() {

@@ -44,7 +44,6 @@ public class GlideUtils {
 
         RequestOptions requestOptions=new RequestOptions();
         requestOptions.fitCenter();
-        requestOptions.skipMemoryCache(false);
         requestOptions.transform(new RoundedCorners(round));
 
         Glide.with(mContext)
@@ -52,6 +51,21 @@ public class GlideUtils {
                 .apply(requestOptions)
                 .into(imageView);
     }
+
+    public static void setImageNoCacheRoundUrl(Context mContext, String url, ImageView imageView, int round){
+
+        RequestOptions requestOptions=new RequestOptions();
+        requestOptions.fitCenter();
+        requestOptions.skipMemoryCache(true);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.NONE);
+        requestOptions.transform(new RoundedCorners(round));
+
+        Glide.with(mContext)
+                .load(url)
+                .apply(requestOptions)
+                .into(imageView);
+    }
+
 
     public static final void setImageNoCacheUrl(Context mContext,String url, ImageView imageView){
 

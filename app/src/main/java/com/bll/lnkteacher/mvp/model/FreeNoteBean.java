@@ -26,19 +26,23 @@ public class FreeNoteBean {
     public List<String> paths;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> bgRes;
+    public int page;
+    public boolean isSave;
     @Transient
     public int cloudId;
     @Transient
     public String downloadUrl;
-    @Generated(hash = 1800919848)
-    public FreeNoteBean(Long id, long userId, String title, long date,
-            List<String> paths, List<String> bgRes) {
+    @Generated(hash = 1212939123)
+    public FreeNoteBean(Long id, long userId, String title, long date, List<String> paths,
+            List<String> bgRes, int page, boolean isSave) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.date = date;
         this.paths = paths;
         this.bgRes = bgRes;
+        this.page = page;
+        this.isSave = isSave;
     }
     @Generated(hash = 1976554700)
     public FreeNoteBean() {
@@ -78,6 +82,18 @@ public class FreeNoteBean {
     }
     public void setBgRes(List<String> bgRes) {
         this.bgRes = bgRes;
+    }
+    public int getPage() {
+        return this.page;
+    }
+    public void setPage(int page) {
+        this.page = page;
+    }
+    public boolean getIsSave() {
+        return this.isSave;
+    }
+    public void setIsSave(boolean isSave) {
+        this.isSave = isSave;
     }
     
 }

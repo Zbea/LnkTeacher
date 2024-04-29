@@ -61,7 +61,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
     override fun initView() {
         setPageTitle("消息通知")
         showView(iv_manager, iv_setting)
-        iv_setting.setImageResource(R.mipmap.icon_notebook_delete)
+        iv_setting.setImageResource(R.mipmap.icon_delete)
         iv_manager.setImageResource(R.mipmap.icon_save)
 
         iv_setting.setOnClickListener {

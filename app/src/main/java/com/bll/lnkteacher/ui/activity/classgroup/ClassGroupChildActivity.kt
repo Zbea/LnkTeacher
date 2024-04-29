@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.classgroup
 
 import PopupClick
 import android.view.ViewGroup

@@ -104,6 +104,37 @@ interface APIService{
      */
     @POST("accounts/logout")
     fun logout(): Observable<BaseResult<Any>>
+    /**
+     * 绑定好友
+     */
+    @POST("add/friend/teacher")
+    fun onBindFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 解绑好友
+     */
+    @POST("friend/delete")
+    fun onUnbindFriend(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取好友列表
+     */
+    @GET("friend/list")
+    fun onFriendList(): Observable<BaseResult<FriendList>>
+
+    /**
+     * 获取分享列表
+     */
+    @GET("friend/message/list")
+    fun getShareList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ShareNoteList>>
+    /**
+     * 删除列表
+     */
+    @POST("friend/message/delete")
+    fun deleteShare(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 分享随笔
+     */
+    @POST("friend/message/send")
+    fun shareFreeNote(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * //获取学豆列表
