@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.fragment.cloud
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,6 +11,7 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudList
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
@@ -21,8 +23,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup.*
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
 import java.io.File
 import java.util.concurrent.CountDownLatch
 
@@ -35,7 +36,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_type
+        return R.layout.fragment_cloud_list_tab
     }
 
     override fun initView() {
@@ -47,16 +48,22 @@ class CloudBookcaseFragment:BaseCloudFragment() {
         mCloudPresenter.getType(1)
     }
 
-    private fun initTab(){
+    //设置头部索引
+    private fun initTab() {
         bookTypeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title= types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            bookTypeStr=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        bookTypeStr=types[position]
+        pageIndex=1
         fetchData()
     }
 
@@ -68,6 +75,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             DP2PX.dip2px(activity,28f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity,3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
@@ -179,10 +187,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍
      */
     private fun downloadBook(book: Book) {
-        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val targetFileStr = FileAddress().getPathBook(fileName+formatStr)
-        FileDownManager.with(activity).create(book.downloadUrl).setPath(targetFileStr)
+        FileDownManager.with(activity).create(book.downloadUrl).setPath(book.bookPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }

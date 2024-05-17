@@ -20,7 +20,7 @@ import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
 
 class CloudScreenshotFragment: BaseCloudFragment() {
@@ -29,7 +29,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -46,6 +46,7 @@ class CloudScreenshotFragment: BaseCloudFragment() {
         layoutParams.setMargins(DP2PX.dip2px(activity,50f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         mAdapter = CloudScreenshotAdapter(R.layout.item_cloud_diary, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
@@ -80,7 +81,6 @@ class CloudScreenshotFragment: BaseCloudFragment() {
         showLoading()
         val fileName= DateUtils.longToString(item.date)
         val zipPath = FileAddress().getPathZip(fileName)
-        val fileTargetPath= FileAddress().getPathScreen(item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -89,9 +89,9 @@ class CloudScreenshotFragment: BaseCloudFragment() {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    ZipUtils.unzip1(zipPath, fileTargetPath, object : IZipCallback {
+                    ZipUtils.unzip1(zipPath, item.path, object : IZipCallback {
                         override fun onFinish() {
-                            if (!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("未分类")){
+                            if (!ItemTypeDaoManager.getInstance().isExist(item.title,3)&&!item.title.equals("全部")){
                                 item.id=null//设置数据库id为null用于重新加入
                                 ItemTypeDaoManager.getInstance().insertOrReplace(item)
                             }

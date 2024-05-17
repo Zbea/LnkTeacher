@@ -23,7 +23,7 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
                 }
             }
             setText(R.id.tv_message_name, typeNameStr)
-            setText(R.id.tv_message_time, DateUtils.longToStringDataNoHour(item.date))
+            setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date))
             setText(R.id.tv_message_content,item.content)
         }
     }

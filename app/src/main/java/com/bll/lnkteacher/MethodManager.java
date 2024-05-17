@@ -2,7 +2,6 @@ package com.bll.lnkteacher;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
@@ -14,8 +13,8 @@ import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClass;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
-import com.bll.lnkteacher.ui.activity.NoteDrawingActivity;
-import com.bll.lnkteacher.ui.activity.book.BookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
+import com.bll.lnkteacher.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;

@@ -1,6 +1,8 @@
 package com.bll.lnkteacher.ui.fragment.exam
 
 import android.content.Intent
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
@@ -11,8 +13,9 @@ import com.bll.lnkteacher.mvp.presenter.ExamCorrectListPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IExamCorrectListView
 import com.bll.lnkteacher.ui.activity.exam.ExamCorrectActivity
 import com.bll.lnkteacher.ui.adapter.ExamCorrectAdapter
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class ExamCorrectFragment:BaseMainFragment(),IExamCorrectListView{
 
@@ -31,7 +34,7 @@ class ExamCorrectFragment:BaseMainFragment(),IExamCorrectListView{
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -44,6 +47,14 @@ class ExamCorrectFragment:BaseMainFragment(),IExamCorrectListView{
     }
 
     private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),40f),
+            DP2PX.dip2px(requireActivity(),40f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         mAdapter= ExamCorrectAdapter(R.layout.item_exam_correct,null)
         rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
         rv_list.adapter = mAdapter

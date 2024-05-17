@@ -17,7 +17,7 @@ import com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class TestPaperAssignFragment:BaseMainFragment(),IContractView.ITestPaperAssignView {
 
@@ -48,7 +48,7 @@ class TestPaperAssignFragment:BaseMainFragment(),IContractView.ITestPaperAssignV
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {

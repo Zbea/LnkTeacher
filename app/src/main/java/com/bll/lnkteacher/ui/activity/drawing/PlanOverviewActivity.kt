@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.drawing
 
 
 import com.bll.lnkteacher.Constants.Companion.weekTime
@@ -10,7 +10,7 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_plan_overview.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class PlanOverviewActivity: BaseDrawingActivity() {
@@ -36,7 +36,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_btn,tv_page_title)
+        disMissView(iv_catalog,iv_btn,iv_expand)
         setPageTitle("月周计划")
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->

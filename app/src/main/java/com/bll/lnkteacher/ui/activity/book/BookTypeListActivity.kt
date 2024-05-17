@@ -22,7 +22,7 @@ import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 
 /**
@@ -40,7 +40,7 @@ class BookTypeListActivity : BaseActivity() {
     private var longBeans = mutableListOf<ItemList>()
 
     override fun layoutId(): Int {
-        return R.layout.ac_list_type
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {
@@ -63,10 +63,10 @@ class BookTypeListActivity : BaseActivity() {
 
     private fun initTab() {
         bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
-        bookTypes.add(0, ItemTypeBean().apply {
+        bookTypes.add(ItemTypeBean().apply {
             title = "全部"
-            isCheck = true
         })
+        bookTypes[pos].isCheck=true
         mTabTypeAdapter?.setNewData(bookTypes)
         fetchData()
     }
@@ -126,7 +126,7 @@ class BookTypeListActivity : BaseActivity() {
                         bookTypeBean.date=System.currentTimeMillis()
                         bookTypeBean.title=it
                         ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-                        mTabTypeAdapter?.addData(bookTypeBean)
+                        mTabTypeAdapter?.addData(bookTypes.size-1,bookTypeBean)
                     }
                 }
                 1 -> {

@@ -60,23 +60,22 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
     override fun initView() {
         setPageTitle("消息通知")
-        showView(iv_manager, iv_setting)
-        iv_setting.setImageResource(R.mipmap.icon_delete)
+        showView(iv_manager)
         iv_manager.setImageResource(R.mipmap.icon_save)
 
-        iv_setting.setOnClickListener {
-            val ids= mutableListOf<Int>()
-            for (item in lists){
-                if (item.isCheck){
-                    ids.add(item.id)
-                }
-            }
-            if (ids.size>0){
-                val map=HashMap<String,Any>()
-                map["ids"]=ids.toIntArray()
-                mPresenter.deleteMessages(map)
-            }
-        }
+//        iv_setting.setOnClickListener {
+//            val ids= mutableListOf<Int>()
+//            for (item in lists){
+//                if (item.isCheck){
+//                    ids.add(item.id)
+//                }
+//            }
+//            if (ids.size>0){
+//                val map=HashMap<String,Any>()
+//                map["ids"]=ids.toIntArray()
+//                mPresenter.deleteMessages(map)
+//            }
+//        }
 
         iv_manager.setOnClickListener {
             if (sendDialog == null) {
@@ -109,12 +108,12 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            setOnItemChildClickListener { adapter, view, position ->
-                if (view.id==R.id.cb_check){
-                    lists[position].isCheck=!lists[position].isCheck
-                    notifyItemChanged(position)
-                }
-            }
+//            setOnItemChildClickListener { adapter, view, position ->
+//                if (view.id==R.id.cb_check){
+//                    lists[position].isCheck=!lists[position].isCheck
+//                    notifyItemChanged(position)
+//                }
+//            }
         }
     }
 

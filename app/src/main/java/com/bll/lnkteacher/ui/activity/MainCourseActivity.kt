@@ -68,8 +68,9 @@ class MainCourseActivity : BaseActivity(), IContractView.IFileUploadView,IClassG
         }
     }
 
-    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
+    override fun onClasss(classGroups: MutableList<ClassGroup>) {
     }
+
     override fun onSuccess() {
     }
     override fun onUploadSuccess() {

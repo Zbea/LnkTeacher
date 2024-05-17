@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.activity
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,10 +9,7 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.manager.AppDaoManager
-import com.bll.lnkteacher.mvp.model.AppBean
-import com.bll.lnkteacher.mvp.model.AppList
-import com.bll.lnkteacher.mvp.model.CommonData
-import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.AppCenterPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.AppCenterListAdapter
@@ -19,11 +17,11 @@ import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_app_center.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
+class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     private lateinit var presenter:AppCenterPresenter
     private var type=1
@@ -56,7 +54,7 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun layoutId(): Int {
-        return R.layout.ac_app_center
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {
@@ -74,15 +72,20 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         initRecyclerView()
     }
 
-    private fun initTab(){
-        for (i in types.indices) {
-            rg_group.addView(getRadioButton(i,types[i].desc,types.size-1))
+    private fun initTab() {
+        for (i in types.indices){
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=types[i].desc
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            type=types[i].type
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        type=types[position].type
+        pageIndex=1
         fetchData()
     }
 
@@ -91,13 +94,14 @@ class AppCenterActivity:BaseActivity(), IContractView.IAPPView{
         layoutParams.setMargins(DP2PX.dip2px(this,52f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,52f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = AppCenterListAdapter(R.layout.item_app_center_list, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                this@AppCenterActivity.position=position
+                this@ResourceCenterActivity.position=position
                 val app=apps[position]
                 if (app.buyStatus==0){
                     val map = HashMap<String, Any>()

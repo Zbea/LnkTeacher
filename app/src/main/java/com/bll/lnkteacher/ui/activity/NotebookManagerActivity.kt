@@ -1,5 +1,7 @@
 package com.bll.lnkteacher.ui.activity
 
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -12,8 +14,9 @@ import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.NoteBookManagerAdapter
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_note_book_manager.*
+import kotlinx.android.synthetic.main.ac_list.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
@@ -25,7 +28,7 @@ class NotebookManagerActivity : BaseActivity() {
     private var position=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_note_book_manager
+        return R.layout.ac_list
     }
 
     override fun initData() {
@@ -40,6 +43,12 @@ class NotebookManagerActivity : BaseActivity() {
 
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this,100f), DP2PX.dip2px(this,20f),
+            DP2PX.dip2px(this,100f),DP2PX.dip2px(this,20f))
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteBooks)

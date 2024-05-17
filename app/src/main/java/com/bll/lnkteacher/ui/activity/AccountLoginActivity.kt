@@ -106,6 +106,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         } else {
             showView(tv_tips)
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

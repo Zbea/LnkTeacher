@@ -1,8 +1,9 @@
 package com.bll.lnkteacher.ui.activity.book
 
 import android.os.Handler
-import android.widget.RadioButton
-import android.widget.RadioGroup
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
@@ -12,10 +13,7 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.BookDetailsDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.BookStore
-import com.bll.lnkteacher.mvp.model.BookStoreType
-import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -28,7 +26,7 @@ import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_bookstore.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -108,7 +106,7 @@ class TextBookStoreActivity : BaseActivity(),
 
 
     override fun layoutId(): Int {
-        return R.layout.ac_bookstore
+        return R.layout.ac_list_tab
     }
 
     override fun initData() {
@@ -116,7 +114,6 @@ class TextBookStoreActivity : BaseActivity(),
 
         tabList = DataBeanManager.textbookType.toMutableList()
         tabStr = tabList[0]
-        tabList.removeLast()
 
         semesterList=DataBeanManager.popupSemesters
         semester= semesterList[0].id
@@ -203,48 +200,37 @@ class TextBookStoreActivity : BaseActivity(),
                     fetchData()
                 }
         }
-
     }
 
-
-    //设置tab分类
     private fun initTab() {
         for (i in tabList.indices) {
-            val radioButton =
-                layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-            radioButton.id = i
-            radioButton.text = tabList[i]
-            radioButton.isChecked = i == 0
-            val layoutParams = RadioGroup.LayoutParams(
-                RadioGroup.LayoutParams.WRAP_CONTENT,
-                DP2PX.dip2px(this, 45f)
-            )
-            layoutParams.marginEnd = if (i == tabList.size - 1) 0 else DP2PX.dip2px(this, 44f)
-            radioButton.layoutParams = layoutParams
-            rg_group.addView(radioButton)
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=tabList[i]
+                isCheck=i==0
+            })
         }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
 
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when(i){
-                0,2->{
-                    showView(tv_course,tv_grade,tv_semester,tv_province)
-                    disMissView(tv_type)
-                }
-                1,3->{
-                    showView(tv_grade,tv_course,tv_semester)
-                    disMissView(tv_province,tv_type)
-                }
-                4->{
-                    showView(tv_course,tv_type)
-                    disMissView(tv_province,tv_grade,tv_semester)
-                }
+    override fun onTabClickListener(view: View, position: Int) {
+        when(position){
+            0,2->{
+                showView(tv_course,tv_grade,tv_semester,tv_province)
+                disMissView(tv_type)
             }
-            tabId = i
-            tabStr = tabList[i]
-            pageIndex = 1
-            fetchData()
+            1,3->{
+                showView(tv_grade,tv_course,tv_semester)
+                disMissView(tv_province,tv_type)
+            }
+            4->{
+                showView(tv_course,tv_type)
+                disMissView(tv_province,tv_grade,tv_semester)
+            }
         }
-
+        tabId = position
+        tabStr = tabList[position]
+        pageIndex = 1
+        fetchData()
     }
 
     /**
@@ -255,6 +241,11 @@ class TextBookStoreActivity : BaseActivity(),
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
         mAdapter = BookStoreAdapter(R.layout.item_bookstore, books)
         rv_list.adapter = mAdapter

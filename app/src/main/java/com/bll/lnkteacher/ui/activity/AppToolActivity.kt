@@ -19,13 +19,19 @@ class AppToolActivity:BaseActivity() {
     private var menuApps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null
     private var mMenuAdapter: AppListAdapter?=null
-    private var position=0
 
     override fun layoutId(): Int {
         return R.layout.ac_app_tool
     }
 
     override fun initData() {
+        if (!AppDaoManager.getInstance().isExist(Constants.PACKAGE_GEOMETRY)){
+            AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
+                appName="几何绘图"
+                imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
+                packageName=Constants.PACKAGE_GEOMETRY
+            })
+        }
     }
 
     override fun initView() {
@@ -97,15 +103,7 @@ class AppToolActivity:BaseActivity() {
     }
 
     private fun setData(){
-        apps.clear()
-        if (!AppDaoManager.getInstance().isExist(Constants.PACKAGE_GEOMETRY)){
-            AppDaoManager.getInstance().insertOrReplace(AppBean().apply {
-                appName="几何绘图"
-                imageByte = BitmapUtils.drawableToByte(getDrawable(R.mipmap.icon_app_geometry))
-                packageName=Constants.PACKAGE_GEOMETRY
-            })
-        }
-        apps=MethodManager.getAppTools(this,1)
+        apps=MethodManager.getAppTools(this,0)
         for (item in apps){
             item.isCheck=false
         }
@@ -113,7 +111,7 @@ class AppToolActivity:BaseActivity() {
     }
 
     private fun setMenuData(){
-        menuApps=MethodManager.getAppTools(this,2)
+        menuApps=MethodManager.getAppTools(this,1)
         for (item in menuApps){
             item.isCheck=false
         }

@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import com.bll.lnkteacher.FileAddress
@@ -14,7 +14,7 @@ import com.bll.lnkteacher.mvp.model.NoteContent
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
@@ -46,27 +46,35 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
 
     override fun initView() {
+        disMissView(iv_btn)
         v_content_a.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
         v_content_b.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
         onChangeContent()
 
         tv_page_a.setOnClickListener {
-            InputContentDialog(this, 1, note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
-                note_Content_a?.title = string
-                noteContents[page - 1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-            }
-        }
-
-        tv_page.setOnClickListener {
-            var type = getCurrentScreenPos()
-            if (type == 3)
-                type = 2
-            InputContentDialog(this, type, noteContent?.title!!).builder().setOnDialogClickListener { string ->
+            InputContentDialog(this, 2, noteContent?.title!!).builder().setOnDialogClickListener { string ->
                 noteContent?.title = string
                 noteContents[page].title = string
                 NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
             }
+        }
+
+        tv_page.setOnClickListener {
+            if (isExpand){
+                InputContentDialog(this, 1, note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
+                    note_Content_a?.title = string
+                    noteContents[page-1].title = string
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
+                }
+            }
+            else{
+                InputContentDialog(this, 1, noteContent?.title!!).builder().setOnDialogClickListener { string ->
+                    noteContent?.title = string
+                    noteContents[page].title = string
+                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+                }
+            }
+
         }
     }
 
@@ -162,11 +170,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
 
         setElikLoadPath(elik_b!!, noteContent!!)
-        tv_page.text = (page + 1).toString()
+        tv_page.text = "${page+1}/${noteContents.size}"
 
         if (isExpand) {
             setElikLoadPath(elik_a!!, note_Content_a!!)
-            tv_page_a.text = "$page"
+            tv_page.text = "${page}/${noteContents.size}"
+            tv_page_a.text="${page+1}/${noteContents.size}"
         }
     }
 

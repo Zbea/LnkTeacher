@@ -16,7 +16,7 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             }
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
                 if (tBaseResult.data!=null)
-                    view.onClassList(tBaseResult.data?.list)
+                    view.onClasss(tBaseResult.data?.list)
             }
         }, false)
 

@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.drawing
 
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
@@ -14,7 +14,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_free_note.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
@@ -101,7 +101,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     }
 
     override fun initView() {
-        disMissView(tv_page_title,iv_catalog,iv_btn)
+        disMissView(iv_catalog,iv_expand,iv_btn)
 
         tv_name.setOnClickListener {
             InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
@@ -111,9 +111,9 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         }
 
         tv_theme.setOnClickListener {
-            NoteModuleAddDialog(this,getCurrentScreenPos(),1).builder()
-                ?.setOnDialogClickListener { moduleBean ->
-                    bgRes=ToolUtils.getImageResStr(this, moduleBean.resFreeNote)
+            NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
+                .setOnDialogClickListener { moduleBean ->
+                    bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     v_content_b.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }

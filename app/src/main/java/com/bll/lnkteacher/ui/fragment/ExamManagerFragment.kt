@@ -1,13 +1,14 @@
 package com.bll.lnkteacher.ui.fragment
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.exam.ExamCorrectFragment
 import com.bll.lnkteacher.ui.fragment.exam.ExamListFragment
 import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 
 class ExamManagerFragment:BaseMainFragment() {
 
@@ -44,29 +45,29 @@ class ExamManagerFragment:BaseMainFragment() {
         examListFragment?.onChangeGrade(grade)
     }
 
-    /**
-     * 设置tab
-     */
     private fun initTab() {
         val strs= arrayListOf("考试列表","考试批改")
         for (i in strs.indices){
-            rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=strs[i]
+                isCheck=i==0
+            })
         }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
 
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    showView(tv_grade)
-                    switchFragment(lastFragment, examListFragment)
-                }
-                1 -> {
-                    disMissView(tv_grade)
-                    switchFragment(lastFragment, examCorrectFragment)
-                }
+    override fun onTabClickListener(view: View, position: Int) {
+        when (position) {
+            0 -> {
+                showView(tv_grade)
+                switchFragment(lastFragment, examListFragment)
             }
-            lastPosition = i
+            1 -> {
+                disMissView(tv_grade)
+                switchFragment(lastFragment, examCorrectFragment)
+            }
         }
-
+        lastPosition = position
     }
 
     //页码跳转

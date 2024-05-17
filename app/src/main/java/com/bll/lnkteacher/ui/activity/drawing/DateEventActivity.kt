@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.drawing
 
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress

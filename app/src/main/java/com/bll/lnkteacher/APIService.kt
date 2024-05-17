@@ -356,10 +356,10 @@ interface APIService{
     @POST("exam/change/sendStudent")
     fun sendPaperCorrectClass(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 发送整个群
+     * 上传模板
      */
-    @POST("task/group/sendStudent")
-    fun sendPaperCorrectGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    @POST("task/group/setTemplate")
+    fun setPaperCorrectModule(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取作业卷内容列表
      */

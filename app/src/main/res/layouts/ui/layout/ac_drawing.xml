@@ -9,14 +9,18 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <include
+            layout="@layout/common_drawing_tool"
+            />
+
         <LinearLayout
             android:id="@+id/ll_content_a"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/width"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
             android:visibility="gone"
+            android:orientation="horizontal"
             >
+
             <com.android.internal.widget.PreferenceImageView
                 android:id="@+id/v_content_a"
                 android:layout_width="0dp"
@@ -26,40 +30,28 @@
 
             <LinearLayout
                 android:layout_width="@dimen/drawing_tool_width"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                >
                 <TextView
                     android:id="@+id/tv_page_a"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="200dp"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_20"
+                    android:layout_height="190dp"
+                    android:paddingTop="@dimen/dp_50"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/sp_16"
                     android:textColor="@color/black"
                     />
             </LinearLayout>
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            >
-
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitCenter" />
-
-            <include
-                layout="@layout/common_drawing_tool"
-                />
-
-        </LinearLayout>
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_b"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter" />
 
     </LinearLayout>
 
@@ -87,7 +79,8 @@
         android:layout_alignParentStart="true"
         android:visibility="gone"
         android:padding="1dp"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_50"
+        android:layout_marginBottom="@dimen/dp_10"
         android:src="@mipmap/icon_app_geometry"
         android:background="@drawable/bg_black_stroke_0dp_corner"
         />

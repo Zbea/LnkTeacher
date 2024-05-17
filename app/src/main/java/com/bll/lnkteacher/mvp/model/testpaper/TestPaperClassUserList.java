@@ -36,6 +36,7 @@ public class TestPaperClassUserList implements Serializable {
         public int type;
         public String name;
         public boolean isCheck;
+        public int questionType;
         public String question;//题目数据
     }
 }

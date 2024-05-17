@@ -1,15 +1,16 @@
 package com.bll.lnkteacher.ui.fragment
 
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.test.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.test.TestPaperCorrectFragment
 import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 
 class TestpaperManagerFragment : BaseMainFragment(){
 
@@ -51,31 +52,31 @@ class TestpaperManagerFragment : BaseMainFragment(){
             fetchCommonData()
     }
 
-    /**
-     * 设置tab
-     */
     private fun initTab() {
         val strs=DataBeanManager.testPaperStrs
         for (i in strs.indices){
-            rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
+           itemTabTypes.add(ItemTypeBean().apply {
+               title=strs[i]
+               isCheck=i==0
+           })
         }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
 
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    showView(tv_grade)
-                    setImageManager(R.mipmap.icon_add)
-                    switchFragment(lastFragment, testPaperAssignFragment)
-                }
-
-                1 -> {
-                    disMissView(iv_manager,tv_grade)
-                    switchFragment(lastFragment, testPaperCorrectFragment)
-                }
+    override fun onTabClickListener(view: View, position: Int) {
+        when (position) {
+            0 -> {
+                showView(tv_grade)
+                setImageManager(R.mipmap.icon_add)
+                switchFragment(lastFragment, testPaperAssignFragment)
             }
-            this.lastPosition = i
-        }
 
+            1 -> {
+                disMissView(iv_manager,tv_grade)
+                switchFragment(lastFragment, testPaperCorrectFragment)
+            }
+        }
+        lastPosition = position
     }
 
     //页码跳转

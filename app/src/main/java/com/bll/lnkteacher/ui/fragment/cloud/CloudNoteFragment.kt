@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.fragment.cloud
 
 import android.os.Handler
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,8 +26,7 @@ import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.common_radiogroup.*
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -39,7 +39,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_type
+        return R.layout.fragment_cloud_list_tab
     }
 
     override fun initView() {
@@ -51,17 +51,23 @@ class CloudNoteFragment: BaseCloudFragment() {
         mCloudPresenter.getType(3)
     }
 
-    private fun initTab(){
+    //设置头部索引
+    private fun initTab() {
         noteTypeStr=types[0]
         for (i in types.indices) {
-            rg_group.addView(getRadioButton(i ,types[i],types.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title= types[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            noteType=id
-            noteTypeStr=types[id]
-            pageIndex=1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        noteType=position
+        noteTypeStr=types[position]
+        pageIndex=1
         fetchData()
     }
 
@@ -70,6 +76,7 @@ class CloudNoteFragment: BaseCloudFragment() {
         layoutParams.setMargins(0, DP2PX.dip2px(activity,25f), 0,0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         mAdapter = CloudNoteAdapter(R.layout.item_note, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this

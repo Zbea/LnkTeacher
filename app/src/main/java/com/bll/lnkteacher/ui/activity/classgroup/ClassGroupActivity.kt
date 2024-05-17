@@ -20,8 +20,8 @@ import com.bll.lnkteacher.ui.activity.MainCourseActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
 import org.greenrobot.eventbus.EventBus
 
 class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
@@ -31,7 +31,7 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
     private var mAdapter: ClassGroupAdapter?=null
     private var position=0
 
-    override fun onClassList(groups: MutableList<ClassGroup>) {
+    override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
         classGroups.clear()
         for (item in DataBeanManager.classGroups){

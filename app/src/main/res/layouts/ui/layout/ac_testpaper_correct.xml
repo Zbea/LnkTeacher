@@ -1,124 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <View
+        android:layout_width="@dimen/width"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:visibility="gone"
+        />
+    <LinearLayout
+        android:layout_width="@dimen/width"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/statusbar_height"
+        android:gravity="center_horizontal"
         >
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+        <include
+            layout="@layout/common_title"
             />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_50"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_number"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="50dp"
+            android:padding="@dimen/dp_10"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
+            />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_score"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_400"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
+            android:paddingStart="@dimen/dp_60"
+            android:paddingEnd="@dimen/dp_60"
+            android:paddingTop="@dimen/dp_30"
+            android:paddingBottom="@dimen/dp_30"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
+            />
+
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/statusbar_height"
-            android:gravity="center_horizontal"
+            android:id="@+id/ll_score"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:orientation="horizontal"
             >
-            <include
-                layout="@layout/common_title"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_50"
-                />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_list_score"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_50"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
-                />
-
-            <ImageView
-                android:id="@+id/iv_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/icon_add"
-                android:layout_margin="@dimen/dp_50"
-                />
-
             <LinearLayout
-                android:id="@+id/ll_score"
-                android:layout_width="wrap_content"
-                android:layout_height="45dp"
+                android:id="@+id/ll_total_score"
                 android:orientation="horizontal"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/dp_5"
+                android:paddingEnd="@dimen/dp_5"
                 >
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_black_stroke_0dp_corner"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/dp_5"
-                    android:paddingEnd="@dimen/dp_5"
-                    >
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="总分"
-                        android:textSize="@dimen/sp_22"
-                        android:textColor="@color/black"
-                        />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black"
-                        android:layout_marginStart="5dp"
-                        />
-
-                    <EditText
-                        android:id="@+id/et_score_num"
-                        android:layout_width="64dp"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_20"
-                        android:gravity="center"
-                        android:background="@color/color_transparent"
-                        android:inputType="phone"
-                        />
-
-                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_save"
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dp_50"
-                    android:text="@string/save"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="总分"
                     android:textSize="@dimen/sp_22"
                     android:textColor="@color/black"
-                    android:background="@drawable/bg_black_stroke_0dp_corner"
+                    />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/black"
+                    android:layout_marginStart="5dp"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_score_num"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_20"
                     android:gravity="center"
                     />
+
             </LinearLayout>
 
-
+            <TextView
+                android:id="@+id/tv_save"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/dp_50"
+                android:text="@string/save"
+                android:textSize="@dimen/sp_22"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:gravity="center"
+                />
         </LinearLayout>
 
 
     </LinearLayout>
 
+    <include
+        android:id="@+id/ll_module_content"
+        android:layout_width="@dimen/width"
+        android:layout_height="match_parent"
+        android:layout_marginTop="128dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        layout="@layout/common_correct_topic_module"
+        />
 
     <RelativeLayout
         android:id="@+id/ll_record"
@@ -167,65 +177,9 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <include
         android:id="@+id/ll_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-
-        <LinearLayout
-            android:id="@+id/ll_content_a"
-            android:layout_width="@dimen/width"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:background="@color/white"
-            >
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_a"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitCenter" />
-
-            <LinearLayout
-                android:layout_width="@dimen/drawing_tool_width"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/tv_page_a"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="200dp"
-                    android:gravity="center"
-                    android:textSize="@dimen/sp_20"
-                    android:textColor="@color/black"
-                    />
-            </LinearLayout>
-
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="@dimen/width"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/white"
-            >
-
-            <com.android.internal.widget.PreferenceImageView
-                android:id="@+id/v_content_b"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:scaleType="fitCenter" />
-
-            <include
-                layout="@layout/common_drawing_tool"
-                />
-
-        </LinearLayout>
-
-    </LinearLayout>
+        layout="@layout/common_correct_drawing"
+        />
 
 </RelativeLayout>

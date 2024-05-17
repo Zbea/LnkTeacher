@@ -1,5 +1,6 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.drawing
 
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
@@ -10,7 +11,7 @@ import com.bll.lnkteacher.mvp.model.DiaryBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.*
-import kotlinx.android.synthetic.main.common_drawing_bottom.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
@@ -35,9 +36,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn,iv_catalog,tv_page_title)
+        disMissView(iv_catalog,iv_expand)
         elik_b?.addOnTopView(ll_date)
-        elik_b?.addOnTopView(tv_theme)
 
         iv_up.setOnClickListener {
             val lastDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,0)
@@ -78,9 +78,9 @@ class DiaryActivity:BaseDrawingActivity() {
             }
         }
 
-        tv_theme.setOnClickListener {
-            NoteModuleAddDialog(this, getCurrentScreenPos(),0).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+        iv_btn.setOnClickListener {
+            NoteModuleAddDialog(this, getCurrentScreenPos(),DataBeanManager.noteModuleDiary).builder()
+                .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
                     v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))

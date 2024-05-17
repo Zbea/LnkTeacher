@@ -13,6 +13,8 @@ import com.bll.lnkteacher.manager.CalenderDaoManager
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.ui.activity.*
+import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
+import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceItemDeco

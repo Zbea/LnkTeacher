@@ -23,6 +23,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
+import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
@@ -292,29 +293,28 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         if (isExpand){
             elik_a?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_a)
-            tv_page_a.text="${posImage+1}"
             val drawPath = getPathDrawStr(posImage+1)
             elik_a?.setLoadFilePath(drawPath, true)
 
             if (posImage+1<imageCount){
                 elik_b?.setPWEnabled(true,true)
                 GlideUtils.setImageUrl(this, images[posImage+1],v_content_b)
-                tv_page.text="${posImage+1+1}"
                 val drawPath_b = getPathDrawStr(posImage+1+1)
                 elik_b?.setLoadFilePath(drawPath_b, true)
             }
             else{
                 elik_b?.setPWEnabled(false,false)
                 v_content_b.setImageResource(0)
-                tv_page.text=""
             }
+            tv_page.text="${posImage+1}/${imageCount}"
+            tv_page_a.text=if (posImage+1<imageCount) "${posImage+1+1}/${imageCount}" else ""
         }
         else{
             elik_b?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_b)
             val drawPath = getPathDrawStr(posImage+1)
             elik_b?.setLoadFilePath(drawPath, true)
-            tv_page.text="${posImage+1}"
+            tv_page.text="${posImage+1}/$imageCount"
         }
     }
 

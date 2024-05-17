@@ -9,9 +9,9 @@ import android.view.*
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.ui.activity.DiaryActivity
-import com.bll.lnkteacher.ui.activity.FreeNoteActivity
-import com.bll.lnkteacher.ui.activity.PlanOverviewActivity
+import com.bll.lnkteacher.ui.activity.drawing.DiaryActivity
+import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
+import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
@@ -435,11 +435,7 @@ abstract class BaseDrawingActivity : BaseActivity(){
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        var type=1
-        if (this is PlanOverviewActivity || this is DiaryActivity || this is FreeNoteActivity){
-            type=0
-        }
-        AppToolDialog(this,type,getCurrentScreenPos()).builder().setDialogClickListener{
+        AppToolDialog(this,getCurrentScreenPos()).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)

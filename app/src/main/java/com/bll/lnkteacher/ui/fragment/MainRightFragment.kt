@@ -22,6 +22,8 @@ import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.*
+import com.bll.lnkteacher.ui.activity.drawing.DiaryActivity
+import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
 import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.utils.*
@@ -74,10 +76,10 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         tv_diary.setOnClickListener {
             if (privacyPassword!=null&&privacyPassword?.isSet==true){
                 PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                    customStartActivity(Intent(requireActivity(), DiaryActivity::class.java))
                 }
             } else{
-                customStartActivity(Intent(requireActivity(),DiaryActivity::class.java))
+                customStartActivity(Intent(requireActivity(), DiaryActivity::class.java))
             }
         }
 
@@ -106,7 +108,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
 
         tv_free_note.setOnClickListener {
-            customStartActivity(Intent(requireActivity(),FreeNoteActivity::class.java))
+            customStartActivity(Intent(requireActivity(), FreeNoteActivity::class.java))
         }
 
         initMessageView()
@@ -204,12 +206,10 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=4
-                            subType=ToolUtils.getDateId()
                             subTypeStr="日记"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(diaryBean)
-                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传
@@ -243,7 +243,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=5
-                            subType=-1
                             subTypeStr="随笔"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
@@ -273,7 +272,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
         val nullItems= mutableListOf<ItemTypeBean>()
         val itemTypeBean=ItemTypeBean()
-        itemTypeBean.title="未分类"
+        itemTypeBean.title="全部"
         itemTypeBean.date=System.currentTimeMillis()
         itemTypeBean.path=FileAddress().getPathScreen("未分类")
         screenTypes.add(0,itemTypeBean)
@@ -286,12 +285,10 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
                     setCallBack{
                         cloudList.add(CloudListBean().apply {
                             type=6
-                            subType=ToolUtils.getDateId()
                             subTypeStr="截图"
                             year=DateUtils.getYear()
                             date=System.currentTimeMillis()
                             listJson= Gson().toJson(item)
-                            skip=1
                             downloadUrl=it
                         })
                         //当加入上传的内容等于全部需要上传时候，则上传

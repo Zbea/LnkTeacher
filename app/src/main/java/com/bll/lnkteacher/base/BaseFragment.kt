@@ -26,13 +26,12 @@ import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
 import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_bookstore.*
-import kotlinx.android.synthetic.main.ac_list_type.*
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import kotlinx.android.synthetic.main.common_fragment_title.tv_title
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -64,6 +63,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var cloudList= mutableListOf<CloudListBean>()
     private var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter: TabTypeAdapter?=null
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -72,9 +72,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
-        {
             DataBeanManager.grades=commonData.grade
-        }
         if (!commonData.subject.isNullOrEmpty())
             DataBeanManager.courses=commonData.subject
         if (!commonData.typeGrade.isNullOrEmpty())
@@ -113,6 +111,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
+
         initCommonTitle()
         if (rv_tab!=null){
             initTabView()
@@ -323,38 +322,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
                 showView(ll_page_number)
             }
         }
-    }
-
-    fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
-    fun getRadioButton(i:Int,check:Int,str:String,max:Int):RadioButton{
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == check
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(activity, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(activity, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
     }
 
     //下载应用

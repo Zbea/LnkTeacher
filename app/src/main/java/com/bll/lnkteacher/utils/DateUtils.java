@@ -134,7 +134,7 @@ public class DateUtils {
             return null;
         }
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  EEEE", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;
@@ -147,6 +147,18 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date10ToDate13(date)));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String longToStringWeek2(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH:ss  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;

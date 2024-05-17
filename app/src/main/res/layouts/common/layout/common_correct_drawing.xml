@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/common_drawing_tool"
+        />
+
+    <LinearLayout
+        android:id="@+id/ll_content_a"
+        android:layout_width="@dimen/width"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
+
+        <com.android.internal.widget.PreferenceImageView
+            android:id="@+id/v_content_a"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="fitCenter" />
+        <RelativeLayout
+            android:layout_width="@dimen/drawing_tool_width"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:id="@+id/tv_page_a"
+                android:layout_width="match_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_height="190dp"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/dp_50"
+                android:textSize="@dimen/sp_16"
+                android:textColor="@color/black"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <com.android.internal.widget.PreferenceImageView
+        android:id="@+id/v_content_b"
+        android:layout_width="979dp"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter" />
+
+</LinearLayout>

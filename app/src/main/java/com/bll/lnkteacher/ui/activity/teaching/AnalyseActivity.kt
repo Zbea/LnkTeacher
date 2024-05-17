@@ -23,12 +23,14 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
+import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
 
 class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView {
 
+    private var correctModule=-1
     private var mPresenter=TestPaperCorrectDetailsPresenter(this,3)
     private var classId=0
     private var posImage=0
@@ -41,11 +43,11 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     private val scoreItemMap=HashMap<Int, ItemList>() //所有列表列表以及题目总分、人数
     private var popScore= mutableListOf<PopupBean>()
 
-    override fun onImageList(list: MutableList<ContentListBean>?) {
-        if (list != null) {
-            for (item in list){
-                images.add(item.url)
-            }
+    override fun onImageList(list: MutableList<ContentListBean>) {
+        for (item in list){
+            images.add(item.url)
+        }
+        if (images.size>0){
             imageCount=images.size
             setContentImage()
         }
@@ -63,8 +65,27 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         var score90=0
         var score100=0
         for (userItem in bean.list){
-            if (!userItem.question.isNullOrEmpty()){
-                val examScoreItems= Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+            if (!userItem.question.isNullOrEmpty()&&userItem.status==2&&correctModule>0){
+                if (correctModule<3){
+                    examScoreItems=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+                }
+                else{
+                    val scores=Gson().fromJson(userItem.question, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+                    for (i in scores.indices){
+                        examScoreItems.add(ExamScoreItem().apply {
+                            sort=i+1
+                            var totalItem=0
+                            for (item in scores[i]){
+                                if (!item.score.isNullOrEmpty()){
+                                    totalItem+=item.score.toInt()
+                                }
+                            }
+                            score=totalItem.toString()
+                            childScores=scores[i]
+                        })
+                    }
+                }
+
                 for (item in examScoreItems){
                     var itemList=scoreItemMap[item.sort]
                     if (itemList!=null){
@@ -142,18 +163,23 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             tv_average_score.text=""
         }
 
-        for (key in scoreItemMap.keys){
-            examScoreItems.add(ExamScoreItem().apply {
-                sort=key
-                score=getAverageNum(scoreItemMap[key]?.score!!.toDouble()/ scoreItemMap[key]?.num!!)
-            })
+        if (correctModule>0){
+            for (key in scoreItemMap.keys){
+                examScoreItems.add(ExamScoreItem().apply {
+                    sort=key
+                    score=getAverageNum(scoreItemMap[key]?.score!!.toDouble()/ scoreItemMap[key]?.num!!)
+                })
+            }
+            mAdapter?.setNewData(examScoreItems)
         }
-        mAdapter?.setNewData(examScoreItems)
     }
     override fun onCorrectSuccess() {
     }
 
     override fun onSendSuccess() {
+    }
+
+    override fun setModuleSuccess() {
     }
 
 
@@ -162,6 +188,7 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     }
 
     override fun initData() {
+        correctModule=intent.getIntExtra("module",-1)
         correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         for (item in correctList?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
@@ -274,29 +301,28 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         if (isExpand){
             elik_a?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_a)
-            tv_page_a.text="${posImage+1}"
             val drawPath = getPathDrawStr(posImage+1)
             elik_a?.setLoadFilePath(drawPath, true)
 
             if (posImage+1<imageCount){
                 elik_b?.setPWEnabled(true,true)
                 GlideUtils.setImageUrl(this, images[posImage+1],v_content_b)
-                tv_page.text="${posImage+1+1}"
                 val drawPath_b = getPathDrawStr(posImage+1+1)
                 elik_b?.setLoadFilePath(drawPath_b, true)
             }
             else{
                 elik_b?.setPWEnabled(false,false)
                 v_content_b.setImageResource(0)
-                tv_page.text=""
             }
+            tv_page.text="${posImage+1}/${imageCount}"
+            tv_page_a.text=if (posImage+1<imageCount) "${posImage+1+1}/${imageCount}" else ""
         }
         else{
             elik_b?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_b)
             val drawPath = getPathDrawStr(posImage+1)
             elik_b?.setLoadFilePath(drawPath, true)
-            tv_page.text="${posImage+1}"
+            tv_page.text="${posImage+1}/$imageCount"
         }
     }
 

@@ -5,21 +5,15 @@ import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
-import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.SchoolBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.ICommonView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.ToolUtils
@@ -27,9 +21,8 @@ import kotlinx.android.synthetic.main.ac_account_register.*
 import kotlinx.android.synthetic.main.common_title.*
 
 
-class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView,ICommonView {
+class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView{
 
-    private val mCommonPresenter=CommonPresenter(this)
     private lateinit var mSchoolPresenter:SchoolPresenter
     private lateinit var presenter:RegisterOrFindPsdPresenter
     private var countDownTimer: CountDownTimer? = null
@@ -38,24 +31,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var popCourses= mutableListOf<PopupBean>()
-
-    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
-    }
-    override fun onCommon(commonData: CommonData) {
-        if (!commonData.grade.isNullOrEmpty())
-            DataBeanManager.grades=commonData.grade
-        if (!commonData.subject.isNullOrEmpty())
-            DataBeanManager.courses=commonData.subject
-        popCourses=DataBeanManager.popupCourses
-        if (!commonData.typeGrade.isNullOrEmpty())
-            DataBeanManager.typeGrades=commonData.typeGrade
-        if (!commonData.version.isNullOrEmpty())
-            DataBeanManager.versions=commonData.version
-    }
-
-    override fun onAppUpdate(item: AppUpdateBean?) {
-    }
-
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
@@ -87,10 +62,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     override fun initData() {
         initChangeScreenData()
         flags=intent.flags
-        if (flags==0){
-            mCommonPresenter.getCommon()
-            mSchoolPresenter.getSchool()
-        }
+        mSchoolPresenter.getSchool()
     }
 
     override fun initChangeScreenData() {

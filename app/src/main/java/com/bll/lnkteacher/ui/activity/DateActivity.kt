@@ -7,6 +7,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupDateSelector
 import com.bll.lnkteacher.mvp.model.Date
+import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.adapter.DateAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
@@ -45,7 +46,9 @@ open class DateActivity: BaseActivity() {
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
-                    getDates()
+                    Thread{
+                        getDates()
+                    }.start()
                 }
                 yearPop?.show()
             }
@@ -65,7 +68,9 @@ open class DateActivity: BaseActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
-                    getDates()
+                    Thread{
+                        getDates()
+                    }.start()
                 }
                 monthPop?.show()
             }

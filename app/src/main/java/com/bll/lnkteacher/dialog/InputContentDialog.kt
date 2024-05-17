@@ -14,6 +14,8 @@ class InputContentDialog(val context: Context, private val screenPos:Int,val str
 
     constructor(context: Context ,string: String) :this(context,1,string)
 
+    private var tvName:EditText?=null
+
     fun builder(): InputContentDialog{
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_input_content)
@@ -31,15 +33,15 @@ class InputContentDialog(val context: Context, private val screenPos:Int,val str
 
         val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
         val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
-        val name = dialog.findViewById<EditText>(R.id.ed_name)
-        name.hint=string
+        tvName = dialog.findViewById(R.id.ed_name)
+        tvName?.hint=string
         dialog.show()
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()
         }
         btn_ok.setOnClickListener {
-            val content = name.text.toString()
+            val content = tvName?.text.toString()
             if (content.isNotEmpty()) {
                 dialog.dismiss()
                 listener?.onClick(content)

@@ -18,7 +18,7 @@ import com.bll.lnkteacher.ui.activity.teaching.CorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrectView {
 
@@ -39,7 +39,7 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -53,7 +53,6 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
     }
 
     private fun initRecyclerView(){
-
         val layoutParams=LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(DP2PX.dip2px(activity,40f),DP2PX.dip2px(activity,30f),DP2PX.dip2px(activity,40f),0)
@@ -73,6 +72,7 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)
+                        intent.putExtra("module",item.questionType)
                         intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                         customStartActivity(intent)
                     }
@@ -82,12 +82,14 @@ class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrec
                 }
             }
             setOnChildClickListener { view,parentPos, position ->
+                val item=items[parentPos]
                 if (view.id==R.id.ll_content){
                     val intent=Intent(requireActivity(), CorrectActivity::class.java)
                     val bundle=Bundle()
-                    bundle.putSerializable("classBean",items[parentPos].examList[position])
+                    bundle.putSerializable("classBean",item.examList[position])
                     intent.putExtra("bundle",bundle)
-                    intent.putExtra("id",items[parentPos].id)
+                    intent.putExtra("id",item.id)
+                    intent.putExtra("module",item.questionType)
                     intent.flags= Intent.FLAG_GRANT_WRITE_URI_PERMISSION
                     intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                     customStartActivity(intent)

@@ -20,7 +20,7 @@ import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_type.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 import java.io.File
 
 class CloudFreeNoteFragment: BaseCloudFragment() {
@@ -29,7 +29,7 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
@@ -46,6 +46,7 @@ class CloudFreeNoteFragment: BaseCloudFragment() {
         layoutParams.setMargins(DP2PX.dip2px(activity,50f), DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,50f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
+
         mAdapter = CloudFreeNoteAdapter(R.layout.item_cloud_diary, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this

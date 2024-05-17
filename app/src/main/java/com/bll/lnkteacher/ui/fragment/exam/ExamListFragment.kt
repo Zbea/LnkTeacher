@@ -17,7 +17,7 @@ import com.bll.lnkteacher.ui.activity.exam.ExamCorrectActivity
 import com.bll.lnkteacher.ui.adapter.ExamListAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class ExamListFragment:BaseMainFragment(),IExamListView{
     private var mPresenter=ExamListPresenter(this,2)
@@ -36,7 +36,7 @@ class ExamListFragment:BaseMainFragment(),IExamListView{
 
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {

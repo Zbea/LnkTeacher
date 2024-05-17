@@ -74,7 +74,7 @@ public interface IContractView {
 
     //班群
     interface IClassGroupView extends IBaseView{
-        void onClassList(List<ClassGroup> classGroups);
+        void onClasss(List<ClassGroup> classGroups);
         void onSuccess();
         void onUploadSuccess();
     }
@@ -172,6 +172,7 @@ public interface IContractView {
          */
         void onCorrectSuccess();
         void onSendSuccess();
+        void setModuleSuccess();
     }
 
     interface ITestPaperRankView extends IBaseView{

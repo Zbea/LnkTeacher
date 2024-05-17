@@ -1,5 +1,8 @@
 package com.bll.lnkteacher.ui.fragment
 
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
@@ -12,6 +15,7 @@ import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookAdapter
@@ -22,8 +26,7 @@ import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_radiogroup.*
-import kotlinx.android.synthetic.main.fragment_textbook.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import java.io.File
 
 class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
@@ -43,41 +46,49 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_textbook
+        return R.layout.fragment_list
     }
 
     override fun initView() {
         super.initView()
-        pageSize = 12
+        pageSize = 9
         setTitle(R.string.main_textbook_title)
 
         initTab()
         initRecyclerView()
-
-        fetchData()
     }
 
     override fun lazyLoad() {
+        fetchData()
         if (NetworkUtil.isNetworkAvailable(requireActivity()))
             fetchCommonData()
     }
 
-    //设置头部索引
     private fun initTab() {
-        val tabStrs = DataBeanManager.textbookType
-        textBook = tabStrs[0]
-        for (i in tabStrs.indices) {
-            rg_group.addView(getRadioButton(i, tabStrs[i], tabStrs.size - 1))
+        val strs=DataBeanManager.textbookType
+        textBook = strs[0]
+        for (i in strs.indices){
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=strs[i]
+                isCheck=i==0
+            })
         }
-        rg_group.setOnCheckedChangeListener { radioGroup, id ->
-            tabId = id
-            textBook = tabStrs[id]
-            pageIndex = 1
-            fetchData()
-        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        tabId = position
+        textBook = itemTabTypes[position].title
+        pageIndex = 1
+        fetchData()
     }
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
         mAdapter = BookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
@@ -121,7 +132,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                 resId = R.mipmap.icon_setting_delete
             })
         }
-        LongClickManageDialog(requireActivity(), book.bookName, beans).builder()
+        LongClickManageDialog(requireActivity(),1, book.bookName, beans).builder()
             .setOnDialogClickListener {
                 if (it == 0) {
                     MethodManager.deleteBook(book,0)
@@ -157,7 +168,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             }
         }
         for (book in maxBooks) {
-            val subTypeId = DataBeanManager.textbookType.indexOf(book.subtypeStr)+1
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {
@@ -167,7 +177,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                             type = 2
                             zipUrl = book.downloadUrl
                             downloadUrl = it
-                            subType = subTypeId
                             subTypeStr = book.subtypeStr
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
@@ -182,7 +191,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                 cloudList.add(CloudListBean().apply {
                     type = 2
                     zipUrl = book.downloadUrl
-                    subType = subTypeId
                     subTypeStr = book.subtypeStr
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
@@ -215,7 +223,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun fetchData() {
-        books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, 9)
+        books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, pageSize)
         val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
         setPageNumber(total.size)
         mAdapter?.setNewData(books)

@@ -1,18 +1,19 @@
 package com.bll.lnkteacher.ui.fragment
 
 import PopupClick
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
 import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.common_radiogroup.*
 
 class HomeworkManagerFragment : BaseMainFragment(){
 
@@ -56,32 +57,33 @@ class HomeworkManagerFragment : BaseMainFragment(){
             fetchCommonData()
     }
 
-    /**
-     * 设置tab
-     */
     private fun initTab() {
         val strs=DataBeanManager.teachingStrs
         for (i in strs.indices){
-            rg_group.addView(getRadioButton(i,strs[i],strs.size-1))
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=strs[i]
+                isCheck=i==0
+            })
         }
-
-        rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            when (i) {
-                0 -> {
-                    showView(iv_manager,tv_grade)
-                    iv_manager.setImageResource(R.mipmap.icon_manager)
-                    switchFragment(lastFragment, homeworkAssignFragment)
-                }
-
-                1 -> {
-                    disMissView(iv_manager,tv_grade)
-                    switchFragment(lastFragment, homeworkCorrectFragment)
-                }
-            }
-            this.lastPosition = i
-        }
-
+        mTabTypeAdapter?.setNewData(itemTabTypes)
     }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        when (position) {
+            0 -> {
+                showView(iv_manager,tv_grade)
+                iv_manager.setImageResource(R.mipmap.icon_manager)
+                switchFragment(lastFragment, homeworkAssignFragment)
+            }
+
+            1 -> {
+                disMissView(iv_manager,tv_grade)
+                switchFragment(lastFragment, homeworkCorrectFragment)
+            }
+        }
+        lastPosition = position
+    }
+
 
     //页码跳转
     private fun switchFragment(from: Fragment?, to: Fragment?) {

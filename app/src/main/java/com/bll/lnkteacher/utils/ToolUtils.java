@@ -9,6 +9,48 @@ import java.util.regex.Pattern;
 
 public class ToolUtils {
 
+    static String[] units={"","十","白","千"};
+   public static String[] numbers = {"零", "一", "二", "三", "四", "五", "六", "七", "八", "九","十","十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九","二十"
+    ,"二一", "二二", "二三", "二四", "二五", "二六", "二七", "二八", "二九","三十"}; // 大写数字
+
+    /**
+     * 小写转大写数字
+     * @param num
+     * @return
+     */
+    public static String getIntToChineseNumber(int num){
+        if (num == 0) {
+            return numbers[0];
+        }
+        StringBuffer buffer=new StringBuffer();
+
+        // 转换整数部分
+        for (int i = 0; i < units.length ; i++) {
+            int digit = (int) (num % 10);
+            if (digit != 0) {
+                buffer.insert(0, numbers[digit]);
+            }
+            num /= 10;
+        }
+//        int length=numStr.length();
+//        int[] nums=new int[length];
+//        for (int i = 0; i < length; i++) {
+//            nums[i]=numStr.charAt(i);
+//        }
+//        for (int i = 0; i < length; i++) {
+//            if (nums[i]==0&&i==length-1){
+//                buffer.append("十");
+//            }
+//            else {
+//                buffer.append(numbers[nums[i]]); // 拼接每个位数的大写数字
+//            }
+//        }
+//        if (buffer.toString().equals("一十")){
+//            return "十";
+//        }
+        return buffer.toString();
+    }
+
 
     /**
      * 格式化数据显示

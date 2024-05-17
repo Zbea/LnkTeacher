@@ -13,4 +13,6 @@ public class CorrectBean implements Serializable {
     public List<CorrectClassBean> examList;
     public int subType;
     public String taskName;
+    public String question;
+    public int questionType;//-1未加入模板0空模板
 }

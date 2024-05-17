@@ -23,10 +23,17 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.ProgressDialog
+import com.bll.lnkteacher.mvp.model.AppUpdateBean
+import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.presenter.CommonPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
@@ -34,7 +41,7 @@ import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.ac_list_type.*
+import kotlinx.android.synthetic.main.ac_list_tab.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -45,8 +52,9 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView {
+abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView, IContractView.ICommonView {
 
+    private var mCommonPresenter= CommonPresenter(this)
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
@@ -57,6 +65,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var pageSize=0 //一页数据
     var isClickExpand=false //是否是单双屏切换
     var mTabTypeAdapter: TabTypeAdapter?=null
+    var itemTabTypes= mutableListOf<ItemTypeBean>()
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -72,6 +81,25 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             fragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss()
         }
         fragmentManager.popBackStack()
+    }
+
+    override fun onCommon(commonData: CommonData) {
+        if (!commonData.grade.isNullOrEmpty())
+            DataBeanManager.grades=commonData.grade
+        if (!commonData.subject.isNullOrEmpty())
+            DataBeanManager.courses=commonData.subject
+        if (!commonData.typeGrade.isNullOrEmpty())
+            DataBeanManager.typeGrades=commonData.typeGrade
+        if (!commonData.version.isNullOrEmpty())
+            DataBeanManager.versions=commonData.version
+
+        onCommonData()
+    }
+
+    override fun onAppUpdate(item: AppUpdateBean?) {
+    }
+
+    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
     }
 
     override fun moveTaskToBack(nonRoot: Boolean): Boolean {
@@ -108,6 +136,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         initDialog()
         initData()
         initView()
+
+        fetchCommonData()
     }
 
     /**
@@ -157,6 +187,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     protected fun initDialog(screen:Int){
         mDialog = ProgressDialog(this,screen)
+    }
+
+    private fun fetchCommonData(){
+        if (NetworkUtil.isNetworkAvailable(this) && DataBeanManager.grades.size==0)
+            mCommonPresenter.getCommon()
     }
 
     fun showBackView(isShow:Boolean) {
@@ -281,38 +316,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 showView(ll_page_number)
             }
         }
-    }
-
-    protected fun getRadioButton(i:Int,str:String,max:Int): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = i == 0
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = if (i == max) 0 else DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
-    }
-
-    protected fun getRadioButton(i:Int,str:String,isCheck:Boolean): RadioButton {
-        val radioButton =
-            layoutInflater.inflate(R.layout.common_radiobutton, null) as RadioButton
-        radioButton.text = str
-        radioButton.id = i
-        radioButton.isChecked = isCheck
-        val layoutParams = RadioGroup.LayoutParams(
-            RadioGroup.LayoutParams.WRAP_CONTENT,
-            DP2PX.dip2px(this, 45f))
-
-        layoutParams.marginEnd = DP2PX.dip2px(this, 44f)
-        radioButton.layoutParams = layoutParams
-
-        return radioButton
     }
 
     /**
@@ -510,6 +513,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     open fun initChangeScreenData(){
     }
+
+    open fun onCommonData(){
+
+    }
+
 
 }
 

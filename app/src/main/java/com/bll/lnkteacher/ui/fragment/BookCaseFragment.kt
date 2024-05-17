@@ -124,7 +124,6 @@ class BookCaseFragment : BaseMainFragment() {
                             type = 1
                             zipUrl = book.downloadUrl
                             downloadUrl = it
-                            subType = -1
                             subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
@@ -138,7 +137,6 @@ class BookCaseFragment : BaseMainFragment() {
                 cloudList.add(CloudListBean().apply {
                     type = 1
                     zipUrl = book.downloadUrl
-                    subType = -1
                     subTypeStr = book.subtypeStr.ifEmpty { "全部" }
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)

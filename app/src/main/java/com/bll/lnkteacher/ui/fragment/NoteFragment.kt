@@ -3,9 +3,12 @@ package com.bll.lnkteacher.ui.fragment
 import PopupClick
 import android.content.Intent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.NOTE_BOOK_MANAGER_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -17,12 +20,13 @@ import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_note.*
+import kotlinx.android.synthetic.main.fragment_list.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -40,7 +44,7 @@ class NoteFragment : BaseMainFragment() {
     private var privacyPassword:PrivacyPassword?=null
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_note
+        return R.layout.fragment_list
     }
 
     override fun initView() {
@@ -73,6 +77,11 @@ class NoteFragment : BaseMainFragment() {
 
 
     private fun initRecyclerView() {
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(0, DP2PX.dip2px(requireActivity(),25f), 0,0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
         rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
         mAdapter = NoteAdapter(R.layout.item_note, null)
         rv_list.adapter = mAdapter
@@ -168,8 +177,8 @@ class NoteFragment : BaseMainFragment() {
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            NoteModuleAddDialog(requireContext(), 3,1).builder()
-                ?.setOnDialogClickListener { moduleBean ->
+            NoteModuleAddDialog(requireContext(), 3,DataBeanManager.noteModuleBook).builder()
+                .setOnDialogClickListener { moduleBean ->
                     createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                 }
         }
@@ -274,12 +283,10 @@ class NoteFragment : BaseMainFragment() {
             setCallBack{
                 cloudList.add(CloudListBean().apply {
                     type=3
-                    subType=ToolUtils.getDateId()
                     subTypeStr=note.typeStr
                     date=note.date
                     listJson= Gson().toJson(note)
                     contentJson= Gson().toJson(noteContents)
-                    skip=1
                     downloadUrl=it
                 })
                 mCloudUploadPresenter.upload(cloudList)

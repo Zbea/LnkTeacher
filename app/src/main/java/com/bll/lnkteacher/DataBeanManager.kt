@@ -237,11 +237,18 @@ object DataBeanManager {
         return list
     }
 
-    val notebooks: MutableList<ItemTypeBean>
+    val freenoteModules: MutableList<ModuleBean>
         get() {
-            val list = mutableListOf<ItemTypeBean>()
-            list.add(ItemTypeBean().apply {
-                title = mContext.getString(R.string.note_tab_diary)
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.note_type_kbb)
+                resId = R.drawable.bg_gray_stroke_10dp_corner
+                resContentId = 0
+            })
+            list.add(ModuleBean().apply {
+                name = mContext.getString(R.string.note_type_hgb)
+                resId = R.mipmap.icon_note_module_bg_1
+                resContentId = R.mipmap.icon_freenote_bg_1
             })
             return list
         }
@@ -271,37 +278,31 @@ object DataBeanManager {
                 name = mContext.getString(R.string.note_type_kbb)
                 resId = R.drawable.bg_gray_stroke_10dp_corner
                 resContentId = 0
-                resFreeNote = 0
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_hgb)
                 resId = R.mipmap.icon_note_module_bg_1
                 resContentId = R.mipmap.icon_note_details_bg_1
-                resFreeNote = R.mipmap.icon_freenote_bg_1
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_fgb)
                 resId = R.mipmap.icon_note_module_bg_2
                 resContentId = R.mipmap.icon_note_details_bg_2
-                resFreeNote = R.mipmap.icon_freenote_bg_2
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_yyb)
                 resId = R.mipmap.icon_note_module_bg_3
                 resContentId = R.mipmap.icon_note_details_bg_3
-                resFreeNote = R.mipmap.icon_freenote_bg_3
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_tzb)
                 resId = R.mipmap.icon_note_module_bg_4
                 resContentId = R.mipmap.icon_note_details_bg_4
-                resFreeNote = R.mipmap.icon_freenote_bg_4
             })
             list.add(ModuleBean().apply {
                 name = mContext.getString(R.string.note_type_wxp)
                 resId = R.mipmap.icon_note_module_bg_5
                 resContentId = R.mipmap.icon_note_details_bg_5
-                resFreeNote = R.mipmap.icon_freenote_bg_5
             })
             return list
         }

@@ -2,12 +2,16 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
+import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
@@ -17,8 +21,10 @@ import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
-import com.bll.lnkteacher.ui.adapter.ExamScoreAdapter
+import com.bll.lnkteacher.ui.adapter.NumberListAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
+import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
@@ -26,6 +32,8 @@ import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import kotlinx.android.synthetic.main.common_correct_drawing.*
+import kotlinx.android.synthetic.main.common_correct_topic_module.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -33,8 +41,9 @@ import java.io.File
 
 class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
 
-    private var id=0
+    private var mId=0
     private var type=0 //1作业 2 测卷
+    private var correctModule=-1//批改摸排
     private var subType = 0
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
@@ -48,14 +57,21 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     private var currentImages:Array<String>?=null
     private val commitItems = mutableListOf<ItemList>()
     private var initScores=mutableListOf<ExamScoreItem>()//初始题目分数
-    private var examScoreItems= mutableListOf<ExamScoreItem>()//已填题目分数
+    private var currentScores=mutableListOf<ExamScoreItem>()//初始题目分数
 
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
 
-    private var mScoreAdapter:ExamScoreAdapter?=null
+    private var mModuleTopicAdapter:TopicScoreAdapter?=null
+    private var mModuleMultiAdapter:TopicMultiScoreAdapter?=null
+    private var mTopicScoreAdapter:TopicScoreAdapter?=null
+    private var mTopicMultiAdapter:TopicMultiScoreAdapter?=null
+
     private var userCorrect=0
     private var userSend=0
+    private var positionModule=0 //模板指示器
+    private var positionScore=0//分数指示
+    private var positionScoreChild=0//小题分数指示
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -69,10 +85,10 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=et_score_num.text.toString().toInt()
+                    map["score"]=tv_score_num.text.toString().toInt()
                     map["submitUrl"]=url
                     map["status"]=2
-                    map["question"]=Gson().toJson(examScoreItems)
+                    map["question"]=toJson(currentScores)
                     mPresenter.commitPaperStudent(map)
                 }
                 override fun onUploadFail() {
@@ -98,54 +114,69 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
         userCorrect+=1
-        userItems[posUser].score=et_score_num.text.toString().toInt()
+        userItems[posUser].score=tv_score_num.text.toString().toInt()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
-        userItems[posUser].question=Gson().toJson(examScoreItems)
+        userItems[posUser].question=Gson().toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
+        disMissView(tv_save)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik_a?.setPWEnabled(false,false)
         elik_b?.setPWEnabled(false,false)
-        EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
+        EventBus.getDefault().post(if (type==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.EXAM_CORRECT_EVENT)
     }
 
     override fun onSendSuccess() {
         showToast(R.string.toast_send_success)
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
-    
+
+    override fun setModuleSuccess() {
+        showToast("上传模板成功")
+        disMissView(ll_module_content)
+        setContentView()
+        EventBus.getDefault().post(if (type==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.EXAM_CORRECT_EVENT)
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
     }
 
     override fun initData() {
         type=intent.flags
-        id=intent.getIntExtra("id",0)
+        mId=intent.getIntExtra("id",0)
+        correctModule=intent.getIntExtra("module",-1)
         mClassBean=intent.getBundleExtra("bundle")?.getSerializable("classBean") as CorrectClassBean
         subType = intent.getIntExtra("subType", 0)
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
 
     override fun initView() {
-        elik_b?.setPWEnabled(false,false)
-        disMissView(iv_tool,iv_catalog)
-
         val title=if (type==1) "作业批改" else "试卷批改"
         setPageTitle("$title  ${mClassBean?.examName}  ${mClassBean?.name}")
+
+        elik_b?.setPWEnabled(false,false)
+        disMissView(iv_tool,iv_catalog,iv_btn)
+
+        if (correctModule==-1){
+            showView(ll_module_content)
+        }
+        else{
+            disMissView(ll_module_content)
+        }
 
         //如果是朗读本
         if (subType == 3) {
             showView(ll_record)
-            disMissView(ll_score,rv_list_score,iv_add,ll_content)
+            disMissView(ll_score,ll_topic,ll_content)
         } else {
-            disMissView(ll_record)
-            showView(tv_custom,ll_content)
-            tv_custom.text="发送批改"
+            if (correctModule!=-1){
+                disMissView(ll_record)
+                showView(tv_custom,ll_content)
+                tv_custom.text="发送批改"
+            }
         }
-
-        initRecyclerView()
-        initRecyclerViewScore()
 
         tv_custom.setOnClickListener {
             if (userCorrect>userSend)
@@ -154,26 +185,22 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1&&et_score_num.text.isNotEmpty()){
-                for (ite in initScores){
-                    if (!ite.score.isNullOrEmpty()){
-                        examScoreItems.add(ite)
-                    }
-                }
+            if (item.status==1){
                 showLoading()
                 commitPapers()
             }
             hideKeyboard()
         }
 
-        iv_add.setOnClickListener {
-            for (i in 0..1){
-                initScores.add(ExamScoreItem().apply {
-                    sort=initScores.size+1
-                })
+        tv_score_num.setOnClickListener {
+            val item=userItems[posUser]
+            if (item.status==1){
+                InputContentDialog(this,3,"请输入分数(整数)").builder().setOnDialogClickListener{
+                    if (TextUtils.isDigitsOnly(it)) {
+                        tv_score_num.text=it
+                    }
+                }
             }
-            mScoreAdapter?.notifyItemRangeInserted(initScores.size-2,2)
-            rv_list_score.scrollToPosition(initScores.size-1)
         }
 
         iv_play.setOnClickListener {
@@ -199,7 +226,60 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             }
         }
 
-        initScoreData()
+        iv_1.setOnClickListener {
+            setModuleView(1)
+        }
+        iv_2.setOnClickListener {
+            setModuleView(2)
+
+        }
+        iv_3.setOnClickListener {
+            setModuleView(3)
+        }
+        iv_4.setOnClickListener {
+            setModuleView(4)
+        }
+        iv_close.setOnClickListener {
+            CommonDialog(this).setContent("确定不使用模板？").builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    correctModule=0
+                    val map=HashMap<String,Any>()
+                    map["id"]=mId
+                    map["questionType"]=correctModule
+                    map["question"]=""
+                    mPresenter.setModule(map)
+                }
+            }
+        }
+        tv_save_module.setOnClickListener {
+            val map=HashMap<String,Any>()
+            map["id"]=mId
+            map["questionType"]=correctModule
+            map["question"]=toJson(initScores)
+            mPresenter.setModule(map)
+        }
+
+        initRecyclerView()
+        initRecyclerViewNumber()
+        if (correctModule>0)
+            initRecyclerViewScore()
+    }
+
+    private fun setModuleView(type:Int){
+        correctModule=type
+        initRecyclerViewModule()
+        initRecyclerViewScore()
+        showView(tv_save_module,ll_topic)
+        if (correctModule<3){
+            disMissView(iv_close,ll_module)
+            ll_topic_child.visibility= View.INVISIBLE
+        }
+        else{
+            disMissView(iv_close,ll_module)
+        }
+        initModuleData()
     }
 
     private fun initRecyclerView(){
@@ -211,7 +291,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             setOnItemClickListener { adapter, view, position ->
                 if (position==posUser)
                     return@setOnItemClickListener
-
                 userItems[posUser].isCheck=false
                 posUser=position//设置当前学生下标
                 val item=userItems[position]
@@ -223,28 +302,210 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
     }
 
+    private fun initRecyclerViewNumber(){
+        val numbers= mutableListOf<ItemList>()
+        for (i in 0..50){
+            numbers.add(ItemList(i,i.toString()))
+        }
+        rv_list_number.layoutManager = GridLayoutManager(this,17)//创建布局管理
+        NumberListAdapter(R.layout.item_number, numbers).apply {
+            rv_list_number.adapter = this
+            bindToRecyclerView(rv_list_number)
+            setOnItemClickListener { adapter, view, position ->
+                val item= data[position]
+                if (correctModule<3){
+                    currentScores[positionScore].score=item.id.toString()
+                    mTopicScoreAdapter?.notifyItemChanged(positionScore)
+                }
+                else{
+                    currentScores[positionScore].childScores[positionScoreChild].score=item.id.toString()
+                    var num=0
+                    for (ite in currentScores[positionScore].childScores){
+                        if (!ite.score.isNullOrEmpty())
+                            num += ite.score.toInt()
+                    }
+                    currentScores[positionScore].score=num.toString()
+                    mTopicMultiAdapter?.notifyItemChanged(positionScore)
+                }
+                var num=0
+                for (ite in currentScores){
+                    if (!ite.score.isNullOrEmpty())
+                        num += ite.score.toInt()
+                }
+                tv_score_num.text=num.toString()
+            }
+        }
+    }
+
+    private fun initRecyclerViewModule(){
+        iv_topic_reduce.setOnClickListener {
+            if (initScores.size==0){
+                return@setOnClickListener
+            }
+            if (correctModule<3){
+                mModuleTopicAdapter?.remove(initScores.size-1)
+            }
+            else{
+                mModuleMultiAdapter?.remove(initScores.size-1)
+                if (positionModule>initScores.size-1){
+                    positionModule=initScores.size-1
+                    initScores.last().isCheck=true
+                    mModuleMultiAdapter?.setNewData(initScores)
+                }
+            }
+        }
+
+        iv_topic_add.setOnClickListener {
+            if (correctModule<3){
+                initScores.add(ExamScoreItem().apply {
+                    sort=initScores.size+1
+                })
+                mModuleTopicAdapter?.setNewData(initScores)
+            }
+            else{
+                var num=0
+                if (correctModule==4){
+                    //以创建题目总数
+                    for (item in initScores){
+                        num+=item.childScores.size
+                    }
+                }
+                initScores.add(ExamScoreItem().apply {
+                    sort=initScores.size+1
+                    for (i in 1..6){
+                        childScores.add(ExamScoreItem().apply {
+                            sort=num+i
+                        })
+                    }
+                })
+                for (item in initScores){
+                    item.isCheck=false
+                }
+                positionModule=initScores.size-1
+                initScores.last().isCheck=true
+                mModuleMultiAdapter?.setNewData(initScores)
+            }
+        }
+
+        iv_topic_reduce_child.setOnClickListener {
+            val item=initScores[positionModule]
+            if (item.childScores.size>1){
+                item.childScores.removeLast()
+                if (correctModule==4)
+                    changeModuleData()
+                mModuleMultiAdapter?.setNewData(initScores)
+            }
+        }
+
+        iv_topic_add_child.setOnClickListener {
+            val item=initScores[positionModule]
+            item.childScores.add(ExamScoreItem().apply {
+                sort=item.childScores.size+1
+            })
+            if (correctModule==4)
+                changeModuleData()
+            mModuleMultiAdapter?.setNewData(initScores)
+        }
+
+        if (correctModule<3){
+            rv_list_module.layoutManager = GridLayoutManager(this,4)
+            mModuleTopicAdapter = TopicScoreAdapter(R.layout.item_topic_score,null).apply {
+                rv_list_module.adapter = this
+                bindToRecyclerView(rv_list_module)
+            }
+        }
+        else{
+            rv_list_module.layoutManager = LinearLayoutManager(this)
+            mModuleMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+                rv_list_module.adapter = this
+                bindToRecyclerView(rv_list_module)
+                setOnItemChildClickListener { adapter, view, position ->
+                    val item=initScores[position]
+                    if (view.id==R.id.tv_sort){
+                        positionModule=position
+                        for (ite in initScores){
+                            ite.isCheck=false
+                        }
+                        item.isCheck=true
+                        notifyDataSetChanged()
+                    }
+                }
+            }
+        }
+    }
+
     private fun initRecyclerViewScore(){
-        rv_list_score.layoutManager = GridLayoutManager(this,5)
-        mScoreAdapter = ExamScoreAdapter(R.layout.item_exam_score, null).apply {
-            rv_list_score.adapter = this
-            bindToRecyclerView(rv_list_score)
+        if (correctModule<3){
+            rv_list_score.layoutManager = GridLayoutManager(this,5)
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setOnItemChildClickListener { adapter, view, position ->
+                    positionScore=position
+                }
+            }
+        }
+        else{
+            rv_list_score.layoutManager = LinearLayoutManager(this)
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setCustomItemChildClickListener{ position, view, childPos ->
+                    positionScore=position
+                    positionScoreChild=childPos
+                }
+            }
         }
     }
 
     /**
-     * 初始化分数列表数据
+     * 重新排模板子序
      */
-    private fun initScoreData(){
-        initScores.clear()
-        for (i in 1..10){
-            initScores.add(ExamScoreItem().apply {
-                sort=i
-            })
+    private fun changeModuleData(){
+        var num=1
+        for (item in initScores){
+            for (itm in item.childScores){
+                itm.sort=num
+                num+=1
+            }
         }
-        mScoreAdapter?.setNewData(initScores)
     }
 
+    /**
+     * 初始化题目模板列表数据
+     */
+    private fun initModuleData(){
+        if (correctModule<3){
+            for (i in 1..10){
+                initScores.add(ExamScoreItem().apply {
+                    sort=i
+                })
+            }
+            mModuleTopicAdapter?.setNewData(initScores)
+            mModuleTopicAdapter?.setChangeModule(correctModule)
+        }
+        else{
+            for (i in 1..3){
+                val item =ExamScoreItem()
+                item.sort=i
+                item.isCheck=i==1
+                for (j in 1..6){
+                    item.childScores.add(ExamScoreItem().apply {
+                        sort=if (correctModule==3) j else (i-1)*6+j
+                    })
+                }
+                initScores.add(item)
+            }
+            mModuleMultiAdapter?.setNewData(initScores)
+        }
+    }
+
+
     override fun onChangeExpandContent() {
+        if (getImageSize()==1)
+            return
+        if (posImage==getImageSize()-1&&getImageSize()>1)
+            posImage=getImageSize()-2
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
@@ -285,33 +546,16 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         setContentImage()
     }
 
-
-    private fun setFocusableEdit(boolean: Boolean){
-        et_score_num.isFocusable = boolean
-        et_score_num.isFocusableInTouchMode = boolean
-    }
-
-
     /**
      * 设置切换内容展示
      */
     private fun setContentView(){
-        val userItem=userItems[posUser]
-        when(userItem.status){
-            1,3->{
-                initScoreData()
-            }
-            2->{
-                if (!userItem.question.isNullOrEmpty()){
-                    initScores=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                    mScoreAdapter?.setNewData(initScores)
-                }
-            }
-        }
         if (isExpand){
             isExpand=false
             onChangeExpandView()
         }
+        val userItem=userItems[posUser]
+
         if (subType==3){
             if (!userItem.studentUrl.isNullOrEmpty()) {
                 recordPath = userItem.studentUrl.split(",")[0]
@@ -324,31 +568,65 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         when(userItem.status){
             1->{
-                showView(ll_score)
+                tv_score_num.text = ""
                 currentImages=userItem.studentUrl.split(",").toTypedArray()
-                setFocusableEdit(true)
-                showView(ll_score,rv_list_score,iv_add,tv_save)
+                showView(ll_score,rv_list_number,rv_list_score,tv_save)
                 loadPapers()
             }
             2->{
                 currentImages=userItem.submitUrl.split(",").toTypedArray()
-                showView(ll_score)
-                et_score_num.setText(userItem.score.toString())
-                setFocusableEdit(false)
+                tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
-                iv_add.visibility= View.INVISIBLE
-                disMissView(tv_save)
+                disMissView(tv_save,rv_list_number)
                 setContentImage()
             }
             3->{
                 currentImages= arrayOf()
-                disMissView(ll_score,rv_list_score,iv_add)
-                et_score_num.setText("")
-                setFocusableEdit(false)
+                disMissView(ll_score,rv_list_score,rv_list_number)
                 v_content_a.setImageResource(0)
                 v_content_b.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
                 elik_b?.setPWEnabled(false,false)
+            }
+        }
+
+        if (correctModule>0){
+            if (userItem.question?.isNotEmpty() == true&&correctModule>0){
+                if (correctModule<3){
+                    initScores=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+                }
+                else{
+                    val scores=Gson().fromJson(userItem.question, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+                    for (i in scores.indices){
+                        initScores.add(ExamScoreItem().apply {
+                            sort=i+1
+                            if (userItem.status==2){
+                                var totalItem=0
+                                for (item in scores[i]){
+                                    if (!item.score.isNullOrEmpty()){
+                                        totalItem+=item.score.toInt()
+                                    }
+                                }
+                                score=totalItem.toString()
+                            }
+                            childScores=scores[i]
+                        })
+                    }
+                }
+            }
+            currentScores=initScores
+            if (correctModule<3){
+                mTopicScoreAdapter?.setNewData(currentScores)
+                mTopicScoreAdapter?.setChangeModule(correctModule)
+            }
+            else{
+                mTopicMultiAdapter?.setNewData(currentScores)
+            }
+        }
+        else{
+            if (userItem.status!=3){
+                disMissView(rv_list_score,rv_list_number)
+                showView(ll_total_score)
             }
         }
     }
@@ -365,21 +643,18 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
                     GlideUtils.setImageFile(this,File(masterImage),v_content_a)
-                    tv_page_a.text="${posImage+1}/${getImageSize()}"
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
                     if (posImage+1<getImageSize()){
                         val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
                         GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
-                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                         val drawPath_b = getPathDrawStr(posImage+1+1)
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
                     else{
                         elik_b?.setPWEnabled(false,false)
                         v_content_b.setImageResource(0)
-                        tv_page.text=""
                     }
                 }
                 2->{
@@ -387,17 +662,16 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     elik_b?.setPWEnabled(false,false)
 
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_a)
-                    tv_page_a.text="${posImage+1}/${getImageSize()}"
                     if (posImage+1<getImageSize()){
                         GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
-                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                     }
                     else{
                         v_content_b.setImageResource(0)
-                        tv_page.text=""
                     }
                 }
             }
+            tv_page.text="${posImage+1}/${getImageSize()}"
+            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}/${getImageSize()}" else ""
         }
         else{
             when(userItems[posUser].status){
@@ -407,14 +681,13 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     GlideUtils.setImageFile(this,File(masterImage),v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
-                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
                 2->{
                     elik_b?.setPWEnabled(false,false)
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
-                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
             }
+            tv_page.text="${posImage+1}/${getImageSize()}"
         }
     }
 
@@ -498,10 +771,10 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
      */
     private fun getPath():String{
         val path=if (type==1){
-            FileAddress().getPathHomework(id,mClassBean?.classId, userItems[posUser].userId)
+            FileAddress().getPathHomework(mId,mClassBean?.classId, userItems[posUser].userId)
         }
         else{
-            FileAddress().getPathTestPaperDrawing(id,mClassBean?.classId, userItems[posUser].userId)
+            FileAddress().getPathTestPaperDrawing(mId,mClassBean?.classId, userItems[posUser].userId)
         }
         return path
     }
@@ -513,6 +786,20 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         return getPath()+"/draw${index}.tch"//手绘地址
     }
 
+    /**
+     * 格式序列化 转行成一、二维数组
+     */
+    private fun toJson(list:List<ExamScoreItem>):String{
+        return if (correctModule<3){
+            Gson().toJson(list)
+        } else{
+            val items= arrayListOf <List<ExamScoreItem>>()
+            for (item in list){
+                items.add(item.childScores)
+            }
+            Gson().toJson(items)
+        }
+    }
 
     /**
      * 更改播放view状态

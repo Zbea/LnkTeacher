@@ -19,7 +19,8 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<ContentListBean>>) {
-                view.onImageList(tBaseResult.data)
+                if (tBaseResult.data!=null)
+                    view.onImageList(tBaseResult.data)
             }
         }, true)
     }
@@ -63,6 +64,19 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onSendSuccess()
+            }
+        }, true)
+    }
+
+    fun setModule(map:HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val commit = RetrofitManager.service.setPaperCorrectModule(body)
+        doRequest(commit, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.setModuleSuccess()
             }
         }, true)
     }

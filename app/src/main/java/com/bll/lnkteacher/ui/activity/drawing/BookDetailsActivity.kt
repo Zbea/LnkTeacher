@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity.book
+package com.bll.lnkteacher.ui.activity.drawing
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
@@ -16,9 +16,10 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_book_details.*
+import kotlinx.android.synthetic.main.ac_book_details.tv_page
 import kotlinx.android.synthetic.main.ac_book_details.v_content_a
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -72,6 +73,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
+        disMissView(iv_btn)
         if (catalogMsg!=null){
             pageCount =catalogMsg?.totalCount!!
             pageStart =catalogMsg?.startCount!!
@@ -141,11 +143,12 @@ class BookDetailsActivity:BaseDrawingActivity() {
             page=1
         }
 
-        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}" else ""
+        tv_page.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         loadPicture(page, elik_b!!, v_content_b)
         if (isExpand) {
             loadPicture(page-1, elik_a!!, v_content_a)
-            tv_page_a.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}" else ""
+            tv_page.text = if (page-(pageStart-1)>0) "${page-(pageStart-1)}/${pageCount-pageStart}" else ""
+            tv_page_a.text = if (page+1-(pageStart-1)>0) "${page + 1-(pageStart-1)}/${pageCount-pageStart}" else ""
         }
 
         //设置当前展示页

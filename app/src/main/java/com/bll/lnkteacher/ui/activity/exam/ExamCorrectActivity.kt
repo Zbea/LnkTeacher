@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.activity.exam
 
 import android.graphics.BitmapFactory
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -23,6 +22,7 @@ import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -60,7 +60,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     val map= HashMap<String, Any>()
                     map["id"]=userItems[posUser].id
                     map["schoolExamJobId"]=userItems[posUser].schoolExamJobId
-                    map["score"]=et_score_num.text.toString().toInt()
+                    map["score"]=tv_score_num.text.toString().toInt()
                     map["teacherUrl"]=url
                     map["classId"]=userItems[posUser].classId
                     map["status"]=2
@@ -98,7 +98,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].studentName+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=et_score_num.text.toString().toInt()
+        userItems[posUser].score=tv_score_num.text.toString().toInt()
         userItems[posUser].teacherUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=Gson().toJson(examScoreItems)
@@ -138,7 +138,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1&&et_score_num.text.isNotEmpty()){
+            if (item.status==1&&tv_score_num.text.isNotEmpty()){
                 for (ite in initScores){
                     if (!ite.score.isNullOrEmpty()){
                         examScoreItems.add(ite)
@@ -150,15 +150,15 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             hideKeyboard()
         }
 
-        iv_add.setOnClickListener {
-            for (i in 0..1){
-                initScores.add(ExamScoreItem().apply {
-                    sort=initScores.size+1
-                })
-            }
-            mScoreAdapter?.notifyItemRangeInserted(initScores.size-2,2)
-            rv_list_score.scrollToPosition(initScores.size-1)
-        }
+//        iv_add.setOnClickListener {
+//            for (i in 0..1){
+//                initScores.add(ExamScoreItem().apply {
+//                    sort=initScores.size+1
+//                })
+//            }
+//            mScoreAdapter?.notifyItemRangeInserted(initScores.size-2,2)
+//            rv_list_score.scrollToPosition(initScores.size-1)
+//        }
 
         initScoreData()
     }
@@ -245,11 +245,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         setContentImage()
     }
 
-    private fun setFocusableEdit(boolean: Boolean){
-        et_score_num.isFocusable = boolean
-        et_score_num.isFocusableInTouchMode = boolean
-    }
-
     /**
      * 设置切换内容展示
      */
@@ -274,24 +269,20 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         when(userItem.status){
             1->{
                 currentImages=userItem.studentUrl.split(",").toTypedArray()
-                setFocusableEdit(true)
-                showView(ll_score,rv_list_score,iv_add,tv_save)
+                showView(ll_score,rv_list_score,tv_save)
                 loadPapers()
             }
             2->{
                 currentImages=userItem.teacherUrl.split(",").toTypedArray()
-                et_score_num.setText(userItem.score.toString())
-                setFocusableEdit(false)
+                tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
                 disMissView(tv_save)
-                iv_add.visibility= View.INVISIBLE
                 setContentImage()
             }
             3->{
                 currentImages= arrayOf()
-                disMissView(ll_score,rv_list_score,iv_add)
-                et_score_num.setText("")
-                setFocusableEdit(false)
+                disMissView(ll_score,rv_list_score)
+                tv_score_num.text = ""
                 v_content_a.setImageResource(0)
                 v_content_b.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
@@ -312,21 +303,18 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
                     GlideUtils.setImageFile(this,File(masterImage),v_content_a)
-                    tv_page_a.text="${posImage+1}/${getImageSize()}"
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
                     if (posImage+1<getImageSize()){
                         val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
                         GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
-                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                         val drawPath_b = getPathDrawStr(posImage+1+1)
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
                     else{
                         elik_b?.setPWEnabled(false,false)
                         v_content_b.setImageResource(0)
-                        tv_page.text=""
                     }
                 }
                 2->{
@@ -337,14 +325,14 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     tv_page_a.text="${posImage+1}/${getImageSize()}"
                     if (posImage+1<getImageSize()){
                         GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
-                        tv_page.text="${posImage+1+1}/${getImageSize()}"
                     }
                     else{
                         v_content_b.setImageResource(0)
-                        tv_page.text=""
                     }
                 }
             }
+            tv_page.text="${posImage+1}/${getImageSize()}"
+            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}/${getImageSize()}" else ""
         }
         else{
             when(userItems[posUser].status){
@@ -354,14 +342,13 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     GlideUtils.setImageFile(this,File(masterImage),v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
-                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
                 2->{
                     elik_b?.setPWEnabled(false,false)
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
-                    tv_page.text="${posImage+1}/${getImageSize()}"
                 }
             }
+            tv_page.text="${posImage+1}/${getImageSize()}"
         }
     }
 

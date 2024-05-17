@@ -26,7 +26,7 @@ import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_teaching_list.*
+import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignView {
 
@@ -94,12 +94,22 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
     }
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_teaching_list
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
         pageSize=9
 
+        initRecyclerView()
+
+        initDialog(2)
+    }
+
+    override fun lazyLoad() {
+        fetchData()
+    }
+
+    private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(
@@ -111,13 +121,13 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
         mAdapter = HomeworkAssignAdapter(R.layout.item_homework_assign, types).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(requireActivity(),50f)))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3, DP2PX.dip2px(requireActivity(),50f)))
             setOnItemClickListener { _, _, position ->
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]
                 if(item.subType==1){
-                    val intent=Intent(activity, HomeworkAssignContentActivity::class.java)
-                    val bundle=Bundle()
+                    val intent= Intent(activity, HomeworkAssignContentActivity::class.java)
+                    val bundle= Bundle()
                     bundle.putSerializable("homeworkType",item)
                     intent.putExtra("bundle",bundle)
                     startActivity(intent)
@@ -136,12 +146,6 @@ class HomeworkAssignFragment:BaseMainFragment(),IContractView.IHomeworkAssignVie
                 true
             }
         }
-
-        initDialog(2)
-    }
-
-    override fun lazyLoad() {
-        fetchData()
     }
 
     /**
