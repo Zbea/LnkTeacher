@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_5"
                 android:textColor="@color/black"
+                android:gravity="center"
                 android:background="@drawable/bg_line_bottom"
                 android:textSize="@dimen/sp_20" />
         </LinearLayout>

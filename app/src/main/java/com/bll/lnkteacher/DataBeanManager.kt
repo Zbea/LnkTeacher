@@ -17,6 +17,7 @@ object DataBeanManager {
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
     var friends= mutableListOf<FriendList.FriendBean>()
+    var yearlists= arrayListOf(2020,2021,2022,2023,2024,2025,2026,2027,2028,2029)
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
@@ -49,12 +50,34 @@ object DataBeanManager {
         return popClasss
     }
 
-    val popClassGroups: MutableList<PopupBean>
+    val popAllClassGroups: MutableList<PopupBean>
         get() {
             val popClasss = mutableListOf<PopupBean>()
             for (i in classGroups.indices) {
                 val item = classGroups[i]
                 popClasss.add(PopupBean(item.classId, item.name, false))
+            }
+            return popClasss
+        }
+
+    val popClassGroups: MutableList<PopupBean>
+        get() {
+            val popClasss = mutableListOf<PopupBean>()
+            for (i in classGroups.indices) {
+                val item = classGroups[i]
+                if (item.state==1)
+                    popClasss.add(PopupBean(item.classId, item.name, false))
+            }
+            return popClasss
+        }
+
+    fun popClassGroups(classId:Int): MutableList<PopupBean>
+       {
+            val popClasss = mutableListOf<PopupBean>()
+            for (i in classGroups.indices) {
+                val item = classGroups[i]
+                if (item.state==1&&item.classId!=classId)
+                    popClasss.add(PopupBean(item.classId, item.name, false))
             }
             return popClasss
         }

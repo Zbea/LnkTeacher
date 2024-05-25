@@ -1,20 +1,27 @@
 package com.bll.lnkteacher.ui.activity
 
-import PopupClick
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.dialog.CalendarSingleDialog
+import com.bll.lnkteacher.dialog.PopupDateSelector
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.DateEventDaoManager
 import com.bll.lnkteacher.mvp.model.Date
+import com.bll.lnkteacher.mvp.model.DateEvent
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.ui.adapter.MainTeachingDateAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
-import kotlinx.android.synthetic.main.ac_date.*
+import kotlinx.android.synthetic.main.ac_date.rv_list
+import kotlinx.android.synthetic.main.ac_date.tv_month
+import kotlinx.android.synthetic.main.ac_date.tv_year
+import kotlinx.android.synthetic.main.ac_teaching_plan.*
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -23,39 +30,48 @@ import org.greenrobot.eventbus.EventBus
 class TeachingPlanActivity:BaseActivity() {
 
     private var classGroup: ClassGroup?=null
-    private var pops= mutableListOf<PopupBean>()
+    private var classId=0
     private var mAdapter: MainTeachingDateAdapter?=null
     private var yearPop:PopupDateSelector?=null
     private var monthPop:PopupDateSelector?=null
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var dates= mutableListOf<Date>()
+    private var position=0
+    private var moveStartTime=0L
+    private var moveEndTime=0L
+    private var copyStartTime=0L
+    private var copyEndTime=0L
+    private var deleteStartTime=0L
+    private var deleteEndTime=0L
+    private var isUp=true
+    private var popClasss= mutableListOf<PopupBean>()
+    private var popWindow:PopupRadioList?=null
+    private var selectClassId=0
 
     override fun layoutId(): Int {
-        return R.layout.ac_date
+        return R.layout.ac_teaching_plan
     }
     override fun initData() {
         classGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
+        classId=classGroup?.classId!!
 
-        pops.add(PopupBean(0, "教学移动", false))
-        pops.add(PopupBean(1, "教学复制", false))
-        pops.add(PopupBean(2, "教学删除", false))
+        popClasss= DataBeanManager.popClassGroups(classId)
     }
 
     override fun initView() {
         setPageTitle("${classGroup?.name}  教学计划")
-        showView(iv_manager)
 
         tv_year.text=yearNow.toString()
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
             if (yearPop==null){
-                yearPop= PopupDateSelector(this,tv_year,list,0).builder()
+                yearPop= PopupDateSelector(this,tv_year, DataBeanManager.yearlists,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
+                    position=0
                     getDates()
                 }
                 yearPop?.show()
@@ -76,6 +92,7 @@ class TeachingPlanActivity:BaseActivity() {
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
+                    position=0
                     getDates()
                 }
                 monthPop?.show()
@@ -85,24 +102,31 @@ class TeachingPlanActivity:BaseActivity() {
             }
         }
 
-
-        iv_manager.setOnClickListener {
-            PopupClick(this, pops, iv_manager,10).builder()
-                .setOnSelectListener { item ->
-                    when (item.id) {
-                        0 -> {
-                            move()
-                        }
-                        1 -> {
-                            copy()
-                        }
-                        2 -> {
-                            delete()
-                        }
-                    }
+        iv_save.setOnClickListener {
+            val contentStr=et_content.text.toString()
+            if (contentStr.isNotEmpty()){
+                hideKeyboard()
+                val item=dates[position]
+                if (item.dateEvent==null){
+                    val dateEvent= DateEvent()
+                    dateEvent.content=contentStr
+                    dateEvent.date=item.time
+                    dateEvent.week=DateUtils.getWeek(item.time)
+                    dateEvent.classId=classGroup?.classId!!
+                    item.dateEvent=dateEvent
+                }else{
+                    item.dateEvent.content=contentStr
                 }
+                DateEventDaoManager.getInstance().insertOrReplace(item.dateEvent)
+                mAdapter?.notifyItemChanged(position)
+                if (item.time==DateUtils.getStartOfDayInMillis())
+                    EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
+            }
         }
 
+        setMoveView()
+        setCopyView()
+        setDeleteView()
         initRecyclerView()
 
         Thread{
@@ -116,59 +140,198 @@ class TeachingPlanActivity:BaseActivity() {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val dateBean=dates[position]
-            if (dateBean.time>0){
-                MainTeachingPlanDialog(this,classGroup?.classId!!,dateBean.time).builder()
-                    ?.setOnClickListener{
-                       dateBean.dateEvent=it
-                       mAdapter?.notifyItemChanged(position)
-                        EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
-                    }
+            val item=dates[position]
+            if (item.time>0){
+                this.position= position
+                //当前点击存在内容
+                if(item.dateEvent!=null){
+                    et_content.setText(item.dateEvent.content)
+                    et_content.setSelection(item.dateEvent.content.length)
+                }
+                else{
+                    et_content.setText("")
+                }
             }
         }
+    }
+
+    /**
+     * 移动
+     */
+    private fun setMoveView(){
+        iv_move_save.setOnClickListener {
+            val dayStr=et_num.text.toString()
+            if (dayStr.isEmpty())
+            {
+                showToast("请输入移动天数")
+                return@setOnClickListener
+            }
+            if (checkSetTimeCorrect(moveStartTime,moveEndTime)){
+                val lists=DateEventDaoManager.getInstance().queryBeans(classId,moveStartTime,moveEndTime)
+                val day=dayStr.toInt()
+                for (item in lists) {
+                    val nowLong=if (isUp) item.date+Constants.dayLong * day else item.date- Constants.dayLong * day
+                    val dateEvent=DateEventDaoManager.getInstance().queryBean(classId,nowLong)
+                    if (dateEvent!=null)
+                    {
+                        dateEvent.content=item.content
+                        DateEventDaoManager.getInstance().insertOrReplace(dateEvent)
+                        DateEventDaoManager.getInstance().deleteBean(item)
+                    }
+                    else{
+                        item.date=nowLong
+                        DateEventDaoManager.getInstance().insertOrReplace(item)
+                    }
+                }
+                moveStartTime=0L
+                moveEndTime=0L
+                setInitTextTime(tv_move_start_time,tv_move_end_time)
+                EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
+                getDates()
+            }
+        }
+
+        rg_group.setOnCheckedChangeListener { radioGroup, i ->
+            isUp= i==R.id.rb_up
+        }
+
+        tv_move_start_time.setOnClickListener {
+            CalendarSingleDialog(this,490f,405f).builder().setOnDateListener{
+                moveStartTime=it
+                tv_move_start_time.text=DateUtils.longToStringDataNoYearNoHour(moveStartTime)
+            }
+        }
+
+        tv_move_end_time.setOnClickListener {
+            CalendarSingleDialog(this,360f,405f).builder().setOnDateListener{
+                moveEndTime=it
+                tv_move_end_time.text=DateUtils.longToStringDataNoYearNoHour(moveEndTime)
+            }
+        }
+    }
+
+    private fun setCopyView(){
+        if (popClasss.size>0){
+            popClasss[0].isCheck=true
+            selectClassId=popClasss[0].id
+            tv_class.text=popClasss[0].name
+        }
+        else{
+            disMissView(ll_copy)
+        }
+
+        tv_copy_start_time.setOnClickListener {
+            CalendarSingleDialog(this,490f,660f).builder().setOnDateListener{
+                copyStartTime=it
+                tv_copy_start_time.text=DateUtils.longToStringDataNoYearNoHour(copyStartTime)
+            }
+        }
+
+        tv_copy_end_time.setOnClickListener {
+            CalendarSingleDialog(this,360f,660f).builder().setOnDateListener{
+                copyEndTime=it
+                tv_copy_end_time.text=DateUtils.longToStringDataNoYearNoHour(copyEndTime)
+            }
+        }
+
+        tv_class.setOnClickListener {
+            if (popWindow==null)
+            {
+                popWindow= PopupRadioList(this, popClasss, tv_class,  20).builder()
+                popWindow  ?.setOnSelectListener { item ->
+                    tv_class.text = item.name
+                    selectClassId=item.id
+                }
+            }
+            else{
+                popWindow?.show()
+            }
+        }
+
+        iv_copy_save.setOnClickListener {
+            var lists= mutableListOf<DateEvent>()
+            if (selectClassId==0){
+                showToast("请选择班级")
+                return@setOnClickListener
+            }
+            if (cb_all_copy?.isChecked==true){
+                lists=DateEventDaoManager.getInstance().queryBeans(classId)
+
+            }
+            else{
+                if (checkSetTimeCorrect(copyStartTime,copyEndTime)){
+                    lists=DateEventDaoManager.getInstance().queryBeans(classId,copyStartTime,copyEndTime)
+                }
+            }
+            if (lists.size>0){
+                for (item in lists){
+                    val dateEvent=DateEventDaoManager.getInstance().queryBean(selectClassId,item.date)
+                    if (dateEvent!=null)
+                    {
+                        dateEvent.content=item.content
+                        DateEventDaoManager.getInstance().insertOrReplace(dateEvent)
+                    }
+                    else{
+                        item.id=null
+                        item.classId=selectClassId
+                        DateEventDaoManager.getInstance().insertOrReplace(item)
+                    }
+                }
+                copyStartTime=0L
+                copyEndTime=0L
+                setInitTextTime(tv_copy_start_time,tv_copy_end_time)
+                EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
+                showToast("复制成功")
+            }
+        }
+    }
+
+    private fun setDeleteView(){
+        tv_delete_start_time.setOnClickListener {
+            CalendarSingleDialog(this,490f,925f).builder().setOnDateListener{
+                deleteStartTime=it
+                tv_delete_start_time.text=DateUtils.longToStringDataNoYearNoHour(deleteStartTime)
+            }
+        }
+
+        tv_delete_end_time.setOnClickListener {
+            CalendarSingleDialog(this,360f,925f).builder().setOnDateListener{
+                deleteEndTime=it
+                tv_delete_end_time.text=DateUtils.longToStringDataNoYearNoHour(deleteEndTime)
+            }
+        }
+
+        iv_delete_save.setOnClickListener {
+            var lists= mutableListOf<DateEvent>()
+            if (cb_all_delete?.isChecked==true){
+                lists=DateEventDaoManager.getInstance().queryBeans(classId)
+            }
+            else{
+                if (checkSetTimeCorrect(deleteStartTime,deleteEndTime)){
+                   lists=DateEventDaoManager.getInstance().queryBeans(classId,deleteStartTime,deleteEndTime)
+                }
+            }
+            if (lists.size>0){
+                DateEventDaoManager.getInstance().deletes(lists)
+                deleteStartTime=0L
+                deleteEndTime=0L
+                setInitTextTime(tv_delete_start_time,tv_delete_end_time)
+                getDates()
+                EventBus.getDefault().post(Constants.CLASSGROUP_TEACHING_PLAN_EVENT)
+            }
+        }
+
     }
 
     //根据月份获取当月日期
     private fun getDates(){
         dates.clear()
-//        val lastYear: Int
-//        val lastMonth: Int
-//        val nextYear: Int
-//        val nextMonth: Int
-//
-//        when (monthNow) {
-//            //当月为一月份时候
-//            1 -> {
-//                lastYear=yearNow-1
-//                lastMonth=12
-//                nextYear=yearNow
-//                nextMonth=monthNow+1
-//            }
-//            //当月为12月份时候
-//            12 -> {
-//                lastYear=yearNow
-//                lastMonth=monthNow-1
-//                nextYear=yearNow+1
-//                nextMonth=1
-//            }
-//            else -> {
-//                lastYear=yearNow
-//                lastMonth=monthNow-1
-//                nextYear=yearNow
-//                nextMonth=monthNow+1
-//            }
-//        }
-
         var week=DateUtils.getMonthOneDayWeek(yearNow,monthNow-1)
         if (week==1)
             week=8
 
         //补齐上月差数
         for (i in 0 until week-2){
-//            //上月天数
-//            val maxDay=DateUtils.getMonthMaxDay(lastYear,lastMonth-1)
-//            val day=maxDay-(week-2)+(i+1)
-//            dates.add(getDateBean(lastYear,lastMonth,day,false))
             dates.add(Date())
         }
 
@@ -181,20 +344,24 @@ class TeachingPlanActivity:BaseActivity() {
         if (dates.size>35){
             //补齐下月天数
             for (i in 0 until 42-dates.size){
-//                val day=i+1
-//                dates.add(getDateBean(nextYear,nextMonth,day,false))
                 dates.add(Date())
             }
         }
         else{
             for (i in 0 until 35-dates.size){
-//                val day=i+1
-//                dates.add(getDateBean(nextYear,nextMonth,day,false))
                 dates.add(Date())
             }
         }
 
+        if (position==0){
+            for (i in dates.indices){
+                if (dates[i].isNow)
+                    position=i
+            }
+        }
+
         runOnUiThread {
+            setCurrentDateContent()
             mAdapter?.setNewData(dates)
         }
     }
@@ -220,22 +387,38 @@ class TeachingPlanActivity:BaseActivity() {
         return date
     }
 
-    private fun move(){
-        MainTeachingMoveDialog(this,classGroup?.classId!!).builder()
-            .setOnDialogClickListener{
-                getDates()
+    /**
+     * 检查时间设置是否正常
+     */
+    private fun checkSetTimeCorrect(startTime:Long,endTime:Long):Boolean{
+        if (startTime==0L||endTime==0L||startTime>endTime){
+            showToast("请设置正确时间")
+            return false
         }
+        return true
     }
 
-    private fun delete(){
-        MainTeachingDeleteDialog(this,classGroup?.classId!!).builder()
-            .setOnDialogClickListener{
-                getDates()
-        }
+    /**
+     * 设置时间初始化
+     */
+    private fun setInitTextTime(startTime: TextView,endTime: TextView){
+        startTime.text="开始时间"
+        endTime.text="结束时间"
     }
 
-    private fun copy(){
-        MainTeachingCopyDialog(this,classGroup?.classId!!).builder()
+    /**
+     * 设置当天内容
+     */
+    private fun setCurrentDateContent(){
+        val dateBean=dates[position]
+        val dateEvent=DateEventDaoManager.getInstance().queryBean(classId,dateBean.time)
+        if (dateEvent!=null){
+            et_content.setText(dateEvent.content)
+            et_content.setSelection(dateEvent.content.length)
+        }
+        else{
+            et_content.setText("")
+        }
     }
 
 }

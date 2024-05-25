@@ -53,6 +53,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
     }
 
     override fun lazyLoad() {
+        setGradeStr()
         if (NetworkUtil.isNetworkAvailable(requireActivity()))
             fetchCommonData()
     }

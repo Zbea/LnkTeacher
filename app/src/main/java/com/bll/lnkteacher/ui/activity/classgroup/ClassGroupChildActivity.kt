@@ -34,15 +34,16 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
         this.users = users
     }
 
+    override fun onChildUserList(users: MutableList<ClassGroupUser>?) {
+    }
+
     override fun onClassGroupChildList(classItems: MutableList<ClassGroup>) {
         classGroupChilds = classItems
         mAdapter?.setNewData(classGroupChilds)
-        rv_list.callOnClick()
-//        Handler(mainLooper).post { mAdapter!!.notifyDataSetChanged() }
     }
 
     override fun onSuccess() {
-        mPresenter.getClassGroupChild(mClassGroup?.classGroupId!!)
+        mPresenter.getClassGroupChildList(mClassGroup?.classGroupId!!)
     }
 
     override fun layoutId(): Int {
@@ -52,8 +53,8 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
     override fun initData() {
         initChangeScreenData()
         mClassGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
-        mPresenter.getClassUser(mClassGroup!!.classId)
-        mPresenter.getClassGroupChild(mClassGroup?.classGroupId!!)
+        mPresenter.getClassUser(mClassGroup!!.classGroupId)
+        mPresenter.getClassGroupChildList(mClassGroup?.classGroupId!!)
     }
 
     override fun initChangeScreenData() {
@@ -72,7 +73,7 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
                 user.isCheck=false
             }
             ClassGroupChildCreateDialog(this,titleStr ,users).builder().setOnDialogClickListener { name, ids ->
-                mPresenter.createGroup(mClassGroup?.classGroupId!!, name, ids)
+                mPresenter.createGroupChild(mClassGroup?.classGroupId!!, name, ids)
             }
         }
 
@@ -90,7 +91,7 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
             when (view.id) {
                 R.id.tv_add -> {
                     ClassGroupUserSelectorDialog(this, users).builder().setOnDialogClickListener {
-                        mPresenter.addGroup(item.classId, mClassGroup?.classGroupId!!, it)
+                        mPresenter.addGroupUsers(item.classId, mClassGroup?.classGroupId!!, it)
                     }
                 }
                 R.id.tv_edit->{
@@ -121,7 +122,7 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
             classItems.add(PopupBean(0, "踢出"))
             PopupClick(this, classItems, view, 5).builder().setOnSelectListener {
                 if (it.id == 0) {
-                    mPresenter.outClassUser(classGroupChilds[position].classId, mClassGroup?.classGroupId!!, studentId)
+                    mPresenter.outClassUsers(classGroupChilds[position].classId, mClassGroup?.classGroupId!!, arrayListOf(studentId))
                 } else {
                     val map = HashMap<String, Any>()
                     map["classId"] = classGroupChilds[position].classId

@@ -28,21 +28,25 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     }
 
     override fun initView() {
-        if (grade>0){
-            tv_grade.text= DataBeanManager.getGradeStr(grade)
-        }
-        popGrades = if (grade==0) DataBeanManager.popupGrades else DataBeanManager.popupGrades(grade)
+        setGradeStr()
 
         tv_grade.setOnClickListener {
-            if (popGrades.size==0){
-                popGrades =DataBeanManager.popupGrades
-            }
             PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
                 tv_grade?.text=item.name
                 grade=item.id
                 SPUtil.putInt("grade",grade)
                 onGradeEvent()
             }
+        }
+    }
+
+    fun setGradeStr(){
+        if (grade!=0){
+            tv_grade.text= DataBeanManager.getGradeStr(grade)
+            popGrades = DataBeanManager.popupGrades(grade)
+        }
+        else{
+            popGrades = DataBeanManager.popupGrades
         }
     }
 

@@ -22,5 +22,6 @@ public class ExamClassUserList implements Serializable {
         public String studentName;
         public boolean isCheck;
         public String question;//题目数据
+        public int questionType;
     }
 }

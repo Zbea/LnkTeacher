@@ -6,14 +6,21 @@ import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
 import android.view.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.ui.activity.drawing.DiaryActivity
-import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
-import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
+import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
+import com.bll.lnkteacher.ui.adapter.NumberListAdapter
+import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.utils.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.ac_testpaper_correct.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -26,6 +33,12 @@ abstract class BaseDrawingActivity : BaseActivity(){
     var elik_a: EinkPWInterface? = null
     var elik_b: EinkPWInterface? = null
     var isErasure=false
+    var mTopicScoreAdapter: TopicScoreAdapter?=null
+    var mTopicMultiAdapter: TopicMultiScoreAdapter?=null
+    var currentScores=mutableListOf<ExamScoreItem>()//初始题目分数
+    var positionScore=0//分数指示
+    var positionScoreChild=0//小题分数指示
+    var correctModule=-1//批改摸排
     private var circlePos=0
     private var axisPos=0
     private var isGeometry=false//是否处于几何绘图
@@ -50,6 +63,7 @@ abstract class BaseDrawingActivity : BaseActivity(){
         }
         initClick()
         initGeometryView()
+        initScoreView()
     }
 
     private fun initClick(){
@@ -86,6 +100,128 @@ abstract class BaseDrawingActivity : BaseActivity(){
         }
     }
 
+    private fun initScoreView(){
+
+        if (rv_list_number!=null){
+            val numbers= mutableListOf<ItemList>()
+            for (i in 0..50){
+                numbers.add(ItemList(i,i.toString()))
+            }
+            rv_list_number.layoutManager = GridLayoutManager(this,17)//创建布局管理
+            NumberListAdapter(R.layout.item_number, numbers).apply {
+                rv_list_number.adapter = this
+                bindToRecyclerView(rv_list_number)
+                setOnItemClickListener { adapter, view, position ->
+                    val item= data[position]
+                    if (correctModule<3){
+                        currentScores[positionScore].score=item.id.toString()
+                        mTopicScoreAdapter?.notifyItemChanged(positionScore)
+                    }
+                    else{
+                        currentScores[positionScore].childScores[positionScoreChild].score=item.id.toString()
+                        var num=0
+                        for (ite in currentScores[positionScore].childScores){
+                            if (!ite.score.isNullOrEmpty())
+                                num += ite.score.toInt()
+                        }
+                        currentScores[positionScore].score=num.toString()
+                        mTopicMultiAdapter?.notifyItemChanged(positionScore)
+                    }
+                    var num=0
+                    for (ite in currentScores){
+                        if (!ite.score.isNullOrEmpty())
+                            num += ite.score.toInt()
+                    }
+                    tv_score_num?.text=num.toString()
+                }
+            }
+        }
+
+        if (rv_list_score!=null&&correctModule>0){
+            initRecyclerViewScore()
+        }
+    }
+
+    fun initRecyclerViewScore(){
+        if (correctModule<3){
+            rv_list_score.layoutManager = GridLayoutManager(this,5)
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setOnItemChildClickListener { adapter, view, position ->
+                    positionScore=position
+                    for (item in currentScores){
+                        item.isCheck=false
+                    }
+                    currentScores[positionScore].isCheck=true
+                    mTopicScoreAdapter?.notifyDataSetChanged()
+                }
+            }
+        }
+        else{
+            rv_list_score.layoutManager = LinearLayoutManager(this)
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setCustomItemChildClickListener{ position, view, childPos ->
+                    positionScore=position
+                    positionScoreChild=childPos
+                    for (item in currentScores){
+                        for (ite in item.childScores){
+                            ite.isCheck=false
+                        }
+                    }
+                    currentScores[position].childScores[childPos].isCheck=true
+                    mTopicMultiAdapter?.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    /**
+     * 格式序列化 转行成一、二维数组
+     */
+   fun toJson(list:List<ExamScoreItem>):String{
+        return if (correctModule<3){
+            for (item in list){
+                item.isCheck=false
+            }
+            Gson().toJson(list)
+        } else{
+            val items= arrayListOf <List<ExamScoreItem>>()
+            for (item in list){
+                for (ite in item.childScores){
+                    ite.isCheck=false
+                }
+                items.add(item.childScores)
+            }
+            Gson().toJson(items)
+        }
+    }
+
+    fun jsonToList(json:String):List<ExamScoreItem>{
+        var items= mutableListOf<ExamScoreItem>()
+        if (correctModule<3){
+            items=Gson().fromJson(json, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
+        }
+        else{
+            val scores=Gson().fromJson(json, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
+            for (i in scores.indices){
+                items.add(ExamScoreItem().apply {
+                    sort=i+1
+                    var totalItem=0
+                    for (item in scores[i]){
+                        if (!item.score.isNullOrEmpty()){
+                            totalItem+=item.score.toInt()
+                        }
+                    }
+                    score=totalItem.toString()
+                    childScores=scores[i]
+                })
+            }
+        }
+        return items;
+    }
 
     /**
      * 几何绘图
@@ -361,9 +497,23 @@ abstract class BaseDrawingActivity : BaseActivity(){
      */
     private fun setEilkAxis(){
         setCheckView(ll_axis)
-        setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
-        elik_a?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
-        elik_b?.setDrawAxisProperty(axisPos+1, 10, 5,isScale)
+        when(axisPos){
+            0->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS)
+                elik_a?.setDrawAxisProperty(1, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(1, 10, 5,isScale)
+            }
+            1->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS2)
+                elik_a?.setDrawAxisProperty(2, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(2, 10, 5,isScale)
+            }
+            2->{
+                setDrawOjectType(PWDrawObjectHandler.DRAW_OBJ_AXIS3)
+                elik_a?.setDrawAxisProperty(3, 10, 5,isScale)
+                elik_b?.setDrawAxisProperty(3, 10, 5,isScale)
+            }
+        }
         currentGeometry=9
     }
 

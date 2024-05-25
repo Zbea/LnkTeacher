@@ -112,7 +112,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
         <activity android:name=".ui.activity.MessageListActivity"/>
-        <activity android:name=".ui.activity.MainCourseActivity"/>
+        <activity android:name=".ui.activity.ClassScheduleActivity"/>
         <activity android:name=".ui.activity.TeachingPlanActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -127,6 +127,7 @@
         <activity android:name=".ui.activity.classgroup.ClassGroupUserActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.classgroup.ClassGroupChildManageActivity" />
         <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity"/>
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"/>
         <activity android:name=".ui.activity.teaching.CorrectActivity"

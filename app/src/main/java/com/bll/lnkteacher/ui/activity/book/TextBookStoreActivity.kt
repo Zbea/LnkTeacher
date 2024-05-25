@@ -10,7 +10,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.BookDetailsDialog
+import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.*
@@ -48,7 +48,7 @@ class TextBookStoreActivity : BaseActivity(),
     private var semester=0
     private var courseId=0//科目
     private var subType=0//教库分类
-    private var bookDetailsDialog: BookDetailsDialog? = null
+    private var downloadBookDialog: DownloadBookDialog? = null
     private var mBook: Book? = null
 
     private var subjectList = mutableListOf<PopupBean>()
@@ -100,7 +100,7 @@ class TextBookStoreActivity : BaseActivity(),
 
     override fun buyBookSuccess() {
         mBook?.buyStatus = 1
-        bookDetailsDialog?.setChangeStatus()
+        downloadBookDialog?.setChangeStatus()
         mAdapter?.notifyDataSetChanged()
     }
 
@@ -133,8 +133,6 @@ class TextBookStoreActivity : BaseActivity(),
     override fun initView() {
         setPageTitle("教材")
         showView(tv_province,tv_course,tv_grade,tv_semester)
-
-        mDialog?.setCanceledOutside(true)
 
         initRecyclerView()
         initTab()
@@ -262,9 +260,9 @@ class TextBookStoreActivity : BaseActivity(),
      * 展示书籍详情
      */
     private fun showBookDetails(book: Book) {
-        bookDetailsDialog = BookDetailsDialog(this, book)
-        bookDetailsDialog?.builder()
-        bookDetailsDialog?.setOnClickListener {
+        downloadBookDialog = DownloadBookDialog(this, book)
+        downloadBookDialog?.builder()
+        downloadBookDialog?.setOnClickListener {
             if (book.buyStatus == 1) {
                 val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(getHostType(),book.bookId)
                 if (localBook == null) {
@@ -274,7 +272,7 @@ class TextBookStoreActivity : BaseActivity(),
                 } else {
                     book.loadSate = 2
                     showToast("已下载")
-                    bookDetailsDialog?.setDissBtn()
+                    downloadBookDialog?.setDissBtn()
                     mAdapter?.notifyDataSetChanged()
                 }
             } else {
@@ -316,7 +314,7 @@ class TextBookStoreActivity : BaseActivity(),
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
                                     "/"+
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                            bookDetailsDialog?.setUnClickBtn(s)
+                            downloadBookDialog?.setUnClickBtn(s)
                         }
                     }
                 }
@@ -355,7 +353,7 @@ class TextBookStoreActivity : BaseActivity(),
                     //删除缓存 poolmap
                     hideLoading()
                     showToast("${book.bookName}下载失败")
-                    bookDetailsDialog?.setChangeStatus()
+                    downloadBookDialog?.setChangeStatus()
                     deleteDoneTask(task)
                 }
             })
@@ -385,7 +383,7 @@ class TextBookStoreActivity : BaseActivity(),
             override fun onError(msg: String?) {
                 hideLoading()
                 showToast(book.bookName+msg!!)
-                bookDetailsDialog?.setChangeStatus()
+                downloadBookDialog?.setChangeStatus()
             }
             override fun onStart() {
             }
@@ -397,7 +395,7 @@ class TextBookStoreActivity : BaseActivity(),
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
         //更新列表
         mAdapter?.notifyDataSetChanged()
-        bookDetailsDialog?.dismiss()
+        downloadBookDialog?.dismiss()
 
         Handler().postDelayed({
             showToast(book.bookName+getString(R.string.book_download_success))

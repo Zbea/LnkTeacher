@@ -23,21 +23,20 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
                     }
                     @Override
                     public void onDropAllTables(Database db, boolean ifExists) {
-                        DaoMaster.dropAllTables(db, true);
+                        DaoMaster.dropAllTables(db, ifExists);
                     }
                 },
                 BookDao.class,
                 DateEventDao.class,
-                CourseBeanDao.class,
                 NoteContentDao.class,
                 NoteDao.class,
                 AppBeanDao.class,
                 WallpaperBeanDao.class,
                 DiaryBeanDao.class,
                 FreeNoteBeanDao.class,
-                RecordBeanDao.class,
                 ItemTypeBeanDao.class,
-                CalenderItemBeanDao.class
+                CalenderItemBeanDao.class,
+                ClassScheduleBeanDao.class
         );
     }
 }

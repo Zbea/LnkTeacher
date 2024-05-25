@@ -15,7 +15,7 @@ class ClassGroupUserPresenter(view: IContractView.IClassGroupUserView,val screen
         val body = RequestUtils.getBody(
             Pair.create("classId", id)
         )
-        val list = RetrofitManager.service.getClassGroupUserList(body)
+        val list = RetrofitManager.service.getClassGroupChildUser(body)
         doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
                 return false

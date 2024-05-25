@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupDateSelector
@@ -40,9 +41,8 @@ open class DateActivity: BaseActivity() {
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
-            val list= arrayListOf(2018,2019,2020,2021,2022,2023,2024,2025,2026,2027)
             if (yearPop==null){
-                yearPop=PopupDateSelector(this,tv_year,list,0).builder()
+                yearPop=PopupDateSelector(this,tv_year,DataBeanManager.yearlists,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()

@@ -22,6 +22,7 @@ object SPUtil {
     private lateinit var map: ArrayMap<String, Any>
     private val gson = Gson()
     private lateinit var rootFile: File
+    private val strs= mutableListOf("token","password","account")
 
     fun getUserId():String{
         val userStr=if (getObj("user", User::class.java)==null){
@@ -42,7 +43,7 @@ object SPUtil {
 
     fun putString(key: String, value: String) {
         var keyStr=key
-        if (key != "token"){
+        if (!strs.contains(key)){
             keyStr=getUserId()+ key
         }
         map[keyStr] = value
@@ -53,7 +54,7 @@ object SPUtil {
 
     fun getString(key: String): String {
         var keyStr=key
-        if (key != "token"){
+        if (!strs.contains(key)){
             keyStr=getUserId()+ key
         }
         var s = map[keyStr]

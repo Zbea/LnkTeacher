@@ -11,7 +11,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ClassGroupUserSelectorDialog(val context: Context,val users:MutableList<ClassGroupUser>) {
+class ClassGroupUserSelectorDialog(val context: Context, private val users:MutableList<ClassGroupUser>) {
 
     fun builder(): ClassGroupUserSelectorDialog {
         val dialog = Dialog(context)

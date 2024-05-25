@@ -21,14 +21,11 @@ import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
-import com.bll.lnkteacher.ui.adapter.NumberListAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
@@ -43,7 +40,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
     private var mId=0
     private var type=0 //1作业 2 测卷
-    private var correctModule=-1//批改摸排
     private var subType = 0
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
@@ -57,21 +53,16 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     private var currentImages:Array<String>?=null
     private val commitItems = mutableListOf<ItemList>()
     private var initScores=mutableListOf<ExamScoreItem>()//初始题目分数
-    private var currentScores=mutableListOf<ExamScoreItem>()//初始题目分数
-
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
 
     private var mModuleTopicAdapter:TopicScoreAdapter?=null
     private var mModuleMultiAdapter:TopicMultiScoreAdapter?=null
-    private var mTopicScoreAdapter:TopicScoreAdapter?=null
-    private var mTopicMultiAdapter:TopicMultiScoreAdapter?=null
 
     private var userCorrect=0
     private var userSend=0
     private var positionModule=0 //模板指示器
-    private var positionScore=0//分数指示
-    private var positionScoreChild=0//小题分数指示
+
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -117,7 +108,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         userItems[posUser].score=tv_score_num.text.toString().toInt()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
-        userItems[posUser].question=Gson().toJson(currentScores)
+        userItems[posUser].question=toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         //批改完成之后删除文件夹
@@ -159,11 +150,17 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn)
 
-        if (correctModule==-1){
-            showView(ll_module_content)
-        }
-        else{
-            disMissView(ll_module_content)
+        when(correctModule){
+            -1->{
+                showView(ll_module_content)
+            }
+            0->{
+                disMissView(ll_module_content,rv_list_number)
+            }
+            else->{
+                disMissView(ll_module_content)
+                initRecyclerViewScore()
+            }
         }
 
         //如果是朗读本
@@ -262,9 +259,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         initRecyclerView()
-        initRecyclerViewNumber()
-        if (correctModule>0)
-            initRecyclerViewScore()
     }
 
     private fun setModuleView(type:Int){
@@ -298,41 +292,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                 notifyDataSetChanged()
                 posImage=0
                 setContentView()
-            }
-        }
-    }
-
-    private fun initRecyclerViewNumber(){
-        val numbers= mutableListOf<ItemList>()
-        for (i in 0..50){
-            numbers.add(ItemList(i,i.toString()))
-        }
-        rv_list_number.layoutManager = GridLayoutManager(this,17)//创建布局管理
-        NumberListAdapter(R.layout.item_number, numbers).apply {
-            rv_list_number.adapter = this
-            bindToRecyclerView(rv_list_number)
-            setOnItemClickListener { adapter, view, position ->
-                val item= data[position]
-                if (correctModule<3){
-                    currentScores[positionScore].score=item.id.toString()
-                    mTopicScoreAdapter?.notifyItemChanged(positionScore)
-                }
-                else{
-                    currentScores[positionScore].childScores[positionScoreChild].score=item.id.toString()
-                    var num=0
-                    for (ite in currentScores[positionScore].childScores){
-                        if (!ite.score.isNullOrEmpty())
-                            num += ite.score.toInt()
-                    }
-                    currentScores[positionScore].score=num.toString()
-                    mTopicMultiAdapter?.notifyItemChanged(positionScore)
-                }
-                var num=0
-                for (ite in currentScores){
-                    if (!ite.score.isNullOrEmpty())
-                        num += ite.score.toInt()
-                }
-                tv_score_num.text=num.toString()
             }
         }
     }
@@ -419,9 +378,9 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             mModuleMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
                 rv_list_module.adapter = this
                 bindToRecyclerView(rv_list_module)
-                setOnItemChildClickListener { adapter, view, position ->
-                    val item=initScores[position]
-                    if (view.id==R.id.tv_sort){
+                setOnItemClickListener  { adapter, view, position ->
+                    if (position!=positionModule){
+                        val item=initScores[position]
                         positionModule=position
                         for (ite in initScores){
                             ite.isCheck=false
@@ -429,30 +388,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                         item.isCheck=true
                         notifyDataSetChanged()
                     }
-                }
-            }
-        }
-    }
-
-    private fun initRecyclerViewScore(){
-        if (correctModule<3){
-            rv_list_score.layoutManager = GridLayoutManager(this,5)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,null).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setOnItemChildClickListener { adapter, view, position ->
-                    positionScore=position
-                }
-            }
-        }
-        else{
-            rv_list_score.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,null).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setCustomItemChildClickListener{ position, view, childPos ->
-                    positionScore=position
-                    positionScoreChild=childPos
                 }
             }
         }
@@ -592,27 +527,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         if (correctModule>0){
             if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                if (correctModule<3){
-                    initScores=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                }
-                else{
-                    val scores=Gson().fromJson(userItem.question, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
-                    for (i in scores.indices){
-                        initScores.add(ExamScoreItem().apply {
-                            sort=i+1
-                            if (userItem.status==2){
-                                var totalItem=0
-                                for (item in scores[i]){
-                                    if (!item.score.isNullOrEmpty()){
-                                        totalItem+=item.score.toInt()
-                                    }
-                                }
-                                score=totalItem.toString()
-                            }
-                            childScores=scores[i]
-                        })
-                    }
-                }
+                initScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
             }
             currentScores=initScores
             if (correctModule<3){
@@ -784,21 +699,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
      */
     private fun getPathDrawStr(index: Int):String{
         return getPath()+"/draw${index}.tch"//手绘地址
-    }
-
-    /**
-     * 格式序列化 转行成一、二维数组
-     */
-    private fun toJson(list:List<ExamScoreItem>):String{
-        return if (correctModule<3){
-            Gson().toJson(list)
-        } else{
-            val items= arrayListOf <List<ExamScoreItem>>()
-            for (item in list){
-                items.add(item.childScores)
-            }
-            Gson().toJson(items)
-        }
     }
 
     /**

@@ -20,8 +20,6 @@ import com.bll.lnkteacher.ui.activity.teaching.GradeRankActivity
 import com.bll.lnkteacher.ui.adapter.ExamScoreAnalyseAdapter
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
 import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -76,11 +74,16 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
             if (userItem.teacherUrl.isNotEmpty()){
                 userItem.status=2
             }
-
+            correctModule=userItem.questionType
             if (!userItem.question.isNullOrEmpty()){
-                val examScoreItems= Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                for (item in examScoreItems){
+                if (!userItem.question.isNullOrEmpty()&&userItem.status==2&&correctModule>0){
+                    currentScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
+                }
+                for (item in currentScores){
                     var itemList=scoreItemMap[item.sort]
+                    if (item.score.isNullOrEmpty()){
+                        item.score="0"
+                    }
                     if (itemList!=null){
                         itemList.num=itemList.num+1
                         itemList.score=itemList.score+item.score.toInt()
@@ -155,13 +158,15 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
             tv_average_score.text=""
         }
 
-        for (key in scoreItemMap.keys){
-            examScoreItems.add(ExamScoreItem().apply {
-                sort=key
-                score=getAverageNum(scoreItemMap[key]?.score!!.toDouble()/ scoreItemMap[key]?.num!!)
-            })
+        if (correctModule>0){
+            for (key in scoreItemMap.keys){
+                examScoreItems.add(ExamScoreItem().apply {
+                    sort=key
+                    score=getAverageNum(scoreItemMap[key]?.score!!.toDouble()/ scoreItemMap[key]?.num!!)
+                })
+            }
+            mAdapter?.setNewData(examScoreItems)
         }
-        mAdapter?.setNewData(examScoreItems)
     }
 
 

@@ -25,8 +25,7 @@ class TopicMultiScoreAdapter(layoutResId: Int, data: List<ExamScoreItem>?) : Bas
                 listener?.onClick(helper.adapterPosition,view,position)
             }
         }
-
-        helper.addOnClickListener(R.id.tv_score,R.id.tv_sort)
+//        helper.addOnClickListener(R.id.tv_score,R.id.tv_sort)
     }
 
     private var listener: OnItemChildClickListener? = null
@@ -45,6 +44,7 @@ class TopicMultiScoreAdapter(layoutResId: Int, data: List<ExamScoreItem>?) : Bas
             helper.apply {
                 helper.setText(R.id.tv_sort,item.sort.toString())
                 helper.setText(R.id.tv_score,item.score)
+                helper.setBackgroundRes(R.id.tv_score,if (item.isCheck) R.drawable.bg_line_bottom_black else R.drawable.bg_line_bottom)
                 addOnClickListener(R.id.tv_score)
             }
         }

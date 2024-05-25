@@ -9,24 +9,39 @@ import com.bll.lnkteacher.net.*
 
 class ClassGroupChildPresenter(view: IContractView.IClassGroupChildView,val screen:Int) : BasePresenter<IContractView.IClassGroupChildView>(view) {
 
-
     fun getClassUser(id: Int) {
-        val body = RequestUtils.getBody(
-            Pair.create("classId", id)
-        )
-        val list = RetrofitManager.service.getClassGroupUserList(body)
+        val map=HashMap<String,Any>()
+        map["id"]=id
+        val list = RetrofitManager.service.getClassGroupUser(map)
         doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
             override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
-                if (tBaseResult.data?.isNotEmpty() == true)
+                if (tBaseResult.data != null)
                     view.onUserList(tBaseResult.data)
             }
         }, true)
     }
 
-    fun getClassGroupChild(id: Int) {
+    fun getClassChildUser(id: Int) {
+        val body = RequestUtils.getBody(
+            Pair.create("classId", id)
+        )
+        val list = RetrofitManager.service.getClassGroupChildUser(body)
+        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
+                if (tBaseResult.data != null)
+                    view.onChildUserList(tBaseResult.data)
+            }
+        }, true)
+    }
+
+
+    fun getClassGroupChildList(id: Int) {
         val map=HashMap<String,Any>()
         map["id"]=id
         val list = RetrofitManager.service.getClassGroupChildList(map)
@@ -44,14 +59,14 @@ class ClassGroupChildPresenter(view: IContractView.IClassGroupChildView,val scre
     /**
      * 创建子群
      */
-    fun createGroup(classId: Int, name: String, ids: List<Int>) {
+    fun createGroupChild(classId: Int, name: String, ids: List<Int>) {
 
         val body = RequestUtils.getBody(
             Pair.create("id", classId),
             Pair.create("name", name),
             Pair.create("studentIds", ids.toIntArray())
         )
-        val list = RetrofitManager.service.createClassGroupUserGroup(body)
+        val list = RetrofitManager.service.createClassGroupChild(body)
         doRequest(list, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -66,7 +81,7 @@ class ClassGroupChildPresenter(view: IContractView.IClassGroupChildView,val scre
     /**
      * 子群添加学生
      */
-    fun addGroup(classId: Int, groupId: Int, ids: List<Int>) {
+    fun addGroupUsers(classId: Int, groupId: Int, ids: List<Int>) {
         val body = RequestUtils.getBody(
             Pair.create("classId", classId),
             Pair.create("classGroupId", groupId),
@@ -98,12 +113,12 @@ class ClassGroupChildPresenter(view: IContractView.IClassGroupChildView,val scre
         }, true)
     }
 
-    fun outClassUser(classId: Int,groupId: Int,userId: Int) {
+    fun outClassUsers(classId: Int, groupId: Int, ids: List<Int>) {
 
         val body = RequestUtils.getBody(
             Pair.create("classId", classId),
             Pair.create("classGroupId", groupId),
-            Pair.create("userId", userId)
+            Pair.create("userIds", ids)
         )
         val out = RetrofitManager.service.outClassGroupUser(body)
         doRequest(out, object : Callback<Any>(view,screen) {

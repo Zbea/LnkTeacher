@@ -14,8 +14,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.RadioButton
-import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -127,16 +125,15 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 Manifest.permission.RECORD_AUDIO
             )
         }
-        initCreate()
+
         screenPos=getCurrentScreenPos()
         if (rv_tab!=null){
             initTabView()
         }
-
+        initCreate()
         initDialog()
         initData()
         initView()
-
         fetchCommonData()
     }
 

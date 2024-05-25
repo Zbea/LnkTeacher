@@ -1,11 +1,13 @@
 package com.bll.lnkteacher.ui.activity.exam
 
 import android.graphics.BitmapFactory
+import android.text.TextUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
@@ -14,11 +16,8 @@ import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.ExamCorrectUserAdapter
-import com.bll.lnkteacher.ui.adapter.ExamScoreAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
@@ -42,10 +41,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private var posUser=0//当前学生下标
     private var currentImages:Array<String>?=null
     private val commitItems = mutableListOf<ItemList>()
-    private var initScores=mutableListOf<ExamScoreItem>()//初始题目分数
-    private var examScoreItems= mutableListOf<ExamScoreItem>()//已填题目分数
-
-    private var mScoreAdapter:ExamScoreAdapter?=null
 
     override fun onToken(token: String) {
         val commitPaths = mutableListOf<String>()
@@ -64,7 +59,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     map["teacherUrl"]=url
                     map["classId"]=userItems[posUser].classId
                     map["status"]=2
-                    map["question"]=Gson().toJson(examScoreItems)
+                    map["question"]=toJson(currentScores)
                     mPresenter.onExamCorrectComplete(map)
                 }
                 override fun onUploadFail() {
@@ -101,7 +96,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         userItems[posUser].score=tv_score_num.text.toString().toInt()
         userItems[posUser].teacherUrl=url
         userItems[posUser].status=2
-        userItems[posUser].question=Gson().toJson(examScoreItems)
+        userItems[posUser].question=toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
@@ -127,40 +122,32 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     }
 
     override fun initView() {
-        elik_b?.setPWEnabled(false,false)
-        disMissView(iv_tool,iv_catalog)
-
         setPageTitle("考试批改  $className")
-        disMissView(ll_record)
+        elik_b?.setPWEnabled(false,false)
+        disMissView(iv_tool,iv_catalog,iv_btn,ll_record,ll_module_content)
 
         initRecyclerView()
-        initRecyclerViewScore()
+
+        tv_score_num.setOnClickListener {
+            val item=userItems[posUser]
+            if (item.status==1){
+                InputContentDialog(this,3,"请输入分数(整数)").builder().setOnDialogClickListener{
+                    if (TextUtils.isDigitsOnly(it)) {
+                        tv_score_num.text=it
+                    }
+                }
+            }
+        }
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1&&tv_score_num.text.isNotEmpty()){
-                for (ite in initScores){
-                    if (!ite.score.isNullOrEmpty()){
-                        examScoreItems.add(ite)
-                    }
-                }
+            if (item.status==1){
                 showLoading()
                 commitPapers()
             }
             hideKeyboard()
         }
 
-//        iv_add.setOnClickListener {
-//            for (i in 0..1){
-//                initScores.add(ExamScoreItem().apply {
-//                    sort=initScores.size+1
-//                })
-//            }
-//            mScoreAdapter?.notifyItemRangeInserted(initScores.size-2,2)
-//            rv_list_score.scrollToPosition(initScores.size-1)
-//        }
-
-        initScoreData()
     }
 
     private fun initRecyclerView(){
@@ -183,28 +170,11 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         }
     }
 
-    private fun initRecyclerViewScore(){
-        rv_list_score.layoutManager = GridLayoutManager(this,5)
-        mScoreAdapter = ExamScoreAdapter(R.layout.item_exam_score, null).apply {
-            rv_list_score.adapter = this
-            bindToRecyclerView(rv_list_score)
-        }
-    }
-
-    /**
-     * 初始化分数列表数据
-     */
-    private fun initScoreData(){
-        initScores.clear()
-        for (i in 1..10){
-            initScores.add(ExamScoreItem().apply {
-                sort=i
-            })
-        }
-        mScoreAdapter?.setNewData(initScores)
-    }
-
     override fun onChangeExpandContent() {
+        if (getImageSize()==1)
+            return
+        if (posImage==getImageSize()-1&&getImageSize()>1)
+            posImage=getImageSize()-2
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
@@ -249,44 +219,64 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
      * 设置切换内容展示
      */
     private fun setContentView(){
-        val userItem=userItems[posUser]
-        when(userItem.status){
-            1,3->{
-                initScoreData()
-            }
-            2->{
-                if (!userItem.question.isNullOrEmpty()){
-                    initScores=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                    mScoreAdapter?.setNewData(initScores)
-                }
-            }
-        }
         if (isExpand){
             isExpand=false
             onChangeExpandView()
+        }
+        val userItem=userItems[posUser]
+        correctModule=userItem.questionType
+
+        when(correctModule){
+            0->{
+                disMissView(rv_list_number)
+            }
+            else->{
+                if (mTopicScoreAdapter==null&&mTopicMultiAdapter==null){
+                    initRecyclerViewScore()
+                }
+            }
         }
 
         when(userItem.status){
             1->{
                 currentImages=userItem.studentUrl.split(",").toTypedArray()
-                showView(ll_score,rv_list_score,tv_save)
+                showView(ll_score,rv_list_number,rv_list_score,tv_save)
                 loadPapers()
             }
             2->{
                 currentImages=userItem.teacherUrl.split(",").toTypedArray()
                 tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
-                disMissView(tv_save)
+                disMissView(tv_save,rv_list_number)
                 setContentImage()
             }
             3->{
                 currentImages= arrayOf()
-                disMissView(ll_score,rv_list_score)
+                disMissView(ll_score,rv_list_score,rv_list_number)
                 tv_score_num.text = ""
                 v_content_a.setImageResource(0)
                 v_content_b.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
                 elik_b?.setPWEnabled(false,false)
+            }
+        }
+
+        if (correctModule>0){
+            if (userItem.question?.isNotEmpty() == true&&correctModule>0){
+                currentScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
+            }
+            if (correctModule<3){
+                mTopicScoreAdapter?.setNewData(currentScores)
+                mTopicScoreAdapter?.setChangeModule(correctModule)
+            }
+            else{
+                mTopicMultiAdapter?.setNewData(currentScores)
+            }
+        }
+        else{
+            if (userItem.status!=3){
+                disMissView(rv_list_score,rv_list_number)
+                showView(ll_total_score)
             }
         }
     }

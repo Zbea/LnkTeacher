@@ -230,7 +230,12 @@ interface APIService{
      * 获取班群学生列表
      */
     @POST("class/classInfo")
-    fun getClassGroupUserList(@Body requestBody: RequestBody): Observable<BaseResult<List<ClassGroupUser>>>
+    fun getClassGroupChildUser(@Body requestBody: RequestBody): Observable<BaseResult<List<ClassGroupUser>>>
+    /**
+     * 获取子群学生列表
+     */
+    @GET("class/listStudent")
+    fun getClassGroupUser(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<ClassGroupUser>>>
     /**
      * 获取班群所有子群
      */
@@ -240,7 +245,7 @@ interface APIService{
      * 老师创建子群
      */
     @POST("class/group/createOther")
-    fun createClassGroupUserGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun createClassGroupChild(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 老师子群添加学生
      */

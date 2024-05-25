@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_black_stroke_0dp_corner"
     android:gravity="center_horizontal"
-    android:padding="@dimen/dp_40">
+    android:padding="@dimen/dp_40"
+    >
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

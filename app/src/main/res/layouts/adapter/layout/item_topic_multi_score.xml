@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/tv_sort"
-            android:layout_width="44dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_5"
             android:textColor="@color/black"

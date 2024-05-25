@@ -15,6 +15,7 @@ public class ExamCorrectList {
         public String examName;
         public int submitCount;
         public int studentCount;
+        public int questionType;
     }
 
 }

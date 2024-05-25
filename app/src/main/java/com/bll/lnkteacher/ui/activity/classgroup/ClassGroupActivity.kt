@@ -9,14 +9,12 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.ClassGroupAddDialog
-import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
-import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.ImageDialog
+import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.MainCourseActivity
+import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -32,22 +30,28 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
     private var position=0
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
-        DataBeanManager.classGroups=groups
-        classGroups.clear()
-        for (item in DataBeanManager.classGroups){
-            if (item.state==1){
-                classGroups.add(item)
-            }
+        if (classGroups!=groups){
+            DataBeanManager.classGroups=groups
+            classGroups=groups
+            mAdapter?.setNewData(classGroups)
+            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
         }
-        mAdapter?.setNewData(classGroups)
     }
 
     override fun onSuccess() {
         mGroupPresenter.getClassGroups()
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
     override fun onUploadSuccess() {
+    }
+
+    override fun onUserList(users: MutableList<ClassGroupUser>) {
+        if (users.isNotEmpty()){
+            val titleStr=classGroups[position].name!!+"(${mUser?.subjectName})"
+            ClassGroupChildCreateDialog(this,titleStr ,users).builder().setOnDialogClickListener { name, ids ->
+                mGroupPresenter.createGroupChild (classGroups[position].classGroupId, name, ids)
+            }
+        }
     }
 
     override fun layoutId(): Int {
@@ -91,7 +95,7 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(this,30f)))
+        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(this,20f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val classGroup=classGroups[position]
@@ -101,7 +105,7 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                 R.id.tv_course->{
                     if (classGroup.state==1){
                         if (isHeader){
-                            customStartActivity(Intent(this, MainCourseActivity::class.java)
+                            customStartActivity(Intent(this, ClassScheduleActivity::class.java)
                                 .setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                                 .putExtra("classGroupId", classGroup.classGroupId)
                             )
@@ -112,19 +116,30 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                     }
                 }
                 R.id.tv_edit->{
-                    if (classGroup.state==1&&isHeader){
+                    if (classGroup.state==1){
                         ClassGroupCreateDialog(this,classGroup.name,classGroup.grade).builder()
                             .setOnDialogClickListener {name,grade->
-                                mGroupPresenter.editClassGroup(name,grade,classGroup.classGroupId)
+                                mGroupPresenter.editClassGroup(name,grade,classGroup.classId,classGroup.classGroupId)
                             }
+                    }
+                    else{
+                        ClassGroupChildCreateDialog(this,classGroup.name, arrayListOf()).builder().setOnDialogClickListener{
+                            name,ids->
+                            mGroupPresenter.editClassGroupChild(name,classGroup.classId)
+                        }
                     }
                 }
                 R.id.tv_child->{
-                    val intent= Intent(this, ClassGroupChildActivity::class.java)
+                    if (classGroup.state==1){
+                        mGroupPresenter.getClassUser(classGroup.classGroupId)
+                    }
+                    else{
+                    val intent= Intent(this, ClassGroupChildManageActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("classGroup",classGroup)
                     intent.putExtra("bundle",bundle)
                     customStartActivity(intent)
+                    }
                 }
                 R.id.tv_dissolve->{
                     dissolveGroup()
@@ -183,7 +198,5 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                 }
             })
     }
-
-
 
 }

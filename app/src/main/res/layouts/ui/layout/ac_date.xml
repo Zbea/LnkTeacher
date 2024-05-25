@@ -6,6 +6,7 @@
     android:paddingTop="@dimen/statusbar_height"
     android:background="@color/bg_page"
     >
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_height"
@@ -83,15 +84,6 @@
                 android:textColor="@color/black"
                 android:layout_marginEnd="@dimen/dp_50"
                 android:textSize="@dimen/sp_26" />
-
-            <ImageView
-                android:id="@+id/iv_manager"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_40"
-                android:visibility="gone"
-                android:src="@mipmap/icon_manager"
-                />
 
         </LinearLayout>
 

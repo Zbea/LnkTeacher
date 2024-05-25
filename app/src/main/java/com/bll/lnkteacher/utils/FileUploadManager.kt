@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.utils
 
 import android.util.Log
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
@@ -34,8 +33,7 @@ class FileUploadManager(private val uploadToken:String) {
     }
 
     private fun upload(path: String) {
-        val dirPath = Constants.RECORDER_PATH
-        val recorder = FileRecorder(dirPath)
+        val recorder = FileRecorder(FileAddress().getPathRecorder())
         //默认使用 key 的 url_safe_base64 编码字符串作为断点记录文件的文件名
         //避免记录文件冲突（特别是 key 指定为 null 时），也可自定义文件名(下方为默认实现)：
         val keyGen = object : KeyGenerator {

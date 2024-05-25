@@ -2,6 +2,7 @@ package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
+import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -37,14 +38,37 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
                 view.onSuccess()
             }
         }, true)
-
     }
 
-    fun editClassGroup(name: String,grade:Int,classId: Int) {
+    /**
+     * 创建子群
+     */
+    fun createGroupChild(classId: Int, name: String, ids: List<Int>) {
+
+        val body = RequestUtils.getBody(
+            Pair.create("id", classId),
+            Pair.create("name", name),
+            Pair.create("studentIds", ids.toIntArray())
+        )
+        val list = RetrofitManager.service.createClassGroupChild(body)
+        doRequest(list, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSuccess()
+            }
+        }, true)
+    }
+
+
+    fun editClassGroup(name: String,grade:Int,classId: Int,classGroupId: Int) {
         val body = RequestUtils.getBody(
             Pair.create("name", name),
             Pair.create("grade", grade),
-            Pair.create("classGroupId", classId)
+            Pair.create("id", classGroupId),
+            Pair.create("classId", classId)
         )
         val createGroup = RetrofitManager.service.editClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view,screen) {
@@ -56,6 +80,22 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             }
         }, true)
 
+    }
+
+    fun editClassGroupChild(name: String,classId: Int) {
+        val body = RequestUtils.getBody(
+            Pair.create("name", name),
+            Pair.create("classId", classId)
+        )
+        val createGroup = RetrofitManager.service.editClassGroupChild(body)
+        doRequest(createGroup, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSuccess()
+            }
+        }, true)
     }
 
     fun addClassGroup(id: Int) {
@@ -90,6 +130,21 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onSuccess()
+            }
+        }, true)
+    }
+
+    fun getClassUser(id: Int) {
+        val map=HashMap<String,Any>()
+        map["id"]=id
+        val list = RetrofitManager.service.getClassGroupUser(map)
+        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
+                if (tBaseResult.data != null)
+                    view.onUserList(tBaseResult.data)
             }
         }, true)
     }

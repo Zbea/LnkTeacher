@@ -2,6 +2,7 @@ package com.bll.lnkteacher
 
 import com.bll.lnkteacher.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
+import com.bll.lnkteacher.Constants.Companion.DIARY_PATH
 import com.bll.lnkteacher.Constants.Companion.EXAM_PATH
 import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
@@ -140,10 +141,17 @@ class FileAddress {
     }
 
     /**
+     * 七牛上传记录地址
+     */
+    fun getPathRecorder():String{
+        return "$IMAGE_PATH/${mUserId}/recorder"
+    }
+
+    /**
      * 日记路径
      */
     fun getPathDiary(time:String):String{
-        return "$IMAGE_PATH/${mUserId}/diary/$time"
+        return "$DIARY_PATH/${mUserId}/$time"
     }
 
     /**

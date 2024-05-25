@@ -2,33 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_50"
-    android:gravity="center">
-
-    <ImageView
-        android:id="@+id/iv_tips"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/icon_bookstore_arrow_right"
-        android:visibility="invisible"
-        />
+    android:gravity="center_vertical">
 
     <TextView
         android:id="@+id/tv_sort"
-        android:layout_width="44dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_22" />
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
+        android:text="、"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22" />
 
-
     <TextView
         android:id="@+id/tv_score"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_line_bottom"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20" />
-
 
 </LinearLayout>

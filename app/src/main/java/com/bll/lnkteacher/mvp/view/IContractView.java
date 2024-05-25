@@ -77,6 +77,7 @@ public interface IContractView {
         void onClasss(List<ClassGroup> classGroups);
         void onSuccess();
         void onUploadSuccess();
+        void onUserList(List<ClassGroupUser> users);
     }
 
     interface IClassGroupUserView extends IBaseView{
@@ -91,6 +92,7 @@ public interface IContractView {
     interface IClassGroupChildView extends IBaseView{
         //学生列表
         void onUserList(List<ClassGroupUser> users);
+        void onChildUserList(List<ClassGroupUser> users);
         void onClassGroupChildList(List<ClassGroup> classItems);
         void onSuccess();
     }

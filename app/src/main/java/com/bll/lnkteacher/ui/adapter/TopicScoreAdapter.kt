@@ -12,7 +12,7 @@ class TopicScoreAdapter(layoutResId: Int, data: List<ExamScoreItem>?) : BaseQuic
     override fun convert(helper: BaseViewHolder, item: ExamScoreItem) {
         helper.setText(R.id.tv_sort,if (module==1) ToolUtils.numbers[item.sort] else item.sort.toString())
         helper.setText(R.id.tv_score,item.score)
-//        helper.setVisible(R.id.iv_tips,item.isCheck)
+        helper.setBackgroundRes(R.id.tv_score,if (item.isCheck) R.drawable.bg_line_bottom_black else R.drawable.bg_line_bottom)
         helper.addOnClickListener(R.id.tv_score)
     }
 

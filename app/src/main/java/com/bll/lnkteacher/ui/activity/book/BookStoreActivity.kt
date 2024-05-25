@@ -10,7 +10,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.BookDetailsDialog
+import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.*
@@ -41,7 +41,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private var grade = 0
     private var subTypeStr = ""//子类
     private var subType=0
-    private var bookDetailsDialog: BookDetailsDialog? = null
+    private var downloadBookDialog: DownloadBookDialog? = null
     private var position=0
     private var gradeList = mutableListOf<PopupBean>()
     private var subTypeList = mutableListOf<ItemList>()
@@ -67,7 +67,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     override fun buyBookSuccess() {
         books[position].buyStatus=1
-        bookDetailsDialog?.setChangeStatus()
+        downloadBookDialog?.setChangeStatus()
         mAdapter?.notifyItemChanged(position)
     }
 
@@ -92,8 +92,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     override fun initView() {
         setPageTitle(tabStr)
         showView(tv_grade,ll_search)
-
-        mDialog?.setCanceledOutside(true)
 
         initRecyclerView()
 
@@ -170,9 +168,9 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
      * 展示书籍详情
      */
     private fun showBookDetails(book: Book) {
-        bookDetailsDialog = BookDetailsDialog(this, book)
-        bookDetailsDialog?.builder()
-        bookDetailsDialog?.setOnClickListener {
+        downloadBookDialog = DownloadBookDialog(this, book)
+        downloadBookDialog?.builder()
+        downloadBookDialog?.setOnClickListener {
             if (book.buyStatus==1){
                 val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookPlusId)
                 if (localBook == null) {
@@ -182,7 +180,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     book.loadSate =2
                     showToast(R.string.toast_downloaded)
                     mAdapter?.notifyDataSetChanged()
-                    bookDetailsDialog?.setDissBtn()
+                    downloadBookDialog?.setDissBtn()
                 }
             }
             else{
@@ -210,7 +208,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
                                     "/"+
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                            bookDetailsDialog?.setUnClickBtn(s)
+                            downloadBookDialog?.setUnClickBtn(s)
                         }
                     }
                 }
@@ -232,7 +230,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
-                    bookDetailsDialog?.dismiss()
+                    downloadBookDialog?.dismiss()
                     Handler().postDelayed({
                         showToast(book.bookName+getString(R.string.book_download_success))
                         hideLoading()
@@ -244,7 +242,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     hideLoading()
                     deleteDoneTask(task)
                     showToast(book.bookName+getString(R.string.book_download_fail))
-                    bookDetailsDialog?.setChangeStatus()
+                    downloadBookDialog?.setChangeStatus()
                 }
             })
         return download

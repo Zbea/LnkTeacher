@@ -55,7 +55,7 @@ class Constants {
         val NOTE_PATH = MyApplication.mContext.getExternalFilesDir("Note")?.path
         val IMAGE_PATH = MyApplication.mContext.getExternalFilesDir("Image")?.path
         val FREENOTE_PATH = MyApplication.mContext.getExternalFilesDir("FreeNote")!!.path
-        val RECORDER_PATH = MyApplication.mContext.getExternalFilesDir("Recorder")!!.path
+        val DIARY_PATH = MyApplication.mContext.getExternalFilesDir("Diary")!!.path
 
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val BOOK_DRAW_PATH = Environment.getExternalStoragePublicDirectory("Notes").absolutePath

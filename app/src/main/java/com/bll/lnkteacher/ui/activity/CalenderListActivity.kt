@@ -10,7 +10,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.CalenderDetailsDialog
+import com.bll.lnkteacher.dialog.DownloadCalenderDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.CalenderDaoManager
@@ -40,7 +40,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
     private val presenter=CalenderPresenter(this)
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null
-    private var detailsDialog:CalenderDetailsDialog?=null
+    private var detailsDialog:DownloadCalenderDialog?=null
     private var position=0
     private var supply=1
     private var pops= mutableListOf<PopupBean>()
@@ -124,7 +124,7 @@ class CalenderListActivity:BaseActivity(),ICalenderView {
 
 
     private fun showDetails(item: CalenderItemBean) {
-        detailsDialog = CalenderDetailsDialog(this, item)
+        detailsDialog = DownloadCalenderDialog(this, item)
         detailsDialog?.builder()
         detailsDialog?.setOnClickListener {
             if (item.buyStatus==1){

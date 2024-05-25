@@ -68,7 +68,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         }
 
         ll_course.setOnClickListener {
-            customStartActivity(Intent(activity, MainCourseActivity::class.java).setFlags(1)
+            customStartActivity(Intent(activity, ClassScheduleActivity::class.java).setFlags(1)
                 .putExtra("classGroupId", 0)
             )
         }

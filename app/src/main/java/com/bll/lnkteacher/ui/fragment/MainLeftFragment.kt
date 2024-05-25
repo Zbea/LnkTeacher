@@ -12,7 +12,10 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.CalenderDaoManager
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.ui.activity.*
+import com.bll.lnkteacher.ui.activity.CalenderListActivity
+import com.bll.lnkteacher.ui.activity.CalenderMyActivity
+import com.bll.lnkteacher.ui.activity.DateActivity
+import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
@@ -182,6 +185,7 @@ class MainLeftFragment:BaseFragment() {
             val bundle = Bundle()
             bundle.putSerializable("classGroup", classGroups[position])
             intent.putExtra("bundle", bundle)
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
             customStartActivity(intent)
         }
     }

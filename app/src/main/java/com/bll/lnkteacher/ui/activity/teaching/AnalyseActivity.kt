@@ -20,8 +20,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ExamScoreAnalyseAdapter
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
 import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -30,7 +28,6 @@ import java.text.DecimalFormat
 
 class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView {
 
-    private var correctModule=-1
     private var mPresenter=TestPaperCorrectDetailsPresenter(this,3)
     private var classId=0
     private var posImage=0
@@ -65,29 +62,14 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         var score90=0
         var score100=0
         for (userItem in bean.list){
+            correctModule=userItem.questionType
             if (!userItem.question.isNullOrEmpty()&&userItem.status==2&&correctModule>0){
-                if (correctModule<3){
-                    examScoreItems=Gson().fromJson(userItem.question, object : TypeToken<List<ExamScoreItem>>() {}.type) as MutableList<ExamScoreItem>
-                }
-                else{
-                    val scores=Gson().fromJson(userItem.question, object : TypeToken<List<List<ExamScoreItem>>>() {}.type) as MutableList<List<ExamScoreItem>>
-                    for (i in scores.indices){
-                        examScoreItems.add(ExamScoreItem().apply {
-                            sort=i+1
-                            var totalItem=0
-                            for (item in scores[i]){
-                                if (!item.score.isNullOrEmpty()){
-                                    totalItem+=item.score.toInt()
-                                }
-                            }
-                            score=totalItem.toString()
-                            childScores=scores[i]
-                        })
-                    }
-                }
-
-                for (item in examScoreItems){
+                currentScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
+                for (item in currentScores){
                     var itemList=scoreItemMap[item.sort]
+                    if (item.score.isNullOrEmpty()){
+                        item.score="0"
+                    }
                     if (itemList!=null){
                         itemList.num=itemList.num+1
                         itemList.score=itemList.score+item.score.toInt()
