@@ -21,13 +21,21 @@
             android:orientation="horizontal"
             >
 
-            <com.android.internal.widget.PreferenceImageView
+            <LinearLayout
                 android:id="@+id/v_content_a"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:scaleType="fitCenter" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
 
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/iv_content_a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="@dimen/drawing_tool_width"
                 android:layout_height="match_parent"
@@ -47,11 +55,21 @@
 
         </LinearLayout>
 
-        <com.android.internal.widget.PreferenceImageView
+
+        <LinearLayout
             android:id="@+id/v_content_b"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter" />
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            >
+
+            <com.android.internal.widget.PreferenceImageView
+                android:id="@+id/iv_content_b"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside" />
+        </LinearLayout>
 
     </LinearLayout>
 

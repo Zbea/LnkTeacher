@@ -4,13 +4,11 @@ import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
-
 import java.util.Objects;
-
-import kotlin.jvm.Transient;
+import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class WallpaperBean {
@@ -34,11 +32,14 @@ public class WallpaperBean {
     public long date;//下载时间
     @Transient
     public int buyStatus;
+    @Transient
+    public boolean isLeft;
+    @Transient
+    public boolean isRight;
 
-    @Generated(hash = 1303383727)
+    @Generated(hash = 74599634)
     public WallpaperBean(Long id, long userId, int contentId, String title, String info, int price,
-            String imageUrl, String bodyUrl, int supply, String author, String path, long date,
-            int buyStatus) {
+            String imageUrl, String bodyUrl, int supply, String author, String path, long date) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -51,7 +52,6 @@ public class WallpaperBean {
         this.author = author;
         this.path = path;
         this.date = date;
-        this.buyStatus = buyStatus;
     }
     @Generated(hash = 915358704)
     public WallpaperBean() {
@@ -128,10 +128,6 @@ public class WallpaperBean {
     public void setDate(long date) {
         this.date = date;
     }
-    public int getBuyStatus() {
-        return this.buyStatus;
-    }
-    public void setBuyStatus(int buyStatus) {
-        this.buyStatus = buyStatus;
-    }
+
+
 }

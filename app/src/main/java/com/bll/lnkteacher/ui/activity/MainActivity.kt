@@ -67,6 +67,11 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun initView() {
 
+        val isTips=SPUtil.getBoolean("SpecificationTips")
+        if (!isTips){
+            showView(ll_tips)
+        }
+
         mainLeftFragment=MainLeftFragment()
         mainRightFragment = MainRightFragment()
         textbookFragment= TextbookFragment()
@@ -123,6 +128,11 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
         iv_classgroup.setOnClickListener {
             customStartActivity(Intent(this, ClassGroupActivity::class.java))
+        }
+
+        ll_tips.setOnClickListener {
+            disMissView(ll_tips)
+            SPUtil.putBoolean("SpecificationTips",true)
         }
 
         startRemind()

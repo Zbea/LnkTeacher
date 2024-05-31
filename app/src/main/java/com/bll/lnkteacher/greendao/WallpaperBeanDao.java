@@ -36,7 +36,6 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
         public final static Property Author = new Property(9, String.class, "author", false, "AUTHOR");
         public final static Property Path = new Property(10, String.class, "path", false, "PATH");
         public final static Property Date = new Property(11, long.class, "date", false, "DATE");
-        public final static Property BuyStatus = new Property(12, int.class, "buyStatus", false, "BUY_STATUS");
     }
 
 
@@ -63,8 +62,7 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
                 "\"SUPPLY\" INTEGER NOT NULL ," + // 8: supply
                 "\"AUTHOR\" TEXT," + // 9: author
                 "\"PATH\" TEXT," + // 10: path
-                "\"DATE\" INTEGER NOT NULL ," + // 11: date
-                "\"BUY_STATUS\" INTEGER NOT NULL );"); // 12: buyStatus
+                "\"DATE\" INTEGER NOT NULL );"); // 11: date
     }
 
     /** Drops the underlying database table. */
@@ -116,7 +114,6 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
             stmt.bindString(11, path);
         }
         stmt.bindLong(12, entity.getDate());
-        stmt.bindLong(13, entity.getBuyStatus());
     }
 
     @Override
@@ -162,7 +159,6 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
             stmt.bindString(11, path);
         }
         stmt.bindLong(12, entity.getDate());
-        stmt.bindLong(13, entity.getBuyStatus());
     }
 
     @Override
@@ -184,8 +180,7 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
             cursor.getInt(offset + 8), // supply
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // author
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // path
-            cursor.getLong(offset + 11), // date
-            cursor.getInt(offset + 12) // buyStatus
+            cursor.getLong(offset + 11) // date
         );
         return entity;
     }
@@ -204,7 +199,6 @@ public class WallpaperBeanDao extends AbstractDao<WallpaperBean, Long> {
         entity.setAuthor(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setPath(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
         entity.setDate(cursor.getLong(offset + 11));
-        entity.setBuyStatus(cursor.getInt(offset + 12));
      }
     
     @Override

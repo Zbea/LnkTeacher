@@ -13,7 +13,7 @@ import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
-import com.bll.lnkteacher.ui.adapter.NoteBookManagerAdapter
+import com.bll.lnkteacher.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
 import kotlinx.android.synthetic.main.ac_list.*
@@ -24,7 +24,7 @@ import java.util.*
 class NotebookManagerActivity : BaseActivity() {
 
     private var noteBooks= mutableListOf<ItemTypeBean>()
-    private var mAdapter: NoteBookManagerAdapter? = null
+    private var mAdapter: ItemTypeManagerAdapter? = null
     private var position=0
 
     override fun layoutId(): Int {
@@ -36,7 +36,7 @@ class NotebookManagerActivity : BaseActivity() {
     }
 
     override fun initView() {
-        setPageTitle("笔记本管理")
+        setPageTitle("管理笔记本")
 
         initRecyclerView()
     }
@@ -51,7 +51,7 @@ class NotebookManagerActivity : BaseActivity() {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = NoteBookManagerAdapter(R.layout.item_notebook_manager, noteBooks)
+        mAdapter = ItemTypeManagerAdapter(R.layout.item_notebook_manager, noteBooks)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->

@@ -157,7 +157,7 @@
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
         <activity android:name=".ui.activity.drawing.DiaryActivity"/>
         <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
-        <activity android:name=".ui.activity.ScreenshotManagerActivity"
+        <activity android:name=".ui.activity.ScreenshotListActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
@@ -172,6 +172,10 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
         <activity android:name=".ui.activity.exam.ExamAnalyseActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
+        <activity android:name=".ui.activity.ScreenshotManagerActivity"/>
+        <activity android:name=".ui.activity.drawing.FileDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             />
 

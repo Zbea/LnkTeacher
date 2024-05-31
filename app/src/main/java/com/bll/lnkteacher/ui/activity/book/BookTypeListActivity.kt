@@ -63,7 +63,7 @@ class BookTypeListActivity : BaseActivity() {
 
     private fun initTab() {
         bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
-        bookTypes.add(ItemTypeBean().apply {
+        bookTypes.add(0,ItemTypeBean().apply {
             title = "全部"
         })
         bookTypes[pos].isCheck=true
@@ -126,7 +126,7 @@ class BookTypeListActivity : BaseActivity() {
                         bookTypeBean.date=System.currentTimeMillis()
                         bookTypeBean.title=it
                         ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-                        mTabTypeAdapter?.addData(bookTypes.size-1,bookTypeBean)
+                        mTabTypeAdapter?.addData(bookTypes.size,bookTypeBean)
                     }
                 }
                 1 -> {
