@@ -1,5 +1,7 @@
 package com.bll.lnkteacher.ui.activity.drawing
 
+import android.view.EinkPWInterface
+import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -15,7 +17,6 @@ import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
-
     private var nowLong=0L//当前时间
     private var diaryBean:DiaryBean?=null
     private var images = mutableListOf<String>()//手写地址
@@ -36,7 +37,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_expand)
+        disMissView(iv_catalog)
+        iv_btn.setImageResource(R.mipmap.icon_draw_change)
         elik_b?.addOnTopView(ll_date)
 
         iv_up.setOnClickListener {
@@ -103,14 +105,26 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.bgRes=bgRes
     }
 
+    override fun onChangeExpandContent() {
+        changeErasure()
+        isExpand = !isExpand
+        moveToScreen(isExpand)
+        onChangeExpandView()
+        setContentImage()
+    }
+
+
     override fun onPageDown() {
-        posImage += 1
+        posImage += if (isExpand)2 else 1
         setContentImage()
     }
 
     override fun onPageUp() {
         if (posImage > 0) {
-            posImage -= 1
+            posImage -= if (isExpand)2 else 1
+            if (posImage<0){
+                posImage=0
+            }
             setContentImage()
         }
     }
@@ -130,16 +144,35 @@ class DiaryActivity:BaseDrawingActivity() {
      */
     private fun setContentImage() {
         tv_date.text=DateUtils.longToStringWeek(nowLong)
+
         v_content_b.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+        v_content_a.setImageResource(ToolUtils.getImageResId(this, bgRes))
+
+        if (isExpand){
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+            setEinkImage(elik_a!!,tv_page_a,posImage,path)
+
+            val path_b = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1+1}.tch"
+            setEinkImage(elik_b!!,tv_page,posImage+1,path_b)
+        }
+        else{
+            val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.tch"
+            setEinkImage(elik_b!!,tv_page,posImage,path)
+        }
+
+    }
+
+    private fun setEinkImage(eink: EinkPWInterface, tv: TextView, page:Int, path:String){
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)
         }
-        tv_page.text = "${posImage + 1}/${images.size}"
-
-        elik_b?.setLoadFilePath(path, true)
+        tv.text = "${page + 1}"
+        tv_page_total.text="${images.size}"
+        tv_page_total_a.text="${images.size}"
+        eink.setLoadFilePath(path, true)
     }
+
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
@@ -158,5 +191,6 @@ class DiaryActivity:BaseDrawingActivity() {
         super.onDestroy()
         saveDiary()
     }
+
 
 }

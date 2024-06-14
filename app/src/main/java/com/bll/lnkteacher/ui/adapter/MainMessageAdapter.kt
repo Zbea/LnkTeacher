@@ -21,6 +21,9 @@ class MainMessageAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
                 3 -> {
                     typeNameStr = "学校通知"
                 }
+                5 -> {
+                    typeNameStr = "年级通知"
+                }
             }
             setText(R.id.tv_message_name, typeNameStr)
             setText(R.id.tv_message_time, DateUtils.longToStringWeek(item.date))

@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.activity.drawing
 
+import android.os.Handler
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -13,7 +14,6 @@ import java.util.*
 
 class DateEventActivity:BaseDrawingActivity() {
     private var nowLong=0L
-    private var isDraw=false
 
     override fun layoutId(): Int {
         return R.layout.ac_date_event
@@ -51,14 +51,12 @@ class DateEventActivity:BaseDrawingActivity() {
         elik_b?.setLoadFilePath(path, true)
     }
 
-    override fun onElikSava_b() {
-        isDraw=true
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        if (isDraw)
+        stopErasure()
+        Handler().postDelayed(Runnable {
             EventBus.getDefault().post(Constants.DATE_EVENT)
+        },500)
     }
 
 }

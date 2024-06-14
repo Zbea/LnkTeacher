@@ -98,6 +98,8 @@ class ExamListFragment:BaseMainFragment(),IExamListView{
     }
 
     override fun fetchData() {
+        if (grade==0)
+            return
         val map=HashMap<String,Any>()
         map["page"]=pageIndex
         map["size"]=pageSize

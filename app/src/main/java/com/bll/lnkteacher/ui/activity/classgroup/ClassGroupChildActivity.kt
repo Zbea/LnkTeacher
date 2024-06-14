@@ -72,8 +72,8 @@ class ClassGroupChildActivity : BaseActivity(), IContractView.IClassGroupChildVi
             for (user in users){
                 user.isCheck=false
             }
-            ClassGroupChildCreateDialog(this,titleStr ,users).builder().setOnDialogClickListener { name, ids ->
-                mPresenter.createGroupChild(mClassGroup?.classGroupId!!, name, ids)
+            ClassGroupChildCreateDialog(this,titleStr ).builder().setOnDialogClickListener { name ->
+                mPresenter.createGroupChild(mClassGroup?.classGroupId!!, name)
             }
         }
 

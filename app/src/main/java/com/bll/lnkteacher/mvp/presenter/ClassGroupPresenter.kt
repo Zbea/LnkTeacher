@@ -2,7 +2,6 @@ package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
-import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
@@ -43,12 +42,12 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
     /**
      * 创建子群
      */
-    fun createGroupChild(classId: Int, name: String, ids: List<Int>) {
+    fun createGroupChild(classId: Int, name: String) {
 
         val body = RequestUtils.getBody(
             Pair.create("id", classId),
-            Pair.create("name", name),
-            Pair.create("studentIds", ids.toIntArray())
+            Pair.create("name", name)
+//            Pair.create("studentIds", ids.toIntArray())
         )
         val list = RetrofitManager.service.createClassGroupChild(body)
         doRequest(list, object : Callback<Any>(view,screen) {
@@ -133,22 +132,6 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             }
         }, true)
     }
-
-    fun getClassUser(id: Int) {
-        val map=HashMap<String,Any>()
-        map["id"]=id
-        val list = RetrofitManager.service.getClassGroupUser(map)
-        doRequest(list, object : Callback<List<ClassGroupUser>>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<List<ClassGroupUser>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<List<ClassGroupUser>>) {
-                if (tBaseResult.data != null)
-                    view.onUserList(tBaseResult.data)
-            }
-        }, true)
-    }
-
 
     /**
      * 添加课程表

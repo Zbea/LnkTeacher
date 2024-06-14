@@ -20,8 +20,7 @@ class ClassGroupAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAd
             setText(R.id.tv_dissolve,if (isHeader)"解散" else "退出")
             setText(R.id.tv_course,if (item.state!=1)"" else if (isHeader) "课程表" else "查看")
             setText(R.id.tv_edit,if (isHeader)"修改" else  "")
-            setText(R.id.tv_child,if (item.state==1)"子群创建" else  "子群管理")
-            setVisible(R.id.tv_child,isHeader)
+            setText(R.id.tv_child,if (item.state==1)"子群创建" else  "子群编辑")
             addOnClickListener(R.id.tv_dissolve,R.id.tv_course,R.id.tv_edit,R.id.tv_child,R.id.tv_detail)
         }
     }

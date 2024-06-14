@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment
 
 import PopupClick
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -141,7 +142,9 @@ class MainLeftFragment:BaseFragment() {
     private fun setDateDrawingView(){
         val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
+//            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
+            val myBitmap= BitmapFactory.decodeFile(path)
+            iv_date.setImageBitmap(myBitmap)
         }
         else{
             iv_date.setImageResource(0)

@@ -6,7 +6,6 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.CloudUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 
@@ -14,7 +13,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
     val mQiniuPresenter= QiniuPresenter(this)
     var mCloudUploadPresenter= CloudUploadPresenter(this)
-    var grade=SPUtil.getInt("grade")
+    var grade=0
     var popGrades= mutableListOf<PopupBean>()
 
     override fun onToken(token: String) {
@@ -34,7 +33,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
                 tv_grade?.text=item.name
                 grade=item.id
-                SPUtil.putInt("grade",grade)
                 onGradeEvent()
             }
         }

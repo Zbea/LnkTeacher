@@ -59,12 +59,12 @@ class ClassGroupChildPresenter(view: IContractView.IClassGroupChildView,val scre
     /**
      * 创建子群
      */
-    fun createGroupChild(classId: Int, name: String, ids: List<Int>) {
+    fun createGroupChild(classId: Int, name: String) {
 
         val body = RequestUtils.getBody(
             Pair.create("id", classId),
-            Pair.create("name", name),
-            Pair.create("studentIds", ids.toIntArray())
+            Pair.create("name", name)
+//            Pair.create("studentIds", ids.toIntArray())
         )
         val list = RetrofitManager.service.createClassGroupChild(body)
         doRequest(list, object : Callback<Any>(view,screen) {

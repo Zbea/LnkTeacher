@@ -155,7 +155,9 @@
             />
         <activity android:name=".ui.activity.WallpaperMyActivity"/>
         <activity android:name=".ui.activity.drawing.PlanOverviewActivity"/>
-        <activity android:name=".ui.activity.drawing.DiaryActivity"/>
+        <activity android:name=".ui.activity.drawing.DiaryActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            />
         <activity android:name=".ui.activity.drawing.FreeNoteActivity"/>
         <activity android:name=".ui.activity.ScreenshotListActivity"
             android:launchMode="singleTask"

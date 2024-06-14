@@ -59,7 +59,7 @@ class ScreenshotListActivity:BaseActivity() {
                     }
                     1 -> {
                         InputContentDialog(this, "创建分类").builder().setOnDialogClickListener {
-                            if (ItemTypeDaoManager.getInstance().isExist(it, 1)) {
+                            if (ItemTypeDaoManager.getInstance().isExist(it, 3)) {
                                 //创建文件夹
                                 showToast("已存在")
                                 return@setOnDialogClickListener
@@ -173,14 +173,12 @@ class ScreenshotListActivity:BaseActivity() {
                         }
                         ItemSelectorDialog(this,"设置分类",lists).builder().setOnDialogClickListener{ pos->
                             FileUtils.copyFile(file.path,types[pos].path+"/"+file.name)
-                            FileUtils.deleteFile(file)
                             mAdapter?.remove(position)
                         }
                     }
                     else{
                         val path=FileAddress().getPathScreen("未分类")
                         FileUtils.copyFile(file.path,path+"/"+file.name)
-                        FileUtils.deleteFile(file)
                         mAdapter?.remove(position)
                     }
                 }

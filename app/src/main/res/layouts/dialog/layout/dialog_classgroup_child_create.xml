@@ -37,17 +37,6 @@
             android:lines="1"
             android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_gray_stroke_5dp_corner"/>
-        <TextView
-            android:id="@+id/tv_select"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_20"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
-            android:gravity="center"
-            android:text="筛选"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
 
     </LinearLayout>
 

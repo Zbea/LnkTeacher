@@ -98,7 +98,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             //教学教育跳转阅读器
-            if (tabId == 4) {
+            if (tabId == 0||tabId == 1||tabId == 4) {
                 MethodManager.gotoBookDetails(requireActivity(), book)
             } else {
                 MethodManager.gotoTextBookDetails(requireActivity(),book)

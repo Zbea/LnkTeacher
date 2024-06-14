@@ -2,6 +2,7 @@ package com.bll.lnkteacher;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings;
 
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
@@ -215,5 +216,22 @@ public class MethodManager {
         }
     }
 
+
+    /**
+     * 获取状态栏的值
+     * @return
+     */
+    public static int getStatusBarValue(){
+        return Settings.System.getInt(MyApplication.Companion.getMContext().getContentResolver(), "statusbar_hide_time", 0);
+    }
+
+    /**
+     * 设置状态栏的值
+     *
+     * @return
+     */
+    public static void setStatusBarValue(int value){
+        Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
+    }
 
 }

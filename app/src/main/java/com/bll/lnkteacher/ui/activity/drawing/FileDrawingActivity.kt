@@ -91,12 +91,14 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             pageIndex=1
         }
 
-        tv_page.text = "${pageIndex+1}/$pageCount"
+        tv_page_total.text="$pageCount"
+        tv_page_total_a.text="$pageCount"
+
+        tv_page.text = "${pageIndex+1}"
         loadPicture(pageIndex, elik_b!!, iv_content_b)
         if (isExpand) {
             loadPicture(pageIndex-1, elik_a!!, iv_content_a)
-            tv_page.text = "${pageIndex}/$pageCount"
-            tv_page_a.text = "${pageIndex+1}/$pageCount"
+            tv_page_a.text = "$pageIndex"
         }
 
     }

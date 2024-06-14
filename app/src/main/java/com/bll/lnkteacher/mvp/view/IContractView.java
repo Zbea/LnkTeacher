@@ -77,7 +77,6 @@ public interface IContractView {
         void onClasss(List<ClassGroup> classGroups);
         void onSuccess();
         void onUploadSuccess();
-        void onUserList(List<ClassGroupUser> users);
     }
 
     interface IClassGroupUserView extends IBaseView{

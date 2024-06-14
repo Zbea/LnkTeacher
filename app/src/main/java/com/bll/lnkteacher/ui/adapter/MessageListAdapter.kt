@@ -18,6 +18,9 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
             2->{
                 helper.setText(R.id.tv_message_name,"来自："+item.teacherName+"同学")
             }
+            5 -> {
+                helper.setText(R.id.tv_message_name,"年级通知")
+            }
             else->{
                 helper.setText(R.id.tv_message_name,"学校通知")
             }

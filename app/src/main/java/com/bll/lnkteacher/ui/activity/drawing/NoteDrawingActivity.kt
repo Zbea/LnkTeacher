@@ -51,7 +51,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         v_content_b.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
         onChangeContent()
 
-        tv_page_a.setOnClickListener {
+        ll_page.setOnClickListener {
             InputContentDialog(this, 2, noteContent?.title!!).builder().setOnDialogClickListener { string ->
                 noteContent?.title = string
                 noteContents[page].title = string
@@ -59,22 +59,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
         }
 
-        tv_page.setOnClickListener {
-            if (isExpand){
-                InputContentDialog(this, 1, note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
-                    note_Content_a?.title = string
-                    noteContents[page-1].title = string
-                    NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-                }
+        ll_page_a.setOnClickListener {
+            InputContentDialog(this, 1, note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
+                note_Content_a?.title = string
+                noteContents[page-1].title = string
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
             }
-            else{
-                InputContentDialog(this, 1, noteContent?.title!!).builder().setOnDialogClickListener { string ->
-                    noteContent?.title = string
-                    noteContents[page].title = string
-                    NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-                }
-            }
-
         }
     }
 
@@ -92,7 +82,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
 
         }
-        DrawingCatalogDialog(this, list).builder().setOnDialogClickListener { position ->
+        DrawingCatalogDialog(this,getCurrentScreenPos(), list).builder().setOnDialogClickListener { position ->
             page = noteContents[position].page
             onChangeContent()
         }
@@ -168,14 +158,14 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         } else {
             note_Content_a = null
         }
+        tv_page_total.text="${noteContents.size}"
+        tv_page_total_a.text="${noteContents.size}"
 
         setElikLoadPath(elik_b!!, noteContent!!)
-        tv_page.text = "${page+1}/${noteContents.size}"
-
+        tv_page.text = "${page+1}"
         if (isExpand) {
             setElikLoadPath(elik_a!!, note_Content_a!!)
-            tv_page.text = "${page}/${noteContents.size}"
-            tv_page_a.text="${page+1}/${noteContents.size}"
+            tv_page_a.text = "$page"
         }
     }
 

@@ -17,7 +17,6 @@ import com.bll.lnkteacher.manager.ClassScheduleGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ClassScheduleBean
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -76,8 +75,6 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     }
     override fun onUploadSuccess() {
         finish()
-    }
-    override fun onUserList(users: MutableList<ClassGroupUser>?) {
     }
 
     override fun layoutId(): Int {
@@ -598,7 +595,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     private fun getCourseView(): TextView {
         return TextView(this).apply {
             setTextColor(Color.BLACK)
-            textSize = 24f
+            textSize = if (type==1)24f else 28f
             setLines(1)
             gravity = Gravity.CENTER
         }

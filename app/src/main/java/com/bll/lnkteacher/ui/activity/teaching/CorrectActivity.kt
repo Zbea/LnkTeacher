@@ -168,11 +168,9 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             showView(ll_record)
             disMissView(ll_score,ll_topic,ll_content)
         } else {
-            if (correctModule!=-1){
-                disMissView(ll_record)
-                showView(tv_custom,ll_content)
-                tv_custom.text="发送批改"
-            }
+            disMissView(ll_record)
+            showView(tv_custom,ll_content)
+            tv_custom.text="发送批改"
         }
 
         tv_custom.setOnClickListener {
@@ -182,7 +180,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1){
+            if (item.status==1&&!tv_score_num.text.toString().isNullOrEmpty()){
                 showLoading()
                 commitPapers()
             }
@@ -192,7 +190,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         tv_score_num.setOnClickListener {
             val item=userItems[posUser]
             if (item.status==1){
-                InputContentDialog(this,3,"请输入分数(整数)").builder().setOnDialogClickListener{
+                InputContentDialog(this,3,"请输入分数(整数)",1).builder().setOnDialogClickListener{
                     if (TextUtils.isDigitsOnly(it)) {
                         tv_score_num.text=it
                     }
@@ -439,8 +437,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     override fun onChangeExpandContent() {
         if (getImageSize()==1)
             return
-        if (posImage==getImageSize()-1&&getImageSize()>1)
-            posImage=getImageSize()-2
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
@@ -448,35 +444,15 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     }
 
     override fun onPageUp() {
-        if (isExpand){
-            if (posImage>1){
-                posImage-=2
-            }
-            else if (posImage==1){
-                posImage=0
-            }
-        }
-        else{
-            if (posImage > 0) {
-                posImage -= 1
-            }
+        if (posImage>0){
+            posImage-=if (isExpand)2 else 1
         }
         setContentImage()
     }
 
     override fun onPageDown() {
-        if (isExpand){
-            if (posImage<getImageSize()-2){
-                posImage+=2
-            }
-            else if (posImage==getImageSize()-2){
-                posImage=getImageSize()-1
-            }
-        }
-        else{
-            if (posImage < getImageSize() - 1) {
-                posImage += 1
-            }
+        if (posImage<getImageSize()-1){
+            posImage+=if (isExpand)2 else 1
         }
         setContentImage()
     }
@@ -550,6 +526,13 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
      * 设置学生提交图片展示
      */
     private fun setContentImage(){
+        if (isExpand&&posImage>getImageSize()-2)
+            posImage=getImageSize()-2
+        if (isExpand&&posImage<0)
+            posImage=0
+
+        tv_page_total.text="${getImageSize()}"
+        tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
             when(userItems[posUser].status){
                 1->{
@@ -585,8 +568,8 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     }
                 }
             }
-            tv_page.text="${posImage+1}/${getImageSize()}"
-            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}/${getImageSize()}" else ""
+            tv_page_a.text="${posImage+1}"
+            tv_page.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
             when(userItems[posUser].status){
@@ -602,7 +585,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
                 }
             }
-            tv_page.text="${posImage+1}/${getImageSize()}"
+            tv_page.text="${posImage+1}"
         }
     }
 

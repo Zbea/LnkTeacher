@@ -19,7 +19,6 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
-import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
@@ -50,6 +49,7 @@ class TextBookStoreActivity : BaseActivity(),
     private var subType=0//教库分类
     private var downloadBookDialog: DownloadBookDialog? = null
     private var mBook: Book? = null
+    private var isZip=false
 
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
@@ -226,6 +226,7 @@ class TextBookStoreActivity : BaseActivity(),
             }
         }
         tabId = position
+        isZip = !(tabId==0||tabId==1||tabId==4)
         tabStr = tabList[position]
         pageIndex = 1
         fetchData()
@@ -298,21 +299,21 @@ class TextBookStoreActivity : BaseActivity(),
      * 下载解压书籍
      */
     private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
-
         val fileName = book.bookId.toString()//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
-        val targetFile = File(zipPath)
-        if (targetFile.exists()) {
-            targetFile.delete()
+        val path=if (isZip){
+            FileAddress().getPathZip(fileName)
         }
-        val download = FileDownManager.with(this).create(url).setPath(zipPath)
+        else{
+            val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
+            FileAddress().getPathBook(fileName+formatStr)
+        }
+        val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
                         runOnUiThread {
-                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
-                                    "/"+
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+ "/"+
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
                             downloadBookDialog?.setUnClickBtn(s)
                         }
@@ -325,26 +326,16 @@ class TextBookStoreActivity : BaseActivity(),
                 override fun completed(task: BaseDownloadTask?) {
                     //删除缓存 poolmap
                     deleteDoneTask(task)
-                    if (tabId==4){
-                        val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-                        val md5Name = MD5Utils.digest(book.bookId.toString())
-                        val targetFileStr = FileAddress().getPathBook(md5Name+formatStr)
-                        book.apply {
-                            id=null
-                            loadSate = 2
-                            category = 0
-                            typeId=getHostType()
-                            subtypeStr=tabStr
-                            time = System.currentTimeMillis()
-                            bookPath = targetFileStr
-                            bookDrawPath=FileAddress().getPathBookDraw(md5Name)
-                        }
+
+                    if (!isZip){
+                        book.bookPath = path
+                        book.bookDrawPath=FileAddress().getPathBookDraw(fileName)
                         complete(book)
                     }
                     else{
                         lock.lock()
                         val fileTargetPath = FileAddress().getPathTextBook(fileName)
-                        unzip(book, zipPath, fileTargetPath)
+                        unzip(book, path, fileTargetPath)
                         lock.unlock()
                     }
                 }
@@ -366,15 +357,8 @@ class TextBookStoreActivity : BaseActivity(),
     private fun unzip(book: Book, targetFileStr: String, fileTargetPath: String) {
         ZipUtils.unzip(targetFileStr, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                book.apply {
-                    loadSate = 2
-                    category = 0
-                    typeId=getHostType()
-                    subtypeStr=tabStr
-                    time = System.currentTimeMillis()//下载时间用于排序
-                    bookPath = fileTargetPath
-                    bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
-                }
+                book.bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
+                book.bookPath = fileTargetPath
                 //下载解压完成后更新存储的book
                 complete(book)
             }
@@ -391,6 +375,14 @@ class TextBookStoreActivity : BaseActivity(),
     }
 
     private fun complete(book: Book){
+        book.apply {
+            id=null
+            loadSate = 2
+            category = 0
+            typeId=getHostType()
+            subtypeStr=tabStr
+            time = System.currentTimeMillis()
+        }
         BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
         //更新列表

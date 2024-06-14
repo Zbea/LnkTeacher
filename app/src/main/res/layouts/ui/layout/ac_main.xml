@@ -40,16 +40,11 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="120dp" />
         </LinearLayout>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/line_color" />
         <FrameLayout
             android:id="@+id/frame_layout_a"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="108dp"
+            android:layout_marginStart="107dp"
             />
 
         <LinearLayout
@@ -81,6 +76,13 @@
 
 
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginStart="107dp"
+            android:background="@color/line_color" />
 
     </RelativeLayout>
 

@@ -11,7 +11,6 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
@@ -43,15 +42,6 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
     }
 
     override fun onUploadSuccess() {
-    }
-
-    override fun onUserList(users: MutableList<ClassGroupUser>) {
-        if (users.isNotEmpty()){
-            val titleStr=classGroups[position].name!!+"(${mUser?.subjectName})"
-            ClassGroupChildCreateDialog(this,titleStr ,users).builder().setOnDialogClickListener { name, ids ->
-                mGroupPresenter.createGroupChild (classGroups[position].classGroupId, name, ids)
-            }
-        }
     }
 
     override fun layoutId(): Int {
@@ -123,15 +113,18 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                             }
                     }
                     else{
-                        ClassGroupChildCreateDialog(this,classGroup.name, arrayListOf()).builder().setOnDialogClickListener{
-                            name,ids->
+                        ClassGroupChildCreateDialog(this,classGroup.name).builder().setOnDialogClickListener{
+                            name->
                             mGroupPresenter.editClassGroupChild(name,classGroup.classId)
                         }
                     }
                 }
                 R.id.tv_child->{
                     if (classGroup.state==1){
-                        mGroupPresenter.getClassUser(classGroup.classGroupId)
+                        val titleStr=classGroups[position].name!!+"(${mUser?.subjectName})"
+                        ClassGroupChildCreateDialog(this,titleStr).builder().setOnDialogClickListener { name ->
+                            mGroupPresenter.createGroupChild (classGroups[position].classGroupId, name)
+                        }
                     }
                     else{
                     val intent= Intent(this, ClassGroupChildManageActivity::class.java)

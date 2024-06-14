@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.presenter.AppCenterPresenter
@@ -18,6 +20,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_list_tab.*
+import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -29,11 +32,11 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
     private var apps= mutableListOf<AppList.ListBean>()
     private var position=0
     private var currentDownLoadTask:BaseDownloadTask?=null
-    private var types= mutableListOf<ItemList>()
+    private var types= mutableListOf<String>()
+    private var popSupplys= mutableListOf<PopupBean>()
+    private var supply=0
 
     override fun onType(commonData: CommonData) {
-        types=commonData.subType
-        initTab()
     }
 
     override fun onAppList(appBean: AppList) {
@@ -60,7 +63,9 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
     override fun initData() {
         initChangeScreenData()
         pageSize=8
-        presenter.getTypeList()
+        types= arrayListOf("应用","工具")
+        popSupplys= DataBeanManager.popupSupplys
+        supply=popSupplys[0].id
     }
 
     override fun initChangeScreenData() {
@@ -69,13 +74,29 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
 
     override fun initView() {
         setPageTitle("应用")
+
+        showView(tv_type)
+
+        tv_type.text=popSupplys[0].name
+        tv_type.setOnClickListener {
+            PopupRadioList(this,popSupplys,tv_type,tv_type.width,0).builder().setOnSelectListener {
+                if (supply!=it.id){
+                    tv_type.text = it.name
+                    supply=it.id
+                    pageIndex=1
+                    fetchData()
+                }
+            }
+        }
+
         initRecyclerView()
+        initTab()
     }
 
     private fun initTab() {
         for (i in types.indices){
             itemTabTypes.add(ItemTypeBean().apply {
-                title=types[i].desc
+                title=types[i]
                 isCheck=i==0
             })
         }
@@ -84,7 +105,7 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        type=types[position].type
+        type=position+1
         pageIndex=1
         fetchData()
     }
@@ -173,14 +194,15 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
         val map = HashMap<String, Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["subType"] = type
-        map["mainType"]=1
+        map["type"] = supply
+        map["subType"]=type
+        map["mainType"]=2
         presenter.getAppList(map)
     }
 
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag==Constants.APP_INSTALL_EVENT){
-            if (type==6){
+            if (type==2){
                 val bean=apps[position]
                 val item=AppBean()
                 item.appName=bean.nickname
