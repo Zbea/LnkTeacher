@@ -35,7 +35,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
-    private var textbookFragment: TextbookFragment? = null
+    private var textbookFragment: TextbookManagerFragment? = null
     private var examFragment: ExamManagerFragment? = null
     private var testpaperManagerFragment: TestpaperManagerFragment? = null
     private var learningConditionFragment: LearningConditionFragment? = null
@@ -74,7 +74,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
         mainLeftFragment=MainLeftFragment()
         mainRightFragment = MainRightFragment()
-        textbookFragment= TextbookFragment()
+        textbookFragment= TextbookManagerFragment()
         bookcaseFragment = BookCaseFragment()
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()

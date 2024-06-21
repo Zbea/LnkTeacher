@@ -5,13 +5,13 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 
-class WallpaperPresenter(view: IContractView.IWallpaperView) : BasePresenter<IContractView.IWallpaperView>(view) {
+class WallpaperPresenter(view: IContractView.IWallpaperView,val screen:Int) : BasePresenter<IContractView.IWallpaperView>(view) {
 
     fun getList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getWallpaperList(map)
 
-        doRequest(app, object : Callback<WallpaperList>(view) {
+        doRequest(app, object : Callback<WallpaperList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<WallpaperList>): Boolean {
                 return false
             }
@@ -29,7 +29,7 @@ class WallpaperPresenter(view: IContractView.IWallpaperView) : BasePresenter<ICo
         val requestBody= RequestUtils.getBody(map)
         val download = RetrofitManager.service.onBuy(requestBody)
 
-        doRequest(download, object : Callback<Any>(view) {
+        doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

@@ -9,7 +9,7 @@ class LearningConditionFragment:BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle("学情")
+        setTitle("教情")
     }
 
     override fun lazyLoad() {

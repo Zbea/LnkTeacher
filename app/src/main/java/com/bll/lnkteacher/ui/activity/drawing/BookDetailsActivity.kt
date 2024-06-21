@@ -172,7 +172,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     private fun getIndexFile(index: Int): File? {
         val path=FileAddress().getPathTextBookPicture(book?.bookPath!!)
         val listFiles = FileUtils.getFiles(path)
-        return if (listFiles!=null) listFiles[index] else null
+        return if (listFiles.size>0) listFiles[index] else null
     }
 
     override fun onDestroy() {

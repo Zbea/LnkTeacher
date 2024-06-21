@@ -29,7 +29,7 @@ public class ClassGroup implements Serializable {
         if (this==obj)
             return true;
         ClassGroup item=(ClassGroup) obj;
-        return this.classGroupId==item.classGroupId&& this.classId==item.classId && Objects.equals(this.name, item.name);
+        return this.classGroupId==item.classGroupId&& this.classId==item.classId && Objects.equals(this.name, item.name)&&this.grade==item.grade;
     }
 
 }

@@ -7,13 +7,13 @@ import com.bll.lnkteacher.net.*
 /**
  * 应用相关
  */
-class CalenderPresenter(view: IContractView.ICalenderView) : BasePresenter<IContractView.ICalenderView>(view) {
+class CalenderPresenter(view: IContractView.ICalenderView,val screen:Int) : BasePresenter<IContractView.ICalenderView>(view) {
 
     fun getList(map: HashMap<String,Any>) {
 
         val app = RetrofitManager.service.getCalenderList(map)
 
-        doRequest(app, object : Callback<CalenderList>(view) {
+        doRequest(app, object : Callback<CalenderList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<CalenderList>): Boolean {
                 return false
             }
@@ -31,7 +31,7 @@ class CalenderPresenter(view: IContractView.ICalenderView) : BasePresenter<ICont
         val requestBody= RequestUtils.getBody(map)
         val download = RetrofitManager.service.onBuy(requestBody)
 
-        doRequest(download, object : Callback<Any>(view) {
+        doRequest(download, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }

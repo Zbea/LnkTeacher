@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.fragment
 
-import PopupClick
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -11,11 +10,10 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.CalenderDaoManager
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.ui.activity.CalenderListActivity
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
 import com.bll.lnkteacher.ui.activity.DateActivity
+import com.bll.lnkteacher.ui.activity.ScreenshotListActivity
 import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
@@ -32,7 +30,6 @@ class MainLeftFragment:BaseFragment() {
     private var calenderPath=""
     private var mTeachingAdapter: MainTeachingAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
-    private var popupCalenders= mutableListOf<PopupBean>()
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_left
@@ -41,15 +38,16 @@ class MainLeftFragment:BaseFragment() {
     override fun initView() {
         setTitle(R.string.main_home_title)
 
-        popupCalenders.add(PopupBean(0,"台历列表"))
-        popupCalenders.add(PopupBean(1,"我的台历"))
-
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
         }
 
-        iv_plan.setOnClickListener {
+        tv_planover.setOnClickListener {
             customStartActivity(Intent(activity, PlanOverviewActivity::class.java))
+        }
+
+        tv_screenshot.setOnClickListener {
+            customStartActivity(Intent(activity, ScreenshotListActivity::class.java))
         }
 
         iv_date.setOnClickListener {
@@ -68,17 +66,8 @@ class MainLeftFragment:BaseFragment() {
             setDateView()
         }
 
-        iv_calender_more.setOnClickListener {
-            PopupClick(requireActivity(),popupCalenders,iv_calender_more,-20).builder().setOnSelectListener{
-                when (it.id) {
-                    0 -> {
-                        customStartActivity(Intent(activity, CalenderListActivity::class.java))
-                    }
-                    1->{
-                        customStartActivity(Intent(activity, CalenderMyActivity::class.java))
-                    }
-                }
-            }
+        tv_calender.setOnClickListener {
+            customStartActivity(Intent(activity, CalenderMyActivity::class.java))
         }
 
         v_calender_up.setOnClickListener{
@@ -89,8 +78,7 @@ class MainLeftFragment:BaseFragment() {
         }
 
         v_calender_down.setOnClickListener {
-            val allDay=if (DateUtils().isYear(DateUtils.getYear())) 366 else 365
-            if (nowDayPos<=allDay){
+            if (nowDayPos<=366){
                 nowDayPos+=1
                 setCalenderBg()
             }
@@ -167,14 +155,16 @@ class MainLeftFragment:BaseFragment() {
     }
 
     private fun setCalenderBg(){
-        val listFiles= FileUtils.getFiles(calenderPath) ?: return
-        val file=if (listFiles.size>nowDayPos-1){
-            listFiles[nowDayPos-1]
+        val listFiles= FileUtils.getFiles(calenderPath)
+        if (listFiles.size>0){
+            val file=if (listFiles.size>nowDayPos-1){
+                listFiles[nowDayPos-1]
+            }
+            else{
+                listFiles[listFiles.size-1]
+            }
+            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
         }
-        else{
-            listFiles[listFiles.size-1]
-        }
-        GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
     }
 
     private fun initTeachingView() {

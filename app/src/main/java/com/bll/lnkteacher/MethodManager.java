@@ -9,6 +9,7 @@ import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.Book;
+import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
 import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
@@ -95,6 +96,42 @@ public class MethodManager {
         intent.putExtra("path", bookBean.bookPath);
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
+        intent.putExtra("tool",result.toString());
+        intent.putExtra("userId",user.accountId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转阅读器
+     * @param context
+     */
+    public static void gotoHandouts(Context context, HandoutList.HandoutBean bean)  {
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+
+        List<AppBean> toolApps= getAppTools(context,1);
+        JSONArray result =new JSONArray();
+        for (AppBean item :toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+
+        Intent intent = new Intent();
+        intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
+        intent.setPackage(Constants.PACKAGE_READER);
+        intent.putExtra("path", bean.bookPath);
+        intent.putExtra("key_book_id",bean.id+"");
+        intent.putExtra("bookName", bean.title);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -232,6 +269,15 @@ public class MethodManager {
      */
     public static void setStatusBarValue(int value){
         Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
+    }
+
+    /**
+     * 获取url的格式后缀
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url){
+        return url.substring(url.lastIndexOf("."));
     }
 
 }

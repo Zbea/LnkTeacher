@@ -26,7 +26,8 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_homework),
         mContext.getString(R.string.textbook_tab_homework_other),
-        mContext.getString(R.string.textbook_tab_teaching)
+        mContext.getString(R.string.textbook_tab_teaching),
+        "我的讲义"
     )
 
     var teachingStrs = arrayOf(
@@ -39,6 +40,7 @@ object DataBeanManager {
         mContext.getString(R.string.teaching_tab_testpaper_correct)
     )
 
+    var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
 
     fun getGradeClassGroups(grade: Int): MutableList<PopupBean> {
         val popClasss = mutableListOf<PopupBean>()
@@ -48,6 +50,18 @@ object DataBeanManager {
             }
         }
         return popClasss
+    }
+
+    /**
+     * 获取第一个主群的年级
+     */
+    fun getClassGroupsGrade():Int{
+        for (item in classGroups) {
+            if (item.state==1) {
+                return item.grade
+            }
+        }
+        return 0
     }
 
     val popAllClassGroups: MutableList<PopupBean>
@@ -147,6 +161,15 @@ object DataBeanManager {
             return list
         }
 
+    fun popupCourses(courseId: Int): MutableList<PopupBean>
+        {
+            val list = mutableListOf<PopupBean>()
+            for (i in courses.indices) {
+                list.add(PopupBean(courses[i].type, courses[i].desc, courses[i].type == courseId))
+            }
+            return list
+        }
+
     /**
      * 获取index栏目
      *
@@ -212,7 +235,7 @@ object DataBeanManager {
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_learn_condition)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_learn_condition_check)
-            name = "学情"
+            name = "教情"
         })
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_app)
@@ -339,6 +362,14 @@ object DataBeanManager {
             list.add(PopupBean(2, mContext.getString(R.string.semester_next), false))
             return list
         }
+
+    fun popupSemesters(semester:Int):MutableList<PopupBean>{
+        val list= mutableListOf<PopupBean>()
+        for (item in popupSemesters){
+            list.add(PopupBean(item.id, item.name, item.id == semester))
+        }
+        return list
+    }
 
     val popupSupplys: MutableList<PopupBean>
         get() {

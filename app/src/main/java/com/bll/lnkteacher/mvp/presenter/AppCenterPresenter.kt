@@ -21,8 +21,7 @@ class AppCenterPresenter(view: IContractView.IAPPView,val screen:Int) : BasePres
             }
 
             override fun success(tBaseResult: BaseResult<CommonData>) {
-                if (tBaseResult.data!=null)
-                    view.onType(tBaseResult.data)
+
             }
 
         }, true)

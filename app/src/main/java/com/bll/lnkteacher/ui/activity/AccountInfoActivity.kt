@@ -29,6 +29,16 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     private var friends= mutableListOf<FriendList.FriendBean>()
     private var mAdapterFriend: AccountFriendAdapter?=null
     private var position=0
+    private var phone=""
+
+    override fun onSms() {
+        showToast("短信发送成功")
+    }
+
+    override fun onEditPhone() {
+        mUser?.telNumber=phone
+        tv_phone.text=phone
+    }
 
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
@@ -113,6 +123,11 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
                 }
         }
 
+        btn_edit_phone.setOnClickListener {
+            presenter.sms(mUser?.telNumber!!)
+            editPhone()
+        }
+
         btn_logout.setOnClickListener {
             CommonDialog(this).setContent("确认退出登录？").builder().setDialogClickListener(object :
                 CommonDialog.OnDialogClickListener {
@@ -147,6 +162,14 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         }
     }
 
+
+    private fun editPhone(){
+        EditPhoneDialog(this).builder().setOnDialogClickListener{
+            code,phone->
+            this.phone=phone
+            presenter.editPhone(code, phone)
+        }
+    }
 
     /**
      * 修改名称

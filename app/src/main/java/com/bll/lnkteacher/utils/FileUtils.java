@@ -16,11 +16,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class FileUtils {
+
+    public static void mkdirs(String path){
+        if (!FileUtils.isExist(path)){
+            File file=new File(path);
+            file.getParentFile().mkdirs();
+            file.mkdirs();
+        }
+    }
+
     /**
      * 读取文本内容String
      *
@@ -162,6 +170,27 @@ public class FileUtils {
                 files.add(tempList[i]);
             }
         }
+        return files;
+    }
+
+    /**
+     * 获取目录下文件对象  不包含文件目录下的子文件目录 （升序）
+     * @param path
+     * @return
+     */
+    public static List<File> getAscFiles(String path){
+        List<File> files = new ArrayList<>();
+        if(path.isEmpty()){
+            return files;
+        }
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return files;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isFile()) {
+                files.add(tempList[i]);
+            }
+        }
         sortAscFiles(files);
         return files;
     }
@@ -247,7 +276,7 @@ public class FileUtils {
      * @param suffix
      * @return
      */
-    public static List<File> getFiles(String path,String suffix){
+    public static List<File> getAscFiles(String path, String suffix){
         List<File> files = new ArrayList<>();
         if("".equals(path)){
             return files;
@@ -272,7 +301,7 @@ public class FileUtils {
      * @param name 文件名
      */
     public static void deleteFile(String path,String name){
-        List<File> files=getFiles(path);
+        List<File> files= getAscFiles(path);
         if (files!=null){
             for (int i = 0; i < files.size(); i++) {
                 File file=files.get(i);
@@ -316,19 +345,22 @@ public class FileUtils {
      * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
      * @param files
      */
+    public static void sortFiles(List<File> files) {
+        if (files==null){
+            return;
+        }
+        files.sort(Comparator.comparing(File::getName));
+    }
+
+    /**
+     * 文件夹排序 按照最后修改时间排序，最新修改的文件排在最后面
+     * @param files
+     */
     public static void sortAscFiles(List<File> files) {
         if (files==null){
             return;
         }
-        files.sort((file1, file2) -> {
-            long diff = file1.lastModified() - file2.lastModified();
-            if (diff > 0)
-                return 1;
-            else if (diff == 0)
-                return 0;
-            else
-                return -1;
-        });
+        files.sort(Comparator.naturalOrder());
     }
 
     /**
@@ -339,15 +371,7 @@ public class FileUtils {
         if (files==null){
             return;
         }
-        files.sort((file1, file2) -> {
-            long diff = file1.lastModified() - file2.lastModified();
-            if (diff > 0)
-                return -1;
-            else if (diff == 0)
-                return 0;
-            else
-                return 1;
-        });
+        files.sort(Comparator.reverseOrder());
     }
 
     /**
@@ -415,7 +439,7 @@ public class FileUtils {
         if (path==null){
             return false;
         }
-        List<File> files=getFiles(path);
+        List<File> files= getAscFiles(path);
         return files.size()>0;
     }
 

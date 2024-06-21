@@ -29,6 +29,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
 
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_homework_publish)
+        dialog.setCanceledOnTouchOutside(false)
         val window=dialog.window!!
             window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

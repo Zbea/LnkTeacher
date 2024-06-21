@@ -91,8 +91,19 @@
                 android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/btn_edit_phone"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="修改手机"
+                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
         </LinearLayout>
         <LinearLayout

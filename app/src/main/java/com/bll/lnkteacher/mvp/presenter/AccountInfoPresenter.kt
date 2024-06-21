@@ -8,6 +8,40 @@ import com.bll.lnkteacher.net.*
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
+
+    fun sms(phone:String) {
+
+        val sms = RetrofitManager.service.getSms(phone)
+
+        doRequest(sms, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSms()
+            }
+
+        }, true)
+
+    }
+
+    fun editPhone(code: String,phone: String) {
+        val body = RequestUtils.getBody(
+            Pair.create("telNumber", phone),
+            Pair.create("code", code)
+        )
+        val editName = RetrofitManager.service.editPhone(body)
+        doRequest(editName, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditPhone()
+            }
+        }, true)
+    }
+
+
     fun editName(name: String) {
         val body = RequestUtils.getBody(
             Pair.create("nickName", name)

@@ -598,7 +598,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         for (i in currentImages?.indices!!){
             savePaths.add(getPath()+"/${i+1}.png")
         }
-        val files = FileUtils.getFiles(getPath())
+        val files = FileUtils.getAscFiles(getPath())
         if (files.isNullOrEmpty()) {
             FileMultitaskDownManager.with(this).create(currentImages?.toMutableList()).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {

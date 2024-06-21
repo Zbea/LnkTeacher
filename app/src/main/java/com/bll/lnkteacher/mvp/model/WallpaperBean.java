@@ -128,6 +128,5 @@ public class WallpaperBean {
     public void setDate(long date) {
         this.date = date;
     }
-
-
+    
 }

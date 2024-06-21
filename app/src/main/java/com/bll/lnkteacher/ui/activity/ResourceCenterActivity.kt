@@ -1,102 +1,72 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.Constants
+import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.manager.AppDaoManager
-import com.bll.lnkteacher.mvp.model.*
-import com.bll.lnkteacher.mvp.presenter.AppCenterPresenter
-import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.AppCenterListAdapter
-import com.bll.lnkteacher.utils.AppUtils
-import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.FileDownManager
-import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_list_tab.*
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.ui.fragment.resource.AppDownloadFragment
+import com.bll.lnkteacher.ui.fragment.resource.CalenderDownloadFragment
+import com.bll.lnkteacher.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
-import java.io.File
 
-class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
+class ResourceCenterActivity:BaseActivity(){
+    private var lastFragment: Fragment? = null
+    private var appFragment: AppDownloadFragment? = null
+    private var bookFragment: AppDownloadFragment? = null
+    private var readFragment: AppDownloadFragment? = null
+    private var toolFragment: AppDownloadFragment? = null
+    private var wallpaperFragment: WallpaperDownloadFragment? = null
+    private var calenderFragment: CalenderDownloadFragment? = null
 
-    private lateinit var presenter:AppCenterPresenter
-    private var type=1
-    private var mAdapter:AppCenterListAdapter?=null
-    private var apps= mutableListOf<AppList.ListBean>()
-    private var position=0
-    private var currentDownLoadTask:BaseDownloadTask?=null
-    private var types= mutableListOf<String>()
     private var popSupplys= mutableListOf<PopupBean>()
     private var supply=0
 
-    override fun onType(commonData: CommonData) {
-    }
-
-    override fun onAppList(appBean: AppList) {
-        setPageNumber(appBean.total)
-        apps=appBean.list
-        mAdapter?.setNewData(apps)
-    }
-
-    override fun buySuccess() {
-        apps[position].buyStatus=1
-        mAdapter?.notifyItemChanged(position)
-
-        if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-            currentDownLoadTask = downLoadStart(apps[position])
-        } else {
-            showToast("正在下载安装")
-        }
-    }
-
     override fun layoutId(): Int {
-        return R.layout.ac_list_tab
+        return  R.layout.ac_resource
     }
 
     override fun initData() {
-        initChangeScreenData()
-        pageSize=8
-        types= arrayListOf("应用","工具")
-        popSupplys= DataBeanManager.popupSupplys
+        popSupplys=DataBeanManager.popupSupplys
         supply=popSupplys[0].id
     }
 
-    override fun initChangeScreenData() {
-        presenter= AppCenterPresenter(this,getCurrentScreenPos())
-    }
-
     override fun initView() {
-        setPageTitle("应用")
-
+        setPageTitle("资源中心")
         showView(tv_type)
+
+        appFragment=AppDownloadFragment().newInstance(1)
+        bookFragment=AppDownloadFragment().newInstance(3)
+        readFragment=AppDownloadFragment().newInstance(4)
+        toolFragment=AppDownloadFragment().newInstance(2)
+        wallpaperFragment = WallpaperDownloadFragment()
+        calenderFragment = CalenderDownloadFragment()
+
+        switchFragment(lastFragment, appFragment)
+        initTab()
 
         tv_type.text=popSupplys[0].name
         tv_type.setOnClickListener {
             PopupRadioList(this,popSupplys,tv_type,tv_type.width,0).builder().setOnSelectListener {
-                if (supply!=it.id){
-                    tv_type.text = it.name
-                    supply=it.id
-                    pageIndex=1
-                    fetchData()
-                }
+                tv_type.text = it.name
+                appFragment?.changeSupply(it.id)
+                bookFragment?.changeSupply(it.id)
+                readFragment?.changeSupply(it.id)
+                toolFragment?.changeSupply(it.id)
+                wallpaperFragment?.changeSupply(it.id)
+                calenderFragment?.changeSupply(it.id)
             }
         }
 
-        initRecyclerView()
-        initTab()
     }
 
-    private fun initTab() {
-        for (i in types.indices){
+    private fun initTab(){
+        for (i in DataBeanManager.resources.indices) {
             itemTabTypes.add(ItemTypeBean().apply {
-                title=types[i]
+                title=DataBeanManager.resources[i]
                 isCheck=i==0
             })
         }
@@ -105,113 +75,55 @@ class ResourceCenterActivity:BaseActivity(), IContractView.IAPPView{
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        type=position+1
-        pageIndex=1
-        fetchData()
+        when(position){
+            0->{
+                switchFragment(lastFragment, appFragment)
+            }
+            1->{
+                switchFragment(lastFragment, bookFragment)
+            }
+            2->{
+                switchFragment(lastFragment, readFragment)
+            }
+            3->{
+                switchFragment(lastFragment, toolFragment)
+            }
+            4->{
+                switchFragment(lastFragment, wallpaperFragment)
+            }
+            5->{
+                switchFragment(lastFragment, calenderFragment)
+            }
+        }
     }
 
-    private fun initRecyclerView(){
-        val layoutParams=LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,52f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,52f),0)
-        layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapter = AppCenterListAdapter(R.layout.item_app_center_list, null).apply {
-            rv_list.adapter = this
-            bindToRecyclerView(rv_list)
-            setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                this@ResourceCenterActivity.position=position
-                val app=apps[position]
-                if (app.buyStatus==0){
-                    val map = HashMap<String, Any>()
-                    map["type"] = 4
-                    map["bookId"] = app.applicationId
-                    presenter.buyApk(map)
+    //页码跳转
+    private fun switchFragment(from: Fragment?, to: Fragment?) {
+        if (from != to) {
+            lastFragment = to
+            val fm = supportFragmentManager
+            val ft = fm.beginTransaction()
+
+            if (!to!!.isAdded) {
+                if (from != null) {
+                    ft.hide(from)
                 }
-                else{
-                    val idName=app.applicationId.toString()
-                    if (!isInstalled(idName)) {
-                        if (currentDownLoadTask == null || !currentDownLoadTask!!.isRunning) {
-                            currentDownLoadTask = downLoadStart(app)
-                        } else {
-                            showToast("正在下载安装")
-                        }
-                    }
+                ft.add(R.id.frame_layout, to).commit()
+            } else {
+                if (from != null) {
+                    ft.hide(from)
                 }
+                ft.show(to).commit()
             }
         }
-
     }
 
-
-    //下载应用
-    private fun downLoadStart(bean: AppList.ListBean): BaseDownloadTask? {
-        val targetFileStr= FileAddress().getPathApk(bean.applicationId.toString())
-        showLoading()
-        val download = FileDownManager.with(this).create(bean.contentUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun completed(task: BaseDownloadTask?) {
-                hideLoading()
-                installApk(targetFileStr)
-                currentDownLoadTask = null//完成了废弃线程
-            }
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                showToast(e!!.message!!)
-            }
-        })
-        return download
-    }
-
-    //安装apk
-    private fun installApk(apkPath: String) {
-        AppUtils.installApp(this, apkPath)
-    }
-
-    //是否已经下载安装
-    private fun isInstalled(idName:String): Boolean {
-        if (File(FileAddress().getPathApk(idName)).exists()){
-            val packageName = AppUtils.getApkInfo(this, FileAddress().getPathApk(idName))
-            if (AppUtils.isAvailable(this,packageName)){
-                AppUtils.startAPP(this, packageName)
-            }
-            else{
-                //已经下载 直接去解析apk 去安装
-                installApk(FileAddress().getPathApk(idName))
-            }
-            return true
-        }
-        return false
-    }
-
-    override fun fetchData() {
-        val map = HashMap<String, Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["type"] = supply
-        map["subType"]=type
-        map["mainType"]=2
-        presenter.getAppList(map)
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.APP_INSTALL_EVENT){
-            if (type==2){
-                val bean=apps[position]
-                val item=AppBean()
-                item.appName=bean.nickname
-                item.packageName=bean.packageName
-                item.imageByte= AppUtils.scanLocalInstallAppDrawable(this,bean.packageName)
-                AppDaoManager.getInstance().insertOrReplace(item)
-                EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)
-            }
-        }
+    override fun onCommonData() {
+        appFragment?.initChangeScreenData()
+        toolFragment?.initChangeScreenData()
+        wallpaperFragment?.initChangeScreenData()
+        calenderFragment?.initChangeScreenData()
     }
 
 }

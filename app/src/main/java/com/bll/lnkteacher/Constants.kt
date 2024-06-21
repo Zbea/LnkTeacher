@@ -93,6 +93,7 @@ class Constants {
         const val LOGIN_BROADCAST_EVENT = "com.bll.lnkteacher.account.login"
         const val LOGOUT_BROADCAST_EVENT = "com.bll.lnkteacher.account.logout"
         const val ACTION_REFRESH = "com.bll.lnkteacher.refresh"
+            const val NET_REFRESH="com.htfyun.blackwhitebar.refresh"
 
         const val INTENT_SCREEN_LABEL = "android.intent.extra.LAUNCH_SCREEN"
     }

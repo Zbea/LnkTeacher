@@ -13,7 +13,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
     val mQiniuPresenter= QiniuPresenter(this)
     var mCloudUploadPresenter= CloudUploadPresenter(this)
-    var grade=0
+    var grade=DataBeanManager.getClassGroupsGrade()
     var popGrades= mutableListOf<PopupBean>()
 
     override fun onToken(token: String) {

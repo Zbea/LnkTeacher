@@ -39,7 +39,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         sendBroadcast(intent)
         //刷新公共方法中的登录信息
         MethodManager.getUser()
-        MethodManager.setStatusBarValue(statusBarValue)
+//        MethodManager.setStatusBarValue(statusBarValue)
 
         val intent1=Intent(this,MainActivity::class.java)
         intent1.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
@@ -61,8 +61,8 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-        statusBarValue=MethodManager.getStatusBarValue()
-        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
+//        statusBarValue=MethodManager.getStatusBarValue()
+//        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
         val account=SPUtil.getString("account")
         val password=SPUtil.getString("password")

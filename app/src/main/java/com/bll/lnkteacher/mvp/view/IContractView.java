@@ -10,6 +10,8 @@ import com.bll.lnkteacher.mvp.model.CalenderList;
 import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.FriendList;
+import com.bll.lnkteacher.mvp.model.HandoutList;
+import com.bll.lnkteacher.mvp.model.ItemList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.ShareNoteList;
@@ -51,6 +53,9 @@ public interface IContractView {
 
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
+
+        void onSms();
+        void onEditPhone();
         void onEditNameSuccess();
         void onEditSchool();
         void onBind();
@@ -263,9 +268,14 @@ public interface IContractView {
 
     //应用
     interface IAPPView extends IBaseView {
-        void onType(CommonData commonData);
         void onAppList(AppList appBean);
         void buySuccess();
+    }
+
+    interface IHandoutView extends IBaseView {
+        void onType(List<String> list);
+        void onList(HandoutList list);
+        void onSuccess();
     }
 
     interface IWallpaperView extends IBaseView {

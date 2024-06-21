@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
@@ -18,6 +19,7 @@ import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
@@ -64,17 +66,14 @@ class TextBookStoreActivity : BaseActivity(),
         //修正数据
         for (book in books){
             when(tabId){
-                0,1->{
-                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
-                }
-                2,3->{
-                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
-                }
                 4->{
                     book.id=null
                     book.bookName=book.title
                     book.subjectName=book.subject
                     book.bookDesc=book.desc
+                }
+                else->{
+                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
                 }
             }
         }
@@ -90,8 +89,6 @@ class TextBookStoreActivity : BaseActivity(),
             subType=subTypeList[0].id
 
             if (subjectList.size>0){
-                courseId=subjectList[0].id
-                gradeId=gradeList[0].id
                 initSelectorView()
                 fetchData()
             }
@@ -113,20 +110,28 @@ class TextBookStoreActivity : BaseActivity(),
         pageSize=12
 
         tabList = DataBeanManager.textbookType.toMutableList()
+        tabList.removeLast()
         tabStr = tabList[0]
 
-        semesterList=DataBeanManager.popupSemesters
-        semester= semesterList[0].id
+        getSemester()
+        semesterList=DataBeanManager.popupSemesters(semester)
 
         provinceStr= mUser?.schoolProvince.toString()
         for (i in DataBeanManager.provinces.indices){
             provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
         }
 
-        subjectList=DataBeanManager.popupCourses
+        courseId=DataBeanManager.getCourseId(mUser?.subjectName!!)
+        subjectList=DataBeanManager.popupCourses(courseId)
 
-        gradeList=DataBeanManager.popupGrades(1)
-
+        if (DataBeanManager.getClassGroupsGrade()==0){
+            gradeId=1
+            gradeList=DataBeanManager.popupGrades(1)
+        }
+        else{
+            gradeId=DataBeanManager.getClassGroupsGrade()
+            gradeList=DataBeanManager.popupGrades(gradeId)
+        }
         presenter.getBookType()
     }
 
@@ -198,6 +203,13 @@ class TextBookStoreActivity : BaseActivity(),
                     fetchData()
                 }
         }
+    }
+
+    /**
+     * 设置课本学期（月份为9月份之前为下学期）
+     */
+    private fun getSemester(){
+        semester=if (DateUtils.getMonth()<9) 2 else 1
     }
 
     private fun initTab() {
@@ -304,8 +316,7 @@ class TextBookStoreActivity : BaseActivity(),
             FileAddress().getPathZip(fileName)
         }
         else{
-            val formatStr=book.downloadUrl.substring(book.downloadUrl.lastIndexOf("."))
-            FileAddress().getPathBook(fileName+formatStr)
+            FileAddress().getPathBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
         val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {

@@ -200,7 +200,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         for (diaryBean in diarys){
             val fileName=DateUtils.longToString(diaryBean.date)
             val path=FileAddress().getPathDiary(fileName)
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (!FileUtils.getAscFiles(path).isNullOrEmpty()){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -237,7 +237,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         for (item in beans){
             val fileName=DateUtils.longToString(item.date)
             val path=FileAddress().getPathFreeNote(fileName)
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (!FileUtils.getAscFiles(path).isNullOrEmpty()){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -279,7 +279,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         for (item in screenTypes){
             val fileName=DateUtils.longToString(item.date)
             val path=item.path
-            if (!FileUtils.getFiles(path).isNullOrEmpty()){
+            if (!FileUtils.getAscFiles(path).isNullOrEmpty()){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{

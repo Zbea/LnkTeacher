@@ -21,6 +21,7 @@ import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.activity.CloudStorageActivity
 import com.bll.lnkteacher.ui.activity.MainActivity
+import com.bll.lnkteacher.ui.activity.ResourceCenterActivity
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
@@ -186,6 +187,9 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         if (activity is CloudStorageActivity){
             screenPos=(activity as CloudStorageActivity).getCurrentScreenPos()
         }
+        if (activity is ResourceCenterActivity){
+            screenPos=(activity as ResourceCenterActivity).getCurrentScreenPos()
+        }
         return screenPos
     }
 
@@ -290,6 +294,14 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     fun showToast(strId:Int){
         SToast.showText(getScreenPosition(),strId)
+    }
+
+    fun showToast(screen: Int,s:String){
+        SToast.showText(screen,s)
+    }
+
+    fun showToast(screen: Int,strId:Int){
+        SToast.showText(screen,strId)
     }
 
     fun showLog(s:String){

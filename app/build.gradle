@@ -36,7 +36,7 @@ android {
     }
     greendao{
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 14
+        schemaVersion 15
         //dao的包名
         daoPackage 'com.bll.lnkteacher.greendao'
         //生成数据库文件的目录;
@@ -62,6 +62,14 @@ android {
                     ]
         }
     }
+
+    // 自定义输出配置
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "LnkTeacher${variant.versionName}_${variant.name}.apk"
+        }
+    }
+
 
 
 }

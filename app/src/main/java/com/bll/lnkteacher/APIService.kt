@@ -95,6 +95,11 @@ interface APIService{
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改电话
+     */
+    @POST("accounts/changeTel")
+    fun editPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 修改学校信息
      */
     @POST("accounts/changeAddress")
@@ -475,5 +480,22 @@ interface APIService{
      */
     @GET("school/exam/allJob")
     fun getExamScores(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamRankList>>
+
+
+    /**
+     * 讲义列表
+     */
+    @GET("teaching/list")
+    fun getHandoutList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HandoutList>>
+    /**
+     * 讲义分类
+     */
+    @GET("teaching/category")
+    fun getHandoutTypes(): Observable<BaseResult<List<String>>>
+    /**
+     * 删除讲义
+     */
+    @POST("teaching/delete")
+    fun onDeleteHandout(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
 }
