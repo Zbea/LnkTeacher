@@ -62,9 +62,10 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var cloudList= mutableListOf<CloudListBean>()
-    private var updateDialog: AppUpdateDialog?=null
+    var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter: TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
+    var grade=0
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -84,7 +85,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     override fun onAppUpdate(item: AppUpdateBean) {
         if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
-            updateDialog=AppUpdateDialog(requireActivity(),item).builder()
+            updateDialog= AppUpdateDialog(requireActivity(),item).builder()
             downLoadStart(item)
         }
     }
@@ -337,7 +338,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     }
 
     //下载应用
-    private fun downLoadStart(bean: AppUpdateBean){
+    fun downLoadStart(bean: AppUpdateBean){
         val targetFileStr= FileAddress().getPathApk("lnktecher")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
             FileDownManager.SingleTaskCallBack {

@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.ui.adapter.AppListAdapter
@@ -11,7 +11,7 @@ import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_app.*
 
-class AppFragment:BaseMainFragment() {
+class AppFragment: BaseFragment() {
 
     private var apps= mutableListOf<AppBean>()
     private var mAdapter: AppListAdapter?=null

@@ -9,7 +9,6 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.test.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.test.TestPaperCorrectFragment
-import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 class TestpaperManagerFragment : BaseMainFragment(){
@@ -49,8 +48,6 @@ class TestpaperManagerFragment : BaseMainFragment(){
 
     override fun lazyLoad() {
         setGradeStr()
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
-            fetchCommonData()
     }
 
     private fun initTab() {
@@ -113,14 +110,10 @@ class TestpaperManagerFragment : BaseMainFragment(){
             }
     }
 
-    override fun onGradeEvent() {
+    override fun onGradeSelectorEvent() {
         testPaperAssignFragment?.changeGrade(grade)
         testPaperCorrectFragment?.changeGrade(grade)
     }
 
-    override fun onRefreshData() {
-        super.onRefreshData()
-        lazyLoad()
-    }
 
 }

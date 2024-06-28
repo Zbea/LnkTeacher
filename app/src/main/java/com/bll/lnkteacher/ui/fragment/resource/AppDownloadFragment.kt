@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.mvp.model.AppList
@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_list_content.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class AppDownloadFragment :BaseMainFragment(), IContractView.IAPPView{
+class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
 
     private var index=0
     private var presenter= AppCenterPresenter(this,getScreenPosition())

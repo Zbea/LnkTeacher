@@ -7,7 +7,6 @@ import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.exam.ExamCorrectFragment
 import com.bll.lnkteacher.ui.fragment.exam.ExamListFragment
-import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 class ExamManagerFragment:BaseMainFragment() {
@@ -38,12 +37,6 @@ class ExamManagerFragment:BaseMainFragment() {
 
     override fun lazyLoad() {
         setGradeStr()
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
-            fetchCommonData()
-    }
-
-    override fun onGradeEvent() {
-        examListFragment?.onChangeGrade(grade)
     }
 
     private fun initTab() {
@@ -92,9 +85,8 @@ class ExamManagerFragment:BaseMainFragment() {
         }
     }
 
-    override fun onRefreshData() {
-        super.onRefreshData()
-        lazyLoad()
+    override fun onGradeSelectorEvent() {
+        examListFragment?.onChangeGrade(grade)
     }
 
 }

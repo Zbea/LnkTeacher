@@ -11,12 +11,19 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
 import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.*
 
 
 interface APIService{
+
+    /**
+     * 检查系统更新
+     */
+    @POST("Device/CheckUpdate")
+    fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
 
     /**
      * 获取下载token

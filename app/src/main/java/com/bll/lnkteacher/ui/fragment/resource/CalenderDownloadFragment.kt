@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.DownloadCalenderDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.CalenderDaoManager
@@ -27,7 +27,7 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.text.DecimalFormat
 
-class CalenderDownloadFragment:BaseMainFragment(), IContractView.ICalenderView {
+class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
 
     private var presenter=CalenderPresenter(this,getScreenPosition())
     private var items= mutableListOf<CalenderItemBean>()

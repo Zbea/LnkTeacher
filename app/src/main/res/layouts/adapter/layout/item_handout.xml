@@ -36,6 +36,8 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_20"
         android:layout_marginTop="@dimen/dp_10"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
         android:ellipsize="end"
         android:lines="1"/>
 

@@ -15,7 +15,6 @@ import com.bll.lnkteacher.ui.fragment.textbook.HandoutFragment
 import com.bll.lnkteacher.ui.fragment.textbook.TextbookFragment
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.utils.NetworkUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import org.greenrobot.eventbus.EventBus
@@ -83,8 +82,6 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
 
     override fun lazyLoad() {
         presenter.getTypeList()
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
-            fetchCommonData()
     }
 
     private fun initTab() {

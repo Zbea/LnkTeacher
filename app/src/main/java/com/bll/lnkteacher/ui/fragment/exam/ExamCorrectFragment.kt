@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectListPresenter
@@ -17,7 +17,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class ExamCorrectFragment:BaseMainFragment(),IExamCorrectListView{
+class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
 
     private var mPresenter=ExamCorrectListPresenter(this,2)
     private var mAdapter:ExamCorrectAdapter?=null

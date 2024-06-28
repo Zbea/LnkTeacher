@@ -15,6 +15,7 @@ import com.bll.lnkteacher.mvp.model.ItemList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.ShareNoteList;
+import com.bll.lnkteacher.mvp.model.SystemUpdateInfo;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList;
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList;
@@ -36,6 +37,10 @@ import com.bll.lnkteacher.net.IBaseView;
 import java.util.List;
 
 public interface IContractView {
+
+    interface ISystemView extends IBaseView{
+        void onUpdateInfo(SystemUpdateInfo item);
+    }
 
     //登录
     interface ILoginView extends IBaseView {

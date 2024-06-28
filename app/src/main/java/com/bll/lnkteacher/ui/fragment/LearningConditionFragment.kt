@@ -1,9 +1,9 @@
 package com.bll.lnkteacher.ui.fragment
 
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 
-class LearningConditionFragment:BaseMainFragment() {
+class LearningConditionFragment: BaseFragment() {
     override fun getLayoutId(): Int {
         return R.layout.fragment_learning_condition
     }

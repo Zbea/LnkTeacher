@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.presenter.ExamListPresenter
@@ -19,7 +19,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class ExamListFragment:BaseMainFragment(),IExamListView{
+class ExamListFragment:BaseFragment(),IExamListView{
     private var mPresenter=ExamListPresenter(this,2)
     private var mAdapter:ExamListAdapter?=null
     private var items= mutableListOf<ExamList.ExamBean>()

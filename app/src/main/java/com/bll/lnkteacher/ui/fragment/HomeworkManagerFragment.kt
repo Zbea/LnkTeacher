@@ -12,7 +12,6 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
-import com.bll.lnkteacher.utils.NetworkUtil
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 class HomeworkManagerFragment : BaseMainFragment(){
@@ -54,8 +53,6 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
     override fun lazyLoad() {
         setGradeStr()
-        if (NetworkUtil.isNetworkAvailable(requireActivity()))
-            fetchCommonData()
     }
 
     private fun initTab() {
@@ -150,14 +147,9 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
     }
 
-    override fun onGradeEvent() {
+    override fun onGradeSelectorEvent() {
         homeworkAssignFragment?.changeGrade(grade)
         homeworkCorrectFragment?.changeGrade(grade)
-    }
-
-    override fun onRefreshData() {
-        super.onRefreshData()
-        lazyLoad()
     }
 
 }

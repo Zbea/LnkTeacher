@@ -9,8 +9,12 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.dialog.AppSystemUpdateDialog
 import com.bll.lnkteacher.manager.CalenderDaoManager
+import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.presenter.SystemUpdateManagerPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
 import com.bll.lnkteacher.ui.activity.DateActivity
 import com.bll.lnkteacher.ui.activity.ScreenshotListActivity
@@ -20,16 +24,22 @@ import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.htfy.params.ServerParams
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import java.io.File
 
-class MainLeftFragment:BaseFragment() {
+class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
 
+    private var mSystemUpdateManagerPresenter=SystemUpdateManagerPresenter(this,1)
     private var nowDayPos=1
     private var nowDate=0L
     private var calenderPath=""
     private var mTeachingAdapter: MainTeachingAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
+
+    override fun onUpdateInfo(item: SystemUpdateInfo) {
+        AppSystemUpdateDialog(requireActivity(),item).builder()
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_left
@@ -37,6 +47,7 @@ class MainLeftFragment:BaseFragment() {
 
     override fun initView() {
         setTitle(R.string.main_home_title)
+        initDialog(1)
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))
@@ -84,8 +95,6 @@ class MainLeftFragment:BaseFragment() {
             }
         }
 
-        initDialog(1)
-
         initTeachingView()
     }
 
@@ -93,6 +102,12 @@ class MainLeftFragment:BaseFragment() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
             fetchCommonData()
             mCommonPresenter.getAppUpdate()
+
+            val systemUpdateMap = HashMap<String, String>()
+            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
+            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
+            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
+            mSystemUpdateManagerPresenter.checkSystemUpdate(systemUpdateMap)
         }
         nowDate=DateUtils.getStartOfDayInMillis()
         setDateView()
@@ -185,6 +200,7 @@ class MainLeftFragment:BaseFragment() {
 
     override fun onClassGroupEvent() {
         classGroups.clear()
+        grade=DataBeanManager.getClassGroupsGrade()
         for (item in DataBeanManager.classGroups){
             if (item.state==1){
                 classGroups.add(item)
@@ -219,6 +235,7 @@ class MainLeftFragment:BaseFragment() {
             }
         }
     }
+
 
 
 }

@@ -29,7 +29,7 @@ class AppUpdateDialog(private val context: Context,private val item:AppUpdateBea
         btn_ok = dialog?.findViewById(R.id.tv_update)
         val tv_name = dialog?.findViewById<TextView>(R.id.tv_title)
         val tv_info = dialog?.findViewById<TextView>(R.id.tv_info)
-        tv_name?.text=item.versionName
+        tv_name?.text="应用更新："+item.versionName
         tv_info?.text=item.versionInfo
 
         return this

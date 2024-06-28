@@ -39,15 +39,8 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         sendBroadcast(intent)
         //刷新公共方法中的登录信息
         MethodManager.getUser()
-//        MethodManager.setStatusBarValue(statusBarValue)
 
-        val intent1=Intent(this,MainActivity::class.java)
-        intent1.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
-        intent1.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
-        startActivity(intent1)
-        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
-
-        finish()
+        gotoMain()
     }
 
     override fun layoutId(): Int {
@@ -61,8 +54,8 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
     @SuppressLint("WrongConstant")
     override fun initView() {
 
-//        statusBarValue=MethodManager.getStatusBarValue()
-//        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
+        statusBarValue=MethodManager.getStatusBarValue()
+        MethodManager.setStatusBarValue(Constants.STATUS_BAR_SHOW)
 
         val account=SPUtil.getString("account")
         val password=SPUtil.getString("password")
@@ -96,13 +89,23 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         }
 
         val tokenStr=SPUtil.getString("token")
-
         if (tokenStr.isNotEmpty() && mUser!=null)
         {
-            startActivity(Intent(this,MainActivity::class.java))
-            finish()
+            gotoMain()
         }
 
+    }
+
+    private fun gotoMain(){
+        MethodManager.setStatusBarValue(statusBarValue)
+
+        val intent1=Intent(this,MainActivity::class.java)
+        intent1.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent1.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
+        startActivity(intent1)
+        ActivityManager.getInstance().finishOthers(MainActivity::class.java)
+
+        finish()
     }
 
     override fun onResume() {

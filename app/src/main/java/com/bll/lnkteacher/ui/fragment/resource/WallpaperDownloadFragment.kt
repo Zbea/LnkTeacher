@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.WallpaperDaoManager
 import com.bll.lnkteacher.mvp.model.WallpaperBean
@@ -20,7 +20,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class WallpaperDownloadFragment :BaseMainFragment(), IContractView.IWallpaperView{
+class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
 
     private var presenter= WallpaperPresenter(this,getScreenPosition())
     private var items= mutableListOf<WallpaperBean>()

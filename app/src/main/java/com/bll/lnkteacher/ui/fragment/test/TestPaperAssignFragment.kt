@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
 import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -19,7 +19,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class TestPaperAssignFragment:BaseMainFragment(),IContractView.ITestPaperAssignView {
+class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView {
 
     private val presenter=TestPaperAssignPresenter(this)
     private var mAdapter: TestPaperAssignAdapter?=null

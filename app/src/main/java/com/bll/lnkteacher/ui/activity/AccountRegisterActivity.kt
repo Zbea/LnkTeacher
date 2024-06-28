@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
 import android.view.View
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -101,7 +102,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         }
 
         tv_course_btn.setOnClickListener {
-            PopupRadioList(this, popCourses, tv_course_btn,tv_course_btn.width, 5).builder()
+            PopupRadioList(this, DataBeanManager.popupCourses, tv_course_btn,tv_course_btn.width, 5).builder()
                 .setOnSelectListener { item ->
                     tv_course_btn.text = item.name
                 }

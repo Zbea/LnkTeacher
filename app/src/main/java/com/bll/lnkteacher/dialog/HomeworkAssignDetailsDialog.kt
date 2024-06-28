@@ -26,7 +26,6 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
 
         dialog = Dialog(mContext)
         dialog?.setContentView(R.layout.dialog_homework_assign_details)
-        dialog?.setCanceledOnTouchOutside(false)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

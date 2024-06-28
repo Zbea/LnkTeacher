@@ -36,6 +36,8 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:gravity="center"
+            android:lines="1"
+            android:ellipsize="end"
             android:text="@string/grade_selector"
             android:visibility="gone"
             android:background="@drawable/bg_gary_arch"

@@ -7,7 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
@@ -20,7 +20,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class TestPaperCorrectFragment:BaseMainFragment(),IContractView.ITestPaperCorrectView {
+class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectView {
 
     private val mPresenter=TestPaperCorrectPresenter(this)
     private var mAdapter: TestPaperCorrectAdapter?=null

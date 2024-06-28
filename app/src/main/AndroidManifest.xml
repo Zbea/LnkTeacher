@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.bll.lnkteacher"
     >
-
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!--    android:sharedUserId="android.uid.system"-->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -17,11 +17,10 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-
     <!--位置信息-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--如果是安卓10.0，需要后台获取连接的wifi名称则添加进程获取位置信息权限 -->
@@ -36,13 +35,13 @@
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
-    <permission  android:name="android.permission.INSTALL_PACKAGES"
-        tools:ignore="ReservedSystemPermission" />
+    <uses-permission  android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
-        tools:ignore="ReservedSystemPermission" />
-    <permission  android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ReservedSystemPermission" />
+    <uses-permission  android:name="android.permission.WRITE_SECURE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -51,6 +50,13 @@
     <uses-permission android:name="android.permission.DELETE_PACKAGES"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
+    <uses-permission android:name="android.permission.REBOOT"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RECOVERY"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.rockchip.update.permission.SHOW_UI" />
 
     <application
         android:name="com.bll.lnkteacher.MyApplication"

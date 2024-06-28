@@ -20,13 +20,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -51,6 +44,8 @@ android {
 
     sourceSets {
         main {
+            jniLibs.srcDirs = ['jniLibs']
+            jni.srcDirs = []
             res.srcDirs =
                     [
                             'src/main/res/layouts/adapter',
@@ -70,13 +65,39 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            keyAlias 'platform'
+            keyPassword 'android'
+            storeFile file('libs/platform.keystore')
+            storePassword 'android'
+        }
+    }
 
+//    buildTypes {
+//        debug {
+//            minifyEnabled false
+//            debuggable true
+//            signingConfig signingConfigs.release
+//        }
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            debuggable false
+//            signingConfig signingConfigs.release
+//            aaptOptions.cruncherEnabled = false
+//            aaptOptions.useNewCruncher = false
+//            //Zipalign优化
+//            zipAlignEnabled true
+//        }
+//    }
 
 }
 
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.0'
+    implementation files('libs\\HtFyParams.jar')
     compileOnly files('libs/eink/classes.jar')
 //    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.core:core-ktx:1.5.0'

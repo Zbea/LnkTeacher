@@ -13,7 +13,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
     val mQiniuPresenter= QiniuPresenter(this)
     var mCloudUploadPresenter= CloudUploadPresenter(this)
-    var grade=DataBeanManager.getClassGroupsGrade()
     var popGrades= mutableListOf<PopupBean>()
 
     override fun onToken(token: String) {
@@ -27,28 +26,32 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     }
 
     override fun initView() {
-        setGradeStr()
 
         tv_grade.setOnClickListener {
             PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
                 tv_grade?.text=item.name
                 grade=item.id
-                onGradeEvent()
+                onGradeSelectorEvent()
             }
         }
     }
 
     fun setGradeStr(){
-        if (grade!=0){
+        grade=DataBeanManager.getClassGroupsGrade()
+        if (grade>0){
             tv_grade.text= DataBeanManager.getGradeStr(grade)
             popGrades = DataBeanManager.popupGrades(grade)
+            onGradeSelectorEvent()
         }
         else{
             popGrades = DataBeanManager.popupGrades
         }
     }
 
-    open fun onGradeEvent(){
+    /**
+     * 年级选择事件
+     */
+    open fun onGradeSelectorEvent(){
 
     }
 
@@ -67,5 +70,4 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             mCloudUploadPresenter.deleteCloud(cloudIds)
         }
     }
-
 }
