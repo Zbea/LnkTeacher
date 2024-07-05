@@ -10,6 +10,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
+import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.BitmapUtils
@@ -17,18 +18,28 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class AppToolDialog(val context: Context, val screenPos:Int) {
+class AppToolDialog(val context: Context, private val oldScreen:Int, private val currentScreen:Int) {
 
     private var dialog:Dialog?=null
+    private var isSingle=false//是否是单屏
 
     fun builder(): AppToolDialog {
+        if (context is PlanOverviewActivity|| context is FreeNoteActivity){
+            isSingle=true
+        }
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_app_tool)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams =window.attributes
-        layoutParams?.gravity = Gravity.BOTTOM or Gravity.START
-        layoutParams?.x=if (screenPos==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
+        if (isSingle){
+            layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
+            layoutParams.x=DP2PX.dip2px(context,42f)
+        }
+        else{
+            layoutParams.gravity = if (oldScreen==1)Gravity.BOTTOM or  Gravity.END  else Gravity.BOTTOM or  Gravity.START
+            layoutParams.x=if (currentScreen==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
+        }
         layoutParams?.y=DP2PX.dip2px(context,5f)
         dialog?.show()
 
@@ -51,8 +62,8 @@ class AppToolDialog(val context: Context, val screenPos:Int) {
                 listener?.onClick()
             }
             else{
-                when(screenPos){
-                    1->{
+                when(oldScreen){
+                    Constants.SCREEN_LEFT->{
                         AppUtils.startAPP(context,packageName,Constants.SCREEN_RIGHT)
                     }
                     else->{

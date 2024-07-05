@@ -60,12 +60,25 @@ public class FreeNoteDaoManager {
         }
     }
 
+    public FreeNoteBean queryByDate(long date){
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Date.eq(date);
+        List<FreeNoteBean> items=dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+        if (items.size()>0){
+            return items.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
     public List<FreeNoteBean> queryList() {
-        return dao.queryBuilder().where(whereUser).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(0);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date).build().list();
     }
 
     public List<FreeNoteBean> queryList( int page, int pageSize) {
-        return dao.queryBuilder().where(whereUser).orderDesc(FreeNoteBeanDao.Properties.Date)
+        WhereCondition whereCondition= FreeNoteBeanDao.Properties.Type.eq(0);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(FreeNoteBeanDao.Properties.Date)
                 .offset((page-1)*pageSize).limit(pageSize).build().list();
     }
 

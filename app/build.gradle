@@ -29,7 +29,7 @@ android {
     }
     greendao{
         //指定数据库schema版本号，迁移等操作会用到;
-        schemaVersion 15
+        schemaVersion 16
         //dao的包名
         daoPackage 'com.bll.lnkteacher.greendao'
         //生成数据库文件的目录;

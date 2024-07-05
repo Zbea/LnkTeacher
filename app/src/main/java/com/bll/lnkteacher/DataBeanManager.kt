@@ -16,7 +16,6 @@ object DataBeanManager {
     var courses = mutableListOf<ItemList>()
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
-    var friends= mutableListOf<FriendList.FriendBean>()
     var yearlists= arrayListOf(2020,2021,2022,2023,2024,2025,2026,2027,2028,2029)
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")

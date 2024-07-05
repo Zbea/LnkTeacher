@@ -28,7 +28,7 @@ class PopupFreeNoteList(var context: Context, var view: View,private var date:Lo
     private var pageCount=0
 
     fun builder(): PopupFreeNoteList {
-        val popView = LayoutInflater.from(context).inflate(R.layout.popup_free_note_list, null, false)
+        val popView = LayoutInflater.from(context).inflate(R.layout.popup_freenote_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             // 设置PopupWindow的内容view

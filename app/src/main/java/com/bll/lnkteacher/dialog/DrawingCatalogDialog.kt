@@ -16,11 +16,11 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 /**
  * type=0绘图目录 type=1书籍目录
  */
-class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: List<Any> ,val type:Int=0,val startCount:Int) {
+class DrawingCatalogDialog(val context: Context, private val oldScreen:Int, private val currentScreen:Int, val list: List<Any> ,val type:Int=0,val startCount:Int) {
 
     private var dialog:Dialog?=null
 
-    constructor(context: Context, screenPos:Int, list: List<Any>):this(context,screenPos, list, 0, 0)
+    constructor(context: Context,screenPos:Int,currentScreen:Int, list: List<Any>):this(context,screenPos,currentScreen, list, 0, 0)
 
     fun builder(): DrawingCatalogDialog {
 
@@ -29,9 +29,9 @@ class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: Li
         val window = dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
-        layoutParams.gravity = Gravity.BOTTOM or  Gravity.START
+        layoutParams.gravity = if (oldScreen==1)Gravity.BOTTOM or  Gravity.END  else Gravity.BOTTOM or  Gravity.START
+        layoutParams.x=if (currentScreen==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
         layoutParams.y=DP2PX.dip2px(context,5f)
-        layoutParams?.x=if (screenPos==3) DP2PX.dip2px(context,1021f+42f)else DP2PX.dip2px(context,42f)
         dialog?.show()
 
         val rv_list = dialog?.findViewById<RecyclerView>(R.id.rv_list)
@@ -46,6 +46,14 @@ class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: Li
                 dismiss()
                 if (listener!=null)
                     listener?.onClick(position)
+            }
+            mAdapter.setOnItemChildClickListener { adapter, view, position ->
+                val item=list[position]
+                InputContentDialog(context, oldScreen ,item.name).builder().setOnDialogClickListener{
+                    item.name=it
+                    mAdapter.notifyItemChanged(position)
+                    listener?.onEdit(position,it)
+                }
             }
         }
         else{
@@ -81,8 +89,9 @@ class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: Li
 
     private var listener: OnDialogClickListener? = null
 
-    fun interface OnDialogClickListener {
+    interface OnDialogClickListener {
         fun onClick(position: Int)
+        fun onEdit(position: Int,title:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
@@ -94,6 +103,7 @@ class DrawingCatalogDialog(val context: Context, val screenPos:Int, val list: Li
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name, item.name)
             helper.setText(R.id.tv_page, (item.page+1).toString())
+            helper.addOnClickListener(R.id.iv_edit)
         }
 
     }

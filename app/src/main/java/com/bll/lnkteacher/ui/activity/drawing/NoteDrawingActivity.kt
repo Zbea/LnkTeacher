@@ -1,11 +1,11 @@
 package com.bll.lnkteacher.ui.activity.drawing
 
 import android.view.EinkPWInterface
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.DrawingCatalogDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
@@ -20,7 +20,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     private var typeStr = ""
     private var note: Note? = null
-    private var noteContent: NoteContent? = null//当前内容
+    private var note_Content_b: NoteContent? = null//当前内容
     private var note_Content_a: NoteContent? = null//a屏内容
     private var noteContents = mutableListOf<NoteContent>() //所有内容
     private var page = 0//页码
@@ -37,7 +37,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr, note?.title)
 
         if (noteContents.size > 0) {
-            noteContent = noteContents[noteContents.size - 1]
+            note_Content_b = noteContents[noteContents.size - 1]
             page = note?.page!!
         } else {
             newNoteContent()
@@ -47,25 +47,9 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-        v_content_a.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
-        v_content_b.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
+        v_content_a?.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
+        v_content_b?.setImageResource(ToolUtils.getImageResId(this, note?.contentResId))//设置背景
         onChangeContent()
-
-        ll_page.setOnClickListener {
-            InputContentDialog(this, 2, noteContent?.title!!).builder().setOnDialogClickListener { string ->
-                noteContent?.title = string
-                noteContents[page].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
-            }
-        }
-
-        ll_page_a.setOnClickListener {
-            InputContentDialog(this, 1, note_Content_a?.title!!).builder().setOnDialogClickListener { string ->
-                note_Content_a?.title = string
-                noteContents[page-1].title = string
-                NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_a)
-            }
-        }
     }
 
 
@@ -82,10 +66,19 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
 
         }
-        DrawingCatalogDialog(this,getCurrentScreenPos(), list).builder().setOnDialogClickListener { position ->
-            page = noteContents[position].page
-            onChangeContent()
-        }
+        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+            override fun onClick(position: Int) {
+                if (page!=noteContents[position].page){
+                    page = noteContents[position].page
+                    onChangeContent()
+                }
+            }
+            override fun onEdit(position: Int, title: String) {
+                val item=noteContents[position]
+                item.title=title
+                NoteContentDaoManager.getInstance().insertOrReplaceNote(item)
+            }
+        })
     }
 
     override fun onPageDown() {
@@ -145,33 +138,36 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun onChangeContent() {
-        noteContent = noteContents[page]
-
+        note_Content_b = noteContents[page]
         if (isExpand) {
-            if (page > 0) {
-                note_Content_a = noteContents[page - 1]
-            } else {
-                page = 1
-                noteContent = noteContents[page]
-                note_Content_a = noteContents[0]
+            if (page<=0){
+                page=1
+                note_Content_b = noteContents[page]
             }
-        } else {
-            note_Content_a = null
+            note_Content_a = noteContents[page-1]
         }
+
         tv_page_total.text="${noteContents.size}"
         tv_page_total_a.text="${noteContents.size}"
 
-        setElikLoadPath(elik_b!!, noteContent!!)
+        setElikLoadPath(elik_b!!, note_Content_b!!.filePath)
         tv_page.text = "${page+1}"
         if (isExpand) {
-            setElikLoadPath(elik_a!!, note_Content_a!!)
-            tv_page_a.text = "$page"
+            setElikLoadPath(elik_a!!, note_Content_a!!.filePath)
+            if (screenPos== Constants.SCREEN_LEFT){
+                tv_page.text="$page"
+                tv_page_a.text="${page+1}"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text="$page"
+                tv_page.text="${page+1}"
+            }
         }
     }
 
     //保存绘图以及更新手绘
-    private fun setElikLoadPath(elik: EinkPWInterface, noteContentBean: NoteContent) {
-        elik.setLoadFilePath(noteContentBean.filePath, true)
+    private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
+        elik.setLoadFilePath(path, true)
     }
 
     //创建新的作业内容
@@ -181,22 +177,22 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         val path = FileAddress().getPathNote(typeStr, note?.title, date)
         val pathName = DateUtils.longToString(date)
 
-        noteContent = NoteContent()
-        noteContent?.date = date
-        noteContent?.typeStr = typeStr
-        noteContent?.noteTitle = note?.title
-        noteContent?.resId = note?.contentResId
-        noteContent?.title = "未命名${noteContents.size + 1}"
-        noteContent?.filePath = "$path/$pathName.tch"
-        noteContent?.pathName = pathName
-        noteContent?.page = noteContents.size
+        note_Content_b = NoteContent()
+        note_Content_b?.date = date
+        note_Content_b?.typeStr = typeStr
+        note_Content_b?.noteTitle = note?.title
+        note_Content_b?.resId = note?.contentResId
+        note_Content_b?.title = "未命名${noteContents.size + 1}"
+        note_Content_b?.filePath = "$path/$pathName.tch"
+        note_Content_b?.pathName = pathName
+        note_Content_b?.page = noteContents.size
         page = noteContents.size
 
-        NoteContentDaoManager.getInstance().insertOrReplaceNote(noteContent)
+        NoteContentDaoManager.getInstance().insertOrReplaceNote(note_Content_b)
         val id = NoteContentDaoManager.getInstance().insertId
-        noteContent?.id = id
+        note_Content_b?.id = id
 
-        noteContents.add(noteContent!!)
+        noteContents.add(note_Content_b!!)
     }
 
     override fun onDestroy() {

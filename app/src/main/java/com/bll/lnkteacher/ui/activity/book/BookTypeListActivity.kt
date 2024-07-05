@@ -101,7 +101,7 @@ class BookTypeListActivity : BaseActivity() {
             )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodManager.gotoBookDetails(this@BookTypeListActivity,bookBean)
+                MethodManager.gotoBookDetails(this@BookTypeListActivity,1,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position

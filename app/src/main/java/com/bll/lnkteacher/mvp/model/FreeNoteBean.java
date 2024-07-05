@@ -21,6 +21,7 @@ public class FreeNoteBean {
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
     public String title;
+    @Unique
     public long date;
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths;
@@ -28,13 +29,14 @@ public class FreeNoteBean {
     public List<String> bgRes;
     public int page;
     public boolean isSave;
+    public Integer type;//0自建 1下载
     @Transient
     public int cloudId;
     @Transient
     public String downloadUrl;
-    @Generated(hash = 1212939123)
+    @Generated(hash = 1121644310)
     public FreeNoteBean(Long id, long userId, String title, long date, List<String> paths,
-            List<String> bgRes, int page, boolean isSave) {
+            List<String> bgRes, int page, boolean isSave, Integer type) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -43,6 +45,7 @@ public class FreeNoteBean {
         this.bgRes = bgRes;
         this.page = page;
         this.isSave = isSave;
+        this.type = type;
     }
     @Generated(hash = 1976554700)
     public FreeNoteBean() {
@@ -95,5 +98,11 @@ public class FreeNoteBean {
     public void setIsSave(boolean isSave) {
         this.isSave = isSave;
     }
-    
+    public Integer getType() {
+        return this.type;
+    }
+    public void setType(Integer type) {
+        this.type = type;
+    }
+   
 }

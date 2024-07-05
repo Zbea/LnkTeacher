@@ -136,6 +136,11 @@ interface APIService{
      * 获取分享列表
      */
     @GET("friend/message/list")
+    fun getReceiveList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ShareNoteList>>
+    /**
+     * 获取发送列表
+     */
+    @GET("friend/message/sendList")
     fun getShareList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ShareNoteList>>
     /**
      * 删除列表

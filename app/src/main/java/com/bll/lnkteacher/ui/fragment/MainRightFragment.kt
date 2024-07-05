@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -48,11 +47,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         messages=message.list
         mMessageAdapter?.setNewData(messages)
     }
-
-    override fun onListFriend(list: FriendList) {
-        DataBeanManager.friends=list.list
-    }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
@@ -120,7 +114,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     override fun lazyLoad() {
         if (NetworkUtil.isNetworkAvailable(requireActivity())){
             findMessages()
-            mPresenter.getFriends()
             fetchCommonData()
         }
         findNotes()

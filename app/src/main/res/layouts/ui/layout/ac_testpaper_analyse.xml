@@ -195,7 +195,7 @@
     </LinearLayout>
 
     <include
-        android:id="@+id/ll_content"
+        android:id="@+id/ll_draw_content"
         layout="@layout/common_correct_drawing"
         />
 

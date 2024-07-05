@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.activity.drawing
 
+import PopupFreeNoteFriendsList
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -8,6 +9,8 @@ import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.greendao.StringConverter
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.mvp.model.FreeNoteBean
+import com.bll.lnkteacher.mvp.model.FriendList
+import com.bll.lnkteacher.mvp.model.FriendList.FriendBean
 import com.bll.lnkteacher.mvp.model.ShareNoteList
 import com.bll.lnkteacher.mvp.presenter.ShareNotePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -25,16 +28,27 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     private var posImage=0
     private var images= mutableListOf<String>()//手写地址
     private var bgResList= mutableListOf<String>()//背景地址
+    private var receivePopWindow: PopupFreeNoteReceiveList?=null
+    private var receiveTotal=0//接收总数
+    private var receiveNotes= mutableListOf<ShareNoteList.ShareNoteBean>()
+    private var receivePosition=0//接收列表position
     private var sharePopWindow: PopupFreeNoteShareList?=null
     private var shareTotal=0//分享总数
     private var shareNotes= mutableListOf<ShareNoteList.ShareNoteBean>()
-    private var sharePosition=0//分享列表position
     private var friendIds= mutableListOf<Int>()
+    private var friends= mutableListOf<FriendBean>()
+    private var posFriend=0
 
-    override fun onList(list: ShareNoteList) {
+    override fun onReceiveList(list: ShareNoteList) {
+        receiveNotes=list.list
+        receiveTotal=list.total
+    }
+
+    override fun onShareList(list: ShareNoteList) {
         shareNotes=list.list
         shareTotal=list.total
     }
+
     override fun onToken(token: String) {
         showLoading()
         //分享只能是有手写页面
@@ -77,12 +91,26 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         }
     }
     override fun onDeleteSuccess() {
-        sharePopWindow?.deleteData(sharePosition)
+        receivePopWindow?.deleteData(receivePosition)
     }
     override fun onShare() {
         showToast("分享成功")
+        fetchShareNotes(1,false)
     }
 
+    override fun onBind() {
+        presenter.getFriends()
+        showToast("添加好友成功")
+    }
+
+    override fun onUnbind() {
+        friends.removeAt(posFriend)
+        showToast("解绑好友成功")
+    }
+
+    override fun onListFriend(list: FriendList) {
+        friends=list.list
+    }
 
     override fun layoutId(): Int {
         return R.layout.ac_free_note
@@ -90,6 +118,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     override fun initData() {
         initChangeScreenData()
         freeNoteBean=FreeNoteDaoManager.getInstance().queryBean()
+        freeNoteBean?.title=DateUtils.longToStringNoYear(System.currentTimeMillis())
         if (freeNoteBean==null){
             createFreeNote()
         }
@@ -98,6 +127,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     override fun initChangeScreenData() {
         presenter=ShareNotePresenter(this)
         fetchShareNotes(1,false)
+        fetchReceiveNotes(1,false)
+        presenter.getFriends()
     }
 
     override fun initView() {
@@ -114,7 +145,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
             NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    v_content_b.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgRes))
                     bgResList[posImage]=bgRes
                 }
         }
@@ -152,17 +183,37 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
 
         tv_free_list.setOnClickListener {
             PopupFreeNoteList(this,tv_free_list,freeNoteBean!!.date).builder().setOnSelectListener{
-                saveFreeNote()
-                freeNoteBean=it
-                posImage=freeNoteBean?.page!!
-                initFreeNote()
-                if (freeNoteBean?.isSave==true){
-                    disMissView(iv_save)
-                }
-                else{
-                    showView(iv_save)
-                }
-                onChangeContent()
+                setChangeFreeNote(it)
+            }
+        }
+
+        tv_receive_list.setOnClickListener {
+            if (receivePopWindow==null){
+                receivePopWindow=PopupFreeNoteReceiveList(this,tv_receive_list,receiveTotal).builder()
+                receivePopWindow?.setData(receiveNotes)
+                receivePopWindow?.setOnClickListener(object : PopupFreeNoteReceiveList.OnClickListener {
+                    override fun onPage(pageIndex: Int) {
+                        fetchReceiveNotes(pageIndex,true)
+                    }
+                    override fun onDelete(position: Int) {
+                        receivePosition=position
+                        val map=HashMap<String,Any>()
+                        map["ids"]= arrayOf(receiveNotes[position].id)
+                        presenter.deleteShareNote(map)
+                    }
+                    override fun onDownload(position: Int) {
+                        downloadShareNote(receiveNotes[position])
+                    }
+
+                    override fun onClick(position: Int) {
+                        val item=receiveNotes[position]
+                        val freeNoteBean=FreeNoteDaoManager.getInstance().queryByDate(item.date)
+                        setChangeFreeNote(freeNoteBean)
+                    }
+                })
+            }
+            else{
+                receivePopWindow?.show()
             }
         }
 
@@ -174,15 +225,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                     override fun onPage(pageIndex: Int) {
                         fetchShareNotes(pageIndex,true)
                     }
-                    override fun onDelete(position: Int) {
-                        sharePosition=position
-                        val map=HashMap<String,Any>()
-                        map["ids"]= arrayOf(shareNotes[position].id)
-                        presenter.deleteShareNote(map)
-                    }
-                    override fun onDownload(position: Int) {
-                        downloadShareNote(shareNotes[position])
-                    }
                 })
             }
             else{
@@ -191,17 +233,48 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         }
 
         tv_share.setOnClickListener {
-            if (DataBeanManager.friends.size==0){
+            if (friends.size==0){
                 showToast("未加好友")
                 return@setOnClickListener
             }
-            FriendSelectorDialog(this).builder().setOnDialogClickListener{
+            FriendSelectorDialog(this,friends).builder().setOnDialogClickListener{
                 friendIds= it as MutableList<Int>
                 presenter.getToken()
             }
         }
 
+        iv_add_friend.setOnClickListener {
+            InputContentDialog(this,"输入好友账号").builder()
+                .setOnDialogClickListener { string ->
+                    presenter.onBindFriend(string)
+                }
+        }
+
+        iv_friends.setOnClickListener {
+            PopupFreeNoteFriendsList(this,friends,iv_friends).builder().setOnSelectListener{pos,item->
+                posFriend=pos
+                presenter.unbindFriend(item.id)
+            }
+        }
+
         initFreeNote()
+        onChangeContent()
+    }
+
+    /**
+     * 切换随笔
+     */
+    private fun setChangeFreeNote(item:FreeNoteBean){
+        saveFreeNote()
+        freeNoteBean=item
+        posImage=freeNoteBean?.page!!
+        initFreeNote()
+        if (freeNoteBean?.isSave==true){
+            disMissView(iv_save)
+        }
+        else{
+            showView(iv_save)
+        }
         onChangeContent()
     }
 
@@ -237,11 +310,12 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.bgRes= arrayListOf(bgRes)
         freeNoteBean?.paths= arrayListOf()
+        freeNoteBean?.type=0
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }
 
     override fun onChangeContent() {
-        v_content_b.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
         //判断路径是否已经创建
         if (!images.contains(path)){
@@ -255,7 +329,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
 
     private fun saveFreeNote(){
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
-        if (!File(path).list().isNullOrEmpty()){
+        if (FileUtils.isExistContent(path)){
             freeNoteBean?.paths = images
             freeNoteBean?.bgRes = bgResList
             freeNoteBean?.page=posImage
@@ -267,8 +341,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
      * 下载分享随笔
      */
     private fun downloadShareNote(item:ShareNoteList.ShareNoteBean){
-        val date=System.currentTimeMillis()
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(date))
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(item.date))
         val savePaths= mutableListOf<String>()
         val tchPaths= mutableListOf<String>()
         val urls=item.paths.split(",")
@@ -285,12 +358,15 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                     val freeNoteBean= FreeNoteBean()
                     freeNoteBean.userId=mUserId!!
                     freeNoteBean.title=item.title
-                    freeNoteBean.date=date
+                    freeNoteBean.date=item.date
                     freeNoteBean.bgRes= StringConverter().convertToEntityProperty(item.bgRes)
                     freeNoteBean.paths=tchPaths
                     freeNoteBean.isSave=true
+                    freeNoteBean.type=1
                     FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
                     showToast("下载成功")
+                    receivePopWindow?.setRefreshData()
+                    setChangeFreeNote(freeNoteBean)
                 }
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
@@ -300,7 +376,14 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
             })
     }
 
-    private fun fetchShareNotes(page:Int,isShow: Boolean){
+    private fun fetchReceiveNotes(page:Int, isShow: Boolean){
+        val map=HashMap<String,Any>()
+        map["size"]=6
+        map["page"]=page
+        presenter.getReceiveNotes(map,isShow)
+    }
+
+    private fun fetchShareNotes(page:Int, isShow: Boolean){
         val map=HashMap<String,Any>()
         map["size"]=6
         map["page"]=page

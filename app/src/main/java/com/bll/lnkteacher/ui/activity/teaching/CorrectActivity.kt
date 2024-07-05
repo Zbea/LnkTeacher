@@ -135,6 +135,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     }
 
     override fun initData() {
+        screenPos=Constants.SCREEN_LEFT
         type=intent.flags
         mId=intent.getIntExtra("id",0)
         correctModule=intent.getIntExtra("module",-1)
@@ -166,10 +167,10 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         //如果是朗读本
         if (subType == 3) {
             showView(ll_record)
-            disMissView(ll_score,ll_topic,ll_content)
+            disMissView(ll_score,ll_topic,ll_draw_content)
         } else {
             disMissView(ll_record)
-            showView(tv_custom,ll_content)
+            showView(tv_custom,ll_draw_content)
             tv_custom.text="发送批改"
         }
 
@@ -257,6 +258,8 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         initRecyclerView()
+
+        onChangeExpandView()
     }
 
     private fun setModuleView(type:Int){
@@ -440,21 +443,21 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
         }
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageDown() {
         if (posImage<getImageSize()-1){
             posImage+=if (isExpand)2 else 1
         }
-        setContentImage()
+        onChangeContent()
     }
 
     /**
@@ -489,13 +492,13 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                 tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
                 disMissView(tv_save,rv_list_number)
-                setContentImage()
+                onChangeContent()
             }
             3->{
                 currentImages= arrayOf()
                 disMissView(ll_score,rv_list_score,rv_list_number)
-                v_content_a.setImageResource(0)
-                v_content_b.setImageResource(0)
+                v_content_a?.setImageResource(0)
+                v_content_b?.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
                 elik_b?.setPWEnabled(false,false)
             }
@@ -525,7 +528,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     /**
      * 设置学生提交图片展示
      */
-    private fun setContentImage(){
+    override fun onChangeContent(){
         if (isExpand&&posImage>getImageSize()-2)
             posImage=getImageSize()-2
         if (isExpand&&posImage<0)
@@ -552,7 +555,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     }
                     else{
                         elik_b?.setPWEnabled(false,false)
-                        v_content_b.setImageResource(0)
+                        v_content_b?.setImageResource(0)
                     }
                 }
                 2->{
@@ -564,12 +567,12 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                         GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
                     }
                     else{
-                        v_content_b.setImageResource(0)
+                        v_content_b?.setImageResource(0)
                     }
                 }
             }
-            tv_page_a.text="${posImage+1}"
-            tv_page.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
+            tv_page.text="${posImage+1}"
+            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
             when(userItems[posUser].status){
@@ -606,7 +609,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         hideLoading()
-                        setContentImage()
+                        onChangeContent()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -616,7 +619,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                 })
         } else {
             hideLoading()
-            setContentImage()
+            onChangeContent()
         }
     }
 

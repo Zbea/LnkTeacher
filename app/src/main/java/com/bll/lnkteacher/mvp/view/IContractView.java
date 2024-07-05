@@ -63,9 +63,6 @@ public interface IContractView {
         void onEditPhone();
         void onEditNameSuccess();
         void onEditSchool();
-        void onBind();
-        void onUnbind();
-        void onListFriend(FriendList list);
     }
 
     //钱包页面回调
@@ -258,7 +255,6 @@ public interface IContractView {
 
     interface IMainView extends IBaseView{
         void onList(Message message);
-        void onListFriend(FriendList list);
     }
 
     interface IMessageView extends IBaseView{
@@ -328,10 +324,14 @@ public interface IContractView {
     }
 
     interface IShareNoteView extends IBaseView{
-        void onList(ShareNoteList list);
+        void onReceiveList(ShareNoteList list);
+        void onShareList(ShareNoteList list);
         void onToken(String token);
         void onDeleteSuccess();
         void onShare();
+        void onBind();
+        void onUnbind();
+        void onListFriend(FriendList list);
     }
 
 }

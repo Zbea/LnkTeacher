@@ -1,19 +1,15 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.*
-import com.bll.lnkteacher.mvp.model.FriendList
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
-import com.bll.lnkteacher.ui.adapter.AccountFriendAdapter
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.*
 
@@ -26,9 +22,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     private var schoolBean: SchoolBean?=null
     private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
-    private var friends= mutableListOf<FriendList.FriendBean>()
-    private var mAdapterFriend: AccountFriendAdapter?=null
-    private var position=0
     private var phone=""
 
     override fun onSms() {
@@ -58,21 +51,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         tv_area.text = schoolBean?.area
     }
 
-    override fun onBind() {
-        presenter.getFriends()
-    }
-
-    override fun onUnbind() {
-        mAdapterFriend?.remove(position)
-        DataBeanManager.friends=friends
-    }
-
-    override fun onListFriend(list: FriendList) {
-        friends=list.list
-        DataBeanManager.friends=friends
-        mAdapterFriend?.setNewData(friends)
-    }
-
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
     }
@@ -84,7 +62,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
     override fun initData() {
         initChangeScreenData()
         mSchoolPresenter.getSchool()
-        presenter.getFriends()
     }
 
     override fun initChangeScreenData() {
@@ -116,13 +93,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             editSchool()
         }
 
-        btn_add_friend.setOnClickListener {
-            InputContentDialog(this,"输入好友账号").builder()
-                .setOnDialogClickListener { string ->
-                    presenter.onBindFriend(string)
-                }
-        }
-
         btn_edit_phone.setOnClickListener {
             presenter.sms(mUser?.telNumber!!)
             editPhone()
@@ -139,27 +109,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
             })
         }
 
-        initRecyclerViewFriend()
-    }
-
-    private fun initRecyclerViewFriend(){
-        rv_list_friend.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mAdapterFriend = AccountFriendAdapter(R.layout.item_account_friend,null)
-        rv_list_friend.adapter = mAdapterFriend
-        mAdapterFriend?.bindToRecyclerView(rv_list_friend)
-        mAdapterFriend?.setOnItemChildClickListener { adapter, view, position ->
-            this.position=position
-            if (view.id==R.id.tv_friend_cancel){
-                CommonDialog(this).setContent("取消好友关联?").builder().setDialogClickListener(object :
-                    CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        presenter.unbindFriend(friends[position].id)
-                    }
-                })
-            }
-        }
     }
 
 

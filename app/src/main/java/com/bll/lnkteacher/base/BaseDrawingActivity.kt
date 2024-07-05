@@ -1,18 +1,25 @@
 package com.bll.lnkteacher.base
 
 import PopupClick
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
 import android.view.*
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.*
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
+import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
+import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
+import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.NumberListAdapter
 import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
@@ -49,8 +56,31 @@ abstract class BaseDrawingActivity : BaseActivity(){
     private var currentGeometry=0
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
+    private var isAllowChange=true //是否运行移屏幕
+
+    var ll_page_content_a: LinearLayout?=null
+    var ll_page_content_b: LinearLayout?=null
+    var ll_draw_content: LinearLayout?=null
+    var v_content_a: ImageView?=null
+    var v_content_b: ImageView?=null
+
     override fun initCreate() {
+        if (this is FreeNoteActivity || this is PlanOverviewActivity || this is DateEventActivity){
+            isAllowChange=false
+        }
+
+        v_content_b= findViewById(R.id.v_content_b)
+        if (isAllowChange){
+            ll_draw_content=findViewById(R.id.ll_draw_content)
+            ll_page_content_a=findViewById(R.id.ll_page_content_a)
+            ll_page_content_b=findViewById(R.id.ll_page_content_b)
+            v_content_a= findViewById(R.id.v_content_a)
+        }
+
         onInStanceElik()
+
+        if (isAllowChange)
+            onChangeExpandView()
 
         if (iv_top!=null){
             elik_a?.addOnTopView(iv_top)
@@ -62,12 +92,8 @@ abstract class BaseDrawingActivity : BaseActivity(){
     }
 
     open fun onInStanceElik(){
-        if (v_content_a!=null && v_content_b!=null){
-            elik_a = v_content_a?.pwInterFace
-        }
-        if (v_content_b!=null){
-            elik_b = v_content_b?.pwInterFace
-        }
+        elik_a = v_content_a?.pwInterFace
+        elik_b = v_content_b?.pwInterFace
     }
 
     private fun initClick(){
@@ -441,10 +467,10 @@ abstract class BaseDrawingActivity : BaseActivity(){
             if (currentGeometry==1||currentGeometry==2||currentGeometry==3||currentGeometry==5||currentGeometry==7||currentGeometry==8||currentGeometry==9){
                 Handler().postDelayed({
                     if (location==1){
-                        v_content_a.invalidate()
+                        v_content_a?.invalidate()
                     }
                     else{
-                        v_content_b.invalidate()
+                        v_content_b?.invalidate()
                     }
                     GeometryScaleDialog(this,currentGeometry,circlePos,location).builder()
                         ?.setOnDialogClickListener{
@@ -589,7 +615,7 @@ abstract class BaseDrawingActivity : BaseActivity(){
      * 工具栏弹窗
      */
     private fun showDialogAppTool(){
-        AppToolDialog(this,getCurrentScreenPos()).builder().setDialogClickListener{
+        AppToolDialog(this,screenPos,getCurrentScreenPos()).builder().setDialogClickListener{
             setViewElikUnable(ll_geometry)
             showView(ll_geometry)
             if (isErasure)
@@ -680,8 +706,53 @@ abstract class BaseDrawingActivity : BaseActivity(){
     /**
      * 单双屏切换以及创建新数据
      */
-    fun onChangeExpandView() {
-        ll_content_a.visibility = if (isExpand) View.VISIBLE else View.GONE
+    open fun onChangeExpandView() {
+        if (screenPos== Constants.SCREEN_LEFT){
+            if (!isExpand){
+                ll_draw_content?.removeAllViews()
+                ll_draw_content?.addView(v_content_a)
+                ll_draw_content?.addView(ll_page_content_a)
+                ll_draw_content?.addView(v_content_b)
+                ll_draw_content?.addView(ll_page_content_b)
+                disMissView(ll_page_content_a,v_content_a)
+                showView(ll_page_content_b,v_content_b)
+            }
+            else{
+                ll_draw_content?.removeAllViews()
+                ll_draw_content?.addView(v_content_a)
+                ll_draw_content?.addView(ll_page_content_b)
+                ll_draw_content?.addView(ll_page_content_a)
+                ll_draw_content?.addView(v_content_b)
+                showView(ll_page_content_a,v_content_a,ll_page_content_b,v_content_b)
+            }
+        }
+        else if (screenPos==Constants.SCREEN_RIGHT){
+            if (!isExpand){
+                ll_draw_content?.removeAllViews()
+                ll_draw_content?.addView(ll_page_content_b)
+                ll_draw_content?.addView(v_content_a)
+                ll_draw_content?.addView(ll_page_content_a)
+                ll_draw_content?.addView(v_content_b)
+                disMissView(ll_page_content_a,v_content_a)
+                showView(ll_page_content_b,v_content_b)
+            }
+            else{
+                ll_draw_content?.removeAllViews()
+                ll_draw_content?.addView(v_content_a)
+                ll_draw_content?.addView(ll_page_content_a)
+                ll_draw_content?.addView(ll_page_content_b)
+                ll_draw_content?.addView(v_content_b)
+                showView(ll_page_content_a,v_content_a,ll_page_content_b,v_content_b)
+            }
+        }
+        else{
+            ll_draw_content?.removeAllViews()
+            ll_draw_content?.addView(v_content_a)
+            ll_draw_content?.addView(ll_page_content_a)
+            ll_draw_content?.addView(ll_page_content_b)
+            ll_draw_content?.addView(v_content_b)
+            showView(ll_page_content_a,v_content_a,ll_page_content_b,v_content_b)
+        }
     }
 
     /**
@@ -724,6 +795,14 @@ abstract class BaseDrawingActivity : BaseActivity(){
             }
         }
         return super.onKeyUp(keyCode, event)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (isAllowChange){
+            onChangeExpandView()
+            onChangeContent()
+        }
     }
 
 }

@@ -4,6 +4,9 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
@@ -48,6 +51,8 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     private var mAdapterRight: MainListAdapter? = null
     private var rightFragment: Fragment? = null
 
+    private val myBroadcastReceiver=MyBroadcastReceiver()
+
     override fun onToken(token: String) {
         bookcaseFragment?.upload(token)
         textbookFragment?.upload(token)
@@ -66,6 +71,11 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     }
 
     override fun initView() {
+        val intentFilter= IntentFilter()
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        registerReceiver(myBroadcastReceiver,intentFilter)
 
         val isTips=SPUtil.getBoolean("SpecificationTips")
         if (!isTips){
@@ -218,7 +228,6 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         WallpaperDaoManager.getInstance().clear()
         DateEventDaoManager.getInstance().clear()
 
-        FileUtils.deleteFile(File(Constants.BOOK_DRAW_PATH))
         FileUtils.deleteFile(File(Constants.BOOK_PATH))
         FileUtils.deleteFile(File(Constants.SCREEN_PATH))
         FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
@@ -243,6 +252,13 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         return if (keyCode == KeyEvent.KEYCODE_APANEL_BACK || keyCode == KeyEvent.KEYCODE_BPANEL_BACK) {
             false
         } else super.onKeyDown(keyCode, event)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (myBroadcastReceiver!=null){
+            unregisterReceiver(myBroadcastReceiver)
+        }
     }
 
 }

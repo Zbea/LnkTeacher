@@ -21,6 +21,7 @@ class BookCatalogAdapter(data: List<MultiItemEntity>?,private val startCount:Int
                 val item= item as CatalogParentBean
                 helper.setText(R.id.tv_name, item.title)
                 helper.setText(R.id.tv_page, "${item.pageNumber-(startCount-1)}")
+                helper.setGone(R.id.iv_edit,false)
                 helper.itemView.setOnClickListener { v ->
                     val pos = helper.adapterPosition
                     if (item.hasSubItem()){

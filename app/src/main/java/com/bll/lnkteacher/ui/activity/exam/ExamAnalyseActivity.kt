@@ -49,7 +49,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         else{
             images=item.examUrl.split(",").toMutableList()
             imageCount=images.size
-            setContentImage()
+            onChangeContent()
         }
     }
     override fun onExamClassUser(classUserList: ExamClassUserList) {
@@ -175,6 +175,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
     }
 
     override fun initData() {
+        screenPos=Constants.SCREEN_LEFT
         examBean= intent.getBundleExtra("bundle")?.get("examBean") as ExamList.ExamBean
         for (item in examBean?.classList!!){
             popClasss.add(PopupBean(item.classId,item.className,false))
@@ -194,7 +195,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
     override fun initView() {
         setPageTitle(R.string.teaching_testpaper_analyse)
         showView(tv_class)
-        disMissView(iv_tool,iv_catalog,ll_correct)
+        disMissView(iv_tool,iv_catalog,ll_correct,iv_btn)
         setPageSetting("成绩统计")
 
         tv_class.text=popClasss[0].name
@@ -239,6 +240,8 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         }
 
         initRecyclerView()
+
+        onChangeExpandView()
     }
 
     private fun initRecyclerView(){
@@ -254,7 +257,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageUp() {
@@ -271,7 +274,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
                 posImage -= 1
             }
         }
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageDown() {
@@ -288,13 +291,16 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
                 posImage += 1
             }
         }
-        setContentImage()
+        onChangeContent()
     }
 
     /**
      * 设置学生提交图片展示
      */
-    private fun setContentImage(){
+    override fun onChangeContent(){
+        tv_page_total_a.text="$imageCount"
+        tv_page_total.text="$imageCount"
+
         if (isExpand){
             elik_a?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_a)
@@ -309,17 +315,17 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
             }
             else{
                 elik_b?.setPWEnabled(false,false)
-                v_content_b.setImageResource(0)
+                v_content_b?.setImageResource(0)
             }
-            tv_page.text="${posImage+1}/${imageCount}"
-            tv_page_a.text=if (posImage+1<imageCount) "${posImage+1+1}/${imageCount}" else ""
+            tv_page.text="${posImage+1}"
+            tv_page_a.text=if (posImage+1<imageCount) "${posImage+1+1}" else ""
         }
         else{
             elik_b?.setPWEnabled(true,true)
             GlideUtils.setImageUrl(this, images[posImage],v_content_b)
             val drawPath = getPathDrawStr(posImage+1)
             elik_b?.setLoadFilePath(drawPath, true)
-            tv_page.text="${posImage+1}/$imageCount"
+            tv_page.text="${posImage+1}"
         }
     }
 

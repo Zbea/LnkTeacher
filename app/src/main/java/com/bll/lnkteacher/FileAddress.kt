@@ -1,6 +1,5 @@
 package com.bll.lnkteacher
 
-import com.bll.lnkteacher.Constants.Companion.BOOK_DRAW_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
 import com.bll.lnkteacher.Constants.Companion.DIARY_PATH
 import com.bll.lnkteacher.Constants.Companion.EXAM_PATH
@@ -34,7 +33,7 @@ class FileAddress {
      * /storage/emulated/0/Notes
      */
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_DRAW_PATH/$mUserId/$fileName"
+        return "$BOOK_PATH/$mUserId/${fileName}draw"
     }
 
     fun getPathTextBook(fileName: String):String{

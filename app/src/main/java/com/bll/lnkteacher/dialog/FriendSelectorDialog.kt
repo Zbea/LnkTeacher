@@ -5,14 +5,13 @@ import android.content.Context
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.FriendList.FriendBean
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class FriendSelectorDialog(val context: Context) {
+class FriendSelectorDialog(val context: Context, private val friends:MutableList<FriendBean>) {
 
     fun builder(): FriendSelectorDialog {
         val dialog = Dialog(context)
@@ -24,7 +23,7 @@ class FriendSelectorDialog(val context: Context) {
 
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = GridLayoutManager(context,3)
-        val mAdapter = MyAdapter(R.layout.item_freenote_friend_select, DataBeanManager.friends)
+        val mAdapter = MyAdapter(R.layout.item_freenote_friend_select, friends)
         rv_list?.adapter = mAdapter
         rv_list?.addItemDecoration(SpaceGridItemDeco1(3, 0, 40))
         mAdapter.bindToRecyclerView(rv_list)

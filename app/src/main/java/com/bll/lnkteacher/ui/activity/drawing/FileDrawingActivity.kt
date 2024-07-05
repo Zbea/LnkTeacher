@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity.drawing
 import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
 import android.widget.ImageView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFileDrawingActivity
 import com.bll.lnkteacher.utils.FileUtils
@@ -95,12 +96,18 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         tv_page_total_a.text="$pageCount"
 
         tv_page.text = "${pageIndex+1}"
-        loadPicture(pageIndex, elik_b!!, iv_content_b)
+        loadPicture(pageIndex, elik_b!!, v_content_b!!)
         if (isExpand) {
-            loadPicture(pageIndex-1, elik_a!!, iv_content_a)
-            tv_page_a.text = "$pageIndex"
+            loadPicture(pageIndex-1, elik_a!!, v_content_a!!)
+            if (screenPos== Constants.SCREEN_LEFT){
+                tv_page.text = "$pageIndex"
+                tv_page_a.text = "${pageIndex+1}"
+            }
+            if (screenPos==Constants.SCREEN_RIGHT){
+                tv_page_a.text = "$pageIndex"
+                tv_page.text = "${pageIndex+1}"
+            }
         }
-
     }
 
     //加载图片

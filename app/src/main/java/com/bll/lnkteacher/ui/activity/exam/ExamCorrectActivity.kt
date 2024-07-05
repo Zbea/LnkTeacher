@@ -111,6 +111,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     }
 
     override fun initData() {
+        screenPos=Constants.SCREEN_LEFT
         id=intent.getIntExtra("id",0)
         classId=intent.getIntExtra("classId",0)
         className= intent.getStringExtra("className").toString()
@@ -148,6 +149,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             hideKeyboard()
         }
 
+        onChangeExpandView()
     }
 
     private fun initRecyclerView(){
@@ -178,21 +180,21 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         changeErasure()
         isExpand=!isExpand
         onChangeExpandView()
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
         }
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageDown() {
         if (posImage<getImageSize()-1){
             posImage+=if (isExpand)2 else 1
         }
-        setContentImage()
+        onChangeContent()
     }
 
     /**
@@ -228,14 +230,14 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
                 disMissView(tv_save,rv_list_number)
-                setContentImage()
+                onChangeContent()
             }
             3->{
                 currentImages= arrayOf()
                 disMissView(ll_score,rv_list_score,rv_list_number)
                 tv_score_num.text = ""
-                v_content_a.setImageResource(0)
-                v_content_b.setImageResource(0)
+                v_content_a?.setImageResource(0)
+                v_content_b?.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
                 elik_b?.setPWEnabled(false,false)
             }
@@ -264,7 +266,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     /**
      * 设置学生提交图片展示
      */
-    private fun setContentImage(){
+    override fun onChangeContent(){
         if (isExpand&&posImage>getImageSize()-2)
             posImage=getImageSize()-2
         if (isExpand&&posImage<0)
@@ -291,7 +293,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     }
                     else{
                         elik_b?.setPWEnabled(false,false)
-                        v_content_b.setImageResource(0)
+                        v_content_b?.setImageResource(0)
                     }
                 }
                 2->{
@@ -303,12 +305,12 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                         GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
                     }
                     else{
-                        v_content_b.setImageResource(0)
+                        v_content_b?.setImageResource(0)
                     }
                 }
             }
-            tv_page_a.text="${posImage+1}"
-            tv_page.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
+            tv_page.text="${posImage+1}"
+            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
             when(userItems[posUser].status){
@@ -345,7 +347,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     }
                     override fun completed(task: BaseDownloadTask?) {
                         hideLoading()
-                        setContentImage()
+                        onChangeContent()
                     }
                     override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -355,7 +357,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 })
         } else {
             hideLoading()
-            setContentImage()
+            onChangeContent()
         }
     }
 

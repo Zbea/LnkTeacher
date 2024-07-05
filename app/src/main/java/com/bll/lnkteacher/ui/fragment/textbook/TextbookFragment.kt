@@ -63,7 +63,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -78,7 +78,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
                 MethodManager.gotoTextBookDetails(requireActivity(),book)
             } else {
-                MethodManager.gotoBookDetails(requireActivity(), book)
+                MethodManager.gotoBookDetails(requireActivity(),2, book)
             }
         }
         mAdapter?.onItemLongClickListener =

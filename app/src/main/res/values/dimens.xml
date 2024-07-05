@@ -2,6 +2,7 @@
 <resources>
     <dimen name="height">1363dp</dimen>
     <dimen name="width">1021dp</dimen>
+    <dimen name="drawing_content_width">979dp</dimen>
     <dimen name="date_add_event_height">60dp</dimen>
     <dimen name="navigation_height">90dp</dimen>
     <dimen name="main_content_title_height">60dp</dimen>

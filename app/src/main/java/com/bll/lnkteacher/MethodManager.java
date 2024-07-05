@@ -66,7 +66,7 @@ public class MethodManager {
      * @param context
      * @param bookBean
      */
-    public static void gotoBookDetails(Context context, Book bookBean)  {
+    public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
         User user=SPUtil.INSTANCE.getObj("user", User.class);
 
@@ -90,6 +90,18 @@ public class MethodManager {
             result.put(jsonObject);
         }
 
+        String format = MethodManager.getUrlFormat(bookBean.bookPath);
+        int key_type = 0;
+        if (type==1){
+            if (format.contains("pdf")) {
+                key_type = 1;
+            } else {
+                key_type = 0;
+            }
+        }
+        else {
+            key_type=2;
+        }
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
         intent.setPackage(Constants.PACKAGE_READER);
@@ -98,8 +110,10 @@ public class MethodManager {
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
+        intent.putExtra("type", type);
+        intent.putExtra("drawPath", bookBean.bookDrawPath);
+        intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
         context.startActivity(intent);
     }
 
@@ -134,8 +148,11 @@ public class MethodManager {
         intent.putExtra("bookName", bean.title);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
+        intent.putExtra("type", 2);
+        intent.putExtra("drawPath", bean.bookDrawPath);
+        intent.putExtra("key_book_type", 3);
+
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra("android.intent.extra.LAUNCH_SCREEN", 1);
         context.startActivity(intent);
     }
 

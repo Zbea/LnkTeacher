@@ -78,8 +78,6 @@
             <intent-filter>
                 <action android:name="com.bll.lnkteacher.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.net.wifi.STATE_CHANGE" />
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
             </intent-filter>
             <intent-filter>
