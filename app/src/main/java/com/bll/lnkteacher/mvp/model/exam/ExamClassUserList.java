@@ -1,15 +1,13 @@
 package com.bll.lnkteacher.mvp.model.exam;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
 
 
 public class ExamClassUserList implements Serializable {
-    public List<UserBean> list;
+    public List<ClassUserBean> list;
 
-    public static class UserBean {
+    public static class ClassUserBean {
         public int id;
         public int schoolExamJobId;
         public int userId;

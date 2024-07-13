@@ -17,9 +17,9 @@ import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishClassGroupSelectDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.BookStore
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassCommitItem
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
@@ -40,10 +40,10 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
-    private var selectCommitClass= mutableListOf<HomeworkClass>()
+    private var selectCommitClass= mutableListOf<HomeworkClassSelectItem>()
     private var mCommitAdapter: HomeworkPublishClassGroupSelectDialog.MyAdapter?=null
 
-    private var initDatas= mutableListOf<HomeworkClass>()
+    private var initDatas= mutableListOf<HomeworkClassSelectItem>()
 
     override fun onTypeList(list:  TypeList) {
         setPageNumber(list.total)
@@ -72,7 +72,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         MethodManager.saveCommitClass(types[position].id,selectCommitClass)
         showToast(R.string.teaching_assign_success)
     }
-    override fun onDetails(details: HomeworkAssignDetails) {
+    override fun onDetails(details: HomeworkAssignDetailsList) {
         detailsDialog=HomeworkAssignDetailsDialog(requireContext(), details.list).builder()
         detailsDialog?.setDialogClickListener {
             mPresenter.deleteDetails(it)
@@ -213,7 +213,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         val homeworkClasss=MethodManager.getCommitClass(types[position].id)
 
         for (item in classs){
-            initDatas.add(HomeworkClass().apply {
+            initDatas.add(HomeworkClassSelectItem().apply {
                 className=item.name
                 classId=item.id
                 date= DateUtils.getStartOfDayInMillis()+ Constants.dayLong
@@ -234,8 +234,8 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 得到选中的班级信息
      */
-    private fun getSelectClass():MutableList<HomeworkClass>{
-        val items= mutableListOf<HomeworkClass>()
+    private fun getSelectClass():MutableList<HomeworkClassSelectItem>{
+        val items= mutableListOf<HomeworkClassSelectItem>()
         for (item in initDatas){
             if (item.isCheck){
                 if (!item.isCommit)
@@ -274,12 +274,12 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
      * 发送作业本消息
      */
     private fun commitHomework(item:TypeBean, contentStr:String){
-        val selects= mutableListOf<HomeworkClassSelect>()
+        val selects= mutableListOf<HomeworkClassCommitItem>()
         var isCommit=false
         for (ite in selectCommitClass){
             if (ite.date>0)
                 isCommit=true
-            selects.add(HomeworkClassSelect().apply {
+            selects.add(HomeworkClassCommitItem().apply {
                 classId=ite.classId
                 submitStatus=if (ite.isCommit) 0 else 1
                 endTime=ite.date/1000

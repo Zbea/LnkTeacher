@@ -115,5 +115,9 @@ class TestpaperManagerFragment : BaseMainFragment(){
         testPaperCorrectFragment?.changeGrade(grade)
     }
 
+    override fun onRefreshData() {
+        testPaperAssignFragment?.onRefreshData()
+        testPaperCorrectFragment?.onRefreshData()
+    }
 
 }

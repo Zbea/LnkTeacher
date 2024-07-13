@@ -7,8 +7,8 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
@@ -37,9 +37,9 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
         }
         fetchData()
     }
-    override fun onList(assignContent: AssignContent?) {
+    override fun onList(assignPaperContentList: AssignPaperContentList?) {
     }
-    override fun onImageList(lists: MutableList<ContentListBean>?) {
+    override fun onImageList(lists: MutableList<AssignPaperContentBean>?) {
     }
     override fun onDeleteSuccess() {
     }

@@ -9,8 +9,8 @@ import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
@@ -24,7 +24,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     private val presenter=TestPaperAssignPresenter(this)
     private var mAdapter: TestPaperAssignContentAdapter? = null
     private var typeBean:TypeBean?=null
-    private var items = mutableListOf<ContentListBean>()
+    private var items = mutableListOf<AssignPaperContentBean>()
     private var popGroups= mutableListOf<PopupBean>()
     private var classSelectGroups= mutableListOf<PopupBean>()
     private var grade=0
@@ -34,12 +34,12 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
     override fun onTypeSuccess() {
     }
-    override fun onList(assignContent: AssignContent) {
-        setPageNumber(assignContent.total)
-        items= assignContent.list
+    override fun onList(assignPaperContentList: AssignPaperContentList) {
+        setPageNumber(assignPaperContentList.total)
+        items= assignPaperContentList.list
         mAdapter?.setNewData(items)
     }
-    override fun onImageList(lists: MutableList<ContentListBean>) {
+    override fun onImageList(lists: MutableList<AssignPaperContentBean>) {
         val images= mutableListOf<String>()
         for (item in lists){
             images.add(item.url)
@@ -157,8 +157,8 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     /**
      * 获的选中考卷
      */
-    private fun getCheckedItems():MutableList<ContentListBean>{
-        val lists= mutableListOf<ContentListBean>()
+    private fun getCheckedItems():MutableList<AssignPaperContentBean>{
+        val lists= mutableListOf<AssignPaperContentBean>()
         for (item in items){
             if (item.isCheck)
                 lists.add(item)

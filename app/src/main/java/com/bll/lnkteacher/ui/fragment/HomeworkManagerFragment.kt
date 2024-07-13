@@ -152,4 +152,9 @@ class HomeworkManagerFragment : BaseMainFragment(){
         homeworkCorrectFragment?.changeGrade(grade)
     }
 
+    override fun onRefreshData() {
+        homeworkAssignFragment?.onRefreshData()
+        homeworkCorrectFragment?.onRefreshData()
+    }
+
 }

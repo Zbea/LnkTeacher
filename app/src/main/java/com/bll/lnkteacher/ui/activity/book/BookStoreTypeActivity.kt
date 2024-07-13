@@ -40,11 +40,11 @@ class BookStoreTypeActivity:BaseActivity() {
         }
 
         iv_ydjk?.setOnClickListener {
-            gotoBookStore(5)
+            gotoBookStore(6)
         }
 
         iv_yscn?.setOnClickListener {
-            gotoBookStore(6)
+            gotoBookStore(5)
         }
     }
 

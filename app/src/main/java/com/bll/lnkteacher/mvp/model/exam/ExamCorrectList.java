@@ -10,6 +10,7 @@ public class ExamCorrectList {
         public int id;
         public int userId;
         public int classId;
+        public int classGroupId;
         public int schoolExamJobId;
         public String className;
         public String examName;

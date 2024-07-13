@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.BookStore
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
@@ -108,11 +108,11 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
         map["size"]=10
         map["grade"]=grade
         val type = RetrofitManager.service.assignHomeworkDetails(map)
-        doRequest(type, object : Callback<HomeworkAssignDetails>(view) {
-            override fun failed(tBaseResult: BaseResult<HomeworkAssignDetails>): Boolean {
+        doRequest(type, object : Callback<HomeworkAssignDetailsList>(view) {
+            override fun failed(tBaseResult: BaseResult<HomeworkAssignDetailsList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<HomeworkAssignDetails>) {
+            override fun success(tBaseResult: BaseResult<HomeworkAssignDetailsList>) {
                 if (tBaseResult.data!=null){
                     view.onDetails(tBaseResult.data)
                 }

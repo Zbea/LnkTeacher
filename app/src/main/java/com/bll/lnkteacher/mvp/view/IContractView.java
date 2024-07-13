@@ -11,7 +11,6 @@ import com.bll.lnkteacher.mvp.model.CloudList;
 import com.bll.lnkteacher.mvp.model.CommonData;
 import com.bll.lnkteacher.mvp.model.FriendList;
 import com.bll.lnkteacher.mvp.model.HandoutList;
-import com.bll.lnkteacher.mvp.model.ItemList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.ShareNoteList;
@@ -24,9 +23,9 @@ import com.bll.lnkteacher.mvp.model.exam.ExamRankList;
 import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails;
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean;
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList;
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean;
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList;
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList;
 import com.bll.lnkteacher.mvp.model.testpaper.RankBean;
@@ -132,14 +131,14 @@ public interface IContractView {
         void onTypeSuccess();
         /**
          * 考卷内容列表
-         * @param assignContent
+         * @param assignPaperContentList
          */
-        void onList(AssignContent assignContent);
+        void onList(AssignPaperContentList assignPaperContentList);
         /**
          * 考卷图片列表
          * @param lists
          */
-        void onImageList(List<ContentListBean> lists);
+        void onImageList(List<AssignPaperContentBean> lists);
         /**
          * 删除考卷内容成功
          */
@@ -166,11 +165,6 @@ public interface IContractView {
     //考卷批改
     interface ITestPaperCorrectDetailsView extends IBaseView{
         /**
-         * 获取考卷原图
-         * @param list
-         */
-        void onImageList(List<ContentListBean> list);
-        /**
          * 获取班级学生已提交考卷
          * @param bean
          */
@@ -180,7 +174,16 @@ public interface IContractView {
          */
         void onCorrectSuccess();
         void onSendSuccess();
-        void setModuleSuccess();
+    }
+
+    interface IAnalyseTeachingView extends IBaseView{
+        /**
+         * 获取班级学生已提交考卷
+         * @param bean
+         */
+        void onClassPapers(TestPaperClassUserList bean);
+        void onCreateSuccess();
+        void onRefreshSuccess();
     }
 
     interface ITestPaperRankView extends IBaseView{
@@ -216,7 +219,7 @@ public interface IContractView {
          * 布置详情
          * @param details
          */
-        void onDetails(HomeworkAssignDetails details);
+        void onDetails(HomeworkAssignDetailsList details);
         void onDetailsDeleteSuccess();
         void onBook(BookStore bookStore);
     }
@@ -227,12 +230,12 @@ public interface IContractView {
          * 获取作业卷内容列表
          * @param homeworkContent
          */
-        void onList(AssignContent homeworkContent);
+        void onList(AssignPaperContentList homeworkContent);
         /**
          * 获取作业卷内容图片
          * @param lists
          */
-        void onImageList(List<ContentListBean> lists);
+        void onImageList(List<AssignPaperContentBean> lists);
         /**
          * 发送成功
          */
@@ -314,7 +317,6 @@ public interface IContractView {
 
     interface IExamListView extends IBaseView {
         void onList(ExamList list);
-        void onExamImage(ExamList.ExamBean url);
         void onExamClassUser(ExamClassUserList classUserList);
     }
 

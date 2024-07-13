@@ -8,14 +8,14 @@ public class ExamList implements Serializable {
     public List<ExamBean> list;
 
     public class ExamBean implements Serializable{
-        public List<ClassBean> classList;
+        public List<ExamClassBean> classList;
         public String examName;
         public int id;
         public String createTime;
         public String examUrl;//考试试卷
     }
 
-    public class ClassBean implements Serializable{
+    public class ExamClassBean implements Serializable{
         public int classId;
         public int studentCount;
         public int schoolExamJobId;

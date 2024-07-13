@@ -5,8 +5,8 @@ import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ExamCorrectUserAdapter(layoutResId: Int, data: List<ExamClassUserList.UserBean>?) : BaseQuickAdapter<ExamClassUserList.UserBean, BaseViewHolder>(layoutResId, data) {
-    override fun convert(helper: BaseViewHolder, item: ExamClassUserList.UserBean) {
+class ExamCorrectUserAdapter(layoutResId: Int, data: List<ExamClassUserList.ClassUserBean>?) : BaseQuickAdapter<ExamClassUserList.ClassUserBean, BaseViewHolder>(layoutResId, data) {
+    override fun convert(helper: BaseViewHolder, item: ExamClassUserList.ClassUserBean) {
         helper.setText(R.id.tv_name,item.studentName)
         val resId=when(item.status){
             1->{

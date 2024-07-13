@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_content"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center">
+    android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="100dp"
         android:layout_height="@dimen/dp_36"
         android:background="@drawable/bg_gray_stroke_10dp_corner"
-        android:text="名称"
         android:gravity="center"
         android:textSize="@dimen/sp_20"
         android:textColor="@color/black"/>

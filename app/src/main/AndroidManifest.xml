@@ -209,9 +209,6 @@
         <activity android:name=".ui.activity.classgroup.ClassGroupActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.classgroup.ClassGroupChildActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.CalenderMyActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -228,6 +225,9 @@
             />
         <activity android:name=".ui.activity.drawing.FileDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.teaching.AnalyseTeachingActivity"
             android:windowSoftInputMode="adjustPan"
             />
 

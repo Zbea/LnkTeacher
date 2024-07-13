@@ -18,7 +18,6 @@ public class ClassGroup implements Serializable {
     public String imageUrl;//课程表
     public String teacher;
     public boolean isCheck;
-    public List<ClassGroupUser> students;
 
     @Override
     public boolean equals(@Nullable Object obj) {

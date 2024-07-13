@@ -385,8 +385,8 @@ object DataBeanManager {
             list.add(ItemList(2, mContext.getString(R.string.book_tab_zrkx)))
             list.add(ItemList(3, mContext.getString(R.string.book_tab_shkx)))
             list.add(ItemList(4, mContext.getString(R.string.book_tab_sxkx)))
-            list.add(ItemList(5, mContext.getString(R.string.book_tab_ydjk)))
             list.add(ItemList(5, mContext.getString(R.string.book_tab_yscn)))
+            list.add(ItemList(6, mContext.getString(R.string.book_tab_ydjk)))
             return list
         }
 }

@@ -24,18 +24,6 @@ class ExamListPresenter(view: IContractView.IExamListView, val screen:Int) : Bas
         }, true)
     }
 
-    fun getExamImage(map:HashMap<String,Any>) {
-        val list = RetrofitManager.service.getExamImage(map)
-        doRequest(list, object : Callback<ExamList.ExamBean>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<ExamList.ExamBean>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<ExamList.ExamBean>) {
-                if (tBaseResult.data!=null)
-                    view.onExamImage(tBaseResult.data)
-            }
-        }, true)
-    }
 
     fun getExamClassUser(map:HashMap<String,Any>) {
         val list = RetrofitManager.service.getExamClass(map)

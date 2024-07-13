@@ -73,6 +73,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                         val intent=Intent(requireActivity(), AnalyseActivity::class.java)
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
+                        intent.putExtra("subType",item.subType)
                         intent.putExtra("bundle",bundle)
                         intent.putExtra("module",item.questionType)
                         intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)

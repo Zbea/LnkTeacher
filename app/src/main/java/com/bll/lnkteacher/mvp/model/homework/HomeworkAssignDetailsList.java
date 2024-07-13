@@ -3,7 +3,7 @@ package com.bll.lnkteacher.mvp.model.homework;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeworkAssignDetails {
+public class HomeworkAssignDetailsList {
 
     public int total;
     public List<DetailsBean> list=new ArrayList<>();

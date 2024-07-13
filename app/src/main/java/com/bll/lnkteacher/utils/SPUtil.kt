@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.ArrayMap
 import com.bll.lnkteacher.mvp.model.User
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.schedulers.Schedulers
@@ -99,13 +99,13 @@ object SPUtil {
         return result as Boolean
     }
 
-    fun putCommitClasss(key: String,list: MutableList<HomeworkClass>){
+    fun putCommitClasss(key: String,list: MutableList<HomeworkClassSelectItem>){
         val listStr= gson.toJson(list)
         putString(getUserId()+key,listStr)
     }
 
-    fun getCommitClasss(key: String): MutableList<HomeworkClass> {
-        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<HomeworkClass>>() {}.type)
+    fun getCommitClasss(key: String): MutableList<HomeworkClassSelectItem> {
+        return gson.fromJson(getString(getUserId()+key), object : TypeToken<List<HomeworkClassSelectItem>>() {}.type)
             ?: return mutableListOf()
     }
 

@@ -21,9 +21,6 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
     public String url;
     public int resId;
 
-    public int score;
-    public int num;
-
     public ItemList() {
     }
 

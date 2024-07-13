@@ -25,45 +25,37 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_30"
             android:layout_marginEnd="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_50"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_list_number"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="50dp"
-            android:padding="@dimen/dp_10"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:layout_marginTop="@dimen/dp_40"
             />
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list_score"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_400"
-            android:layout_marginTop="@dimen/dp_50"
+            android:layout_height="@dimen/dp_500"
+            android:layout_marginTop="@dimen/dp_40"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
-            android:paddingStart="@dimen/dp_60"
-            android:paddingEnd="@dimen/dp_60"
-            android:paddingTop="@dimen/dp_30"
-            android:paddingBottom="@dimen/dp_30"
+            android:paddingStart="@dimen/dp_30"
+            android:paddingEnd="@dimen/dp_30"
+            android:paddingBottom="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_20"
             android:background="@drawable/bg_black_stroke_10dp_corner"
             />
 
         <LinearLayout
             android:id="@+id/ll_score"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginStart="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_50"
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_30"
-            android:orientation="horizontal"
+            android:gravity="center"
             >
             <LinearLayout
                 android:id="@+id/ll_total_score"
@@ -95,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/tv_score_num"
-                    android:layout_width="64dp"
+                    android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_20"
@@ -119,16 +111,6 @@
 
 
     </LinearLayout>
-
-    <include
-        android:id="@+id/ll_module_content"
-        android:layout_width="@dimen/width"
-        android:layout_height="match_parent"
-        android:layout_marginTop="128dp"
-        android:visibility="gone"
-        android:layout_alignParentEnd="true"
-        layout="@layout/common_correct_topic_module"
-        />
 
     <RelativeLayout
         android:id="@+id/ll_record"
@@ -181,5 +163,80 @@
         android:id="@+id/ll_draw_content"
         layout="@layout/common_correct_drawing"
         />
+
+    <RelativeLayout
+        android:id="@+id/rl_answer"
+        android:layout_width="@dimen/width"
+        android:layout_height="700dp"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:layout_alignParentEnd="true"
+        android:padding="20dp"
+        android:visibility="gone"
+        >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_tips"
+            android:scrollbars="none"
+            android:padding="2dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <ImageView
+                    android:id="@+id/iv_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    />
+
+        </LinearLayout>
+
+        </ScrollView>
+
+        <ImageView
+            android:id="@+id/iv_close_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/dp_20"
+            android:src="@mipmap/icon_close"
+            />
+
+        <ImageView
+            android:id="@+id/iv_answer_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:src="@mipmap/icon_page_up"
+            android:layout_centerVertical="true"
+            />
+
+        <ImageView
+            android:id="@+id/iv_answer_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:src="@mipmap/icon_page_down"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            />
+
+        <TextView
+            android:id="@+id/tv_answer_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -52,22 +52,18 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     override fun onToken(token: String) {
         showLoading()
         //分享只能是有手写页面
-        val sImages= mutableListOf<String>()
         val sBgRes= mutableListOf<String>()
+        val imagePaths= mutableListOf<String>()
         for (i in images.indices){
             if (File(images[i]).exists()){
-                sImages.add(images[i])
+                imagePaths.add(images[i].replace("tch","png"))
                 sBgRes.add(bgResList[i])
             }
         }
-        if (sImages.size==0){
+        if (imagePaths.size==0){
             hideLoading()
             showToast("暂无分享内容")
             return
-        }
-        val imagePaths= mutableListOf<String>()
-        for (path in sImages){
-            imagePaths.add(path.replace("tch","png"))
         }
         FileImageUploadManager(token, imagePaths).apply {
             startUpload()
@@ -296,7 +292,12 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
 
     private fun initFreeNote(){
         bgResList= freeNoteBean?.bgRes as MutableList<String>
-        images= freeNoteBean?.paths as MutableList<String>
+        if (!freeNoteBean?.paths.isNullOrEmpty()) {
+            images= freeNoteBean?.paths as MutableList<String>
+        }
+         else{
+             images.clear()
+         }
         tv_name.text=freeNoteBean?.title
     }
 
@@ -309,7 +310,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         freeNoteBean?.date=System.currentTimeMillis()
         freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
         freeNoteBean?.bgRes= arrayListOf(bgRes)
-        freeNoteBean?.paths= arrayListOf()
         freeNoteBean?.type=0
         FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
     }

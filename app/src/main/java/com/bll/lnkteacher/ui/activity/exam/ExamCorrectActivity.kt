@@ -1,23 +1,22 @@
 package com.bll.lnkteacher.ui.activity.exam
 
 import android.graphics.BitmapFactory
-import android.text.TextUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
-import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.ExamCorrectUserAdapter
 import com.bll.lnkteacher.utils.*
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
@@ -33,13 +32,13 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private var className=""
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter= ExamCorrectPresenter(this,3)
-    private var userItems= mutableListOf<ExamClassUserList.UserBean>()
+    private var userItems= mutableListOf<ExamClassUserList.ClassUserBean>()
 
     private var mAdapter: ExamCorrectUserAdapter?=null
     private var url=""//上个学生提交地址
     private var posImage=0//当前图片下标
     private var posUser=0//当前学生下标
-    private var currentImages:Array<String>?=null
+    private var currentImages= mutableListOf<String>()
     private val commitItems = mutableListOf<ItemList>()
 
     override fun onToken(token: String) {
@@ -125,17 +124,15 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     override fun initView() {
         setPageTitle("考试批改  $className")
         elik_b?.setPWEnabled(false,false)
-        disMissView(iv_tool,iv_catalog,iv_btn,ll_record,ll_module_content)
+        disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
         initRecyclerView()
 
         tv_score_num.setOnClickListener {
             val item=userItems[posUser]
             if (item.status==1){
-                InputContentDialog(this,3,"请输入分数(整数)",1).builder().setOnDialogClickListener{
-                    if (TextUtils.isDigitsOnly(it)) {
-                        tv_score_num.text=it
-                    }
+                NumberDialog(this).builder().setDialogClickListener{
+                    tv_score_num.text=it.toString()
                 }
             }
         }
@@ -157,7 +154,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         mAdapter = ExamCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco1(7, 0, 20))
+            rv_list.addItemDecoration(SpaceGridItemDeco(7,  15))
             setOnItemClickListener { adapter, view, position ->
                 if (position==posUser)
                     return@setOnItemClickListener
@@ -207,34 +204,29 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         }
         val userItem=userItems[posUser]
         correctModule=userItem.questionType
+        correctStatus=userItem.status
 
-        when(correctModule){
-            0->{
-                disMissView(rv_list_number)
-            }
-            else->{
-                if (mTopicScoreAdapter==null&&mTopicMultiAdapter==null){
-                    initRecyclerViewScore()
-                }
-            }
+        if (mTopicScoreAdapter==null&&mTopicMultiAdapter==null){
+            initRecyclerViewScore()
         }
 
-        when(userItem.status){
+        when(correctStatus){
             1->{
-                currentImages=userItem.studentUrl.split(",").toTypedArray()
-                showView(ll_score,rv_list_number,rv_list_score,tv_save)
+                currentImages=ToolUtils.getImages(userItem.studentUrl)
+                showView(ll_score,rv_list_score,tv_save)
                 loadPapers()
             }
             2->{
-                currentImages=userItem.teacherUrl.split(",").toTypedArray()
+                currentImages=ToolUtils.getImages(userItem.teacherUrl)
                 tv_score_num.text = userItem.score.toString()
                 showView(ll_score,rv_list_score)
-                disMissView(tv_save,rv_list_number)
+                disMissView(tv_save)
                 onChangeContent()
             }
             3->{
-                currentImages= arrayOf()
-                disMissView(ll_score,rv_list_score,rv_list_number)
+                currentImages.clear()
+                disMissView(rv_list_score)
+                disInvisbleView(ll_score)
                 tv_score_num.text = ""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
@@ -245,7 +237,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         if (correctModule>0){
             if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                currentScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
+                currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
             }
             if (correctModule<3){
                 mTopicScoreAdapter?.setNewData(currentScores)
@@ -256,8 +248,8 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             }
         }
         else{
-            if (userItem.status!=3){
-                disMissView(rv_list_score,rv_list_number)
+            if (correctStatus!=3){
+                disMissView(rv_list_score)
                 showView(ll_total_score)
             }
         }
@@ -275,7 +267,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         tv_page_total.text="${getImageSize()}"
         tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
-            when(userItems[posUser].status){
+            when(correctStatus){
                 1->{
                     elik_a?.setPWEnabled(true,true)
                     elik_b?.setPWEnabled(true,true)
@@ -300,9 +292,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     elik_a?.setPWEnabled(false,false)
                     elik_b?.setPWEnabled(false,false)
 
-                    GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_a)
+                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
                     if (posImage+1<getImageSize()){
-                        GlideUtils.setImageUrl(this, currentImages?.get(posImage+1) ,v_content_b)
+                        GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
                     }
                     else{
                         v_content_b?.setImageResource(0)
@@ -313,7 +305,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }
         else{
-            when(userItems[posUser].status){
+            when(correctStatus){
                 1->{
                     elik_b?.setPWEnabled(true,true)
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
@@ -323,7 +315,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 }
                 2->{
                     elik_b?.setPWEnabled(false,false)
-                    GlideUtils.setImageUrl(this, currentImages?.get(posImage) ,v_content_b)
+                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
                 }
             }
             tv_page.text="${posImage+1}"
@@ -336,12 +328,12 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private fun loadPapers(){
         showLoading()
         val savePaths= mutableListOf<String>()
-        for (i in currentImages?.indices!!){
+        for (i in currentImages.indices){
             savePaths.add(getPath()+"/${i+1}.png")
         }
         val files = FileUtils.getAscFiles(getPath())
         if (files.isNullOrEmpty()) {
-            FileMultitaskDownManager.with(this).create(currentImages?.toMutableList()).setPath(savePaths).startMultiTaskDownLoad(
+            FileMultitaskDownManager.with(this).create(currentImages).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     }
@@ -365,9 +357,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
      * 每份多少张考卷
      */
     private fun getImageSize():Int{
-        if (currentImages.isNullOrEmpty())
+        if (currentImages.isEmpty())
             return 0
-        return currentImages!!.size
+        return currentImages.size
     }
 
     /**
@@ -376,7 +368,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private fun commitPapers(){
         commitItems.clear()
         //手写,图片合图
-        for (i in currentImages?.indices!!){
+        for (i in currentImages.indices){
             val index=i+1
             val masterImage="${getPath()}/${index}.png"//原图
             val drawPath = getPathDrawStr(index).replace("tch","png")
@@ -396,7 +388,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     id = i
                     url = mergePathStr
                 })
-                if (commitItems.size==currentImages?.size){
+                if (commitItems.size==currentImages.size){
                     commitItems.sort()
                     mUploadPresenter.getToken()
                 }

@@ -12,7 +12,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.KeyboardUtils
@@ -21,8 +21,8 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 
 class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) {
 
-    private var selectClasss= mutableListOf<HomeworkClass>()
-    private var initDatas= mutableListOf<HomeworkClass>()
+    private var selectClasss= mutableListOf<HomeworkClassSelectItem>()
+    private var initDatas= mutableListOf<HomeworkClassSelectItem>()
 
     @SuppressLint("SuspiciousIndentation")
     fun builder(): HomeworkPublishDialog {
@@ -41,7 +41,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
         val homeworkClasss=MethodManager.getCommitClass(typeId)
 
         for (item in classs){
-            initDatas.add(HomeworkClass().apply {
+            initDatas.add(HomeworkClassSelectItem().apply {
                     className=item.name
                     classId=item.id
                     date= DateUtils.getStartOfDayInMillis()+ Constants.dayLong
@@ -123,8 +123,8 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
     /**
      * 得到选中的班级信息
      */
-    private fun getSelectClass():MutableList<HomeworkClass>{
-        val items= mutableListOf<HomeworkClass>()
+    private fun getSelectClass():MutableList<HomeworkClassSelectItem>{
+        val items= mutableListOf<HomeworkClassSelectItem>()
         for (item in initDatas){
             if (item.isCheck){
                 if (!item.isCommit)
@@ -138,7 +138,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onSend(contentStr:String,classs:List<HomeworkClass>)
+        fun onSend(contentStr:String,classs:List<HomeworkClassSelectItem>)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

@@ -29,8 +29,6 @@ class ExamListFragment:BaseFragment(),IExamListView{
         mAdapter?.setNewData(items)
         setPageNumber(list.total)
     }
-    override fun onExamImage(url: ExamList.ExamBean?) {
-    }
     override fun onExamClassUser(classUserList: ExamClassUserList?) {
     }
 

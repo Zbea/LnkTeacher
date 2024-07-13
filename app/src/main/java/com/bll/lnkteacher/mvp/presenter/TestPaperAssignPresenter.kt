@@ -1,7 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
@@ -48,11 +48,11 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
 
     fun getPaperList(map: HashMap<String,Any>){
         val list = RetrofitManager.service.getPaperList(map)
-        doRequest(list, object : Callback<AssignContent>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
+        doRequest(list, object : Callback<AssignPaperContentList>(view) {
+            override fun failed(tBaseResult: BaseResult<AssignPaperContentList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AssignContent>) {
+            override fun success(tBaseResult: BaseResult<AssignPaperContentList>) {
                 if (tBaseResult.data!=null){
                     view.onList(tBaseResult.data)
                 }
@@ -65,11 +65,11 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
         map["taskId"]=taskId
         map["size"]=100
         val list = RetrofitManager.service.getPaperImages(map)
-        doRequest(list, object : Callback<AssignContent>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignContent>): Boolean {
+        doRequest(list, object : Callback<AssignPaperContentList>(view) {
+            override fun failed(tBaseResult: BaseResult<AssignPaperContentList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AssignContent>) {
+            override fun success(tBaseResult: BaseResult<AssignPaperContentList>) {
                 if (tBaseResult.data!=null){
                     view.onImageList(tBaseResult.data?.list)
                 }

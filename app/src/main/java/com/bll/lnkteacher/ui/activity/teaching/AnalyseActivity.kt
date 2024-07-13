@@ -3,23 +3,27 @@ package com.bll.lnkteacher.ui.activity.teaching
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
-import com.bll.lnkteacher.mvp.model.testpaper.ExamScoreItem
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.ExamScoreAnalyseAdapter
+import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
+import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
+import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
 import kotlinx.android.synthetic.main.common_correct_drawing.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
@@ -32,27 +36,20 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     private var classId=0
     private var posImage=0
     private var imageCount=0
+    private var subType=0
     private var correctList: CorrectBean?=null
     private val popClasss= mutableListOf<PopupBean>()
     private var images= mutableListOf<String>()
-    private var mAdapter:ExamScoreAnalyseAdapter?=null
-    private var examScoreItems= mutableListOf<ExamScoreItem>()
-    private val scoreItemMap=HashMap<Int, ItemList>() //所有列表列表以及题目总分、人数
+    private var scoreItems= mutableListOf<ScoreItem>()
     private var popScore= mutableListOf<PopupBean>()
+    private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
+    private var mAnalyseAdapter:ExamAnalyseAdapter?=null
+    private var mAnalyseMultiAdapter:ExamAnalyseMultiAdapter?=null
 
-    override fun onImageList(list: MutableList<ContentListBean>) {
-        for (item in list){
-            images.add(item.url)
-        }
-        if (images.size>0){
-            imageCount=images.size
-            onChangeContent()
-        }
-    }
     override fun onClassPapers(bean: TestPaperClassUserList) {
-        scoreItemMap.clear()
-        examScoreItems.clear()
+        scoreItems.clear()
         popScore.clear()
+        totalAnalyseItems.clear()
         var totalScore=0
         var totalNum=0
         var score0=0
@@ -64,22 +61,47 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         for (userItem in bean.list){
             correctModule=userItem.questionType
             if (!userItem.question.isNullOrEmpty()&&userItem.status==2&&correctModule>0){
-                currentScores= jsonToList(userItem.question) as MutableList<ExamScoreItem>
+                currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
                 for (item in currentScores){
-                    var itemList=scoreItemMap[item.sort]
-                    if (item.score.isNullOrEmpty()){
-                        item.score="0"
-                    }
-                    if (itemList!=null){
-                        itemList.num=itemList.num+1
-                        itemList.score=itemList.score+item.score.toInt()
-                        scoreItemMap[item.sort]= itemList
+                    val currentScore=getScore(item.score)
+                    if (correctModule<3){
+                        if (totalAnalyseItems.size<currentScores.size){
+                            val analyseItem= AnalyseItem()
+                            setAnalyseData(userItem,item,analyseItem)
+                            totalAnalyseItems.add(analyseItem)
+                        }
+                        else{
+                            val examAnalyseItem=totalAnalyseItems[item.sort-1]
+                            setAnalyseData(userItem,item,examAnalyseItem)
+                        }
                     }
                     else{
-                        itemList=ItemList()
-                        itemList.num=1
-                        itemList.score=item.score.toInt()
-                        scoreItemMap[item.sort]= itemList
+                        if (totalAnalyseItems.size<currentScores.size){
+                            val analyseItem= AnalyseItem()
+                            analyseItem.sort=item.sort
+                            analyseItem.totalScore+=currentScore
+                            analyseItem.num+=1
+                            analyseItem.averageScore=analyseItem.totalScore/analyseItem.num
+                            val childAnalyseItems= mutableListOf<AnalyseItem>()
+                            for (childItem in item.childScores){
+                                val childAnalyseItem= AnalyseItem()
+                                setAnalyseData(userItem,childItem,childAnalyseItem)
+                                childAnalyseItems.add(childAnalyseItem)
+                            }
+                            analyseItem.childAnalyses=childAnalyseItems
+                            totalAnalyseItems.add(analyseItem)
+                        }
+                        else{
+                            val examAnalyseItem=totalAnalyseItems[item.sort-1]
+                            examAnalyseItem.totalScore+=currentScore
+                            examAnalyseItem.num+=1
+                            examAnalyseItem.averageScore=examAnalyseItem.totalScore/examAnalyseItem.num
+                            for (childItem in item.childScores){
+                                val index=item.childScores.indexOf(childItem)
+                                val childExamAnalyseItem=examAnalyseItem.childAnalyses[index]
+                                setAnalyseData(userItem,childItem,childExamAnalyseItem)
+                            }
+                        }
                     }
                 }
             }
@@ -146,13 +168,12 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         if (correctModule>0){
-            for (key in scoreItemMap.keys){
-                examScoreItems.add(ExamScoreItem().apply {
-                    sort=key
-                    score=getAverageNum(scoreItemMap[key]?.score!!.toDouble()/ scoreItemMap[key]?.num!!)
-                })
+            if (correctModule<3){
+                mAnalyseAdapter?.setNewData(totalAnalyseItems)
             }
-            mAdapter?.setNewData(examScoreItems)
+            else{
+                mAnalyseMultiAdapter?.setNewData(totalAnalyseItems)
+            }
         }
     }
     override fun onCorrectSuccess() {
@@ -161,8 +182,6 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     override fun onSendSuccess() {
     }
 
-    override fun setModuleSuccess() {
-    }
 
 
     override fun layoutId(): Int {
@@ -172,13 +191,14 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     override fun initData() {
         screenPos=Constants.SCREEN_LEFT
         correctModule=intent.getIntExtra("module",-1)
+        subType = intent.getIntExtra("subType", 0)
         correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
+        images= correctList?.examList?.get(0)?.imageUrl?.split(",") as MutableList<String>
         for (item in correctList?.examList!!){
             popClasss.add(PopupBean(item.examChangeId,item.name,false))
         }
         classId=popClasss[0].id
 
-        mPresenter.getPaperImages(correctList?.examList!![0].taskId)
         mPresenter.getClassPapers(classId)
     }
 
@@ -188,8 +208,23 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         disMissView(iv_tool,iv_catalog,iv_btn)
         setPageSetting("成绩统计")
 
+        if (correctModule>0&&subType!=2){
+            setPageCustom("因材施教")
+            showView(rv_list)
+        }
+
         tv_class.text=popClasss[0].name
         popClasss[0].isCheck=true
+
+        tv_custom.setOnClickListener {
+            val intent= Intent(this, AnalyseTeachingActivity::class.java)
+            val bundle= Bundle()
+            bundle.putSerializable("paperCorrect",correctList)
+            intent.putExtra("bundle",bundle)
+            intent.putExtra("module",correctModule)
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_LEFT)
+            customStartActivity(intent)
+        }
 
         tv_setting.setOnClickListener {
             val intent= Intent(this, GradeRankActivity::class.java)
@@ -205,8 +240,10 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             PopupRadioList(this, popClasss, tv_class ,5).builder()
                 .setOnSelectListener { item ->
                     tv_class.text = item.name
-                    if (classId!=item.id)
-                        mPresenter.getClassPapers(item.id)
+                    if (classId!=item.id){
+                        classId=item.id
+                        mPresenter.getClassPapers(classId)
+                    }
                 }
         }
 
@@ -224,17 +261,44 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             }
         }
 
+        onChangeExpandView()
+
         initRecyclerView()
 
-        onChangeExpandView()
+        if (images.size>0){
+            imageCount=images.size
+            onChangeContent()
+        }
     }
 
     private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = ExamScoreAnalyseAdapter(R.layout.item_exam_score_analyse, null).apply {
-            rv_list.adapter = this
-            bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(4, 30))
+        if (correctModule<3){
+            rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
+            mAnalyseAdapter=ExamAnalyseAdapter(R.layout.item_exam_analyse_score,correctModule, null).apply {
+                rv_list.adapter = this
+                bindToRecyclerView(rv_list)
+                rv_list.addItemDecoration(SpaceGridItemDeco(4,20))
+                setOnItemChildClickListener { adapter, view, position ->
+                    if (view.id==R.id.tv_wrong_num){
+                        val students=totalAnalyseItems[position].wrongStudents
+                        AnalyseUserDetailsDialog(this@AnalyseActivity,students).builder()
+                    }
+                }
+            }
+        }
+        else{
+            rv_list.layoutManager= LinearLayoutManager(this)
+            mAnalyseMultiAdapter=ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score,null).apply {
+                rv_list.adapter = this
+                bindToRecyclerView(rv_list)
+                rv_list.addItemDecoration(SpaceItemDeco(0,0,0,20))
+                setCustomItemChildClickListener{position, view, childPosition ->
+                    if (view.id==R.id.tv_wrong_num){
+                        val students=totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
+                        AnalyseUserDetailsDialog(this@AnalyseActivity,students).builder()
+                    }
+                }
+            }
         }
     }
 
@@ -341,5 +405,27 @@ class AnalyseActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         return getPath()+"/draw${index}.tch"//手绘地址
     }
 
+    /**
+     * 数据分析赋值
+     */
+    private fun setAnalyseData(classUserBean: TestPaperClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem){
+        analyseItem.sort=scoreItem.sort
+        analyseItem.totalScore+=getScore(scoreItem.score)
+        analyseItem.num+=1
+        if (scoreItem.result==0){
+            analyseItem.wrongNum+=1
+            analyseItem.wrongStudents.add(AnalyseItem.UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
+        }
+        else{
+            analyseItem.rightNum+=1
+            analyseItem.rightStudents.add(AnalyseItem.UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
+        }
+        analyseItem.averageScore=analyseItem.totalScore/analyseItem.num
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ActivityManager.getInstance().finishActivity(AnalyseTeachingActivity::class.java.name)
+    }
 
 }

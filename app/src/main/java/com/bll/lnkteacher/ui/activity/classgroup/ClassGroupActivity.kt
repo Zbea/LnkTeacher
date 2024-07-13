@@ -113,8 +113,7 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                             }
                     }
                     else{
-                        ClassGroupChildCreateDialog(this,classGroup.name).builder().setOnDialogClickListener{
-                            name->
+                        ClassGroupChildCreateDialog(this,classGroup.name,1).builder().setOnDialogClickListener{ name->
                             mGroupPresenter.editClassGroupChild(name,classGroup.classId)
                         }
                     }

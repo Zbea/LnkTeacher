@@ -2,7 +2,10 @@ package com.bll.lnkteacher.mvp.model.homework;
 
 import java.io.Serializable;
 
-public class HomeworkClass implements Serializable {
+/**
+ * 选择班级信息
+ */
+public class HomeworkClassSelectItem implements Serializable {
     public int classId;
     public String className;
     public boolean isCheck;

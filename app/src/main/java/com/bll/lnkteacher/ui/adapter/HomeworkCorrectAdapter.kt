@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
-import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -13,9 +13,9 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(R.id.tv_type,item.taskName)
+        helper.setText(R.id.tv_type,item.subTypeName)
         helper.setText(R.id.tv_title,item.title)
-        helper.setGone(R.id.tv_analyse,item.subType!=3)
+        helper.setGone(R.id.tv_analyse,item.subType!=3&&item.examList.isNotEmpty())
         helper.setText(R.id.tv_date_create,mContext.getString(R.string.teaching_homework_start_date)+"："+DateUtils.longToStringWeek(item.time))
         val rvList=helper.getView<RecyclerView>(R.id.rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
@@ -28,9 +28,9 @@ class HomeworkCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQ
         helper.addOnClickListener(R.id.tv_analyse,R.id.iv_delete)
     }
 
-    class TypeAdapter(layoutResId: Int,data: List<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
+    class TypeAdapter(layoutResId: Int,data: List<TestPaperClassBean>?) : BaseQuickAdapter<TestPaperClassBean, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
+        override fun convert(helper: BaseViewHolder, item: TestPaperClassBean) {
             helper.setText(R.id.tv_class_name,item.name)
             helper.setText(R.id.tv_number,"${item.totalStudent}人")
             helper.setText(R.id.tv_receive_number,"${item.totalSubmitStudent}")

@@ -7,7 +7,9 @@ import android.widget.TextView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class ClassGroupChildCreateDialog(val context: Context, val titleStr:String) {
+class ClassGroupChildCreateDialog(val context: Context, val titleStr:String,val type:Int) {
+
+    constructor(context: Context,titleStr: String):this(context, titleStr, 0)
 
     fun builder(): ClassGroupChildCreateDialog {
 
@@ -19,10 +21,9 @@ class ClassGroupChildCreateDialog(val context: Context, val titleStr:String) {
         val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-
-        if (titleStr.isNotEmpty()){
-            et_name.setText(titleStr)
-            et_name.setSelection(titleStr.length)
+        et_name.setText(titleStr)
+        et_name.setSelection(titleStr.length)
+        if (type==1){
             tv_title.text="修改子群"
         }
 

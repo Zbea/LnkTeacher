@@ -8,7 +8,7 @@ import com.bll.lnkteacher.mvp.model.exam.ExamRankList
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.testpaper.*
 import com.bll.lnkteacher.net.BaseResult
 import com.bll.lnkteacher.net.system.BaseResult1
@@ -264,6 +264,11 @@ interface APIService{
     @POST("class/group/createOther")
     fun createClassGroupChild(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 更新子群
+     */
+    @POST("class/updateAllStudent")
+    fun refreshClassGroupChild(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 老师子群添加学生
      */
     @POST("class/group/joinSubGroup")
@@ -324,13 +329,13 @@ interface APIService{
      * 获取考卷内容列表
      */
     @GET("task/list/exam")
-    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
+    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
 
     /**
      * 查看考卷列表
      */
     @GET("task/image/listExamJob")
-    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
+    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
      * 删除考卷
      */
@@ -352,11 +357,6 @@ interface APIService{
      */
     @POST("task/group/delete")
     fun deletePaperCorrectList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 查看考卷图片
-     */
-    @GET("exam/change/image")
-    fun getPaperCorrectImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<ContentListBean>>>
     /**
      * 获取班级同学提交考卷列表
      */
@@ -386,12 +386,12 @@ interface APIService{
      * 获取作业卷内容列表
      */
     @GET("task/list/job")
-    fun getHomeworkList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
+    fun getHomeworkList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
      * 获取作业卷内容图片
      */
     @GET("task/image/listJob")
-    fun getHomeworkImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignContent>>
+    fun getHomeworkImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
      * 发送作业本
      */
@@ -407,7 +407,7 @@ interface APIService{
      * 布置详情
      */
     @GET("homework/info/list")
-    fun assignHomeworkDetails(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkAssignDetails>>
+    fun assignHomeworkDetails(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<HomeworkAssignDetailsList>>
     /**
      * 删除布置信息
      */
@@ -472,11 +472,6 @@ interface APIService{
      */
     @GET("school/exam/teacher")
     fun getExamList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList>>
-    /**
-     * 获取考试原图
-     */
-    @GET("school/exam/info")
-    fun getExamImage(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList.ExamBean>>
     /**
      * 获取班级学生试卷
      */

@@ -29,8 +29,8 @@ class ExamListAdapter(layoutResId: Int, data: List<ExamList.ExamBean>?) : BaseQu
 
     }
 
-    class ClassAdapter(layoutResId: Int,data: MutableList<ExamList.ClassBean>?) : BaseQuickAdapter<ExamList.ClassBean, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: ExamList.ClassBean) {
+    class ClassAdapter(layoutResId: Int,data: MutableList<ExamList.ExamClassBean>?) : BaseQuickAdapter<ExamList.ExamClassBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: ExamList.ExamClassBean) {
             helper.apply {
                 setText(tv_class_name,item.className)
                 setText(tv_number,"${item.studentCount}人")

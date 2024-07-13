@@ -7,10 +7,10 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishClassGroupSelectDialog
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
-import com.bll.lnkteacher.mvp.model.testpaper.AssignContent
-import com.bll.lnkteacher.mvp.model.testpaper.ContentListBean
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassCommitItem
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.HomeworkPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -22,18 +22,18 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     private var grade=0
     private val mPresenter= HomeworkPaperAssignPresenter(this)
     private var mAdapter:TestPaperAssignContentAdapter?=null
-    private var items= mutableListOf<ContentListBean>()//列表数据
+    private var items= mutableListOf<AssignPaperContentBean>()//列表数据
     private var typeBean: TypeBean?=null//作业卷分类
     private var selectDialog:HomeworkPublishClassGroupSelectDialog?=null
-    private var selectClasss= mutableListOf<HomeworkClass>()//选中班级
+    private var selectClasss= mutableListOf<HomeworkClassSelectItem>()//选中班级
     private var position=0
 
-    override fun onList(homeworkContent: AssignContent) {
+    override fun onList(homeworkContent: AssignPaperContentList) {
         setPageNumber(homeworkContent.total)
         items= homeworkContent.list
         mAdapter?.setNewData(items)
     }
-    override fun onImageList(lists: MutableList<ContentListBean>) {
+    override fun onImageList(lists: MutableList<AssignPaperContentBean>) {
         val images= mutableListOf<String>()
         for (item in lists){
             images.add(item.url)
@@ -129,13 +129,13 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     /**
      * 发送作业本消息
      */
-     private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClass>){
-        val selects= mutableListOf<HomeworkClassSelect>()
+     private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClassSelectItem>){
+        val selects= mutableListOf<HomeworkClassCommitItem>()
         var isCommit=false
         for (ite in homeClasss){
             if (ite.date>0)
                 isCommit=true
-            selects.add(HomeworkClassSelect().apply {
+            selects.add(HomeworkClassCommitItem().apply {
                 classId=ite.classId
                 submitStatus=if (ite.isCommit) 0 else 1
                 endTime=ite.date/1000
@@ -161,8 +161,8 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     /**
      * 获的选中作业卷
      */
-    private fun getCheckedItems():MutableList<ContentListBean>{
-        val lists= mutableListOf<ContentListBean>()
+    private fun getCheckedItems():MutableList<AssignPaperContentBean>{
+        val lists= mutableListOf<AssignPaperContentBean>()
         for (item in items){
             if (item.isCheck)
                 lists.add(item)

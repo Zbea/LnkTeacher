@@ -13,7 +13,7 @@ import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
 import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.BookDetailsActivity;
@@ -204,7 +204,7 @@ public class MethodManager {
     /**
      * 根据作业本id保存当前作业的最后一次提交
      */
-    public static void saveCommitClass(int typeId,List<HomeworkClass> items){
+    public static void saveCommitClass(int typeId,List<HomeworkClassSelectItem> items){
         SPUtil.INSTANCE.putCommitClasss(typeId+"CommitClass",items);
     }
 
@@ -212,7 +212,7 @@ public class MethodManager {
      * 得到作业最后一次提交所选班级信息
      * @return
      */
-    public static List<HomeworkClass> getCommitClass(int typeId){
+    public static List<HomeworkClassSelectItem> getCommitClass(int typeId){
         return SPUtil.INSTANCE.getCommitClasss(typeId+"CommitClass");
     }
 

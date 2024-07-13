@@ -89,4 +89,9 @@ class ExamManagerFragment:BaseMainFragment() {
         examListFragment?.onChangeGrade(grade)
     }
 
+    override fun onRefreshData() {
+        examListFragment?.onRefreshData()
+        examCorrectFragment?.onRefreshData()
+    }
+
 }

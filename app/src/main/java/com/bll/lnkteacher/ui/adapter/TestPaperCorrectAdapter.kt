@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.R.id.*
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
-import com.bll.lnkteacher.mvp.model.testpaper.CorrectClassBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
@@ -15,8 +15,9 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
         helper.setText(tv_exam_type,item.title)
-        helper.setText(tv_title,item.taskName)
+        helper.setText(tv_title,item.subTypeName)
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time))
+        helper.setGone(tv_analyse, item.examList.isNotEmpty())
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         ClassAdapter(R.layout.item_testpaper_correct_class_type, item.examList).apply {
@@ -30,8 +31,8 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
 
     }
 
-    class ClassAdapter(layoutResId: Int,data: MutableList<CorrectClassBean>?) : BaseQuickAdapter<CorrectClassBean, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: CorrectClassBean) {
+    class ClassAdapter(layoutResId: Int,data: MutableList<TestPaperClassBean>?) : BaseQuickAdapter<TestPaperClassBean, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: TestPaperClassBean) {
             helper.apply {
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}人")

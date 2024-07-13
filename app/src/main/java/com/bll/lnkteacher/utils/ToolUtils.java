@@ -1,8 +1,11 @@
 package com.bll.lnkteacher.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -87,6 +90,13 @@ public class ToolUtils {
         return url;
     }
 
+    public static List<String> getImages(String url){
+        List<String> urls=new ArrayList<>();
+        if (!TextUtils.isEmpty(url)){
+            urls= Arrays.asList(url.split(","));
+        }
+        return urls;
+    }
 
     //返回图片唯一值(用于存储)
     public static String getImageResStr(Context context,int resId){

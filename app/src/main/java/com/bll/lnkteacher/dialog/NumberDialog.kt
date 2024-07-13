@@ -11,11 +11,12 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.SToast
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class NumberDialog(val context: Context) {
+class NumberDialog(val context: Context,val totalNum:Int=-1) {
 
     private var list= mutableListOf<ItemList>()
 
@@ -41,6 +42,10 @@ class NumberDialog(val context: Context) {
         mAdapter.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco(12,20))
         mAdapter.setOnItemClickListener { adapter, view, position ->
+            if (totalNum>0&&list[position].id>totalNum){
+                SToast.showText(2,"输入最大分数为$totalNum")
+                return@setOnItemClickListener
+            }
             listener?.onClick(list[position].id)
             dialog.dismiss()
         }

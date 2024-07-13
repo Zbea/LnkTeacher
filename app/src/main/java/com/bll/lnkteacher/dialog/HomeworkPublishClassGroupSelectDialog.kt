@@ -8,7 +8,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClass
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -17,13 +17,13 @@ import com.chad.library.adapter.base.BaseViewHolder
 class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,val typeId:Int) {
 
     private var dialog:Dialog?=null
-    private var initDatas= mutableListOf<HomeworkClass>()
+    private var initDatas= mutableListOf<HomeworkClassSelectItem>()
 
     fun builder(): HomeworkPublishClassGroupSelectDialog {
 
         dialog = Dialog(mContext)
         dialog?.setContentView(R.layout.dialog_homework_publish_classgroup_select)
-        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.setCanceledOnTouchOutside(true)
         val window=dialog?.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
@@ -32,7 +32,7 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
         val homeworkClasss= MethodManager.getCommitClass(typeId)
 
         for (item in classs){
-            initDatas.add(HomeworkClass().apply {
+            initDatas.add(HomeworkClassSelectItem().apply {
                 className=item.name
                 classId=item.id
                 date=DateUtils.getStartOfDayInMillis()+Constants.dayLong
@@ -88,8 +88,8 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
     /**
      * 得到选中的班级信息
      */
-    private fun getSelectClass():MutableList<HomeworkClass>{
-        val items= mutableListOf<HomeworkClass>()
+    private fun getSelectClass():MutableList<HomeworkClassSelectItem>{
+        val items= mutableListOf<HomeworkClassSelectItem>()
         for (item in initDatas){
             if (item.isCheck){
                 if (!item.isCommit)
@@ -104,9 +104,9 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
         dialog?.show()
     }
 
-    class MyAdapter(layoutResId: Int, data: List<HomeworkClass>?) : BaseQuickAdapter<HomeworkClass, BaseViewHolder>(layoutResId, data) {
+    class MyAdapter(layoutResId: Int, data: List<HomeworkClassSelectItem>?) : BaseQuickAdapter<HomeworkClassSelectItem, BaseViewHolder>(layoutResId, data) {
 
-        override fun convert(helper: BaseViewHolder, item: HomeworkClass) {
+        override fun convert(helper: BaseViewHolder, item: HomeworkClassSelectItem) {
             helper.setText(R.id.cb_class,"  "+item.className)
             helper.setChecked(R.id.cb_class,item.isCheck)
             helper.setChecked(R.id.cb_commit,item.isCommit)
@@ -121,7 +121,7 @@ class HomeworkPublishClassGroupSelectDialog(val mContext: Context,val grade:Int,
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onSelect(items: MutableList<HomeworkClass>)
+        fun onSelect(items: MutableList<HomeworkClassSelectItem>)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

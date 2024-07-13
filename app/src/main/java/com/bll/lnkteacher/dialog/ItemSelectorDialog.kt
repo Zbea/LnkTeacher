@@ -55,7 +55,6 @@ class ItemSelectorDialog(val context: Context, val titleStr: String,val items:Mu
     class MyAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ItemList) {
             helper.setText(R.id.tv_name,item.name)
-            helper.setChecked(R.id.cb_check,item.isCheck)
         }
     }
 

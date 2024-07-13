@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetails.DetailsBean
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelect
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList.DetailsBean
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassCommitItem
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -76,10 +76,10 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
             helper.setText(R.id.tv_message,item.info)
             helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYear(item.time))
 
-            val selects= mutableListOf<HomeworkClassSelect>()
+            val selects= mutableListOf<HomeworkClassCommitItem>()
             val jsonArray=JsonParser().parse(item.classInfo).asJsonArray
             for (json in jsonArray){
-                selects.add(Gson().fromJson(json,HomeworkClassSelect::class.java))
+                selects.add(Gson().fromJson(json, HomeworkClassCommitItem::class.java))
             }
 
             val rvList=helper.getView<RecyclerView>(R.id.rv_list)
@@ -93,10 +93,10 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
         }
 
 
-        class MyAdapter(layoutResId: Int, data: List<HomeworkClassSelect>?) : BaseQuickAdapter<HomeworkClassSelect, BaseViewHolder>(layoutResId, data) {
+        class MyAdapter(layoutResId: Int, data: List<HomeworkClassCommitItem>?) : BaseQuickAdapter<HomeworkClassCommitItem, BaseViewHolder>(layoutResId, data) {
 
-            override fun convert(helper: BaseViewHolder, item: HomeworkClassSelect) {
-                helper.setText(R.id.tv_class_name,item.name)
+            override fun convert(helper: BaseViewHolder, item: HomeworkClassCommitItem) {
+                helper.setText(R.id.tv_class_name,item.className)
                 helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYearNoHour(item.time*1000))
             }
 

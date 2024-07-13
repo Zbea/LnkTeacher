@@ -236,6 +236,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         tv_setting.text=str
     }
 
+    protected fun setPageCustom(str: String){
+        showView(tv_custom)
+        tv_custom.text=str
+    }
+
     /**
      * 显示view
      */
@@ -273,6 +278,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         for (view in views) {
             if (view != null && view.visibility != View.GONE) {
                 view.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * 消失view
+     */
+    protected fun disInvisbleView(vararg views: View?) {
+        for (view in views) {
+            if (view != null && view.visibility != View.GONE) {
+                view.visibility = View.INVISIBLE
             }
         }
     }
