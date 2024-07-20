@@ -306,22 +306,22 @@ interface APIService{
     fun transferTeacher(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
-     * 获取考卷分类
+     * 获取作业、考卷分类
      */
     @GET("common/type/list")
     fun getPaperType(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TypeList>>
     /**
-     * 删除分类
+     * 删除题卷本
      */
     @POST("common/type/delete")
-    fun deletePaperType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun deleteHomeworkBookType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 删除作业分类
      */
     @POST("common/type/deleteHomework")
     fun deleteHomeworkType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 添加考卷分类成功
+     * 添加作业、考卷分类成功
      */
     @POST("common/type/insert")
     fun addPaperType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
@@ -329,23 +329,18 @@ interface APIService{
      * 获取考卷内容列表
      */
     @GET("task/list/exam")
-    fun getPaperList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
+    fun getTestPaperContentList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
 
-    /**
-     * 查看考卷列表
-     */
-    @GET("task/image/listExamJob")
-    fun getPaperImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
      * 删除考卷
      */
     @POST("task/delete")
-    fun deletePaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun deleteTestPaperContent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 布置考卷
      */
     @POST("task/group/insertExamJob")
-    fun sendPapers(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    fun sendTestPaperContent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
      * 获取考卷订单列表
@@ -387,11 +382,6 @@ interface APIService{
      */
     @GET("task/list/job")
     fun getHomeworkList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
-    /**
-     * 获取作业卷内容图片
-     */
-    @GET("task/image/listJob")
-    fun getHomeworkImages(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
      * 发送作业本
      */

@@ -32,7 +32,7 @@ class DateTimeSelectorDialog(private val context: Context) {
         okTv?.setOnClickListener {
 
             val hour=tp_time?.hour!!
-            val minute=tp_time?.minute!!
+            val minute=tp_time.minute
 
             val timeStr="${getFormat(hour)}:${getFormat(minute)}"
             val timeLong=DateUtils.date3Stamp("$yearMonth $timeStr")

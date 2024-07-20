@@ -19,15 +19,49 @@
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_black_stroke_5dp_corner"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="班级选择："
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
+        android:orientation="horizontal"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_20"
-        />
+        android:gravity="center_vertical"
+        >
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="班级选择："
+            android:textSize="@dimen/sp_22"
+            android:textColor="@color/black"
+
+            />
+
+        <CheckBox
+            android:id="@+id/cb_commit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="  提交"
+            android:gravity="center_vertical"
+            android:button="@drawable/bg_check_selector"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="选择时间"
+            android:gravity="center"
+            android:textSize="@dimen/sp_20"
+            android:textColor="@color/black"
+            />
+
+    </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

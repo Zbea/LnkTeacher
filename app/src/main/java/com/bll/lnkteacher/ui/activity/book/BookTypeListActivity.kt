@@ -188,7 +188,6 @@ class BookTypeListActivity : BaseActivity() {
                 if (it==0){
                     mAdapter?.remove(pos)
                     MethodManager.deleteBook(book,1)
-                    fetchData()
                 }
                 else{
                     if (typeStr==""){

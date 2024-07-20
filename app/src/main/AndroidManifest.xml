@@ -143,7 +143,7 @@
             android:theme="@style/styleDialogCustom"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.GradeRankActivity"
+        <activity android:name=".ui.activity.teaching.ScoreRankActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.classgroup.ClassGroupUserActivity"
@@ -152,7 +152,7 @@
         <activity android:name=".ui.activity.classgroup.ClassGroupChildManageActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkPaperAssignContentActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"
@@ -230,6 +230,7 @@
         <activity android:name=".ui.activity.teaching.AnalyseTeachingActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

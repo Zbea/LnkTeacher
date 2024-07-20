@@ -24,7 +24,6 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList;
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList;
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList;
@@ -130,15 +129,18 @@ public interface IContractView {
          */
         void onTypeSuccess();
         /**
+         * 删除考卷内容成功
+         */
+        void onDeleteSuccess();
+    }
+
+    //考卷布置
+    interface ITestPaperAssignContentView extends IBaseView{
+        /**
          * 考卷内容列表
          * @param assignPaperContentList
          */
         void onList(AssignPaperContentList assignPaperContentList);
-        /**
-         * 考卷图片列表
-         * @param lists
-         */
-        void onImageList(List<AssignPaperContentBean> lists);
         /**
          * 删除考卷内容成功
          */
@@ -160,6 +162,10 @@ public interface IContractView {
          * 删除考卷批改
          */
         void onDeleteSuccess();
+        /**
+         * 发送考卷成功
+         */
+        void onSendSuccess();
     }
 
     //考卷批改
@@ -173,7 +179,6 @@ public interface IContractView {
          * 老师提交批改
          */
         void onCorrectSuccess();
-        void onSendSuccess();
     }
 
     interface IAnalyseTeachingView extends IBaseView{
@@ -228,31 +233,13 @@ public interface IContractView {
 
         /**
          * 获取作业卷内容列表
-         * @param homeworkContent
+         * @param contentList
          */
-        void onList(AssignPaperContentList homeworkContent);
-        /**
-         * 获取作业卷内容图片
-         * @param lists
-         */
-        void onImageList(List<AssignPaperContentBean> lists);
+        void onList(AssignPaperContentList contentList);
         /**
          * 发送成功
          */
         void onCommitSuccess();
-        void onDeleteSuccess();
-    }
-
-
-    interface IHomeworkCorrectView extends IBaseView{
-        /**
-         * 作业批改列表
-         * @param list
-         */
-        void onList(CorrectList list);
-        /**
-         * 删除作业批改
-         */
         void onDeleteSuccess();
     }
 

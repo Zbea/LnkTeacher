@@ -3,4 +3,6 @@
 
     <item android:drawable="@mipmap/icon_check_nor" android:state_checked="false"></item>
     <item android:drawable="@mipmap/icon_check_select" android:state_checked="true"></item>
+    <item android:drawable="@mipmap/icon_check_focuse" android:state_enabled="false"></item>
+    <item android:drawable="@mipmap/icon_check_nor" android:state_enabled="true"></item>
 </selector>

@@ -13,6 +13,7 @@ import com.bll.lnkteacher.mvp.model.DiaryBean
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_diary.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 

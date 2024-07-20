@@ -187,7 +187,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
         rv_main_plan.adapter = mTeachingAdapter
         mTeachingAdapter?.bindToRecyclerView(rv_main_plan)
-        rv_main_plan.addItemDecoration(SpaceItemDeco(0,0,0,25))
+        rv_main_plan.addItemDecoration(SpaceItemDeco(25))
         mTeachingAdapter?.setOnItemClickListener { _, _, position ->
             val intent = Intent(activity, TeachingPlanActivity::class.java)
             val bundle = Bundle()

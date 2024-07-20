@@ -21,25 +21,40 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
+import com.bll.lnkteacher.ui.adapter.ClassAdapter
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
+import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_list_tab.*
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
+import kotlinx.android.synthetic.main.ac_testpaper_correct.*
+import kotlinx.android.synthetic.main.common_answer.*
+import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -64,6 +79,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var isClickExpand=false //是否是单双屏切换
     var mTabTypeAdapter: TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
+
+    var mExamClassGroups= mutableListOf<ClassGroup>()
+    var mClassAdapter:ClassAdapter?=null
+
+    var mTopicScoreAdapter: TopicScoreAdapter?=null
+    var mTopicMultiAdapter: TopicMultiScoreAdapter?=null
+    var currentScores=mutableListOf<ScoreItem>()//初始题目分数
+    var correctModule=-1//批改摸排
+    var correctStatus=0//批改状态
+    var answerImages= mutableListOf<String>()
+    var answerPos=0
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -133,6 +159,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (rv_tab!=null){
             initTabView()
         }
+
+        if (rv_class!=null){
+            initRecyclerViewClass()
+        }
+
         initCreate()
         initDialog()
         initData()
@@ -231,6 +262,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         tv_title?.setText(titleId)
     }
 
+    protected fun setPageOk(str: String){
+        showView(tv_ok)
+        tv_ok.text=str
+    }
+
     protected fun setPageSetting(str: String){
         showView(tv_setting)
         tv_setting.text=str
@@ -311,12 +347,253 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
+
     /**
      * tab点击监听
      */
     open fun onTabClickListener(view:View, position:Int){
 
     }
+
+    private fun initRecyclerViewClass(){
+        rv_class.layoutManager = FlowLayoutManager()
+        mClassAdapter = ClassAdapter(R.layout.item_class, null)
+        rv_class.adapter = mClassAdapter
+        mClassAdapter?.bindToRecyclerView(rv_class)
+        mClassAdapter?.setOnItemClickListener { adapter, view, position ->
+            for (item in mExamClassGroups){
+                item.isCheck=false
+            }
+            val item=mExamClassGroups[position]
+            item.isCheck=true
+            mClassAdapter?.notifyDataSetChanged()
+
+            onClassClickListener(view,position)
+        }
+    }
+
+    /**
+     * clas点击监听
+     */
+    open fun onClassClickListener(view:View, position:Int){
+
+    }
+
+
+    fun initRecyclerViewScore(scoreType:Int){
+        if (correctModule<3){
+            rv_list_score.layoutManager = GridLayoutManager(this,2)
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreType,correctModule,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setOnItemChildClickListener { adapter, view, position ->
+                    if (correctStatus==1){
+                        val item=currentScores[position]
+                        when(view.id){
+                            R.id.tv_score->{
+                                if (scoreType==1){
+                                    NumberDialog(this@BaseActivity,item.label).builder().setDialogClickListener{
+                                        if (item.label!=it){
+                                            item.result=0
+                                        }
+                                        item.score= it.toString()
+                                        notifyItemChanged(position)
+                                        setTotalScore(scoreType)
+                                    }
+                                }
+                            }
+                            R.id.iv_result->{
+                                if (item.result==0){
+                                    item.result=1
+                                }
+                                else{
+                                    item.result=0
+                                }
+                                if (scoreType==1)
+                                    item.score= (item.result*item.label).toString()
+                                notifyItemChanged(position)
+                                setTotalScore(scoreType)
+                            }
+                        }
+                    }
+                }
+                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseActivity,15f)))
+            }
+        }
+        else{
+            rv_list_score.layoutManager = LinearLayoutManager(this)
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreType,null).apply {
+                rv_list_score.adapter = this
+                bindToRecyclerView(rv_list_score)
+                setCustomItemChildClickListener{ position, view, childPos ->
+                    if (correctStatus==1){
+                        val scoreItem=currentScores[position]
+                        val childItem=scoreItem.childScores[childPos]
+                        when(view.id){
+                            R.id.tv_score->{
+                                if (scoreType==1){
+                                    NumberDialog(this@BaseActivity,childItem.label).builder().setDialogClickListener{
+                                        if (childItem.label!=it){
+                                            childItem.result=0
+                                        }
+                                        childItem.score= it.toString()
+                                        //获取小题总分
+                                        var scoreTotal=0
+                                        for (item in scoreItem.childScores){
+                                            scoreTotal+=MethodManager.getScore(item.score)
+                                        }
+                                        scoreItem.score=scoreTotal.toString()
+                                        notifyItemChanged(position)
+                                        setTotalScore(scoreType)
+                                    }
+                                }
+                            }
+                            R.id.iv_result->{
+                                if (childItem.result==0){
+                                    childItem.result=1
+                                }
+                                else{
+                                    childItem.result=0
+                                }
+                                if (scoreType==1){
+                                    childItem.score= (childItem.result*childItem.label).toString()
+                                    //获取小题总分
+                                    var scoreTotal=0
+                                    for (item in scoreItem.childScores){
+                                        scoreTotal+=MethodManager.getScore(item.score)
+                                    }
+                                    scoreItem.score=scoreTotal.toString()
+                                }
+                                notifyItemChanged(position)
+                                setTotalScore(scoreType)
+                            }
+                        }
+                    }
+                }
+                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseActivity,15f)))
+            }
+        }
+    }
+
+    /**
+     * 总分变化
+     */
+    private fun setTotalScore(scoreType: Int){
+        if (tv_total_score!=null){
+            var total=0
+            //统计总分
+            if (scoreType==1){
+                for (item in currentScores){
+                    total+=MethodManager.getScore(item.score)
+                }
+                tv_total_score.text=total.toString()
+            }
+            else{
+                if (correctModule<3){
+                    for (item in currentScores){
+                        if (item.result==1){
+                            total+=1
+                        }
+                    }
+                }
+                else{
+                    for (item in currentScores){
+                        for (childItem in item.childScores){
+                            if (childItem.result==1){
+                                total+=1
+                            }
+                        }
+                    }
+                }
+                tv_total_score.text=total.toString()
+            }
+        }
+    }
+
+    /**
+     * 设置答案view
+     */
+    fun setAnswerView(){
+        iv_close_answer.setOnClickListener {
+            disMissView(rl_answer)
+        }
+        iv_answer_up.setOnClickListener {
+            sv_answer.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+        iv_answer_down.setOnClickListener {
+            sv_answer.scrollBy(0,DP2PX.dip2px(this,100f))
+        }
+
+        btn_answer_down.setOnClickListener {
+            if (answerPos< answerImages.size-1){
+                answerPos+=1
+                GlideUtils.setImageUrl(this,answerImages[answerPos],iv_answer)
+                setAnswerPageView()
+            }
+        }
+
+        btn_answer_up.setOnClickListener {
+            if (answerPos>0){
+                answerPos-=1
+                GlideUtils.setImageUrl(this,answerImages[answerPos],iv_answer)
+                setAnswerPageView()
+            }
+        }
+
+        GlideUtils.setImageUrl(this,answerImages[answerPos],iv_answer)
+        setAnswerPageView()
+    }
+
+    private fun setAnswerPageView(){
+        tv_answer_total.text="${answerImages.size}"
+        tv_page_current.text="${answerPos+1}"
+    }
+
+    /**
+     * 格式序列化 题目分数集合转成字符串
+     */
+    fun toJson(list:List<ScoreItem>):String{
+        return if (correctModule<3){
+            Gson().toJson(list)
+        } else{
+            val items= arrayListOf <List<ScoreItem>>()
+            for (item in list){
+                items.add(item.childScores)
+            }
+            Gson().toJson(items)
+        }
+    }
+
+    /**
+     * 格式序列化  题目分数转行list集合
+     */
+    fun jsonToList(json:String):List<ScoreItem>{
+        var items= mutableListOf<ScoreItem>()
+        if (correctModule<3){
+            items= Gson().fromJson(json, object : TypeToken<List<ScoreItem>>() {}.type) as MutableList<ScoreItem>
+        }
+        else{
+            val scores= Gson().fromJson(json, object : TypeToken<List<List<ScoreItem>>>() {}.type) as MutableList<List<ScoreItem>>
+            for (i in scores.indices){
+                items.add(ScoreItem().apply {
+                    sort=i+1
+                    var totalLabel=0
+                    for (item in scores[i]){
+                        totalLabel+=item.label
+                    }
+                    label=totalLabel
+                    var totalItem=0
+                    for (item in scores[i]){
+                        totalItem+=MethodManager.getScore(item.score)
+                    }
+                    score=totalItem.toString()
+                    childScores=scores[i]
+                })
+            }
+        }
+        return items
+    }
+
 
     /**
      * 设置翻页
@@ -328,7 +605,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 disMissView(ll_page_number)
             } else {
                 tv_page_current.text = pageIndex.toString()
-                tv_page_total.text = pageCount.toString()
+                tv_page_total_bottom.text = pageCount.toString()
                 showView(ll_page_number)
             }
         }

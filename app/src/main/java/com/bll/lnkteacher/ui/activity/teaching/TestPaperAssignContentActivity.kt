@@ -10,46 +10,37 @@ import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.mvp.model.testpaper.TypeList
-import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
+import com.bll.lnkteacher.mvp.presenter.TestPaperAssignContentPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
+import kotlinx.android.synthetic.main.common_title.*
 
-class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignView {
+class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignContentView {
 
-    private val presenter=TestPaperAssignPresenter(this)
+    private lateinit var presenter:TestPaperAssignContentPresenter
     private var mAdapter: TestPaperAssignContentAdapter? = null
     private var typeBean:TypeBean?=null
-    private var items = mutableListOf<AssignPaperContentBean>()
+    private var items = mutableListOf<AssignPaperContentList.AssignPaperContentBean>()
     private var popGroups= mutableListOf<PopupBean>()
-    private var classSelectGroups= mutableListOf<PopupBean>()
     private var grade=0
+    private var position=0
     private var commitTime=0L
+    private var classIds= mutableListOf<Int>()
+    private var taskId=0
 
-    override fun onType(typeList: TypeList?) {
-    }
-    override fun onTypeSuccess() {
-    }
     override fun onList(assignPaperContentList: AssignPaperContentList) {
         setPageNumber(assignPaperContentList.total)
         items= assignPaperContentList.list
         mAdapter?.setNewData(items)
     }
-    override fun onImageList(lists: MutableList<AssignPaperContentBean>) {
-        val images= mutableListOf<String>()
-        for (item in lists){
-            images.add(item.url)
-        }
-        ImageDialog(this,images).builder()
-    }
     override fun onDeleteSuccess() {
         showToast(R.string.delete_success)
-        items.removeAll(getCheckedItems())
-        mAdapter?.setNewData(items)
+        mAdapter?.remove(position)
     }
     override fun onSendSuccess() {
         showToast(R.string.teaching_assign_success)
@@ -61,28 +52,72 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
 
     override fun initData() {
+        initChangeScreenData()
         pageSize=12
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("type") as TypeBean
         grade=typeBean?.grade!!
-        fetchData()
 
         for (item in DataBeanManager.classGroups){
             if (item.state==1&&item.grade==grade){
                 popGroups.add(PopupBean(item.classId,item.name,false))
             }
         }
+
+        fetchData()
+    }
+
+    override fun initChangeScreenData() {
+        presenter=TestPaperAssignContentPresenter(this)
     }
 
     override fun initView() {
         setPageTitle(typeBean?.name.toString())
+        setPageOk("发送")
+        disMissView(ll_correct,cb_commit)
+        ll_commit.layoutParams.width=DP2PX.dip2px(this,180f)
 
+        tv_group.setOnClickListener {
+            PopupCheckList(this, popGroups, tv_group,tv_group.width,  2).builder()?.setOnSelectListener{
+                classIds.clear()
+                for (item in it){
+                    classIds.add(item.id)
+                }
+            }
+        }
+
+        tv_commit_time.setOnClickListener {
+            DateTimeSelectorDialog(this).builder().setOnDateListener { timeStr, timeLong ->
+                if (timeLong>System.currentTimeMillis()){
+                    tv_commit_time.text= DateUtils.longToStringNoYear1(timeLong)
+                    commitTime=timeLong
+                }
+                else{
+                    showToast("设置提交时间错误")
+                }
+            }
+        }
+
+        tv_ok.setOnClickListener {
+            if (classIds.size==0){
+                showToast("请选择班级")
+                return@setOnClickListener
+            }
+            if (taskId>0)
+                commit()
+        }
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, items).apply {
+        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                presenter.getPaperImages(items[position].taskId)
+                val item=items[position]
+                ImageDialog(this@TestPaperAssignContentActivity,item.examUrl.split(",")).builder()
             }
             setOnItemChildClickListener { adapter, view, position ->
                 if (view.id==R.id.cb_check){
@@ -91,10 +126,16 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                     }
                     val item =items[position]
                     item.isCheck=true
+                    taskId=item.taskId
                     notifyDataSetChanged()
+                }
+                else if (view.id==R.id.tv_answer){
+                    val item=items[position]
+                    ImageDialog(this@TestPaperAssignContentActivity,item.answerUrl.split(",")).builder()
                 }
             }
             setOnItemLongClickListener { adapter, view, position ->
+                this@TestPaperAssignContentActivity.position=position
                 CommonDialog(this@TestPaperAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {
                     override fun cancel() {
@@ -108,68 +149,18 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 true
             }
         }
-
-        tv_time.setOnClickListener {
-            DateTimeSelectorDialog(this).builder().setOnDateListener { timeStr, timeLong ->
-                tv_time.text=DateUtils.longToStringNoYear(timeLong)
-                commitTime=timeLong
-            }
-        }
-
-        tv_group.setOnClickListener {
-            selectorGroup()
-        }
-
-        tv_commit.setOnClickListener {
-            if (classSelectGroups.size==0){
-                showToast("未选择班级")
-                return@setOnClickListener
-            }
-            if (getCheckedItems().size==0){
-                showToast("未选择试卷")
-                return@setOnClickListener
-            }
-            if (commitTime<=System.currentTimeMillis()){
-                showToast("提交时间错误")
-                return@setOnClickListener
-            }
-
-            val ids= mutableListOf<Int>()
-            for (item in getCheckedItems()){
-                ids.add(item.taskId)
-            }
-
-            val classIds= mutableListOf<Int>()
-            for (item in classSelectGroups){
-                classIds.add(item.id)
-            }
-
-            val map=HashMap<String,Any>()
-            map["type"]=1
-            map["ids"]=ids.toIntArray()
-            map["classIds"]=classIds.toIntArray()
-            map["grade"]=typeBean?.grade!!
-            map["endTime"]=commitTime
-            presenter.sendPapers(map)
-        }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,30))
     }
 
     /**
-     * 获的选中考卷
+     * 布置考卷
      */
-    private fun getCheckedItems():MutableList<AssignPaperContentBean>{
-        val lists= mutableListOf<AssignPaperContentBean>()
-        for (item in items){
-            if (item.isCheck)
-                lists.add(item)
-        }
-        return lists
-    }
-
-    private fun selectorGroup() {
-        PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder()?.setOnSelectListener{
-            classSelectGroups= it as MutableList<PopupBean>
-        }
+    private fun commit(){
+        val map=HashMap<String,Any>()
+        map["taskId"]=taskId
+        map["classIds"]=classIds
+        map["endTime"]=commitTime
+        presenter.commitPapers(map)
     }
 
     override fun fetchData() {
@@ -177,7 +168,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         map["page"] = pageIndex
         map["size"] = pageSize
         map["commonTypeId"] = typeBean?.id!!
-        presenter.getPaperList(map)
+        presenter.getTestPaperContentList(map)
     }
 
 }

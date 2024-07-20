@@ -6,14 +6,13 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemList
-import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.*
@@ -31,24 +30,22 @@ import org.greenrobot.eventbus.EventBus
 class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachingView {
 
     private lateinit var mPresenter:TestPaperAnalyseTeachingPresenter
-    private var id=0
+    private var classPos=0
     private var classId=0
     private var classGroupId=0
     private var classList= mutableListOf<TestPaperClassBean>()
     private var users= mutableListOf<UserBean>()
-    private val popClasss= mutableListOf<PopupBean>()
     private var scoreItems= mutableListOf<ScoreItem>()
     private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
     private var mAdapter:ExamAnalyseTeachingAdapter?=null
     private var startScore=0
-    private var endScore=0
-    private var tabs= mutableListOf<ItemTypeBean>()
+    private var endScore=100
     private var topicPops= mutableListOf<PopupBean>()//所有大题集合
     private var topicChildMap=HashMap<Int,List<PopupBean>>() //所有小题集合
     private var topicPosition=-1 //当前大题位置
     private var topicChildPosition=-1 //当前小题位置
-    private var result=1//选中结果0错 1 正确
-    private var currentClassGroups= mutableListOf<ClassGroup>()
+    private var result=0//选中结果0错 1 正确
+    private var resultChild=0
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         users.clear()
@@ -56,12 +53,13 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
         totalAnalyseItems.clear()
 
         for (userItem in bean.list) {
-            users.add(UserBean(userItem.userId,userItem.name,userItem.score))
+            if (userItem.status==2)
+                users.add(UserBean(userItem.userId,userItem.name,userItem.score))
             correctModule = userItem.questionType
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 for (item in currentScores) {
-                    val currentScore = getScore(item.score)
+                    val currentScore = MethodManager.getScore(item.score)
                     if (correctModule < 3) {
                         if (totalAnalyseItems.size < currentScores.size) {
                             val analyseItem = AnalyseItem()
@@ -72,29 +70,48 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
                             setAnalyseData(userItem,item, examAnalyseItem)
                         }
                     } else {
-                        if (totalAnalyseItems.size < currentScores.size) {
-                            val analyseItem = AnalyseItem()
-                            analyseItem.sort = item.sort
-                            analyseItem.totalScore += currentScore
-                            analyseItem.num += 1
-                            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
-                            val childAnalyseItems = mutableListOf<AnalyseItem>()
-                            for (childItem in item.childScores) {
-                                val childAnalyseItem = AnalyseItem()
-                                setAnalyseData(userItem,childItem, childAnalyseItem)
+                        if (totalAnalyseItems.size<currentScores.size){
+                            val analyseItem= AnalyseItem()
+                            analyseItem.sort=item.sort
+                            analyseItem.totalScore+=currentScore
+                            analyseItem.num+=1
+                            analyseItem.averageScore=analyseItem.totalScore/analyseItem.num
+                            if (currentScore<item.label){
+                                analyseItem.wrongNum+=1
+                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                            }
+                            else{
+                                analyseItem.rightNum+=1
+                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                            }
+
+                            val childAnalyseItems= mutableListOf<AnalyseItem>()
+                            for (childItem in item.childScores){
+                                val childAnalyseItem= AnalyseItem()
+                                setAnalyseData(userItem,childItem,childAnalyseItem)
                                 childAnalyseItems.add(childAnalyseItem)
                             }
-                            analyseItem.childAnalyses = childAnalyseItems
+                            analyseItem.childAnalyses=childAnalyseItems
                             totalAnalyseItems.add(analyseItem)
-                        } else {
-                            val examAnalyseItem = totalAnalyseItems[item.sort - 1]
-                            examAnalyseItem.totalScore += currentScore
-                            examAnalyseItem.num += 1
-                            examAnalyseItem.averageScore = examAnalyseItem.totalScore / examAnalyseItem.num
-                            for (childItem in item.childScores) {
-                                val index = item.childScores.indexOf(childItem)
-                                val childExamAnalyseItem = examAnalyseItem.childAnalyses[index]
-                                setAnalyseData(userItem,childItem, childExamAnalyseItem)
+                        }
+                        else{
+                            val analyseItem=totalAnalyseItems[item.sort-1]
+                            analyseItem.totalScore+=currentScore
+                            analyseItem.num+=1
+                            analyseItem.averageScore=analyseItem.totalScore/analyseItem.num
+                            if (currentScore<item.label){
+                                analyseItem.wrongNum+=1
+                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                            }
+                            else{
+                                analyseItem.rightNum+=1
+                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                            }
+
+                            for (childItem in item.childScores){
+                                val index=item.childScores.indexOf(childItem)
+                                val childExamAnalyseItem=analyseItem.childAnalyses[index]
+                                setAnalyseData(userItem,childItem,childExamAnalyseItem)
                             }
                         }
                     }
@@ -103,11 +120,6 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
         }
 
         if (correctModule>0){
-            tabs.add(ItemTypeBean().apply {
-                title="按题目筛选"
-            })
-            mTabTypeAdapter?.setNewData(tabs)
-
             when(correctModule){
                 1->{
                     disMissView(ll_topic_child)
@@ -138,6 +150,8 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
             }
         }
 
+        setChangeScoreUser()
+
     }
 
     override fun onCreateSuccess() {
@@ -155,16 +169,22 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
 
     override fun initData() {
         initChangeScreenData()
-        correctModule=intent.getIntExtra("module",-1)
+        classPos=intent.getIntExtra("classPos",-1)
         val correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         classList=correctList.examList!!
+        correctModule=correctList.questionType
         for (item in classList){
-            popClasss.add(PopupBean(classList.indexOf(item),item.name,false))
+            mExamClassGroups.add(ClassGroup().apply {
+                classId=item.classId
+                classGroupId=item.classGroupId
+                name=item.name
+            })
         }
-        id=classList[0].examChangeId
-        classId=classList[0].classId
-        classGroupId= classList[0].classGroupId
-        mPresenter.getClassPapers(id)
+
+        mExamClassGroups[classPos].isCheck=true
+        classId=mExamClassGroups[classPos].classId
+        classGroupId= mExamClassGroups[classPos].classGroupId
+        mPresenter.getClassPapers(classList[classPos].examChangeId)
     }
 
     override fun initChangeScreenData() {
@@ -173,26 +193,14 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
 
     override fun initView() {
         setPageTitle("因材施教")
-        showView(tv_class)
         setPageSetting("创建子群")
         setPageCustom("更新子群")
 
-        tv_class.text=popClasss[0].name
-        popClasss[0].isCheck=true
-
-        tv_class.setOnClickListener {
-            PopupRadioList(this, popClasss, tv_class ,5).builder()
-                .setOnSelectListener { item ->
-                    val pos=item.id
-                    tv_class.text = item.name
-                    if (id!=classList[pos].examChangeId){
-                        id=classList[pos].examChangeId
-                        classId=classList[pos].classId
-                        classGroupId=classList[pos].classGroupId
-                        mPresenter.getClassPapers(id)
-                    }
-                }
+        if (correctModule<3){
+            disMissView(ll_topic_child)
         }
+
+        mClassAdapter?.setNewData(mExamClassGroups)
 
         tv_custom.setOnClickListener {
             val classGroups=getClassChild()
@@ -242,7 +250,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
             InputContentDialog(this,getCurrentScreenPos(),startScore.toString(),1).builder().setOnDialogClickListener{
                 if (TextUtils.isDigitsOnly(it)) {
                     tv_left_score.text=it
-                    startScore=getScore(it)
+                    startScore=MethodManager.getScore(it)
                     setChangeScoreUser()
                 }
             }
@@ -252,7 +260,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
             InputContentDialog(this,getCurrentScreenPos(),endScore.toString(),1).builder().setOnDialogClickListener{
                 if (TextUtils.isDigitsOnly(it)) {
                     tv_right_score.text=it
-                    endScore=getScore(it)
+                    endScore=MethodManager.getScore(it)
                     setChangeScoreUser()
                 }
             }
@@ -265,6 +273,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
                 //刷新子题目
                 topicChildPosition=-1
                 tv_topic_child.text=""
+                setChangeTopicUser()
             }
         }
 
@@ -281,37 +290,44 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
             }
         }
 
+
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
-            result = if (i==R.id.rb_right){
-                1
-            } else{
+            if (i==R.id.rb_score){
+                setChangeScoreUser()
+            }
+            else{
+                setChangeTopicUser()
+            }
+        }
+
+        rg_topic.setOnCheckedChangeListener { radioGroup, i ->
+            result=if (i==R.id.rb_wrong_topic){
                 0
+            }
+            else{
+                1
             }
             setChangeTopicUser()
         }
 
-        initTabView()
+        rg_topic_child.setOnCheckedChangeListener { radioGroup, i ->
+            resultChild=if (i==R.id.rb_wrong_topic){
+                0
+            }
+            else{
+                1
+            }
+            setChangeTopicChildUser()
+        }
+
         initRecyclerView()
     }
 
-    private fun initTabView(){
-        tabs.add(ItemTypeBean().apply {
-            title="按成绩筛选"
-            isCheck=true
-        })
-        mTabTypeAdapter?.setNewData(tabs)
-    }
-
-    override fun onTabClickListener(view: View, position: Int) {
-        if (position==0){
-            showView(ll_score)
-            disMissView(ll_topic)
-            setChangeScoreUser()
-        }
-        else{
-            showView(ll_topic)
-            disMissView(ll_score)
-            setChangeTopicUser()
+    override fun onClassClickListener(view: View, position: Int) {
+        if (classPos!=position){
+            classId=mExamClassGroups[classPos].classId
+            classGroupId= mExamClassGroups[classPos].classGroupId
+            mPresenter.getClassPapers(classList[classPos].examChangeId)
         }
     }
 
@@ -329,7 +345,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
     private fun getClassChild():MutableList<ClassGroup>{
         val classGroups= mutableListOf<ClassGroup>()
         for (item in DataBeanManager.classGroups){
-            if (item.classGroupId==classGroupId&&item.state==2){
+            if (item.classGroupId==classGroupId&&item.state!=1){
                 classGroups.add(item)
             }
         }
@@ -354,7 +370,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
      */
     private fun setChangeTopicUser(){
         var currentUsers= mutableListOf<UserBean>()
-        if (correctModule<3){
+        if (correctModule>0&&result>=0){
             if (topicPosition>=0){
                 currentUsers = if (result==1){
                     totalAnalyseItems[topicPosition].rightStudents
@@ -363,7 +379,15 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
                 }
             }
         }
-        else{
+        mAdapter?.setNewData(currentUsers)
+    }
+
+    /**
+     * 筛选获取子题学生变化
+     */
+    private fun setChangeTopicChildUser(){
+        var currentUsers= mutableListOf<UserBean>()
+        if (correctModule>2){
             if (topicPosition>=0&&topicChildPosition>=0){
                 currentUsers = if (result==1){
                     totalAnalyseItems[topicPosition].childAnalyses[topicChildPosition].rightStudents
@@ -380,7 +404,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
      */
     private fun setAnalyseData(classUserBean: TestPaperClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem){
         analyseItem.sort=scoreItem.sort
-        analyseItem.totalScore+=getScore(scoreItem.score)
+        analyseItem.totalScore+=MethodManager.getScore(scoreItem.score)
         analyseItem.num+=1
         if (scoreItem.result==0){
             analyseItem.wrongNum+=1

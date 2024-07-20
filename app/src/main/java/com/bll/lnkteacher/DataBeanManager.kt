@@ -9,8 +9,6 @@ object DataBeanManager {
 
     var classGroups = mutableListOf<ClassGroup>()
 
-    var scoreList = intArrayOf(0, 60, 70, 80, 90, 100)
-
     var grades = mutableListOf<Grade>()
     var typeGrades = mutableListOf<Grade>()
     var courses = mutableListOf<ItemList>()
@@ -41,7 +39,7 @@ object DataBeanManager {
 
     var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
 
-    fun getGradeClassGroups(grade: Int): MutableList<PopupBean> {
+    fun getClassGroupPopsByGrade(grade: Int): MutableList<PopupBean> {
         val popClasss = mutableListOf<PopupBean>()
         for (item in classGroups) {
             if (item.grade == grade) {
@@ -63,28 +61,7 @@ object DataBeanManager {
         return 0
     }
 
-    val popAllClassGroups: MutableList<PopupBean>
-        get() {
-            val popClasss = mutableListOf<PopupBean>()
-            for (i in classGroups.indices) {
-                val item = classGroups[i]
-                popClasss.add(PopupBean(item.classId, item.name, false))
-            }
-            return popClasss
-        }
-
-    val popClassGroups: MutableList<PopupBean>
-        get() {
-            val popClasss = mutableListOf<PopupBean>()
-            for (i in classGroups.indices) {
-                val item = classGroups[i]
-                if (item.state==1)
-                    popClasss.add(PopupBean(item.classId, item.name, false))
-            }
-            return popClasss
-        }
-
-    fun popClassGroups(classId:Int): MutableList<PopupBean>
+    fun getClassGroupPopsOtherClassId(classId:Int): MutableList<PopupBean>
        {
             val popClasss = mutableListOf<PopupBean>()
             for (i in classGroups.indices) {

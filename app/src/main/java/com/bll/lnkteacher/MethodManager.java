@@ -3,6 +3,8 @@ package com.bll.lnkteacher;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
@@ -11,6 +13,7 @@ import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.Book;
 import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
+import com.bll.lnkteacher.mvp.model.PopupBean;
 import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem;
@@ -63,6 +66,8 @@ public class MethodManager {
 
     /**
      * 跳转阅读器
+     * @param type 1书籍 2课本
+     *             key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      * @param context
      * @param bookBean
      */
@@ -148,7 +153,7 @@ public class MethodManager {
         intent.putExtra("bookName", bean.title);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",user.accountId);
-        intent.putExtra("type", 2);
+        intent.putExtra("type", 3);
         intent.putExtra("drawPath", bean.bookDrawPath);
         intent.putExtra("key_book_type", 3);
 
@@ -204,16 +209,37 @@ public class MethodManager {
     /**
      * 根据作业本id保存当前作业的最后一次提交
      */
-    public static void saveCommitClass(int typeId,List<HomeworkClassSelectItem> items){
-        SPUtil.INSTANCE.putCommitClasss(typeId+"CommitClass",items);
+    public static void saveCommitClass(int typeId, HomeworkClassSelectItem item){
+        SPUtil.INSTANCE.putObj(typeId+"CommitClass",item);
     }
 
     /**
      * 得到作业最后一次提交所选班级信息
      * @return
      */
-    public static List<HomeworkClassSelectItem> getCommitClass(int typeId){
-        return SPUtil.INSTANCE.getCommitClasss(typeId+"CommitClass");
+    public static HomeworkClassSelectItem getCommitClass(int typeId){
+        return SPUtil.INSTANCE.getObj(typeId+"CommitClass", HomeworkClassSelectItem.class);
+    }
+
+    /**
+     * 获取当前年级所有班群（已经断片之前是否发送过）
+     * @param grade
+     * @param typeId
+     * @return
+     */
+    public static List<PopupBean> getCommitClassGroupPops(int grade,int typeId){
+        HomeworkClassSelectItem classSelectItem=getCommitClass(typeId);
+        List<PopupBean> classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByGrade(grade);
+        if (classSelectItem!=null){
+            for (int classId: classSelectItem.classIds) {
+                for (PopupBean popupBean:classGroupPops) {
+                    if (classId==popupBean.id){
+                        popupBean.isCheck=true;
+                    }
+                }
+            }
+        }
+        return classGroupPops;
     }
 
     /**
@@ -297,4 +323,17 @@ public class MethodManager {
         return url.substring(url.lastIndexOf("."));
     }
 
+    /**
+     * 获取分数
+     * @param scoreStr
+     * @return
+     */
+    public static int getScore(String scoreStr){
+        if (scoreStr==null||scoreStr.isEmpty()||!TextUtils.isDigitsOnly(scoreStr)){
+            return 0;
+        }
+        else {
+            return Integer.valueOf(scoreStr);
+        }
+    }
 }

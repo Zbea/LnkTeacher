@@ -85,7 +85,7 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(this,20f)))
+        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this,20f)))
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position=position
             val classGroup=classGroups[position]

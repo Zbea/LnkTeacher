@@ -6,21 +6,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.utils.ToolUtils
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ExamAnalyseMultiAdapter(layoutResId: Int, data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {
+class ExamAnalyseMultiAdapter(layoutResId: Int, private val scoreType:Int, data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: AnalyseItem) {
         helper.setText(R.id.tv_sort,ToolUtils.numbers[item.sort])
         helper.setText(R.id.tv_score,item.averageScore.toString())
+        helper.setVisible(R.id.ll_score,scoreType==1)
         val recyclerView=helper.getView<RecyclerView>(R.id.rv_list)
-        recyclerView.layoutManager = GridLayoutManager(mContext,3)
-        val mAdapter = ChildAdapter(R.layout.item_exam_analyse_score, item.childAnalyses)
+        recyclerView.layoutManager = GridLayoutManager(mContext,2)
+        val mAdapter = ChildAdapter(R.layout.item_exam_analyse_score,item.childAnalyses)
         recyclerView.adapter = mAdapter
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(helper.adapterPosition,view,position)
         }
+        recyclerView.addItemDecoration(SpaceGridItemDeco(2,20))
     }
 
     class ChildAdapter(layoutResId: Int,  data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {

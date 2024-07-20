@@ -1,47 +1,53 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
-import androidx.recyclerview.widget.GridLayoutManager
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.HomeworkPublishClassGroupSelectDialog
 import com.bll.lnkteacher.dialog.ImageDialog
+import com.bll.lnkteacher.dialog.PopupCheckList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassCommitItem
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.HomeworkPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
+import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
+import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
+import kotlinx.android.synthetic.main.common_title.*
 
 class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
 
     private var grade=0
-    private val mPresenter= HomeworkPaperAssignPresenter(this)
-    private var mAdapter:TestPaperAssignContentAdapter?=null
-    private var items= mutableListOf<AssignPaperContentBean>()//列表数据
+    private lateinit var mPresenter:HomeworkPaperAssignPresenter
+    private var mAdapter:HomeworkAssignContentAdapter?=null
+    private var items= mutableListOf<AssignPaperContentList.AssignPaperContentBean>()//列表数据
     private var typeBean: TypeBean?=null//作业卷分类
-    private var selectDialog:HomeworkPublishClassGroupSelectDialog?=null
-    private var selectClasss= mutableListOf<HomeworkClassSelectItem>()//选中班级
-    private var position=0
+    private var position=-1
+    private var commitTime=0L
+    private var classSelectItem:HomeworkClassSelectItem?=null
+    private var isCommit=false
+    private var isCorrect=false
+    private var classIds= mutableListOf<Int>()
+    private var classPops= mutableListOf<PopupBean>()
+    private var taskId=0
 
-    override fun onList(homeworkContent: AssignPaperContentList) {
-        setPageNumber(homeworkContent.total)
-        items= homeworkContent.list
+    override fun onList(contentList: AssignPaperContentList) {
+        setPageNumber(contentList.total)
+        items=contentList.list
         mAdapter?.setNewData(items)
     }
-    override fun onImageList(lists: MutableList<AssignPaperContentBean>) {
-        val images= mutableListOf<String>()
-        for (item in lists){
-            images.add(item.url)
-        }
-        ImageDialog(this,images).builder()
-    }
+
     override fun onCommitSuccess() {
-        MethodManager.saveCommitClass(typeBean!!.id,selectClasss)
+        MethodManager.saveCommitClass(typeBean!!.id,classSelectItem)
         showToast(R.string.teaching_assign_success)
         finish()
     }
@@ -56,126 +62,157 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     }
 
     override fun initData() {
-        pageSize=12
+        initChangeScreenData()
+        pageSize=10
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
         grade=typeBean?.grade!!
-        selectClasss=MethodManager.getCommitClass(typeBean?.id!!)
+        val classSelectItem=MethodManager.getCommitClass(typeBean?.id!!)
+        if (classSelectItem!=null){
+            isCorrect=classSelectItem.isCorrect
+            isCommit=classSelectItem.isCommit
+            classIds=classSelectItem.classIds
+        }
+        commitTime=System.currentTimeMillis()+Constants.dayLong
+
+        classPops=MethodManager.getCommitClassGroupPops(grade,typeBean?.id!!)
         fetchData()
+    }
+
+    override fun initChangeScreenData() {
+        mPresenter= HomeworkPaperAssignPresenter(this)
     }
 
     override fun initView() {
         setPageTitle(typeBean?.name!!)
-        disMissView(tv_time)
+        setPageOk("发送")
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, items).apply {
+        tv_group.setOnClickListener {
+            PopupCheckList(this,classPops,tv_group,0).builder()?.setOnSelectListener{
+                classIds.clear()
+                for (item in it){
+                    classIds.add(item.id)
+                }
+            }
+        }
+
+        tv_commit_time.text=DateUtils.longToStringWeek(commitTime)
+        tv_commit_time.setOnClickListener {
+            CalendarSingleDialog(this,300f,180f).builder().setOnDateListener{
+                if (it>System.currentTimeMillis()){
+                    tv_commit_time.text= DateUtils.longToStringWeek(it)
+                    commitTime=it
+                }
+                else{
+                    showToast("设置提交日期错误")
+                }
+            }
+        }
+
+        cb_commit.isChecked=isCommit
+        cb_commit.setOnCheckedChangeListener { compoundButton, b ->
+            isCommit=b
+        }
+
+        cb_correct.isChecked=isCorrect
+        cb_correct.setOnCheckedChangeListener { compoundButton, b ->
+            isCorrect=b
+        }
+
+        tv_ok.setOnClickListener {
+            if (classIds.size==0){
+                showToast("请选择班级")
+                return@setOnClickListener
+            }
+
+            classSelectItem=HomeworkClassSelectItem()
+            classSelectItem?.isCorrect=isCorrect
+            classSelectItem?.isCommit=isCommit
+            classSelectItem?.commitDate=commitTime
+            classSelectItem?.classIds=classIds
+
+            if (taskId>0)
+                commit()
+        }
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView(){
+        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f), DP2PX.dip2px(this,50f),0)
+        layoutParams.weight=1f
+        rv_list.layoutParams= layoutParams
+
+        rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
+        mAdapter = HomeworkAssignContentAdapter(R.layout.item_homework_assign_content, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
-                mPresenter.getImages(items[position].taskId)
+                val item=items[position]
+                ImageDialog(this@HomeworkAssignContentActivity,item.examUrl.split(",")).builder()
             }
             setOnItemChildClickListener { adapter, view, position ->
+                this@HomeworkAssignContentActivity.position=position
                 if (view.id==R.id.cb_check){
                     for (item in items){
-                        if (item.isCheck)
-                            item.isCheck=false
+                        item.isCheck=false
                     }
                     val item =items[position]
-                    item.isCheck=!item.isCheck
+                    item.isCheck=true
                     notifyDataSetChanged()
+
+                    taskId=item.taskId
+                    if (item.answerUrl.isNullOrEmpty()){
+                        cb_correct.isEnabled=false
+                        if (isCorrect){
+                            isCorrect=false
+                            cb_correct.isChecked=false
+                        }
+                    }
+                    else{
+                        cb_correct.isEnabled=true
+                    }
+                }
+                else if (view.id==R.id.tv_answer){
+                    val item=items[position]
+                    ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
+                }
+                else if (view.id==R.id.iv_delete){
+                    CommonDialog(this@HomeworkAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+                        CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            val item=items[position]
+                            val ids= arrayListOf(item.taskId)
+                            mPresenter.deletePapers(ids)
+                        }
+                    })
                 }
             }
-            setOnItemLongClickListener { adapter, view, position ->
-                this@HomeworkAssignContentActivity.position=position
-                delete()
-                true
-            }
         }
-
-        tv_group.setOnClickListener {
-            if (selectDialog==null){
-                selectDialog=HomeworkPublishClassGroupSelectDialog(this, grade, typeBean?.id!!).builder()
-                selectDialog?.setOnDialogClickListener {
-                    selectClasss= it
-                }
-            }
-            else{
-                selectDialog?.show()
-            }
-        }
-
-        tv_commit.setOnClickListener {
-            if (getCheckedItems().isNotEmpty()&& selectClasss.isNotEmpty()){
-                commitHomework(getCheckedItems()[0].title,selectClasss)
-            }
-        }
-
-    }
-
-    private fun delete(){
-        CommonDialog(this).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                val item=items[position]
-                val ids= arrayListOf(item.taskId)
-                mPresenter.deletePapers(ids)
-            }
-        })
+        rv_list?.addItemDecoration(SpaceItemDeco(40))
     }
 
     /**
-     * 发送作业本消息
+     * 布置作业卷
      */
-     private fun commitHomework(contentStr:String,homeClasss:List<HomeworkClassSelectItem>){
-        val selects= mutableListOf<HomeworkClassCommitItem>()
-        var isCommit=false
-        for (ite in homeClasss){
-            if (ite.date>0)
-                isCommit=true
-            selects.add(HomeworkClassCommitItem().apply {
-                classId=ite.classId
-                submitStatus=if (ite.isCommit) 0 else 1
-                endTime=ite.date/1000
-            })
-        }
-
-        val ids= mutableListOf<Int>()
-        for (item in getCheckedItems()){
-            ids.add(item.taskId)
-        }
-
+     private fun commit(){
         val map=HashMap<String,Any>()
-        map["subType"]=typeBean?.subType!!
-        map["title"]=contentStr
-        map["examList"]=selects
-        map["name"]=typeBean?.name!!
-        map["ids"]=ids.toIntArray()
-        map["grade"]=typeBean?.grade!!
+        map["classIds"]=classIds
         map["showStatus"]=if (isCommit) 0 else 1
+        map["endTime"]=if (isCommit)commitTime else 0
+        map["selfBatchStatus"]=if (isCorrect) 1 else 0
+        map["taskId"]=taskId
         mPresenter.commitHomeworkReel(map)
-    }
-
-    /**
-     * 获的选中作业卷
-     */
-    private fun getCheckedItems():MutableList<AssignPaperContentBean>{
-        val lists= mutableListOf<AssignPaperContentBean>()
-        for (item in items){
-            if (item.isCheck)
-                lists.add(item)
-        }
-        return lists
     }
 
     override fun fetchData() {
         val map=HashMap<String,Any>()
         map["page"] = pageIndex
         map["size"] = pageSize
-        map["name"]=typeBean?.name.toString()
-        map["grade"] = typeBean?.grade!!
+        map["commonTypeId"]=typeBean?.id!!
         mPresenter.getList(map)
     }
 

@@ -9,6 +9,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
@@ -22,7 +23,8 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
-import kotlinx.android.synthetic.main.common_correct_drawing.*
+import kotlinx.android.synthetic.main.common_answer.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import org.greenrobot.eventbus.EventBus
@@ -31,8 +33,8 @@ import java.io.File
 class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
 
     private var mId=0
-    private var type=0 //1作业 2 测卷
-    private var subType = 0
+    private var scoreMode = 0//1打分
+    private var correctList:CorrectBean?=null
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
     private var mClassBean: TestPaperClassBean?=null
@@ -44,7 +46,6 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     private var posUser=0//当前学生下标
     private var currentImages= mutableListOf<String>()//当前学生作业地址
     private val commitItems = mutableListOf<ItemList>()
-    private var initScores=mutableListOf<ScoreItem>()//初始题目分数
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
 
@@ -64,7 +65,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=tv_score_num.text.toString().toInt()
+                    map["score"]=if (scoreMode==2) "0" else tv_total_score.text.toString().toInt()
                     map["submitUrl"]=url
                     map["status"]=2
                     map["question"]=toJson(currentScores)
@@ -91,7 +92,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
         userCorrect+=1
-        userItems[posUser].score=tv_score_num.text.toString().toInt()
+        userItems[posUser].score=tv_total_score.text.toString().toInt()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=toJson(currentScores)
@@ -101,13 +102,8 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         FileUtils.deleteFile(File(getPath()))
         elik_a?.setPWEnabled(false,false)
         elik_b?.setPWEnabled(false,false)
-        EventBus.getDefault().post(if (type==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.EXAM_CORRECT_EVENT)
+        EventBus.getDefault().post(if (correctList?.taskType==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.EXAM_CORRECT_EVENT)
     }
-
-    override fun onSendSuccess() {
-        showToast(R.string.toast_send_success)
-    }
-
 
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
@@ -115,19 +111,22 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
     override fun initData() {
         screenPos=Constants.SCREEN_LEFT
-        type=intent.flags
-        mId=intent.getIntExtra("id",0)
-        correctModule=intent.getIntExtra("module",-1)
-        mClassBean=intent.getBundleExtra("bundle")?.getSerializable("classBean") as TestPaperClassBean
-        if (!mClassBean?.imageUrl.isNullOrEmpty()){
-            answerImages=ToolUtils.getImages(mClassBean?.imageUrl)
+        val classPos=intent.getIntExtra("classPos",-1)
+        correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
+        mClassBean= correctList?.examList?.get(classPos)!!
+        scoreMode=correctList?.questionMode!!
+        correctModule=correctList?.questionType!!
+        mId=correctList?.id!!
+
+        if (!correctList?.answerUrl.isNullOrEmpty()){
+            answerImages=ToolUtils.getImages(correctList?.answerUrl)
         }
-        subType = intent.getIntExtra("subType", 0)
+
         mPresenter.getClassPapers(mClassBean?.examChangeId!!)
     }
 
     override fun initView() {
-        val title=if (type==1) "作业批改" else "试卷批改"
+        val title=if (correctList?.taskType==1) "作业批改" else "试卷批改"
         setPageTitle("$title  ${mClassBean?.examName}  ${mClassBean?.name}")
 
         elik_b?.setPWEnabled(false,false)
@@ -139,14 +138,13 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         //如果是朗读本
-        if (subType == 3) {
+        if (correctList?.subType!! == 3) {
             showView(ll_record)
-            disMissView(ll_draw_content)
-            disInvisbleView(ll_score)
+            disMissView(ll_draw_content,ll_score_topic,ll_score)
         } else {
             disMissView(ll_record)
-            showView(tv_custom,ll_draw_content)
-            tv_custom.text="发送批改"
+            showView(ll_draw_content)
+            tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
         }
 
         tv_setting.setOnClickListener {
@@ -157,24 +155,28 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             disMissView(rl_answer)
         }
 
-        tv_custom.setOnClickListener {
-            mPresenter.sendClass(mClassBean?.examChangeId!!)
-        }
-
         tv_save.setOnClickListener {
-            if (correctStatus==1&& tv_score_num.text.toString().isNotEmpty()){
+            if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
                 commitPapers()
             }
             hideKeyboard()
         }
 
-        tv_score_num.setOnClickListener {
+        tv_total_score.setOnClickListener {
             if (correctStatus==1){
                 NumberDialog(this).builder().setDialogClickListener{
-                    tv_score_num.text=it.toString()
+                    tv_total_score.text=it.toString()
                 }
             }
+        }
+
+        iv_score_up.setOnClickListener {
+            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+
+        iv_score_down.setOnClickListener {
+            rv_list_score.scrollBy(0,DP2PX.dip2px(this,100f))
         }
 
         iv_play.setOnClickListener {
@@ -201,7 +203,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         initRecyclerViewUser()
-        initRecyclerViewScore()
+        initRecyclerViewScore(scoreMode)
 
         onChangeExpandView()
     }
@@ -261,7 +263,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         val userItem=userItems[posUser]
         correctStatus=userItems[posUser].status
 
-        if (subType==3){
+        if (correctList?.subType==3){
             if (!userItem.studentUrl.isNullOrEmpty()) {
                 recordPath = userItem.studentUrl.split(",")[0]
                 showView(iv_file, ll_play)
@@ -273,22 +275,21 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         when(correctStatus){
             1->{
-                tv_score_num.text = ""
+                tv_total_score.text = "0"
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
-                showView(ll_score,rv_list_score,tv_save)
+                showView(ll_score,tv_save)
                 loadPapers()
             }
             2->{
                 currentImages=ToolUtils.getImages(userItem.submitUrl)
-                tv_score_num.text = userItem.score.toString()
-                showView(ll_score,rv_list_score)
+                tv_total_score.text = userItem.score.toString()
+                showView(ll_score)
                 disMissView(tv_save)
                 onChangeContent()
             }
             3->{
                 currentImages=ToolUtils.getImages(mClassBean?.imageUrl)
-                disMissView(ll_score,rv_list_score)
-                disInvisbleView(ll_score)
+                disMissView(ll_score)
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
@@ -296,24 +297,21 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             }
         }
 
-        if (correctModule>0){
+
+        if (correctModule>0&&correctStatus!=3){
+            showView(ll_score_topic)
             if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                initScores= jsonToList(userItem.question) as MutableList<ScoreItem>
+                currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
             }
-            currentScores=initScores
             if (correctModule<3){
                 mTopicScoreAdapter?.setNewData(currentScores)
-                mTopicScoreAdapter?.setChangeModule(correctModule)
             }
             else{
                 mTopicMultiAdapter?.setNewData(currentScores)
             }
         }
         else{
-            if (correctStatus!=3){
-                disMissView(rv_list_score)
-                showView(ll_total_score)
-            }
+            disMissView(ll_score_topic)
         }
     }
 
@@ -463,7 +461,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
      * 文件路径
      */
     private fun getPath():String{
-        val path=if (type==1){
+        val path=if (correctList?.taskType==1){
             FileAddress().getPathHomework(mId,mClassBean?.classId, userItems[posUser].userId)
         }
         else{

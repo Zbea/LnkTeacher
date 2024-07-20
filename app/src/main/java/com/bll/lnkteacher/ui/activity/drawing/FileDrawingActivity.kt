@@ -7,8 +7,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFileDrawingActivity
 import com.bll.lnkteacher.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_drawing.tv_page_a
-import kotlinx.android.synthetic.main.ac_drawing_file.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 

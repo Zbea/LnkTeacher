@@ -331,7 +331,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
                 disMissView(ll_page_number)
             } else {
                 tv_page_current.text = pageIndex.toString()
-                tv_page_total.text = pageCount.toString()
+                tv_page_total_bottom.text = pageCount.toString()
                 showView(ll_page_number)
             }
         }

@@ -5,32 +5,27 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
-import com.bll.lnkteacher.dialog.HomeworkPublishClassGroupSelectDialog
+import com.bll.lnkteacher.dialog.HomeworkPublishDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.BookStore
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassCommitItem
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
+import com.bll.lnkteacher.ui.activity.teaching.HomeworkPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
-import com.bll.lnkteacher.utils.SToast
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
 class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
@@ -40,10 +35,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
-    private var selectCommitClass= mutableListOf<HomeworkClassSelectItem>()
-    private var mCommitAdapter: HomeworkPublishClassGroupSelectDialog.MyAdapter?=null
-
-    private var initDatas= mutableListOf<HomeworkClassSelectItem>()
+    private var classSelectBean: HomeworkClassSelectItem?=null //提交作业信息
 
     override fun onTypeList(list:  TypeList) {
         setPageNumber(list.total)
@@ -69,13 +61,13 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         mAdapter?.remove(position)
     }
     override fun onCommitSuccess() {
-        MethodManager.saveCommitClass(types[position].id,selectCommitClass)
+        MethodManager.saveCommitClass(types[position].id,classSelectBean)
         showToast(R.string.teaching_assign_success)
     }
     override fun onDetails(details: HomeworkAssignDetailsList) {
         detailsDialog=HomeworkAssignDetailsDialog(requireContext(), details.list).builder()
         detailsDialog?.setDialogClickListener {
-            mPresenter.deleteDetails(it)
+            mPresenter.deleteDetail(it)
         }
 
     }
@@ -109,7 +101,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         pageSize=9
 
         initRecyclerView()
-        initPublishContentView()
         initDialog(2)
     }
 
@@ -133,123 +124,42 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             setOnItemClickListener { _, _, position ->
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]
-                if(item.subType==1){
-                    val intent= Intent(activity, HomeworkAssignContentActivity::class.java)
-                    val bundle= Bundle()
-                    bundle.putSerializable("homeworkType",item)
-                    intent.putExtra("bundle",bundle)
-                    startActivity(intent)
-                }
-                else{
-                    showView(ll_publish)
-                    initPublishData()
-//                    HomeworkPublishDialog(requireContext(),grade,item.id).builder().setOnDialogClickListener{ contentStr,homeClasss->
-//                        selectCommitClass= homeClasss as MutableList<HomeworkClass>
-//                        commitHomework(item,contentStr,homeClasss)
-//                    }
+                when(item.subType){
+                    1->{
+                        val intent= Intent(activity, HomeworkPaperAssignContentActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("homeworkType",item)
+                        intent.putExtra("bundle",bundle)
+                        customStartActivity(intent)
+                    }
+                    3->{
+                        HomeworkPublishDialog(requireContext(),grade,item.id).builder().setOnDialogClickListener{ contentStr, classSelectItem->
+                            classSelectBean=classSelectItem
+                            commitHomework(item,contentStr,classSelectItem)
+                        }
+                    }
+                    else->{
+                        val intent= Intent(activity, HomeworkAssignContentActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("homeworkType",item)
+                        intent.putExtra("bundle",bundle)
+                        customStartActivity(intent)
+                    }
                 }
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@HomeworkAssignFragment.position=position
-                deleteHomeworkBook(types[position])
+                deleteHomework(types[position])
                 true
             }
         }
     }
 
-    private fun initPublishContentView(){
-        mCommitAdapter= HomeworkPublishClassGroupSelectDialog.MyAdapter(R.layout.item_publish_classgroup_selector, null)
-        rv_class.layoutManager = LinearLayoutManager(context)//创建布局管理
-        rv_class.adapter = mCommitAdapter
-        mCommitAdapter?.bindToRecyclerView(rv_class)
-        rv_class.addItemDecoration(SpaceItemDeco(0,0,0, 20))
-        mCommitAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            val item=initDatas[position]
-            when (view.id){
-                R.id.tv_date->{
-                    CalendarSingleDialog(requireActivity()).builder().setOnDateListener{
-                        item.date=it
-                        mCommitAdapter?.notifyDataSetChanged()
-                    }
-                }
-                R.id.cb_class->{
-                    item.isCheck=!item.isCheck
-                    if (!item.isCheck){
-                        item.isCommit=false
-                    }
-                    mCommitAdapter?.notifyDataSetChanged()
-                }
-                R.id.cb_commit->{
-                    item.isCommit=!item.isCommit
-                    mCommitAdapter?.notifyDataSetChanged()
-                }
-            }
-        }
-
-        tv_cancel.setOnClickListener {
-            disMissView(ll_publish)
-        }
-
-        tv_send.setOnClickListener {
-            val contentStr = et_content.text.toString()
-            selectCommitClass=getSelectClass()
-            if (contentStr.isNotEmpty()) {
-                if (selectCommitClass.isNotEmpty())
-                {
-                    disMissView(ll_publish)
-                    commitHomework(types[position],contentStr)
-                }
-                else{
-                    SToast.showText("未选中班级")
-                }
-            }
-        }
-    }
-
-    private fun initPublishData(){
-        initDatas.clear()
-        et_content.setText("")
-        val classs= DataBeanManager.getGradeClassGroups(grade)
-        val homeworkClasss=MethodManager.getCommitClass(types[position].id)
-
-        for (item in classs){
-            initDatas.add(HomeworkClassSelectItem().apply {
-                className=item.name
-                classId=item.id
-                date= DateUtils.getStartOfDayInMillis()+ Constants.dayLong
-            })
-        }
-
-        for (item in initDatas){
-            for (selectItem in homeworkClasss){
-                if (item.classId==selectItem.classId){
-                    item.isCheck=selectItem.isCheck
-                    item.isCommit=selectItem.isCommit
-                }
-            }
-        }
-        mCommitAdapter?.setNewData(initDatas)
-    }
-
-    /**
-     * 得到选中的班级信息
-     */
-    private fun getSelectClass():MutableList<HomeworkClassSelectItem>{
-        val items= mutableListOf<HomeworkClassSelectItem>()
-        for (item in initDatas){
-            if (item.isCheck){
-                if (!item.isCommit)
-                    item.date=0
-                items.add(item)
-            }
-        }
-        return items
-    }
 
     /**
      * 删除题卷本
      */
-    private fun deleteHomeworkBook(item: TypeBean){
+    private fun deleteHomework(item: TypeBean){
         CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun cancel() {
@@ -259,7 +169,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         val map=HashMap<String,Any>()
                         map["id"]=item.id
                         map["bookId"]=item.bookId
-                        mPresenter.deleteType(map)
+                        mPresenter.deleteHomeworkBookType(map)
                     }
                     else{
                         val map=HashMap<String,Any>()
@@ -273,25 +183,16 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 发送作业本消息
      */
-    private fun commitHomework(item:TypeBean, contentStr:String){
-        val selects= mutableListOf<HomeworkClassCommitItem>()
-        var isCommit=false
-        for (ite in selectCommitClass){
-            if (ite.date>0)
-                isCommit=true
-            selects.add(HomeworkClassCommitItem().apply {
-                classId=ite.classId
-                submitStatus=if (ite.isCommit) 0 else 1
-                endTime=ite.date/1000
-            })
-        }
+    private fun commitHomework(item:TypeBean, contentStr:String,classSelect: HomeworkClassSelectItem){
         val map=HashMap<String,Any>()
         map["subType"]=item.subType
         map["title"]=contentStr
-        map["examList"]=selects
+        map["classIds"]=classSelect.classIds
         map["name"]=item.name
         map["grade"]=grade
-        map["showStatus"]=if (isCommit) 0 else 1
+        map["showStatus"]=if (classSelect.isCommit) 0 else 1
+        if (classSelect.isCommit)
+            map["endTime"]=classSelect.commitDate
         map["commonTypeId"]=item.id
         mPresenter.commitHomework(map)
     }
@@ -340,7 +241,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
      * 布置详情
      */
     fun showAssignDetails(){
-        mPresenter.onDetails(grade)
+        mPresenter.getDetailsList(grade)
     }
 
     override fun onRefreshData() {

@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.test
+package com.bll.lnkteacher.ui.fragment.testpaper
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,8 +7,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentBean
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignPresenter
@@ -25,6 +24,7 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
     private var mAdapter: TestPaperAssignAdapter?=null
     private var types= mutableListOf<TypeBean>()
     private var addTypeStr=""
+    private var position=0
 
     override fun onType(typeList: TypeList) {
         setPageNumber(typeList.total)
@@ -37,13 +37,8 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
         }
         fetchData()
     }
-    override fun onList(assignPaperContentList: AssignPaperContentList?) {
-    }
-    override fun onImageList(lists: MutableList<AssignPaperContentBean>?) {
-    }
     override fun onDeleteSuccess() {
-    }
-    override fun onSendSuccess() {
+        mAdapter?.remove(position)
     }
 
 
@@ -79,9 +74,30 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
                 val bundle= Bundle()
                 bundle.putSerializable("type",types[position])
                 intent.putExtra("bundle",bundle)
-                startActivity(intent)
+                customStartActivity(intent)
+            }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@TestPaperAssignFragment.position=position
+                delete(types[position])
+                true
             }
         }
+    }
+
+    /**
+     * 删除题卷本
+     */
+    private fun delete(item: TypeBean){
+        CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
+            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    val map=HashMap<String,Any>()
+                    map["ids"]= arrayOf(item.id)
+                    presenter.deleteType(map)
+                }
+            })
     }
 
 

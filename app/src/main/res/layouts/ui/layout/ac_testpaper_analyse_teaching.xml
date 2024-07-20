@@ -4,111 +4,176 @@
     android:layout_height="match_parent"
     android:background="@color/bg_page"
     android:paddingTop="@dimen/statusbar_height"
+    android:gravity="end"
     android:orientation="vertical">
 
     <include layout="@layout/common_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_class"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_tab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
-        android:layout_marginStart="110dp"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
+        android:layout_gravity="end"
         />
 
-    <LinearLayout
-        android:id="@+id/ll_score"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_50"
         android:layout_marginEnd="@dimen/dp_50"
-        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal"
         >
 
-        <TextView
-            android:id="@+id/tv_left_score"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_line_bottom"
-            android:gravity="center"
-            android:hint="0"
-            android:textColor="@color/black_30"
-            android:textSize="@dimen/sp_26" />
-
-        <TextView
+        <RadioGroup
+            android:id="@+id/rg_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="~"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_26" />
+            android:orientation="vertical"
+            >
+            <RadioButton
+                android:id="@+id/rb_score"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="  按成绩"
+                android:checked="true"
+                android:textSize="@dimen/sp_24"
+                android:gravity="center_vertical"
+                android:button="@drawable/bg_check_selector"
+                />
 
-        <TextView
-            android:id="@+id/tv_right_score"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_line_bottom"
-            android:gravity="center"
-            android:hint="100"
-            android:textColor="@color/black_30"
-            android:textSize="@dimen/sp_26" />
+            <RadioButton
+                android:id="@+id/rb_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginTop="@dimen/dp_20"
+                android:text="  按题目"
+                android:textSize="@dimen/sp_24"
+                android:gravity="center_vertical"
+                android:button="@drawable/bg_check_selector"
+                />
+        </RadioGroup>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_score"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_toEndOf="@+id/rg_group"
+            android:layout_marginStart="510dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
 
-    <LinearLayout
-        android:id="@+id/ll_topic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginEnd="@dimen/dp_50"
-        android:visibility="gone"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_left_score"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_line_bottom"
+                android:gravity="center"
+                android:hint="0"
+                android:textColor="@color/black_30"
+                android:textSize="@dimen/sp_26" />
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="~"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26" />
+
+            <TextView
+                android:id="@+id/tv_right_score"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_line_bottom"
+                android:gravity="center"
+                android:hint="100"
+                android:textColor="@color/black_30"
+                android:textSize="@dimen/sp_26" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_topic"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="第"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_26" />
-        <TextView
-            android:id="@+id/tv_topic"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_line_bottom"
-            android:gravity="center"
-            android:textColor="@color/black_30"
-            android:textSize="@dimen/sp_26" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="题"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_26" />
+            android:layout_height="45dp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toRightOf="@+id/rg_group"
+            android:layout_below="@+id/ll_score"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="第"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26" />
+            <TextView
+                android:id="@+id/tv_topic"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_line_bottom"
+                android:drawableRight="@mipmap/icon_arrow_down"
+                android:gravity="center"
+                android:textColor="@color/black_30"
+                android:textSize="@dimen/sp_26" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="题"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_26" />
+
+
+
+            <RadioGroup
+                android:id="@+id/rg_topic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:orientation="horizontal"
+                >
+
+                <RadioButton
+                    android:id="@+id/rb_wrong_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/bg_check_selector"
+                    android:checked="true"
+                    android:text="  错" />
+
+                <RadioButton
+                    android:id="@+id/rb_right_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  对"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:button="@drawable/bg_check_selector"
+                    />
+
+            </RadioGroup>
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_topic_child"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_marginStart="@dimen/dp_20"
-            android:orientation="horizontal"
-            >
+            android:layout_height="45dp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toRightOf="@+id/rg_group"
+            android:layout_below="@+id/ll_topic"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,6 +185,7 @@
                 android:id="@+id/tv_topic_child"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
+                android:drawableRight="@mipmap/icon_arrow_down"
                 android:background="@drawable/bg_line_bottom"
                 android:gravity="center"
                 android:textColor="@color/black_30"
@@ -132,35 +198,35 @@
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_26" />
 
+
+
+            <RadioGroup
+                android:id="@+id/rg_topic_child"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:orientation="horizontal"
+                >
+                <RadioButton
+                    android:id="@+id/rb_wrong_topic_child"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="  错"
+                    android:button="@drawable/bg_check_selector"
+                    />
+                <RadioButton
+                    android:id="@+id/rb_right_topic_child"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="  对"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:button="@drawable/bg_check_selector"
+                    />
+            </RadioGroup>
+
         </LinearLayout>
-
-        <RadioGroup
-            android:id="@+id/rg_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_50"
-            android:orientation="horizontal"
-            >
-            <RadioButton
-                android:id="@+id/rb_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="  对"
-                android:checked="true"
-                android:button="@drawable/bg_check_selector"
-                />
-
-            <RadioButton
-                android:id="@+id/rb_wrong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:text="  错"
-                android:button="@drawable/bg_check_selector"
-                />
-        </RadioGroup>
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

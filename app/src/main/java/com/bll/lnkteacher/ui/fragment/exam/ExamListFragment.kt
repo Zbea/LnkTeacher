@@ -60,7 +60,7 @@ class ExamListFragment:BaseFragment(),IExamListView{
         mAdapter = ExamListAdapter(R.layout.item_testpaper_correct, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0,0,0, DP2PX.dip2px(requireActivity(),30f)))
+            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),30f)))
             setOnItemChildClickListener { _, view, position ->
                 if (view.id==R.id.tv_analyse){
                     val intent= Intent(requireActivity(), ExamAnalyseActivity::class.java)

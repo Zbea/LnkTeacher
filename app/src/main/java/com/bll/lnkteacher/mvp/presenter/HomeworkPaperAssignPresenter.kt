@@ -22,23 +22,6 @@ class HomeworkPaperAssignPresenter(view: IContractView.IHomeworkPaperAssignView)
         }, true)
     }
 
-    fun getImages(taskId:Int){
-        val map=HashMap<String,Any>()
-        map["taskId"]=taskId
-        map["size"]=100
-        val list = RetrofitManager.service.getHomeworkImages(map)
-        doRequest(list, object : Callback<AssignPaperContentList>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignPaperContentList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AssignPaperContentList>) {
-                if (!tBaseResult.data?.list.isNullOrEmpty()){
-                    view.onImageList(tBaseResult.data?.list)
-                }
-            }
-        }, false)
-    }
-
     fun commitHomeworkReel(map:HashMap<String,Any>){
         val boay=RequestUtils.getBody(map)
         val list = RetrofitManager.service.commitHomeworkReel(boay)
@@ -57,7 +40,7 @@ class HomeworkPaperAssignPresenter(view: IContractView.IHomeworkPaperAssignView)
         map["ids"]=ids.toIntArray()
         val body=RequestUtils.getBody(map)
 
-        val list = RetrofitManager.service.deletePaper(body)
+        val list = RetrofitManager.service.deleteTestPaperContent(body)
         doRequest(list, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false

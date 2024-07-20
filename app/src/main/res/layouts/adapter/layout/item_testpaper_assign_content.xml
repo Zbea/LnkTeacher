@@ -12,24 +12,81 @@
         android:orientation="vertical"
         >
 
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="273dp"
-        android:padding="5dp"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"/>
+        <ImageView
+            android:id="@+id/iv_image"
+            android:layout_width="match_parent"
+            android:layout_height="273dp"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
+            android:padding="5dp"
+            />
 
-    <CheckBox
-        android:id="@+id/cb_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:ellipsize="end"
-        android:button="@drawable/bg_check_selector"
-        android:textSize="@dimen/sp_20"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_40"
-        android:clickable="false"
-        android:lines="1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <CheckBox
+                android:id="@+id/cb_check"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_20"
+                android:clickable="false"
+                android:lines="1"/>
+
+            <TextView
+                android:id="@+id/tv_answer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:text="答案"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_date_preset"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:lines="1"
+                android:textSize="16sp"
+                android:text="预"
+                android:gravity="center"
+                android:background="@drawable/bg_gray_stroke_5dp_corner"
+                />
+
+            <TextView
+                android:id="@+id/tv_date_preset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textColor="@color/black"
+                android:lines="1"
+                android:textSize="20sp"
+                />
+
+        </LinearLayout>
+
+
+
     </LinearLayout>
+
+
+
+
 </LinearLayout>

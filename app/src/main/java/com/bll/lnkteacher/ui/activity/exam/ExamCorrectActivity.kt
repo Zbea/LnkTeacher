@@ -20,7 +20,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
-import kotlinx.android.synthetic.main.common_correct_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -30,6 +30,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private var id=0
     private var classId=0
     private var className=""
+    private var scoreMode=0
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter= ExamCorrectPresenter(this,3)
     private var userItems= mutableListOf<ExamClassUserList.ClassUserBean>()
@@ -54,7 +55,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     val map= HashMap<String, Any>()
                     map["id"]=userItems[posUser].id
                     map["schoolExamJobId"]=userItems[posUser].schoolExamJobId
-                    map["score"]=tv_score_num.text.toString().toInt()
+                    map["score"]=tv_total_score.text.toString().toInt()
                     map["teacherUrl"]=url
                     map["classId"]=userItems[posUser].classId
                     map["status"]=2
@@ -92,7 +93,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].studentName+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=tv_score_num.text.toString().toInt()
+        userItems[posUser].score=tv_total_score.text.toString().toInt()
         userItems[posUser].teacherUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=toJson(currentScores)
@@ -128,18 +129,18 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         initRecyclerView()
 
-        tv_score_num.setOnClickListener {
+        tv_total_score.setOnClickListener {
             val item=userItems[posUser]
             if (item.status==1){
                 NumberDialog(this).builder().setDialogClickListener{
-                    tv_score_num.text=it.toString()
+                    tv_total_score.text=it.toString()
                 }
             }
         }
 
         tv_save.setOnClickListener {
             val item=userItems[posUser]
-            if (item.status==1&&!tv_score_num.text.toString().isNullOrEmpty()){
+            if (item.status==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
                 commitPapers()
             }
@@ -147,6 +148,8 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         }
 
         onChangeExpandView()
+
+        initRecyclerViewScore(scoreMode)
     }
 
     private fun initRecyclerView(){
@@ -206,28 +209,23 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         correctModule=userItem.questionType
         correctStatus=userItem.status
 
-        if (mTopicScoreAdapter==null&&mTopicMultiAdapter==null){
-            initRecyclerViewScore()
-        }
-
         when(correctStatus){
             1->{
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
-                showView(ll_score,rv_list_score,tv_save)
+                showView(ll_score,tv_save)
                 loadPapers()
             }
             2->{
                 currentImages=ToolUtils.getImages(userItem.teacherUrl)
-                tv_score_num.text = userItem.score.toString()
-                showView(ll_score,rv_list_score)
+                tv_total_score.text = userItem.score.toString()
+                showView(ll_score)
                 disMissView(tv_save)
                 onChangeContent()
             }
             3->{
                 currentImages.clear()
-                disMissView(rv_list_score)
-                disInvisbleView(ll_score)
-                tv_score_num.text = ""
+                disMissView(ll_score)
+                tv_total_score.text = ""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 elik_a?.setPWEnabled(false,false)
@@ -241,7 +239,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             }
             if (correctModule<3){
                 mTopicScoreAdapter?.setNewData(currentScores)
-                mTopicScoreAdapter?.setChangeModule(correctModule)
             }
             else{
                 mTopicMultiAdapter?.setNewData(currentScores)
@@ -250,7 +247,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         else{
             if (correctStatus!=3){
                 disMissView(rv_list_score)
-                showView(ll_total_score)
             }
         }
     }

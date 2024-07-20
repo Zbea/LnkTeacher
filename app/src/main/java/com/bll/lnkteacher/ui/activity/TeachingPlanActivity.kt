@@ -56,7 +56,7 @@ class TeachingPlanActivity:BaseActivity() {
         classGroup = intent.getBundleExtra("bundle")?.getSerializable("classGroup") as ClassGroup
         classId=classGroup?.classId!!
 
-        popClasss= DataBeanManager.popClassGroups(classId)
+        popClasss= DataBeanManager.getClassGroupPopsOtherClassId(classId)
     }
 
     override fun initView() {
@@ -198,14 +198,14 @@ class TeachingPlanActivity:BaseActivity() {
         tv_move_start_time.setOnClickListener {
             CalendarSingleDialog(this,490f,405f).builder().setOnDateListener{
                 moveStartTime=it
-                tv_move_start_time.text=DateUtils.longToStringDataNoYearNoHour(moveStartTime)
+                tv_move_start_time.text=DateUtils.longToStringDataNoYear(moveStartTime)
             }
         }
 
         tv_move_end_time.setOnClickListener {
             CalendarSingleDialog(this,360f,405f).builder().setOnDateListener{
                 moveEndTime=it
-                tv_move_end_time.text=DateUtils.longToStringDataNoYearNoHour(moveEndTime)
+                tv_move_end_time.text=DateUtils.longToStringDataNoYear(moveEndTime)
             }
         }
     }
@@ -223,14 +223,14 @@ class TeachingPlanActivity:BaseActivity() {
         tv_copy_start_time.setOnClickListener {
             CalendarSingleDialog(this,490f,660f).builder().setOnDateListener{
                 copyStartTime=it
-                tv_copy_start_time.text=DateUtils.longToStringDataNoYearNoHour(copyStartTime)
+                tv_copy_start_time.text=DateUtils.longToStringDataNoYear(copyStartTime)
             }
         }
 
         tv_copy_end_time.setOnClickListener {
             CalendarSingleDialog(this,360f,660f).builder().setOnDateListener{
                 copyEndTime=it
-                tv_copy_end_time.text=DateUtils.longToStringDataNoYearNoHour(copyEndTime)
+                tv_copy_end_time.text=DateUtils.longToStringDataNoYear(copyEndTime)
             }
         }
 
@@ -290,14 +290,14 @@ class TeachingPlanActivity:BaseActivity() {
         tv_delete_start_time.setOnClickListener {
             CalendarSingleDialog(this,490f,925f).builder().setOnDateListener{
                 deleteStartTime=it
-                tv_delete_start_time.text=DateUtils.longToStringDataNoYearNoHour(deleteStartTime)
+                tv_delete_start_time.text=DateUtils.longToStringDataNoYear(deleteStartTime)
             }
         }
 
         tv_delete_end_time.setOnClickListener {
             CalendarSingleDialog(this,360f,925f).builder().setOnDateListener{
                 deleteEndTime=it
-                tv_delete_end_time.text=DateUtils.longToStringDataNoYearNoHour(deleteEndTime)
+                tv_delete_end_time.text=DateUtils.longToStringDataNoYear(deleteEndTime)
             }
         }
 

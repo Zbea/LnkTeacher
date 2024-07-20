@@ -3,14 +3,14 @@
     android:layout_width="320dp"
     android:layout_height="580dp"
     android:background="@drawable/bg_black_stroke_0dp_corner"
-    android:paddingStart="@dimen/dp_15"
-    android:paddingEnd="@dimen/dp_15"
+    android:padding="@dimen/dp_15"
     android:orientation="vertical">
 
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_15"
         android:text="目录"
         android:gravity="center_vertical"
         android:textColor="@color/black"
@@ -20,8 +20,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/dp_10"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

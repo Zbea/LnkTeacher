@@ -153,6 +153,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
     }
 
     override fun onRefreshData() {
+        lazyLoad()
         homeworkAssignFragment?.onRefreshData()
         homeworkCorrectFragment?.onRefreshData()
     }

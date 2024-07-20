@@ -90,6 +90,7 @@ class ExamManagerFragment:BaseMainFragment() {
     }
 
     override fun onRefreshData() {
+        lazyLoad()
         examListFragment?.onRefreshData()
         examCorrectFragment?.onRefreshData()
     }

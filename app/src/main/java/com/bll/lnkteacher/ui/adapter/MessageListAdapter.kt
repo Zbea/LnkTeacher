@@ -10,7 +10,7 @@ class MessageListAdapter(layoutResId: Int, data: MutableList<MessageBean>?) : Ba
 
     override fun convert(helper: BaseViewHolder, item: MessageBean) {
         helper.setText(R.id.tv_message_content,item.content)
-        helper.setText(R.id.tv_message_time,DateUtils.longToStringWeek2(item.date))
+        helper.setText(R.id.tv_message_time,DateUtils.longToStringNoYear1(item.date))
         when(item.sendType){
             1->{
                 helper.setText(R.id.tv_message_name,"发送："+item.classInfo)

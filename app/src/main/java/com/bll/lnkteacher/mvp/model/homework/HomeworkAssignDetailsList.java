@@ -12,6 +12,7 @@ public class HomeworkAssignDetailsList {
         public int id;
         public String info;
         public long time;
+        public long endTime;
         public String name;
         public String classInfo;
         public int grade;

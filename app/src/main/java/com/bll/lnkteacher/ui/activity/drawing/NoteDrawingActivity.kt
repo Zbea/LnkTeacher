@@ -13,7 +13,7 @@ import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.NoteContent
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 
 class NoteDrawingActivity : BaseDrawingActivity() {

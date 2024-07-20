@@ -37,21 +37,6 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         }, true)
     }
 
-    fun sendClass(id:Int) {
-        val map=HashMap<String,Any>()
-        map["examChangeId"]=id
-        val body=RequestUtils.getBody(map)
-        val type = RetrofitManager.service.sendPaperCorrectClass(body)
-        doRequest(type, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSendSuccess()
-            }
-        }, true)
-    }
-
     fun setModule(map:HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val commit = RetrofitManager.service.setPaperCorrectModule(body)

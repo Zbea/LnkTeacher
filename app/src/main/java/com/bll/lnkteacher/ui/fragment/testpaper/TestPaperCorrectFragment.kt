@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.fragment.test
+package com.bll.lnkteacher.ui.fragment.testpaper
 
 import android.content.Intent
 import android.os.Bundle
@@ -37,6 +37,10 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         mAdapter?.remove(pos)
     }
 
+    override fun onSendSuccess() {
+        showToast("批改发送成功")
+    }
+
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
@@ -59,10 +63,10 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, items).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,2, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0,0,0,DP2PX.dip2px(requireActivity(),30f)))
+            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),30f)))
             setOnItemChildClickListener { _, view, position ->
                 pos=position
                 val item=items[position]
@@ -72,7 +76,6 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)
-                        intent.putExtra("module",item.questionType)
                         intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                         customStartActivity(intent)
                     }
@@ -84,16 +87,16 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
             setOnChildClickListener { view,parentPos, position ->
                 val item=items[parentPos]
                 if (view.id==R.id.ll_content){
-                    val intent=Intent(requireActivity(), CorrectActivity::class.java)
-                    val bundle=Bundle()
-                    bundle.putSerializable("classBean",item.examList[position])
+                    val intent= Intent(requireActivity(), CorrectActivity::class.java)
+                    val bundle= Bundle()
+                    bundle.putSerializable("paperCorrect",item)
                     intent.putExtra("bundle",bundle)
-                    intent.putExtra("id",item.id)
-                    intent.putExtra("module",item.questionType)
-                    intent.flags= Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    intent.putExtra("classPos",position)
                     intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                     customStartActivity(intent)
-
+                }
+                if (view.id==R.id.tv_send){
+                    mPresenter.sendClass(item.examList[position]?.examChangeId!!)
                 }
             }
         }

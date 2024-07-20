@@ -101,7 +101,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             })
             beans.add(ItemList().apply {
                 name = "设置作业"
-                resId = R.mipmap.icon_setting_delete
+                resId = R.mipmap.icon_setting_set
             })
         } else {
             beans.add(ItemList().apply {
@@ -113,7 +113,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             .setOnDialogClickListener {
                 if (it == 0) {
                     MethodManager.deleteBook(book,0)
-                    mAdapter?.remove(position)
                 } else {
                     if (!book.isHomework) {
                         val map = HashMap<String, Any>()

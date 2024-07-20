@@ -71,6 +71,18 @@ public class DateUtils {
         }
     }
 
+    public static String longToStringNoYear1(long date) {
+        if(0 == date){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH:mm", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+            return sdf.format(new Date(date10ToDate13(date)));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static String longToString(long date) {
         if(0 == date){
             return null;
@@ -155,18 +167,6 @@ public class DateUtils {
         }
     }
 
-    public static String longToStringWeek2(long date) {
-        if(0 == date){
-            return null;
-        }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日HH:ss  E", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date10ToDate13(date)));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     public static String longToStringCalender(long date) {
         if(0 == date){
             return null;
@@ -185,17 +185,6 @@ public class DateUtils {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
-            return sdf.format(new Date(date10ToDate13(date)));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    public static String longToStringDataNoYearNoHour(long date) {
-        if(0 == date){
-            return null;
-        }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("MM月dd日", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
             return sdf.format(new Date(date10ToDate13(date)));
         } catch (Exception e) {
             return null;

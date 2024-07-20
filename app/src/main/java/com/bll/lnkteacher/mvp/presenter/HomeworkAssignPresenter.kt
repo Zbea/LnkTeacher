@@ -47,9 +47,9 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     /**
      * 删除题卷本
      */
-    fun deleteType(map: HashMap<String,Any>) {
+    fun deleteHomeworkBookType(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
-        val type = RetrofitManager.service.deletePaperType(body)
+        val type = RetrofitManager.service.deleteHomeworkBookType(body)
         doRequest(type, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
@@ -89,20 +89,8 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
         }, true)
     }
 
-    fun commitHomeworkReel(map:HashMap<String,Any>){
-        val boay=RequestUtils.getBody(map)
-        val list = RetrofitManager.service.commitHomeworkReel(boay)
-        doRequest(list, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCommitSuccess()
-            }
-        }, true)
-    }
 
-    fun onDetails(grade:Int) {
+    fun getDetailsList(grade:Int) {
         val map=HashMap<String,Any>()
         map["page"]=1
         map["size"]=10
@@ -120,7 +108,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
         }, true)
     }
 
-    fun deleteDetails(id:Int) {
+    fun deleteDetail(id:Int) {
         val ids= arrayOf(id)
         val map=HashMap<String,Any>()
         map["ids"]=ids

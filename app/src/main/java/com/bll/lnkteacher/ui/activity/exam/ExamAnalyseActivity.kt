@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -17,14 +17,14 @@ import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamListPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.teaching.GradeRankActivity
+import com.bll.lnkteacher.ui.activity.teaching.ScoreRankActivity
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
-import kotlinx.android.synthetic.main.common_correct_drawing.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
 import java.text.DecimalFormat
@@ -50,91 +50,56 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         scoreItems.clear()
         popScore.clear()
         totalAnalyseItems.clear()
-        var totalScore=0
-        var totalNum=0
-        var score0=0
-        var score60=0
-        var score70=0
-        var score80=0
-        var score90=0
-        var score100=0
-        for (userItem in classUserList.list){
-            if (userItem.studentUrl.isNullOrEmpty()){
-                userItem.status=3
+
+        for (userItem in classUserList.list) {
+            if (userItem.studentUrl.isNullOrEmpty()) {
+                userItem.status = 3
+            } else {
+                userItem.status = 1
             }
-            else{
-                userItem.status=1
+            if (userItem.teacherUrl.isNotEmpty()) {
+                userItem.status = 2
             }
-            if (userItem.teacherUrl.isNotEmpty()){
-                userItem.status=2
-            }
-            correctModule=userItem.questionType
-            if (!userItem.question.isNullOrEmpty()){
-                if (!userItem.question.isNullOrEmpty()&&userItem.status==2&&correctModule>0){
-                    currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
+            correctModule = userItem.questionType
+            if (!userItem.question.isNullOrEmpty()) {
+                if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
+                    currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 }
-                for (item in currentScores){
-                    val currentScore=getScore(item.score)
-                    if (correctModule<3){
-                        if (totalAnalyseItems.size<currentScores.size){
-                            val analyseItem= AnalyseItem()
-                            setAnalyseData(userItem,item,analyseItem)
+                for (item in currentScores) {
+                    val currentScore = MethodManager.getScore(item.score)
+                    if (correctModule < 3) {
+                        if (totalAnalyseItems.size < currentScores.size) {
+                            val analyseItem = AnalyseItem()
+                            setAnalyseData(userItem, item, analyseItem)
                             totalAnalyseItems.add(analyseItem)
+                        } else {
+                            val examAnalyseItem = totalAnalyseItems[item.sort - 1]
+                            setAnalyseData(userItem, item, examAnalyseItem)
                         }
-                        else{
-                            val examAnalyseItem=totalAnalyseItems[item.sort-1]
-                            setAnalyseData(userItem,item,examAnalyseItem)
-                        }
-                    }
-                    else{
-                        if (totalAnalyseItems.size<currentScores.size){
-                            val analyseItem= AnalyseItem()
-                            analyseItem.sort=item.sort
-                            analyseItem.totalScore+=currentScore
-                            analyseItem.num+=1
-                            analyseItem.averageScore=analyseItem.totalScore/analyseItem.num
-                            val childAnalyseItems= mutableListOf<AnalyseItem>()
-                            for (childItem in item.childScores){
-                                val childAnalyseItem= AnalyseItem()
-                                setAnalyseData(userItem,childItem,childAnalyseItem)
+                    } else {
+                        if (totalAnalyseItems.size < currentScores.size) {
+                            val analyseItem = AnalyseItem()
+                            analyseItem.sort = item.sort
+                            analyseItem.totalScore += currentScore
+                            analyseItem.num += 1
+                            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
+                            val childAnalyseItems = mutableListOf<AnalyseItem>()
+                            for (childItem in item.childScores) {
+                                val childAnalyseItem = AnalyseItem()
+                                setAnalyseData(userItem, childItem, childAnalyseItem)
                                 childAnalyseItems.add(childAnalyseItem)
                             }
-                            analyseItem.childAnalyses=childAnalyseItems
+                            analyseItem.childAnalyses = childAnalyseItems
                             totalAnalyseItems.add(analyseItem)
-                        }
-                        else{
-                            val examAnalyseItem=totalAnalyseItems[item.sort-1]
-                            examAnalyseItem.totalScore+=currentScore
-                            examAnalyseItem.num+=1
-                            examAnalyseItem.averageScore=examAnalyseItem.totalScore/examAnalyseItem.num
-                            for (childItem in item.childScores){
-                                val index=item.childScores.indexOf(childItem)
-                                val childExamAnalyseItem=examAnalyseItem.childAnalyses[index]
-                                setAnalyseData(userItem,childItem,childExamAnalyseItem)
-                            }
-                        }
-                    }
-                }
-            }
-            //已批改
-            if (userItem.status==2){
-                totalNum+=1
-                totalScore+=userItem.score
-
-                if (userItem.score<60){
-                    score0+=1
-                }
-                else{
-                    score60+=1
-                    if (userItem.score>=70){
-                        score70+=1
-                        if (userItem.score>=80){
-                            score80+=1
-                            if (userItem.score>=90){
-                                score90+=1
-                                if (userItem.score>=100){
-                                    score100+=1
-                                }
+                        } else {
+                            val examAnalyseItem = totalAnalyseItems[item.sort - 1]
+                            examAnalyseItem.totalScore += currentScore
+                            examAnalyseItem.num += 1
+                            examAnalyseItem.averageScore = examAnalyseItem.totalScore / examAnalyseItem.num
+                            for (childItem in item.childScores) {
+                                val index = item.childScores.indexOf(childItem)
+                                val childExamAnalyseItem = examAnalyseItem.childAnalyses[index]
+                                setAnalyseData(userItem, childItem, childExamAnalyseItem)
                             }
                         }
                     }
@@ -142,40 +107,6 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
             }
         }
 
-        //统计分数
-        for (item in DataBeanManager.scoreList){
-            when(item){
-                0->{
-                    popScore.add(PopupBean(score0,item.toString(),false))
-                }
-                60->{
-                    popScore.add(PopupBean(score60,item.toString(),true))
-                }
-                70->{
-                    popScore.add(PopupBean(score70,item.toString(),false))
-                }
-                80->{
-                    popScore.add(PopupBean(score80,item.toString(),false))
-                }
-                90->{
-                    popScore.add(PopupBean(score90,item.toString(),false))
-                }
-                else->{
-                    popScore.add(PopupBean(score100,item.toString(),false))
-                }
-            }
-        }
-
-        tv_score_pop.text=popScore[1].name+"分"
-        tv_score_info.text="以上"
-        tv_num.text=popScore[1].id.toString()
-
-        if (totalNum>0) {
-            tv_average_score.text=getAverageNum(totalScore.toDouble()/totalNum)
-        }
-        else{
-            tv_average_score.text=""
-        }
 
         if (correctModule>0){
             if (correctModule<3){
@@ -223,7 +154,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         popClasss[0].isCheck=true
 
         tv_setting.setOnClickListener {
-            val intent= Intent(this, GradeRankActivity::class.java)
+            val intent= Intent(this, ScoreRankActivity::class.java)
             val bundle= Bundle()
             bundle.putSerializable("examBean",examBean)
             intent.putExtra("bundle",bundle)
@@ -273,7 +204,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
     private fun initRecyclerView(){
         if (correctModule<3){
             rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-            mAnalyseAdapter=ExamAnalyseAdapter(R.layout.item_exam_analyse_score,correctModule, totalAnalyseItems).apply {
+            mAnalyseAdapter=ExamAnalyseAdapter(R.layout.item_exam_analyse_score,1,correctModule, totalAnalyseItems).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 rv_list.addItemDecoration(SpaceGridItemDeco(4,20))
@@ -281,10 +212,10 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         }
         else{
             rv_list.layoutManager= LinearLayoutManager(this)
-            mAnalyseMultiAdapter=ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score,totalAnalyseItems).apply {
+            mAnalyseMultiAdapter=ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score,1,totalAnalyseItems).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
-                rv_list.addItemDecoration(SpaceItemDeco(0,0,0,20))
+                rv_list.addItemDecoration(SpaceItemDeco(20))
             }
         }
     }
@@ -396,7 +327,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
      */
     private fun setAnalyseData(classUserBean: ExamClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem){
         analyseItem.sort=scoreItem.sort
-        analyseItem.totalScore+=getScore(scoreItem.score)
+        analyseItem.totalScore+=MethodManager.getScore(scoreItem.score)
         analyseItem.num+=1
         if (scoreItem.result==0){
             analyseItem.wrongNum+=1

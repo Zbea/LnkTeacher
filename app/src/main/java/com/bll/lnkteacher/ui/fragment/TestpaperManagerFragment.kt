@@ -7,8 +7,8 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
-import com.bll.lnkteacher.ui.fragment.test.TestPaperAssignFragment
-import com.bll.lnkteacher.ui.fragment.test.TestPaperCorrectFragment
+import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperAssignFragment
+import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperCorrectFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
 class TestpaperManagerFragment : BaseMainFragment(){
@@ -116,6 +116,7 @@ class TestpaperManagerFragment : BaseMainFragment(){
     }
 
     override fun onRefreshData() {
+        lazyLoad()
         testPaperAssignFragment?.onRefreshData()
         testPaperCorrectFragment?.onRefreshData()
     }

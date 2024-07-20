@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
@@ -46,66 +45,18 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
         }, true)
     }
 
-    fun getPaperList(map: HashMap<String,Any>){
-        val list = RetrofitManager.service.getPaperList(map)
-        doRequest(list, object : Callback<AssignPaperContentList>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignPaperContentList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AssignPaperContentList>) {
-                if (tBaseResult.data!=null){
-                    view.onList(tBaseResult.data)
-                }
-            }
-        }, true)
-    }
-
-    fun getPaperImages(taskId:Int){
-        val map=HashMap<String,Any>()
-        map["taskId"]=taskId
-        map["size"]=100
-        val list = RetrofitManager.service.getPaperImages(map)
-        doRequest(list, object : Callback<AssignPaperContentList>(view) {
-            override fun failed(tBaseResult: BaseResult<AssignPaperContentList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<AssignPaperContentList>) {
-                if (tBaseResult.data!=null){
-                    view.onImageList(tBaseResult.data?.list)
-                }
-            }
-        }, false)
-    }
-
-    fun deletePapers(ids:List<Int>){
-        val map=HashMap<String,Any>()
-        map["ids"]=ids.toIntArray()
+    /**
+     * 删除作业分类
+     */
+    fun deleteType(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
-
-        val list = RetrofitManager.service.deletePaper(body)
-        doRequest(list, object : Callback<Any>(view) {
+        val type = RetrofitManager.service.deleteHomeworkType(body)
+        doRequest(type, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onDeleteSuccess()
-            }
-        }, true)
-    }
-
-
-    /**
-     * 发送考卷
-     */
-    fun sendPapers(map: HashMap<String,Any>){
-        val body=RequestUtils.getBody(map)
-        val list = RetrofitManager.service.sendPapers(body)
-        doRequest(list, object : Callback<Any>(view) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSendSuccess()
             }
         }, true)
     }

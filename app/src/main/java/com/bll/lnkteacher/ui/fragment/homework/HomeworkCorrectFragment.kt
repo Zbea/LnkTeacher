@@ -11,19 +11,19 @@ import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
-import com.bll.lnkteacher.mvp.presenter.HomeworkCorrectPresenter
-import com.bll.lnkteacher.mvp.view.IContractView.IHomeworkCorrectView
+import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
+import com.bll.lnkteacher.mvp.view.IContractView.ITestPaperCorrectView
 import com.bll.lnkteacher.ui.activity.teaching.AnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.CorrectActivity
-import com.bll.lnkteacher.ui.adapter.HomeworkCorrectAdapter
+import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
-class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
+class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
 
-    private var mPresenter=HomeworkCorrectPresenter(this)
-    private var mAdapter:HomeworkCorrectAdapter?=null
+    private var mPresenter=TestPaperCorrectPresenter(this)
+    private var mAdapter:TestPaperCorrectAdapter?=null
     private var position=0
     private var items= mutableListOf<CorrectBean>()
 
@@ -35,6 +35,10 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
     override fun onDeleteSuccess() {
         showToast(R.string.delete_success)
         mAdapter?.remove(position)
+    }
+
+    override fun onSendSuccess() {
+        showToast("批改发送成功")
     }
 
     override fun getLayoutId(): Int {
@@ -58,10 +62,10 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
         rv_list.layoutParams = layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = HomeworkCorrectAdapter(R.layout.item_teaching_homework_correct, items).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,1, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(0, 0, 0, DP2PX.dip2px(activity, 30f)))
+            rv_list.addItemDecoration(SpaceItemDeco( DP2PX.dip2px(activity, 30f)))
             setOnItemChildClickListener { adapter, view, position ->
                 this@HomeworkCorrectFragment.position = position
                 val item=items[position]
@@ -73,9 +77,7 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                         val intent=Intent(requireActivity(), AnalyseActivity::class.java)
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
-                        intent.putExtra("subType",item.subType)
                         intent.putExtra("bundle",bundle)
-                        intent.putExtra("module",item.questionType)
                         intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                         customStartActivity(intent)
                     }
@@ -86,14 +88,14 @@ class HomeworkCorrectFragment:BaseFragment(),IHomeworkCorrectView {
                 if (view.id==R.id.ll_content){
                     val intent= Intent(requireActivity(), CorrectActivity::class.java)
                     val bundle= Bundle()
-                    bundle.putSerializable("classBean",item.examList[position])
+                    bundle.putSerializable("paperCorrect",item)
                     intent.putExtra("bundle",bundle)
-                    intent.putExtra("subType",item.subType)
-                    intent.putExtra("id",item.id)
-                    intent.putExtra("module",item.questionType)
-                    intent.flags= Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    intent.putExtra("classPos",position)
                     intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                     customStartActivity(intent)
+                }
+                if (view.id==R.id.tv_send){
+                    mPresenter.sendClass(item.examList[position]?.examChangeId!!)
                 }
             }
 
