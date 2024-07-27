@@ -46,7 +46,6 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
     }
 
     override fun initData() {
-
         type=intent.flags
         if (type==0){
             val correctBean=intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
@@ -54,6 +53,7 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
                 mExamClassGroups.add(ClassGroup().apply {
                     classId=item.classId
                     name=item.name
+                    isCheck=true
                 })
             }
             mPresenter.getPaperGrade(correctBean.id)
@@ -64,6 +64,7 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
                 mExamClassGroups.add(ClassGroup().apply {
                     classId=item.classId
                     name=item.className
+                    isCheck=true
                 })
             }
             mPresenter.getExamGrade(examBean.id)

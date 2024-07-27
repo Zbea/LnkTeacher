@@ -11,16 +11,18 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class TestPaperCorrectAdapter(layoutResId: Int, val type:Int,data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
+class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        helper.setText(tv_exam_type,item.title)
-        helper.setText(tv_title,item.subTypeName)
+        helper.setText(tv_title,item.title)
+        helper.setText(tv_exam_type,item.subTypeName)
+        helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(item.time))
+        helper.setText(tv_date_commit,"提交时间："+ DateUtils.longToStringWeek(item.endTime))
         helper.setGone(tv_analyse, item.examList.isNotEmpty()&&item.subType!=3)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        ClassAdapter(R.layout.item_testpaper_correct_class_type, type,item.examList).apply {
+        ClassAdapter(R.layout.item_testpaper_correct_class_type,item.selfBatchStatus==0,item.examList).apply {
             rvList.adapter = this
             bindToRecyclerView(rvList)
             setOnItemChildClickListener { adapter, view, position ->
@@ -31,16 +33,13 @@ class TestPaperCorrectAdapter(layoutResId: Int, val type:Int,data: List<CorrectB
 
     }
 
-    class ClassAdapter(layoutResId: Int,val type: Int,data: MutableList<TestPaperClassBean>?) : BaseQuickAdapter<TestPaperClassBean, BaseViewHolder>(layoutResId, data) {
+    class ClassAdapter(layoutResId: Int,var isCorrect:Boolean,data: MutableList<TestPaperClassBean>?) : BaseQuickAdapter<TestPaperClassBean, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: TestPaperClassBean) {
             helper.apply {
                 setText(tv_class_name,item.name)
                 setText(tv_number,"${item.totalStudent}人")
                 setText(tv_receive_number,"${item.totalSubmitStudent}")
-                if(type==1){
-                    helper.setVisible(tv_end_date,item.endTime>0)
-                    helper.setText(tv_end_date,DateUtils.longToStringWeek(item.endTime))
-                }
+                setVisible(tv_send,isCorrect)
                 addOnClickListener(ll_content,tv_send)
             }
         }

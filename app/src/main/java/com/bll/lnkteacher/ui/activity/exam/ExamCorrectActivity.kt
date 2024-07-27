@@ -30,7 +30,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private var id=0
     private var classId=0
     private var className=""
-    private var scoreMode=0
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter= ExamCorrectPresenter(this,3)
     private var userItems= mutableListOf<ExamClassUserList.ClassUserBean>()
@@ -149,7 +148,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         onChangeExpandView()
 
-        initRecyclerViewScore(scoreMode)
+        initRecyclerViewScore()
     }
 
     private fun initRecyclerView(){

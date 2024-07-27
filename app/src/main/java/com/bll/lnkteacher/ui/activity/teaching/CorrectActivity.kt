@@ -33,7 +33,6 @@ import java.io.File
 class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
 
     private var mId=0
-    private var scoreMode = 0//1打分
     private var correctList:CorrectBean?=null
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
@@ -65,7 +64,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=if (scoreMode==2) "0" else tv_total_score.text.toString().toInt()
+                    map["score"]=tv_total_score.text.toString().toInt()
                     map["submitUrl"]=url
                     map["status"]=2
                     map["question"]=toJson(currentScores)
@@ -203,7 +202,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
         }
 
         initRecyclerViewUser()
-        initRecyclerViewScore(scoreMode)
+        initRecyclerViewScore()
 
         onChangeExpandView()
     }
@@ -275,6 +274,9 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         when(correctStatus){
             1->{
+                if (correctList?.question?.isNotEmpty() == true&&correctModule>0){
+                    currentScores= jsonToList(correctList?.question!!) as MutableList<ScoreItem>
+                }
                 tv_total_score.text = "0"
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
                 showView(ll_score,tv_save)
@@ -282,13 +284,16 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
             }
             2->{
                 currentImages=ToolUtils.getImages(userItem.submitUrl)
+                if (userItem.question?.isNotEmpty() == true&&correctModule>0){
+                    currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
+                }
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
                 disMissView(tv_save)
                 onChangeContent()
             }
             3->{
-                currentImages=ToolUtils.getImages(mClassBean?.imageUrl)
+                currentImages=ToolUtils.getImages(correctList?.examUrl)
                 disMissView(ll_score)
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
@@ -300,9 +305,7 @@ class CorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetai
 
         if (correctModule>0&&correctStatus!=3){
             showView(ll_score_topic)
-            if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
-            }
+
             if (correctModule<3){
                 mTopicScoreAdapter?.setNewData(currentScores)
             }

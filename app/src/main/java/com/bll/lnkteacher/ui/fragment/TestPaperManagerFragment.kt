@@ -11,7 +11,7 @@ import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperCorrectFragment
 import kotlinx.android.synthetic.main.common_fragment_title.*
 
-class TestpaperManagerFragment : BaseMainFragment(){
+class TestPaperManagerFragment : BaseMainFragment(){
 
     private var testPaperAssignFragment: TestPaperAssignFragment? = null
     private var testPaperCorrectFragment: TestPaperCorrectFragment? = null
@@ -64,13 +64,12 @@ class TestpaperManagerFragment : BaseMainFragment(){
     override fun onTabClickListener(view: View, position: Int) {
         when (position) {
             0 -> {
-                showView(tv_grade)
                 setImageManager(R.mipmap.icon_add)
                 switchFragment(lastFragment, testPaperAssignFragment)
             }
 
             1 -> {
-                disMissView(iv_manager,tv_grade)
+                disMissView(iv_manager)
                 switchFragment(lastFragment, testPaperCorrectFragment)
             }
         }

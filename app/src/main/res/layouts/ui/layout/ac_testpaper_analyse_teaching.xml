@@ -13,7 +13,7 @@
         android:id="@+id/rv_class"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_30"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         android:layout_gravity="end"
@@ -22,8 +22,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_50"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_30"
         android:orientation="horizontal"
         >
@@ -59,10 +59,9 @@
 
         <LinearLayout
             android:id="@+id/ll_score"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_toEndOf="@+id/rg_group"
-            android:layout_marginStart="510dp"
+            android:layout_alignParentEnd="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             >
@@ -101,9 +100,8 @@
             android:id="@+id/ll_topic"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_marginStart="300dp"
             android:layout_marginTop="@dimen/dp_20"
-            android:layout_toRightOf="@+id/rg_group"
+            android:layout_alignParentEnd="true"
             android:layout_below="@+id/ll_score"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -167,9 +165,8 @@
             android:id="@+id/ll_topic_child"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_marginStart="300dp"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:layout_toRightOf="@+id/rg_group"
             android:layout_below="@+id/ll_topic"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -197,8 +194,6 @@
                 android:text="题"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_26" />
-
-
 
             <RadioGroup
                 android:id="@+id/rg_topic_child"
@@ -228,14 +223,49 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginTop="@dimen/dp_30"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:gravity="center_vertical|end"
+        >
+
+        <TextView
+            android:id="@+id/tv_refresh_child"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_30"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:gravity="center"
+            android:text="更新子群"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
+            />
+
+        <TextView
+            android:id="@+id/tv_create_child"
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_40"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_22"
+            android:gravity="center"
+            android:text="创建子群"
+            android:background="@drawable/bg_black_stroke_10dp_corner"
+            />
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/dp_50"
-        android:layout_marginEnd="@dimen/dp_50"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginBottom="@dimen/dp_50"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_30"
         android:padding="@dimen/dp_40"
         android:background="@drawable/bg_black_stroke_10dp_corner"
         />

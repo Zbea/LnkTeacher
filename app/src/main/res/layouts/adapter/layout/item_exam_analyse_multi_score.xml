@@ -52,7 +52,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_30"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

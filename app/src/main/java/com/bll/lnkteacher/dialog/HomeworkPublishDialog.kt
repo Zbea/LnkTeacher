@@ -133,6 +133,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
 
         override fun convert(helper: BaseViewHolder, item: PopupBean) {
             helper.setText(R.id.cb_class,"  "+item.name)
+            helper.setChecked(R.id.cb_class,item.isCheck)
             helper.addOnClickListener(R.id.cb_class)
         }
     }

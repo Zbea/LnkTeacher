@@ -138,7 +138,6 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
 
     fun changeType(type:String){
         this.type=type
-        showLog(type)
         pageIndex=1
         fetchData()
     }

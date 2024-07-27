@@ -4,21 +4,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-    <TextView
-        android:id="@+id/tv_date_create"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/teaching_assign_time"
-        android:textColor="@color/black"
-        android:textSize="@dimen/sp_16" />
+        >
+        <TextView
+            android:id="@+id/tv_date_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/teaching_assign_time"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18" />
+
+        <TextView
+            android:id="@+id/tv_date_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="提交时间"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18" />
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="312dp"
         android:background="@drawable/bg_gray_stroke_10dp_corner"
         android:orientation="vertical">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +39,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_exam_type"
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
@@ -36,11 +48,19 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/tv_exam_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_20"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_22" />
+
+            <TextView
+                android:id="@+id/tv_self_correct"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_22" />
 

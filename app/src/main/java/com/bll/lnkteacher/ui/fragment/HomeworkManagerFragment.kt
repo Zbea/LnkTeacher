@@ -69,13 +69,12 @@ class HomeworkManagerFragment : BaseMainFragment(){
     override fun onTabClickListener(view: View, position: Int) {
         when (position) {
             0 -> {
-                showView(iv_manager,tv_grade)
-                iv_manager.setImageResource(R.mipmap.icon_manager)
+                setImageManager(R.mipmap.icon_manager)
                 switchFragment(lastFragment, homeworkAssignFragment)
             }
 
             1 -> {
-                disMissView(iv_manager,tv_grade)
+                disMissView(iv_manager)
                 switchFragment(lastFragment, homeworkCorrectFragment)
             }
         }

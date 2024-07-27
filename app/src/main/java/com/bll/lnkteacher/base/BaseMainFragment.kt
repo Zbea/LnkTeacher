@@ -37,14 +37,14 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     }
 
     fun setGradeStr(){
-        grade=DataBeanManager.getClassGroupsGrade()
-        if (grade>0){
-            tv_grade.text= DataBeanManager.getGradeStr(grade)
-            popGrades = DataBeanManager.popupGrades(grade)
-            onGradeSelectorEvent()
-        }
-        else{
+        if (grade==0){
+            grade=DataBeanManager.getClassGroupsGrade()
             popGrades = DataBeanManager.popupGrades
+            if (grade>0){
+                tv_grade.text= DataBeanManager.getGradeStr(grade)
+                popGrades = DataBeanManager.popupGrades(grade)
+                onGradeSelectorEvent()
+            }
         }
     }
 

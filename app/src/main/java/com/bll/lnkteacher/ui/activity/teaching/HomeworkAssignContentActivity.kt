@@ -202,7 +202,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         val map=HashMap<String,Any>()
         map["classIds"]=classIds
         map["showStatus"]=if (isCommit) 0 else 1
-        map["endTime"]=if (isCommit)commitTime else 0
+        map["endTime"]=if (isCommit)commitTime/1000 else 0
         map["selfBatchStatus"]=if (isCorrect) 1 else 0
         map["taskId"]=taskId
         mPresenter.commitHomeworkReel(map)

@@ -42,7 +42,6 @@ class AnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDe
     private var classPos = 0
     private var posImage = 0
     private var imageCount = 0
-    private var scoreMode = 0//1赋分，2对错
     private var correctList: CorrectBean? = null
     private var images = mutableListOf<String>()
     private var pops = mutableListOf<PopupBean>()
@@ -58,7 +57,6 @@ class AnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDe
 
         var totalScore = 0
         for (userItem in bean.list) {
-            correctModule = userItem.questionType
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 for (item in currentScores) {
@@ -187,6 +185,7 @@ class AnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDe
         if (correctModule == 0)
             disMissView(ll_topic)
 
+        tv_score_label.text=if (scoreMode==1) "赋分统计数据" else "对错统计数据"
         tv_average_info.text=if (scoreMode==1) "平均分" else "平均数"
 
         tv_answer.setOnClickListener {
@@ -266,7 +265,7 @@ class AnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDe
     private fun initRecyclerView() {
         if (correctModule < 3) {
             rv_list.layoutManager = GridLayoutManager(this, 2)//创建布局管理
-            mAnalyseAdapter = ExamAnalyseAdapter(R.layout.item_exam_analyse_score, scoreMode, correctModule, null).apply {
+            mAnalyseAdapter = ExamAnalyseAdapter(R.layout.item_exam_analyse_score, correctModule, null).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 setOnItemChildClickListener { adapter, view, position ->
@@ -279,7 +278,7 @@ class AnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDe
             rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this,15f)))
         } else {
             rv_list.layoutManager = LinearLayoutManager(this)
-            mAnalyseMultiAdapter = ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score, scoreMode, null).apply {
+            mAnalyseMultiAdapter = ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score, null).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 setCustomItemChildClickListener { position, view, childPosition ->

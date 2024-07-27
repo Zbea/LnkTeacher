@@ -204,7 +204,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
     private fun initRecyclerView(){
         if (correctModule<3){
             rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-            mAnalyseAdapter=ExamAnalyseAdapter(R.layout.item_exam_analyse_score,1,correctModule, totalAnalyseItems).apply {
+            mAnalyseAdapter=ExamAnalyseAdapter(R.layout.item_exam_analyse_score,correctModule, totalAnalyseItems).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 rv_list.addItemDecoration(SpaceGridItemDeco(4,20))
@@ -212,7 +212,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         }
         else{
             rv_list.layoutManager= LinearLayoutManager(this)
-            mAnalyseMultiAdapter=ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score,1,totalAnalyseItems).apply {
+            mAnalyseMultiAdapter=ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score,totalAnalyseItems).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 rv_list.addItemDecoration(SpaceItemDeco(20))

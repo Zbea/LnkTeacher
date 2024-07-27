@@ -159,7 +159,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         val map=HashMap<String,Any>()
         map["taskId"]=taskId
         map["classIds"]=classIds
-        map["endTime"]=commitTime
+        map["endTime"]=commitTime/1000
         presenter.commitPapers(map)
     }
 

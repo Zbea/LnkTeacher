@@ -36,18 +36,6 @@
             android:textSize="@dimen/sp_18"
             />
 
-        <TextView
-            android:id="@+id/tv_end_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_5"
-            />
-
     </RelativeLayout>
 
     <LinearLayout

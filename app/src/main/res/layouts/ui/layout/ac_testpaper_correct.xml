@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginTop="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
             >
@@ -93,8 +93,8 @@
             android:layout_height="@dimen/dp_50"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_30"
             android:gravity="center"
             >
             <LinearLayout
@@ -113,7 +113,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="总分"
-                    android:textSize="@dimen/sp_22"
+                    android:textSize="@dimen/sp_24"
                     android:textColor="@color/black"
                     />
 
@@ -129,8 +129,10 @@
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_20"
+                    android:textSize="@dimen/sp_26"
                     android:gravity="center"
+                    android:text="0"
+                    android:textStyle="bold"
                     />
 
             </LinearLayout>
@@ -141,7 +143,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_50"
                 android:text="@string/save"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:gravity="center"

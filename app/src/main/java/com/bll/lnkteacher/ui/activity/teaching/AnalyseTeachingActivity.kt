@@ -173,6 +173,7 @@ class AnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachi
         val correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         classList=correctList.examList!!
         correctModule=correctList.questionType
+        scoreMode=correctList.questionMode
         for (item in classList){
             mExamClassGroups.add(ClassGroup().apply {
                 classId=item.classId

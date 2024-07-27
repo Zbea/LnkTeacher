@@ -185,14 +185,10 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
      */
     private fun commitHomework(item:TypeBean, contentStr:String,classSelect: HomeworkClassSelectItem){
         val map=HashMap<String,Any>()
-        map["subType"]=item.subType
         map["title"]=contentStr
         map["classIds"]=classSelect.classIds
-        map["name"]=item.name
-        map["grade"]=grade
         map["showStatus"]=if (classSelect.isCommit) 0 else 1
-        if (classSelect.isCommit)
-            map["endTime"]=classSelect.commitDate
+        map["endTime"]=if (classSelect.isCommit) classSelect.commitDate/1000 else 0
         map["commonTypeId"]=item.id
         mPresenter.commitHomework(map)
     }

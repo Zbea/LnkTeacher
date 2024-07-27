@@ -87,6 +87,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var mTopicMultiAdapter: TopicMultiScoreAdapter?=null
     var currentScores=mutableListOf<ScoreItem>()//初始题目分数
     var correctModule=-1//批改摸排
+    var scoreMode = 0//1打分
     var correctStatus=0//批改状态
     var answerImages= mutableListOf<String>()
     var answerPos=0
@@ -380,10 +381,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
 
-    fun initRecyclerViewScore(scoreType:Int){
+    fun initRecyclerViewScore(){
         if (correctModule<3){
             rv_list_score.layoutManager = GridLayoutManager(this,2)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreType,correctModule,null).apply {
+            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,correctModule,null).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
                 setOnItemChildClickListener { adapter, view, position ->
@@ -391,14 +392,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         val item=currentScores[position]
                         when(view.id){
                             R.id.tv_score->{
-                                if (scoreType==1){
+                                if (scoreMode==1){
                                     NumberDialog(this@BaseActivity,item.label).builder().setDialogClickListener{
                                         if (item.label!=it){
                                             item.result=0
                                         }
                                         item.score= it.toString()
                                         notifyItemChanged(position)
-                                        setTotalScore(scoreType)
+                                        setTotalScore()
                                     }
                                 }
                             }
@@ -409,10 +410,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                 else{
                                     item.result=0
                                 }
-                                if (scoreType==1)
+                                if (scoreMode==1){
                                     item.score= (item.result*item.label).toString()
+                                }
+                                else{
+                                    item.score=item.result.toString()
+                                }
                                 notifyItemChanged(position)
-                                setTotalScore(scoreType)
+                                setTotalScore()
                             }
                         }
                     }
@@ -422,7 +427,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
         else{
             rv_list_score.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreType,null).apply {
+            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,null).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
                 setCustomItemChildClickListener{ position, view, childPos ->
@@ -431,7 +436,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         val childItem=scoreItem.childScores[childPos]
                         when(view.id){
                             R.id.tv_score->{
-                                if (scoreType==1){
+                                if (scoreMode==1){
                                     NumberDialog(this@BaseActivity,childItem.label).builder().setDialogClickListener{
                                         if (childItem.label!=it){
                                             childItem.result=0
@@ -444,7 +449,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                         }
                                         scoreItem.score=scoreTotal.toString()
                                         notifyItemChanged(position)
-                                        setTotalScore(scoreType)
+                                        setTotalScore()
                                     }
                                 }
                             }
@@ -455,7 +460,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                 else{
                                     childItem.result=0
                                 }
-                                if (scoreType==1){
+                                if (scoreMode==1){
                                     childItem.score= (childItem.result*childItem.label).toString()
                                     //获取小题总分
                                     var scoreTotal=0
@@ -464,8 +469,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                     }
                                     scoreItem.score=scoreTotal.toString()
                                 }
+                                else{
+                                    var totalRight=0
+                                    for (item in scoreItem.childScores){
+                                        if (item.result==1)
+                                            totalRight+= 1
+                                    }
+                                    scoreItem.score=totalRight.toString()
+                                }
                                 notifyItemChanged(position)
-                                setTotalScore(scoreType)
+                                setTotalScore()
                             }
                         }
                     }
@@ -478,35 +491,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     /**
      * 总分变化
      */
-    private fun setTotalScore(scoreType: Int){
+    private fun setTotalScore(){
         if (tv_total_score!=null){
             var total=0
-            //统计总分
-            if (scoreType==1){
-                for (item in currentScores){
-                    total+=MethodManager.getScore(item.score)
-                }
-                tv_total_score.text=total.toString()
+            for (item in currentScores){
+                total+=MethodManager.getScore(item.score)
             }
-            else{
-                if (correctModule<3){
-                    for (item in currentScores){
-                        if (item.result==1){
-                            total+=1
-                        }
-                    }
-                }
-                else{
-                    for (item in currentScores){
-                        for (childItem in item.childScores){
-                            if (childItem.result==1){
-                                total+=1
-                            }
-                        }
-                    }
-                }
-                tv_total_score.text=total.toString()
-            }
+            tv_total_score.text=total.toString()
         }
     }
 
@@ -545,8 +536,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     private fun setAnswerPageView(){
-        tv_answer_total.text="${answerImages.size}"
-        tv_page_current.text="${answerPos+1}"
+        tv_answer_total?.text="${answerImages.size}"
+        tv_answer_current?.text="${answerPos+1}"
     }
 
     /**
@@ -576,17 +567,29 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             val scores= Gson().fromJson(json, object : TypeToken<List<List<ScoreItem>>>() {}.type) as MutableList<List<ScoreItem>>
             for (i in scores.indices){
                 items.add(ScoreItem().apply {
-                    sort=i+1
-                    var totalLabel=0
-                    for (item in scores[i]){
-                        totalLabel+=item.label
+                    sort=i
+                    if (scoreMode==1){
+                        var totalLabel=0
+                        for (item in scores[i]){
+                            totalLabel+=item.label
+                        }
+                        label=totalLabel
+                        var totalItem=0
+                        for (item in scores[i]){
+                            totalItem+= MethodManager.getScore(item.score)
+                        }
+                        score=totalItem.toString()
                     }
-                    label=totalLabel
-                    var totalItem=0
-                    for (item in scores[i]){
-                        totalItem+=MethodManager.getScore(item.score)
+                    else{
+                        var totalRight=0
+                        for (item in scores[i]){
+                            item.score=item.result.toString()
+                            if (item.result==1) {
+                                totalRight+= 1
+                            }
+                        }
+                        score=totalRight.toString()
                     }
-                    score=totalItem.toString()
                     childScores=scores[i]
                 })
             }

@@ -63,10 +63,9 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,2, items).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),30f)))
             setOnItemChildClickListener { _, view, position ->
                 pos=position
                 val item=items[position]
@@ -100,6 +99,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                 }
             }
         }
+        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),20f)))
     }
 
     /**

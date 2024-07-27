@@ -42,6 +42,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
                 onDialogClickListener?.onDelete(items[position].id)
             }
         }
+        rvList?.addItemDecoration(SpaceItemDeco(20))
         return this
     }
 

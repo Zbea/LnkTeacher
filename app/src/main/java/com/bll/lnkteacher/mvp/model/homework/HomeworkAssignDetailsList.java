@@ -6,7 +6,7 @@ import java.util.List;
 public class HomeworkAssignDetailsList {
 
     public int total;
-    public List<DetailsBean> list=new ArrayList<>();
+    public List<DetailsBean> list;
 
     public static class DetailsBean{
         public int id;

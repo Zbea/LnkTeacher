@@ -62,10 +62,9 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
         rv_list.layoutParams = layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,1, null).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco( DP2PX.dip2px(activity, 30f)))
             setOnItemChildClickListener { adapter, view, position ->
                 this@HomeworkCorrectFragment.position = position
                 val item=items[position]
@@ -98,8 +97,8 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
                     mPresenter.sendClass(item.examList[position]?.examChangeId!!)
                 }
             }
-
         }
+        rv_list.addItemDecoration(SpaceItemDeco( DP2PX.dip2px(activity, 20f)))
     }
 
 

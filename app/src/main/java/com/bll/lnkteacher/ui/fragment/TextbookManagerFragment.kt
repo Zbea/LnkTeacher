@@ -15,6 +15,7 @@ import com.bll.lnkteacher.ui.fragment.textbook.HandoutFragment
 import com.bll.lnkteacher.ui.fragment.textbook.TextbookFragment
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.*
 import org.greenrobot.eventbus.EventBus
@@ -34,6 +35,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     override fun onType(list: MutableList<String>) {
         if (list.size>0){
             if (types!=list){
+                SPUtil.putListString("handoutTypes",list)
                 handoutsTypes.clear()
                 for (i in list.indices){
                     handoutsTypes.add(PopupBean(i,list[i],i==0))
@@ -44,6 +46,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
             }
         }
         else{
+            SPUtil.putListString("handoutTypes", mutableListOf())
             disMissView(tv_grade)
         }
     }
@@ -60,6 +63,10 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     override fun initView() {
         super.initView()
         setTitle(DataBeanManager.getIndexLeftData()[2].name)
+        types=SPUtil.getListStrings("handoutTypes")
+        for (i in types.indices){
+            handoutsTypes.add(PopupBean(i,types[i],i==0))
+        }
 
         val list=DataBeanManager.textbookType.toMutableList()
         list.removeLast()
@@ -68,8 +75,12 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
             textFragments.add(TextbookFragment().newInstance(textbook))
         }
         handoutFragment = HandoutFragment()
-
         switchFragment(lastFragment, textFragments[0])
+
+        if (types.size>0){
+            tv_grade.text=types[0]
+            handoutFragment?.changeType(types[0])
+        }
 
         tv_grade.setOnClickListener {
             PopupRadioList(requireActivity(),handoutsTypes,tv_grade,0).builder().setOnSelectListener{
