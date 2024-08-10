@@ -39,7 +39,7 @@ class TopicMultiScoreAdapter(layoutResId: Int, private val scoreMode:Int, data: 
     class ChildAdapter(layoutResId: Int, private val scoreMode:Int, data: List<ScoreItem>?) : BaseQuickAdapter<ScoreItem, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ScoreItem) {
             helper.apply {
-                helper.setText(R.id.tv_sort,"${item.sort}")
+                helper.setText(R.id.tv_sort,"${item.sort+1}")
                 helper.setText(R.id.tv_score,item.score)
                 helper.setText(R.id.tv_score,if (scoreMode==1) item.score else if (item.result==1)"对" else "错")
                 helper.setImageResource(R.id.iv_result,if (item.result==1) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)

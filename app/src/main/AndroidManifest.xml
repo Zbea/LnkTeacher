@@ -158,7 +158,7 @@
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.CorrectActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookTypeListActivity"
@@ -167,7 +167,7 @@
         <activity android:name=".ui.activity.classgroup.ClassGroupTeacherActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.AnalyseActivity"
+        <activity android:name=".ui.activity.teaching.TestPaperAnalyseActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.book.BookStoreTypeActivity"
@@ -227,10 +227,22 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.AnalyseTeachingActivity"
+        <activity android:name=".ui.activity.teaching.TestPaperAnalyseTeachingActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.teaching.HomeworkAssignContentActivity" />
+        <activity android:name=".ui.activity.teaching.HomeworkAnalyseActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.teaching.TestPaperCorrectActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.exam.ExamDetailsActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

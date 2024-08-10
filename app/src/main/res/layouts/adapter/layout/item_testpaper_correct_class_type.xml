@@ -55,8 +55,9 @@
             />
         <TextView
             android:id="@+id/tv_receive_number"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
             android:textColor="@color/black"
@@ -64,23 +65,21 @@
             />
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
-
-        <TextView
-            android:id="@+id/tv_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发送"
+            android:text="批改"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16"
-            android:paddingStart="6dp"
-            android:paddingEnd="6dp"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
+            android:textSize="@dimen/sp_18"
+            />
+        <TextView
+            android:id="@+id/tv_correct_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_line_bottom"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_18"
             />
 
     </LinearLayout>

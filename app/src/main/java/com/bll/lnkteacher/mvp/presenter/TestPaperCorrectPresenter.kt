@@ -9,7 +9,21 @@ import com.bll.lnkteacher.net.*
  */
 class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BasePresenter<IContractView.ITestPaperCorrectView>(view) {
 
-    fun getList(map:HashMap<String,Any>) {
+    fun getHomeworkCorrectList(map:HashMap<String,Any>) {
+        val type = RetrofitManager.service.getHomeworkCorrectList(map)
+        doRequest(type, object : Callback<CorrectList>(view) {
+            override fun failed(tBaseResult: BaseResult<CorrectList>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<CorrectList>) {
+                if (tBaseResult.data!=null){
+                    view.onList(tBaseResult.data)
+                }
+            }
+        }, false)
+    }
+
+    fun getPaperCorrectList(map:HashMap<String,Any>) {
         val type = RetrofitManager.service.getPaperCorrectList(map)
         doRequest(type, object : Callback<CorrectList>(view) {
             override fun failed(tBaseResult: BaseResult<CorrectList>): Boolean {
@@ -40,9 +54,10 @@ class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BaseP
     }
 
 
-    fun sendClass(id:Int) {
+    fun sendClass(id:Int, ids: List<Int>) {
         val map = HashMap<String, Any>()
-        map["examChangeId"] = id
+        map["taskGroupId"] = id
+        map["classIds"]=ids
         val body = RequestUtils.getBody(map)
         val type = RetrofitManager.service.sendPaperCorrectClass(body)
         doRequest(type, object : Callback<Any>(view) {
@@ -55,4 +70,5 @@ class TestPaperCorrectPresenter(view: IContractView.ITestPaperCorrectView):BaseP
             }
         }, true)
     }
+
 }

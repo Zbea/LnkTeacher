@@ -9,6 +9,7 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
+import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
@@ -27,9 +28,7 @@ import java.io.File
 
 class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,IFileUploadView{
 
-    private var id=0
-    private var classId=0
-    private var className=""
+    private var examBean: ExamCorrectList.ExamCorrectBean?=null
     private val mUploadPresenter=FileUploadPresenter(this,3)
     private val mPresenter= ExamCorrectPresenter(this,3)
     private var userItems= mutableListOf<ExamClassUserList.ClassUserBean>()
@@ -111,22 +110,27 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun initData() {
         screenPos=Constants.SCREEN_LEFT
-        id=intent.getIntExtra("id",0)
-        classId=intent.getIntExtra("classId",0)
-        className= intent.getStringExtra("className").toString()
+        examBean= intent.getBundleExtra("bundle")?.get("examBean") as ExamCorrectList.ExamCorrectBean
+        correctModule=examBean?.questionType!!
+        scoreMode=examBean?.questionMode!!
+        if (!examBean?.answerUrl.isNullOrEmpty())
+            answerImages= examBean?.answerUrl?.split(",") as MutableList<String>
 
         val map=HashMap<String,Any>()
-        map["schoolExamJobId"]=id
-        map["classId"]=classId
+        map["schoolExamJobId"]= examBean?.schoolExamJobId!!
+        map["classId"]= examBean?.classId!!
         mPresenter.getExamClassUser(map)
     }
 
     override fun initView() {
-        setPageTitle("考试批改  $className")
+        setPageTitle("考试批改  ${examBean?.className}")
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
-        initRecyclerView()
+        if (answerImages.size>0){
+            showView(tv_answer)
+            setAnswerView()
+        }
 
         tv_total_score.setOnClickListener {
             val item=userItems[posUser]
@@ -146,9 +150,10 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             hideKeyboard()
         }
 
-        onChangeExpandView()
-
+        initRecyclerView()
         initRecyclerViewScore()
+
+        onChangeExpandView()
     }
 
     private fun initRecyclerView(){
@@ -156,7 +161,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         mAdapter = ExamCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(7,  15))
+            rv_list.addItemDecoration(SpaceGridItemDeco(7,  30))
             setOnItemClickListener { adapter, view, position ->
                 if (position==posUser)
                     return@setOnItemClickListener
@@ -204,17 +209,20 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             isExpand=false
             onChangeExpandView()
         }
+
         val userItem=userItems[posUser]
-        correctModule=userItem.questionType
         correctStatus=userItem.status
 
         when(correctStatus){
             1->{
+                currentScores = jsonToList(examBean?.question!!) as MutableList<ScoreItem>
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
+                tv_total_score.text = ""
                 showView(ll_score,tv_save)
                 loadPapers()
             }
             2->{
+                currentScores = jsonToList(userItem.question!!) as MutableList<ScoreItem>
                 currentImages=ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
@@ -227,15 +235,12 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 tv_total_score.text = ""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
-                elik_a?.setPWEnabled(false,false)
-                elik_b?.setPWEnabled(false,false)
+                setPWEnabled(false)
             }
         }
 
-        if (correctModule>0){
-            if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
-            }
+        if (correctModule>0&&correctStatus!=3){
+            showView(ll_score_topic)
             if (correctModule<3){
                 mTopicScoreAdapter?.setNewData(currentScores)
             }
@@ -244,9 +249,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             }
         }
         else{
-            if (correctStatus!=3){
-                disMissView(rv_list_score)
-            }
+            disMissView(ll_score_topic)
         }
     }
 
@@ -326,8 +329,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         for (i in currentImages.indices){
             savePaths.add(getPath()+"/${i+1}.png")
         }
-        val files = FileUtils.getAscFiles(getPath())
-        if (files.isNullOrEmpty()) {
+        if (!FileUtils.isExistContent(getPath())) {
             FileMultitaskDownManager.with(this).create(currentImages).setPath(savePaths).startMultiTaskDownLoad(
                 object : FileMultitaskDownManager.MultiTaskCallBack {
                     override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
@@ -395,7 +397,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
      * 文件路径
      */
     private fun getPath():String{
-        return FileAddress().getPathExam(id,classId, userItems[posUser].userId)
+        return FileAddress().getPathExam(examBean?.id, examBean?.classId, userItems[posUser].userId)
     }
 
     /**

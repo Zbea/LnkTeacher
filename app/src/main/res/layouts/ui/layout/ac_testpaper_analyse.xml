@@ -30,7 +30,7 @@
                 android:id="@+id/rv_class"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_30"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_gravity="end"
@@ -40,33 +40,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_30"
+                android:layout_marginBottom="@dimen/dp_30"
                 android:layout_marginEnd="@dimen/dp_40"
-                android:background="@drawable/bg_gray_stroke_10dp_corner"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_30"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="@dimen/dp_40"
                     android:orientation="horizontal"
+                    android:layout_centerVertical="true"
                     android:gravity="center_vertical"
                     >
                     <TextView
-                        android:id="@+id/tv_average_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="平均分"
+                        android:text="平均分数"
                         android:textColor="@color/black"
                         android:textSize="@dimen/sp_26" />
 
                     <TextView
                         android:id="@+id/tv_average_score"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_10"
                         android:background="@drawable/bg_line_bottom"
                         android:gravity="center"
                         android:textColor="@color/black"
@@ -76,51 +77,23 @@
 
 
                 <LinearLayout
-                    android:id="@+id/ll_correct"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="250dp"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="已批改"
-                        android:textSize="@dimen/sp_26"
-                        android:textColor="@color/black"
-                        />
-
-                    <TextView
-                        android:id="@+id/tv_correct_number"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/sp_26"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:background="@drawable/bg_line_bottom"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/ll_correct"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
                     >
 
                     <TextView
                         android:id="@+id/tv_score_pop"
-                        android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
                         android:drawableEnd="@mipmap/icon_arrow_down"
                         android:gravity="center"
                         android:paddingEnd="@dimen/dp_5"
-                        android:background="@drawable/bg_line_bottom"
+                        android:background="@drawable/bg_gray_stroke_10dp_corner"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_26" />
@@ -129,6 +102,7 @@
                         android:id="@+id/tv_score_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
                         android:gravity="center"
                         android:text="以上"
                         android:textColor="@color/black"
@@ -137,8 +111,10 @@
                     <TextView
                         android:id="@+id/tv_num"
                         android:layout_width="80dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:textStyle="bold"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
                         android:gravity="center"
                         android:textColor="@color/black"
                         android:background="@drawable/bg_line_bottom"
@@ -154,40 +130,106 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tv_answer"
+
+                <LinearLayout
+                    android:id="@+id/ll_correct"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_30"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_alignParentEnd="true"
-                    android:gravity="center"
-                    android:text="标准答案"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_26" />
+                    android:layout_centerVertical="true"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="批改"
+                        android:textSize="@dimen/sp_26"
+                        android:textColor="@color/black"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_correct_number"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:textSize="@dimen/sp_26"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_line_bottom"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="人"
+                        android:textSize="@dimen/sp_26"
+                        android:textColor="@color/black"
+                        />
+                </LinearLayout>
 
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="题目得分率"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                android:textStyle="bold"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginTop="@dimen/dp_10"
+                />
 
             <LinearLayout
                 android:id="@+id/ll_topic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="30dp"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:orientation="vertical"
                 >
-                <TextView
-                    android:id="@+id/tv_score_label"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="小题统计数据"
-                    android:textSize="30sp"
-                    android:textColor="@color/black"
-                    />
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_500"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_score_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="统计数据"
+                        android:textColor="@color/black"
+                        android:textSize="26sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/tv_answer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="标准答案"
+                        android:textSize="22sp"
+                        android:visibility="gone"
+                        android:textColor="@color/black"
+                        />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="560dp"
                     android:layout_marginTop="@dimen/dp_10"
                     android:background="@drawable/bg_black_stroke_10dp_corner"
                     >

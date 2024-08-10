@@ -562,6 +562,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         var items= mutableListOf<ScoreItem>()
         if (correctModule<3){
             items= Gson().fromJson(json, object : TypeToken<List<ScoreItem>>() {}.type) as MutableList<ScoreItem>
+            for (item in items){
+                item.sort=items.indexOf(item)
+            }
         }
         else{
             val scores= Gson().fromJson(json, object : TypeToken<List<List<ScoreItem>>>() {}.type) as MutableList<List<ScoreItem>>
@@ -589,6 +592,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                             }
                         }
                         score=totalRight.toString()
+                    }
+                    for (item in scores[i]){
+                        item.sort=scores[i].indexOf(item)
                     }
                     childScores=scores[i]
                 })

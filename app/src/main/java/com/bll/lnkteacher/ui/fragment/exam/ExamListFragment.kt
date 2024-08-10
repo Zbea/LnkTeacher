@@ -13,7 +13,7 @@ import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.presenter.ExamListPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IExamListView
 import com.bll.lnkteacher.ui.activity.exam.ExamAnalyseActivity
-import com.bll.lnkteacher.ui.activity.exam.ExamCorrectActivity
+import com.bll.lnkteacher.ui.activity.exam.ExamDetailsActivity
 import com.bll.lnkteacher.ui.adapter.ExamListAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -60,7 +60,7 @@ class ExamListFragment:BaseFragment(),IExamListView{
         mAdapter = ExamListAdapter(R.layout.item_testpaper_correct, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),30f)))
+            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),20f)))
             setOnItemChildClickListener { _, view, position ->
                 if (view.id==R.id.tv_analyse){
                     val intent= Intent(requireActivity(), ExamAnalyseActivity::class.java)
@@ -72,15 +72,17 @@ class ExamListFragment:BaseFragment(),IExamListView{
                 }
             }
             setOnChildClickListener{view, parentPos, position ->
+                val item=items[position]
                 if (view.id==R.id.ll_content){
-                    val item=items[parentPos]
-                    val classItem=item.classList[position]
-                    val intent= Intent(requireActivity(), ExamCorrectActivity::class.java)
-                    intent.putExtra("id",item.id)
-                    intent.putExtra("classId",classItem.classId)
-                    intent.putExtra("className",classItem.className)
-                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
-                    customStartActivity(intent)
+                    if (item.sendStatus==2){
+                        val intent= Intent(requireActivity(), ExamDetailsActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("examBean",items[parentPos])
+                        intent.putExtra("bundle",bundle)
+                        intent.putExtra("classPos",position)
+                        intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
+                        customStartActivity(intent)
+                    }
                 }
             }
         }

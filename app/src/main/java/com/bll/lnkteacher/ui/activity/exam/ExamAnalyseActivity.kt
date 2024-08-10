@@ -143,11 +143,14 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamListView {
         setPageTitle(R.string.teaching_testpaper_analyse)
         showView(tv_class)
         disMissView(iv_tool,iv_catalog,ll_correct,iv_btn)
-        setPageSetting("成绩统计")
 
-        if (correctModule>0){
-            setPageCustom("因材施教")
-            showView(rv_list)
+        if (examBean?.sendStatus==2){
+            setPageSetting("成绩统计")
+
+            if (correctModule>0){
+                setPageCustom("因材施教")
+                showView(rv_list)
+            }
         }
 
         tv_class.text=popClasss[0].name

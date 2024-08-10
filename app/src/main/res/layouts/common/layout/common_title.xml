@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/navigation_height">
+    android:layout_height="@dimen/navigation_height"
+    >
 
     <ImageView
         android:id="@+id/iv_back"
@@ -35,7 +36,7 @@
         <TextView
             android:id="@+id/tv_class"
             android:layout_width="160dp"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="match_parent"
             android:layout_marginStart="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
             android:drawablePadding="@dimen/dp_10"
@@ -44,19 +45,19 @@
             android:layout_marginEnd="@dimen/dp_40"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
-            android:visibility="gone"
             android:gravity="center"
             android:lines="1"
             android:ellipsize="end"
+            android:visibility="gone"
             android:text="班级选择"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
 
         <TextView
             android:id="@+id/tv_province"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -67,12 +68,12 @@
             android:lines="1"
             android:ellipsize="end"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
         <TextView
             android:id="@+id/tv_course"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -83,12 +84,12 @@
             android:lines="1"
             android:ellipsize="end"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
         <TextView
             android:id="@+id/tv_grade"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -99,12 +100,12 @@
             android:lines="1"
             android:ellipsize="end"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
         <TextView
             android:id="@+id/tv_semester"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -115,13 +116,13 @@
             android:lines="1"
             android:ellipsize="end"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
         <TextView
             android:id="@+id/tv_type"
             android:layout_width="160dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginEnd="@dimen/dp_30"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -132,7 +133,7 @@
             android:textColor="@color/black"
             android:textSize="@dimen/sp_22"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
 
@@ -142,7 +143,7 @@
             android:layout_height="@dimen/dp_50"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             android:paddingStart="@dimen/dp_15"
             android:paddingEnd="@dimen/dp_15"
             android:visibility="gone"
@@ -184,7 +185,7 @@
             android:textSize="@dimen/sp_22"
             android:visibility="gone"
             android:gravity="center"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
         <ImageView
@@ -212,7 +213,7 @@
             android:textSize="@dimen/sp_22"
             android:gravity="center"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
         <TextView
@@ -225,7 +226,7 @@
             android:gravity="center"
             android:text="发送"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
     </LinearLayout>

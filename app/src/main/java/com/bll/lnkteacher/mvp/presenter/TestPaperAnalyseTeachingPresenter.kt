@@ -10,9 +10,10 @@ import com.bll.lnkteacher.net.*
  */
 class TestPaperAnalyseTeachingPresenter(view: IContractView.IAnalyseTeachingView, val screen:Int):BasePresenter<IContractView.IAnalyseTeachingView>(view) {
 
-    fun getClassPapers(taskId:Int){
+    fun getPaperClassPapers(id:Int,classId:Int){
         val map=HashMap<String,Any>()
-        map["examChangeId"]=taskId
+        map["id"]=id
+        map["classId"]=classId
         map["size"]=100
         val list = RetrofitManager.service.getPaperCorrectClassList(map)
         doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {

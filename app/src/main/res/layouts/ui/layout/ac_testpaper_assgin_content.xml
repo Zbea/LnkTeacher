@@ -33,7 +33,7 @@
             android:text="@string/classgroup_selector_str"
             android:gravity="center"
             android:textColorHint="@color/color_text_hint"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
         <LinearLayout
@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             >
 
             <CheckBox
@@ -77,7 +77,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_30"
             android:gravity="center"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             >
 
             <CheckBox

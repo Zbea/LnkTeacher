@@ -14,7 +14,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
     fun getClassGroups() {
         val list = RetrofitManager.service.getListClassGroup()
-        doRequest(list, object : Callback<ClassGroupList>(view) {
+        doRequest(list, object : Callback<ClassGroupList>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<ClassGroupList>): Boolean {
                 return false
             }
@@ -30,7 +30,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
         val editName = RetrofitManager.service.getCommonGrade()
 
-        doRequest(editName, object : Callback<CommonData>(view) {
+        doRequest(editName, object : Callback<CommonData>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<CommonData>): Boolean {
                 return false
             }
@@ -46,7 +46,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
     //获取更新信息
     fun getAppUpdate() {
         val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view) {
+        doRequest(list, object : Callback<AppUpdateBean>(view,0,false) {
             override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
                 return false
             }

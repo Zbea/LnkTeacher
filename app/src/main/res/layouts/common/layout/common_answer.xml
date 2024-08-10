@@ -1,84 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/width"
-    android:layout_height="650dp"
+    android:layout_height="680dp"
     android:padding="20dp"
     >
 
-        <ScrollView
-            android:id="@+id/sv_answer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_black_stroke_10dp_corner_2dp"
-            android:scrollbars="none"
-            android:padding="5dp"
-            >
+    <ScrollView
+        android:id="@+id/sv_answer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_black_stroke_10dp_corner_2dp"
+        android:padding="5dp"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:scrollbars="none">
 
-            <LinearLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/iv_answer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-                <ImageView
-                    android:id="@+id/iv_answer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitCenter"
-                    />
+                android:scaleType="fitCenter" />
 
-            </LinearLayout>
+        </LinearLayout>
 
-        </ScrollView>
-
-    <ImageView
-        android:id="@+id/iv_close_answer"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
-        android:padding="@dimen/dp_5"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:src="@mipmap/icon_close" />
-
-        <ImageView
-            android:id="@+id/iv_answer_up"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:src="@mipmap/icon_arrow_page_up"
-            android:layout_centerVertical="true"
-            />
-
-        <ImageView
-            android:id="@+id/iv_answer_down"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="2dp"
-            android:src="@mipmap/icon_arrow_page_down"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            />
+    </ScrollView>
 
     <LinearLayout
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_5"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/btn_answer_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
             android:layout_marginEnd="20dp"
-            android:textColor="@color/black_20"
             android:background="@color/color_transparent"
-            android:text="@string/page_up_string"/>
+            android:text="@string/page_up_string"
+            android:textColor="@color/black_20"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/tv_answer_current"
@@ -86,32 +52,65 @@
             android:layout_height="wrap_content"
             android:text="1"
             android:textColor="@color/black_50"
-            android:textSize="22sp"/>
+            android:textSize="20sp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=" / "
             android:textColor="@color/black_50"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
+
         <TextView
             android:id="@+id/tv_answer_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1"
             android:textColor="@color/black_50"
-            android:textSize="22sp"/>
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/btn_answer_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
             android:layout_marginStart="20dp"
-            android:textColor="@color/black_20"
             android:background="@color/color_transparent"
-            android:text="@string/page_down_string"/>
+            android:text="@string/page_down_string"
+            android:textColor="@color/black_20"
+            android:textSize="20sp" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_close_answer"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:padding="@dimen/dp_5"
+        android:src="@mipmap/icon_close" />
+
+    <ImageView
+        android:id="@+id/iv_answer_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="2dp"
+        android:src="@mipmap/icon_arrow_page_up" />
+
+    <ImageView
+        android:id="@+id/iv_answer_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="2dp"
+        android:src="@mipmap/icon_arrow_page_down" />
+
+
 
 
 </RelativeLayout>

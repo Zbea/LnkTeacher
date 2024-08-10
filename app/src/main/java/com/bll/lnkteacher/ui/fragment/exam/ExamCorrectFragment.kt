@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.fragment.exam
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -75,9 +76,9 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val item=corrects[position]
             val intent= Intent(requireActivity(), ExamCorrectActivity::class.java)
-            intent.putExtra("id",item.schoolExamJobId)
-            intent.putExtra("classId",item.classId)
-            intent.putExtra("className",item.className)
+            val bundle= Bundle()
+            bundle.putSerializable("examBean",item)
+            intent.putExtra("bundle",bundle)
             intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
             customStartActivity(intent)
         }

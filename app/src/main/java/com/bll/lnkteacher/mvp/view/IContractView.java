@@ -179,6 +179,7 @@ public interface IContractView {
          * 老师提交批改
          */
         void onCorrectSuccess();
+        void onCompleteSuccess();
     }
 
     interface IAnalyseTeachingView extends IBaseView{

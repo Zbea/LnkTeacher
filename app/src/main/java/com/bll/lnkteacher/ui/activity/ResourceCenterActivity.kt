@@ -119,7 +119,7 @@ class ResourceCenterActivity:BaseActivity(){
         }
     }
 
-    override fun onCommonData() {
+    override fun initChangeScreenData() {
         appFragment?.initChangeScreenData()
         toolFragment?.initChangeScreenData()
         wallpaperFragment?.initChangeScreenData()

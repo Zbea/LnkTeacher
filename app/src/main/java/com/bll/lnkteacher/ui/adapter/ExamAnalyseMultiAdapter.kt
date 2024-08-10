@@ -26,7 +26,7 @@ class ExamAnalyseMultiAdapter(layoutResId: Int, data: List<AnalyseItem>?) : Base
 
     class ChildAdapter(layoutResId: Int,  data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: AnalyseItem) {
-            helper.setText(R.id.tv_sort,"${item.sort}")
+            helper.setText(R.id.tv_sort,"${item.sort+1}")
             helper.setText(R.id.tv_score,item.averageScore.toString())
             helper.setText(R.id.tv_wrong_num,item.wrongNum.toString())
             helper.addOnClickListener(R.id.tv_wrong_num)

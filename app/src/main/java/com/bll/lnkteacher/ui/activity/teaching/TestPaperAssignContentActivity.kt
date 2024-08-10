@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -9,6 +10,7 @@ import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignContentPresenter
@@ -44,6 +46,9 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
     override fun onSendSuccess() {
         showToast(R.string.teaching_assign_success)
+        val commitItem= HomeworkClassSelectItem()
+        commitItem.classIds=classIds
+        MethodManager.saveCommitClass(typeBean!!.id,commitItem)
         finish()
     }
 
@@ -57,9 +62,22 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("type") as TypeBean
         grade=typeBean?.grade!!
 
-        for (item in DataBeanManager.classGroups){
-            if (item.state==1&&item.grade==grade){
-                popGroups.add(PopupBean(item.classId,item.name,false))
+        val classSelectItem=MethodManager.getCommitClass(typeBean?.id!!)
+        if (classSelectItem!=null){
+            classIds=classSelectItem.classIds
+            for (item in DataBeanManager.classGroups){
+                if (item.state==1&&item.grade==grade){
+                    for (classId in classSelectItem.classIds){
+                        popGroups.add(PopupBean(item.classId,item.name,item.classId==classId))
+                    }
+                }
+            }
+        }
+        else{
+            for (item in DataBeanManager.classGroups){
+                if (item.state==1&&item.grade==grade){
+                    popGroups.add(PopupBean(item.classId,item.name,false))
+                }
             }
         }
 
@@ -77,7 +95,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         ll_commit.layoutParams.width=DP2PX.dip2px(this,180f)
 
         tv_group.setOnClickListener {
-            PopupCheckList(this, popGroups, tv_group,tv_group.width,  2).builder()?.setOnSelectListener{
+            PopupCheckList(this, popGroups, tv_group,tv_group.width,  2).builder().setOnSelectListener{
                 classIds.clear()
                 for (item in it){
                     classIds.add(item.id)
@@ -100,6 +118,10 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         tv_ok.setOnClickListener {
             if (classIds.size==0){
                 showToast("请选择班级")
+                return@setOnClickListener
+            }
+            if (commitTime==0L){
+                showToast("未设置提交时间")
                 return@setOnClickListener
             }
             if (taskId>0)

@@ -60,7 +60,7 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,60f),
+            DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,50f),
             DP2PX.dip2px(activity,30f),0)
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,2)
@@ -68,7 +68,7 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
         mAdapter = TestPaperAssignAdapter(R.layout.item_testpaper_assign,types).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(activity,50f)))
+            rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(activity,45f)))
             setOnItemClickListener  { _, _, position ->
                 val intent=Intent(activity, TestPaperAssignContentActivity::class.java)
                 val bundle= Bundle()

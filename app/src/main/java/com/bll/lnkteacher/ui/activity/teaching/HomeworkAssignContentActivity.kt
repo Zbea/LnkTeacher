@@ -87,7 +87,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         setPageOk("发送")
 
         tv_group.setOnClickListener {
-            PopupCheckList(this,classPops,tv_group,0).builder()?.setOnSelectListener{
+            PopupCheckList(this,classPops,tv_group,0).builder().setOnSelectListener{
                 classIds.clear()
                 for (item in it){
                     classIds.add(item.id)

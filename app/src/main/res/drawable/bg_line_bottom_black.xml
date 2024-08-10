@@ -9,7 +9,7 @@
             <stroke
                 android:width="3dp"
                 android:color="@color/black" />
-            <solid android:color="@color/white"></solid>
+            <solid android:color="@color/color_transparent"></solid>
         </shape>
     </item>
 

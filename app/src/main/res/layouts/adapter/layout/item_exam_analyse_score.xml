@@ -30,13 +30,15 @@
         android:textSize="@dimen/sp_26" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_40"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_26"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
-        android:text="错"
+        android:gravity="center"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        android:text="0"
         />
     <TextView
         android:id="@+id/tv_wrong_num"

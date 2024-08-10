@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
-import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.HomeworkCreateDialog
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -130,8 +130,8 @@ class HomeworkManagerFragment : BaseMainFragment(){
      * 新增作业本
      */
     private fun showCreateHomeworkName(hint: String,typeId:Int) {
-        InputContentDialog(requireContext(), hint).builder()
-            .setOnDialogClickListener { str ->
+        HomeworkCreateDialog(requireContext(),grade, hint).builder()
+            .setOnDialogClickListener { str,ids ->
                 var subtype=2
                 var typeName=getString(R.string.teaching_book)
                 if (typeId==2){

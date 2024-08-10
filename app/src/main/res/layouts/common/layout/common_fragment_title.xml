@@ -40,7 +40,7 @@
             android:ellipsize="end"
             android:text="@string/grade_selector"
             android:visibility="gone"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/bg_gray_stroke_10dp_corner"
             android:drawableStart="@mipmap/icon_search"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/dp_20"

@@ -24,7 +24,7 @@ class PopupCheckList(val context:Context, val list:MutableList<PopupBean>, val v
 
     constructor(context: Context, list: MutableList<PopupBean>, view: View, yoff: Int):this(context, list, view, 0,yoff)
 
-    fun builder(): PopupCheckList?{
+    fun builder(): PopupCheckList{
         val popView = LayoutInflater.from(context).inflate(R.layout.popup_list, null, false)
         mPopupWindow = PopupWindow(context).apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

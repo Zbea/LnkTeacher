@@ -16,13 +16,12 @@ public class TestPaperClassUserList implements Serializable {
     public int totalSubmit;
     public int totalUpdate;
     public List<ClassUserBean> list;
+    public List<ClassUserBean> taskList;
 
     public static class ClassUserBean {
         public int studentTaskId;
         public int userId;
         public int classId;
-        @SerializedName("taskImageId")
-        public String imageUrl;//原图地址
         public String submitUrl;
         public String studentUrl;
         public int status;//3学生未提交1已提交未批改2已批改

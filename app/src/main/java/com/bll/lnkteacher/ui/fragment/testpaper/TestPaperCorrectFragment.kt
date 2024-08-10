@@ -9,12 +9,14 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.PopupCheckList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.teaching.AnalyseActivity
-import com.bll.lnkteacher.ui.activity.teaching.CorrectActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -38,9 +40,8 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     }
 
     override fun onSendSuccess() {
-        showToast("批改发送成功")
+        showToast("批改学生发送成功")
     }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
@@ -63,7 +64,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, items).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,2, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemChildClickListener { _, view, position ->
@@ -71,7 +72,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                 val item=items[position]
                 when(view.id){
                     R.id.tv_analyse->{
-                        val intent=Intent(requireActivity(), AnalyseActivity::class.java)
+                        val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)
@@ -81,21 +82,37 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                     R.id.iv_delete->{
                         deleteCorrect()
                     }
+                    R.id.tv_send->{
+                        val ids= mutableListOf<Int>()
+                        if (item.examList.size==1){
+                            ids.add(item.examList[0].classId)
+                            mPresenter.sendClass(item.id,ids)
+                        }
+                        else{
+                            val pops= mutableListOf<PopupBean>()
+                            for (classItem in item.examList){
+                                pops.add(PopupBean(classItem.classId,classItem.name))
+                            }
+                            PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
+                                for (bean in it){
+                                    ids.add(bean.id)
+                                }
+                                mPresenter.sendClass(item.id,ids)
+                            }
+                        }
+                    }
                 }
             }
             setOnChildClickListener { view,parentPos, position ->
                 val item=items[parentPos]
                 if (view.id==R.id.ll_content){
-                    val intent= Intent(requireActivity(), CorrectActivity::class.java)
+                    val intent= Intent(requireActivity(), TestPaperCorrectActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("paperCorrect",item)
                     intent.putExtra("bundle",bundle)
                     intent.putExtra("classPos",position)
                     intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
                     customStartActivity(intent)
-                }
-                if (view.id==R.id.tv_send){
-                    mPresenter.sendClass(item.examList[position]?.examChangeId!!)
                 }
             }
         }
@@ -136,7 +153,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         map["size"] = pageSize
         map["taskType"]=2
         map["grade"]=grade
-        mPresenter.getList(map)
+        mPresenter.getPaperCorrectList(map)
     }
 
     override fun onEventBusMessage(msgFlag: String) {

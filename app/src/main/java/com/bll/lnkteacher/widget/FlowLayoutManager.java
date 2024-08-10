@@ -143,8 +143,6 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 cuLineWidth += childUseWidth;
                 maxHeightItem = Math.max(maxHeightItem, childUseHeight);
                 row.addViews(new Item(childUseHeight, childAt, frame));
-                row.setCuTop(cuLineTop);
-                row.setMaxHeight(maxHeightItem);
             } else {
                 //换行
                 formatAboveRow();
@@ -161,9 +159,9 @@ public class FlowLayoutManager extends RecyclerView.LayoutManager {
                 cuLineWidth = childUseWidth;
                 maxHeightItem = childUseHeight;
                 row.addViews(new Item(childUseHeight, childAt, frame));
-                row.setCuTop(cuLineTop);
-                row.setMaxHeight(maxHeightItem);
             }
+            row.setCuTop(cuLineTop);
+            row.setMaxHeight(maxHeightItem);
             //不要忘了最后一行进行刷新下布局
             if (i == getItemCount() - 1) {
                 formatAboveRow();

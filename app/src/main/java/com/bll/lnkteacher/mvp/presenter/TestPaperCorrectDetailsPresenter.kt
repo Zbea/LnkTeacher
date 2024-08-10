@@ -13,6 +13,22 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         val map=HashMap<String,Any>()
         map["examChangeId"]=taskId
         map["size"]=100
+        val list = RetrofitManager.service.getHomeworkCorrectClassList(map)
+        doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<TestPaperClassUserList>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<TestPaperClassUserList>) {
+                view.onClassPapers(tBaseResult.data)
+            }
+        }, true)
+    }
+
+    fun getPaperClassPapers(id:Int,classId:Int){
+        val map=HashMap<String,Any>()
+        map["id"]=id
+        map["classId"]=classId
+        map["size"]=100
         val list = RetrofitManager.service.getPaperCorrectClassList(map)
         doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {
             override fun failed(tBaseResult: BaseResult<TestPaperClassUserList>): Boolean {
@@ -37,14 +53,19 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         }, true)
     }
 
-    fun setModule(map:HashMap<String,Any>) {
-        val body=RequestUtils.getBody(map)
-        val commit = RetrofitManager.service.setPaperCorrectModule(body)
-        doRequest(commit, object : Callback<Any>(view,screen) {
+    fun complete(id:Int,classId:Int) {
+        val map = HashMap<String, Any>()
+        map["taskGroupId"] = id
+        map["classId"] = classId
+        val body = RequestUtils.getBody(map)
+        val type = RetrofitManager.service.completeCorrectPaper(body)
+        doRequest(type, object : Callback<Any>(view) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false
             }
+
             override fun success(tBaseResult: BaseResult<Any>) {
+                view.onCompleteSuccess()
             }
         }, true)
     }

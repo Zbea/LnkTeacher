@@ -343,9 +343,14 @@ interface APIService{
     fun sendTestPaperContent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
     /**
-     * 获取考卷订单列表
+     * 获取作业订单列表
      */
     @GET("task/group/list")
+    fun getHomeworkCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CorrectList>>
+    /**
+     * 获取考卷订单列表
+     */
+    @GET("task/group/listV2")
     fun getPaperCorrectList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<CorrectList>>
     /**
      * 删除考卷批改列表
@@ -356,6 +361,11 @@ interface APIService{
      * 获取班级同学提交考卷列表
      */
     @GET("exam/change/edit")
+    fun getHomeworkCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperClassUserList>>
+    /**
+     * 获取班级同学提交考卷列表
+     */
+    @GET("task/group/info")
     fun getPaperCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperClassUserList>>
     /**
      * 考试评分
@@ -368,10 +378,15 @@ interface APIService{
     @POST("student/task/update")
     fun commitPaperStudent(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 发送单个班级
+     * 发送班级
      */
-    @POST("exam/change/sendStudent")
+    @POST("student/task/sendClass")
     fun sendPaperCorrectClass(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 作业全部保存
+     */
+    @POST("student/task/allCompleted")
+    fun completeCorrectPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 上传模板
      */

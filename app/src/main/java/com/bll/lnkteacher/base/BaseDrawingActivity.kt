@@ -498,6 +498,14 @@ abstract class BaseDrawingActivity : BaseActivity(){
     }
 
     /**
+     * 设置是否可以手写
+     */
+    fun setPWEnabled(boolean: Boolean){
+        elik_a?.setPWEnabled(boolean)
+        elik_b?.setPWEnabled(boolean)
+    }
+
+    /**
      * 下一页
      */
     open fun onPageDown(){

@@ -38,15 +38,34 @@
             android:layout_marginEnd="@dimen/dp_50"
             >
 
-            <TextView
-                android:id="@+id/tv_score_label"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="赋分批改框"
-                android:textSize="30sp"
-                android:textColor="@color/black"
-                />
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_score_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="赋分批改框"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="标准答案"
+                    android:textSize="22sp"
+                    android:visibility="gone"
+                    android:textColor="@color/black"
+                    />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -93,8 +112,8 @@
             android:layout_height="@dimen/dp_50"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_30"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             android:gravity="center"
             >
             <LinearLayout
@@ -208,7 +227,7 @@
     <include
         android:id="@+id/rl_answer"
         android:layout_width="@dimen/width"
-        android:layout_height="650dp"
+        android:layout_height="680dp"
         android:layout_marginTop="@dimen/statusbar_height"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
