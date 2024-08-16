@@ -243,6 +243,9 @@
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.exam.ExamAnalyseTeachingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

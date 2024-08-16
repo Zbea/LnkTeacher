@@ -78,16 +78,16 @@ public class ToolUtils {
         return Long.valueOf(date).intValue();
     }
 
-    public static String getImagesStr(List<String> images){
-        String url="";
+    public static String getImagesStr(List<?> images){
+        StringBuilder url= new StringBuilder();
         for (int i = 0; i < images.size(); i++) {
             if (i== images.size()-1){
-                url+=images.get(i);
+                url.append(images.get(i));
             }else {
-                url+=images.get(i)+",";
+                url.append(images.get(i)).append(",");
             }
         }
-        return url;
+        return url.toString();
     }
 
     public static List<String> getImages(String url){

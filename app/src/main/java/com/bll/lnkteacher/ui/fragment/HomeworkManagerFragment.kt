@@ -141,7 +141,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
                 val homeworkType = TypeBean()
                 homeworkType.name = str+ typeName
                 homeworkType.subType = typeId
-                homeworkAssignFragment?.addHomeworkType(homeworkType,subtype)
+                homeworkAssignFragment?.addHomeworkType(homeworkType,subtype,ids)
             }
 
     }

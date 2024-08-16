@@ -192,6 +192,16 @@ public interface IContractView {
         void onRefreshSuccess();
     }
 
+    interface IExamAnalyseTeachingView extends IBaseView{
+        /**
+         * 获取班级学生已提交考卷
+         * @param bean
+         */
+        void onClassPapers(ExamClassUserList bean);
+        void onCreateSuccess();
+        void onRefreshSuccess();
+    }
+
     interface ITestPaperRankView extends IBaseView{
         void onGrade(List<RankBean> list);
         void onExamGrade(ExamRankList list);
@@ -305,6 +315,8 @@ public interface IContractView {
 
     interface IExamListView extends IBaseView {
         void onList(ExamList list);
+        void onDeleteSuccess();
+        void onSendSuccess();
         void onExamClassUser(ExamClassUserList classUserList);
     }
 

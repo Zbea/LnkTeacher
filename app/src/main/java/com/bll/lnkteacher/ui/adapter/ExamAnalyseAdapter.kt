@@ -12,7 +12,7 @@ class ExamAnalyseAdapter(layoutResId: Int,private val module:Int, data: List<Ana
 
     override fun convert(helper: BaseViewHolder, item: AnalyseItem) {
         helper.setText(R.id.tv_sort,if (module==1) ToolUtils.numbers[item.sort+1] else "${item.sort+1}")
-        helper.getView<TextView>(R.id.tv_sort).layoutParams.width=if (module==1) DP2PX.dip2px(mContext,45f) else DP2PX.dip2px(mContext,30f)
+        helper.getView<TextView>(R.id.tv_sort).layoutParams.width=if (module==1) DP2PX.dip2px(mContext,55f) else DP2PX.dip2px(mContext,30f)
         helper.setText(R.id.tv_score,item.averageScore.toString())
         helper.setText(R.id.tv_wrong_num,item.wrongNum.toString())
         helper.addOnClickListener(R.id.tv_wrong_num)

@@ -12,9 +12,6 @@ import java.util.List;
 public class TestPaperClassUserList implements Serializable {
 
     public int total;
-    public int totalSend;
-    public int totalSubmit;
-    public int totalUpdate;
     public List<ClassUserBean> list;
     public List<ClassUserBean> taskList;
 

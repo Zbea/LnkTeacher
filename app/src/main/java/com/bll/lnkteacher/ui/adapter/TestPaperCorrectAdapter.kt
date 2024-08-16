@@ -23,7 +23,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, val taskType:Int,data: List<Corr
         helper.setGone(tv_send,item.subType!=3)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
-        ClassAdapter(R.layout.item_testpaper_correct_class_type,item?.examList).apply {
+        ClassAdapter(R.layout.item_testpaper_correct_class_type,item.examList).apply {
             rvList.adapter = this
             bindToRecyclerView(rvList)
             setOnItemChildClickListener { adapter, view, position ->

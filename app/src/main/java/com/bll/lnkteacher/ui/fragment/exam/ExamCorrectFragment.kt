@@ -57,31 +57,35 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
         rv_list.layoutParams= layoutParams
 
         mAdapter= ExamCorrectAdapter(R.layout.item_exam_correct,null)
-        rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
-        rv_list.adapter = mAdapter
-        mAdapter?.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
-        mAdapter?.setOnItemChildClickListener { adapter, view, position ->
-            this.position=position
-            if (view.id==R.id.tv_save){
-                CommonDialog(requireActivity(),2).setContent("确认完成班级批改？").builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        mPresenter.onExamCorrectComplete(corrects[position].id)
+            .apply {
+                rv_list.layoutManager = GridLayoutManager(activity,2)//创建布局管理
+                rv_list.adapter = mAdapter
+                bindToRecyclerView(rv_list)
+                setEmptyView(R.layout.common_empty)
+                rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
+                setOnItemChildClickListener { adapter, view, position ->
+                    this@ExamCorrectFragment.position=position
+                    if (view.id==R.id.tv_save){
+                        CommonDialog(requireActivity(),2).setContent("确认完成班级批改？").builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                mPresenter.onExamCorrectComplete(corrects[position].id)
+                            }
+                        }
                     }
                 }
+                setOnItemClickListener { adapter, view, position ->
+                    val item=corrects[position]
+                    val intent= Intent(requireActivity(), ExamCorrectActivity::class.java)
+                    val bundle= Bundle()
+                    bundle.putSerializable("examBean",item)
+                    intent.putExtra("bundle",bundle)
+                    intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
+                    customStartActivity(intent)
+                }
             }
-        }
-        mAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=corrects[position]
-            val intent= Intent(requireActivity(), ExamCorrectActivity::class.java)
-            val bundle= Bundle()
-            bundle.putSerializable("examBean",item)
-            intent.putExtra("bundle",bundle)
-            intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
-            customStartActivity(intent)
-        }
+
     }
 
     override fun onRefreshData() {

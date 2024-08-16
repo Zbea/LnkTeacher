@@ -12,7 +12,6 @@ public class ExamClassUserList implements Serializable {
         public int schoolExamJobId;
         public int userId;
         public int classId;
-        public String examUrl;//原图地址
         public String teacherUrl;
         public String studentUrl;
         public int status;//3学生未提交1已提交未批改2已批改

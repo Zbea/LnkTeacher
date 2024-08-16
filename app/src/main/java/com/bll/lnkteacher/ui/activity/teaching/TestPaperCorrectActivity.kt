@@ -22,7 +22,6 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
-import kotlinx.android.synthetic.main.common_answer.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -136,14 +135,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             mPresenter.complete(correctList?.id!!,mClassBean?.classId!!)
         }
 
-        tv_answer.setOnClickListener {
-            showView(rl_answer)
-        }
-
-        iv_close_answer.setOnClickListener {
-            disMissView(rl_answer)
-        }
-
         tv_save.setOnClickListener {
             if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
@@ -158,14 +149,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     tv_total_score.text=it.toString()
                 }
             }
-        }
-
-        iv_score_up.setOnClickListener {
-            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
-        }
-
-        iv_score_down.setOnClickListener {
-            rv_list_score.scrollBy(0,DP2PX.dip2px(this,100f))
         }
 
         initRecyclerViewUser()

@@ -1,25 +1,25 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
-import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
+import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 /**
  * 考卷批改详细功能
  */
-class TestPaperAnalyseTeachingPresenter(view: IContractView.IAnalyseTeachingView, val screen:Int):BasePresenter<IContractView.IAnalyseTeachingView>(view) {
+class ExamAnalyseTeachingPresenter(view: IContractView.IExamAnalyseTeachingView, val screen:Int):BasePresenter<IContractView.IExamAnalyseTeachingView>(view) {
 
-    fun getPaperClassPapers(id:Int,classId:Int){
+    fun getExamPaperClassPapers(id:Int,classId:Int){
         val map=HashMap<String,Any>()
-        map["id"]=id
+        map["schoolExamJobId"]=id
         map["classId"]=classId
-        val list = RetrofitManager.service.getPaperCorrectClassList(map)
-        doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<TestPaperClassUserList>): Boolean {
+        val list = RetrofitManager.service.getExamClass(map)
+        doRequest(list, object : Callback<ExamClassUserList>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<ExamClassUserList>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<TestPaperClassUserList>) {
+            override fun success(tBaseResult: BaseResult<ExamClassUserList>) {
                 view.onClassPapers(tBaseResult.data)
             }
         }, true)

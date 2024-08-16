@@ -5,7 +5,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.*
 
 
-class LoginPresenter(view: IContractView.ILoginView,val screen:Int=0) : BasePresenter<IContractView.ILoginView>(view) {
+class LoginPresenter(view: IContractView.ILoginView,val screen:Int) : BasePresenter<IContractView.ILoginView>(view) {
 
     fun login(map: HashMap<String,Any>) {
 

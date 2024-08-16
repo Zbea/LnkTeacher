@@ -23,7 +23,6 @@ import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,IFileUploadView{
@@ -96,11 +95,11 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         userItems[posUser].status=2
         userItems[posUser].question=toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
+        disMissView(tv_save)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         elik_a?.setPWEnabled(false,false)
         elik_b?.setPWEnabled(false,false)
-        EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
     }
 
     
@@ -123,7 +122,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     }
 
     override fun initView() {
-        setPageTitle("考试批改  ${examBean?.className}")
+        setPageTitle("考试批改  ${examBean?.examName}  ${examBean?.className}")
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
@@ -147,7 +146,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 showLoading()
                 commitPapers()
             }
-            hideKeyboard()
         }
 
         initRecyclerView()
@@ -230,7 +228,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 onChangeContent()
             }
             3->{
-                currentImages.clear()
                 disMissView(ll_score)
                 tv_total_score.text = ""
                 v_content_a?.setImageResource(0)

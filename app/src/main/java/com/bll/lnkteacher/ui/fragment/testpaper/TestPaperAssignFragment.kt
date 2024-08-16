@@ -68,6 +68,7 @@ class TestPaperAssignFragment: BaseFragment(),IContractView.ITestPaperAssignView
         mAdapter = TestPaperAssignAdapter(R.layout.item_testpaper_assign,types).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
             rv_list.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(activity,45f)))
             setOnItemClickListener  { _, _, position ->
                 val intent=Intent(activity, TestPaperAssignContentActivity::class.java)

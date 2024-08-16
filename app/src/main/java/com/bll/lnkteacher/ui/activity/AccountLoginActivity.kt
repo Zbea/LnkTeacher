@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import androidx.activity.result.contract.ActivityResultContracts
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -64,11 +65,11 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         ed_psw.setText(password)
 
         tv_register.setOnClickListener {
-            startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(0), 0)
+            activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(0))
         }
 
         tv_find_psd.setOnClickListener {
-            startActivityForResult(Intent(this, AccountRegisterActivity::class.java).setFlags(1), 0)
+            activityResultLauncher.launch(Intent(this, AccountRegisterActivity::class.java).setFlags(1))
         }
 
         btn_login.setOnClickListener {
@@ -117,14 +118,17 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+    /**
+     * 开始通知回调
+     */
+    private val activityResultLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode==Activity.RESULT_OK){
+            val data=it.data
             ed_user.setText(data?.getStringExtra("user"))
             ed_psw.setText(data?.getStringExtra("psw"))
         }
-
     }
+
 
 
 }

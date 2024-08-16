@@ -40,13 +40,11 @@ import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.text.DecimalFormat
 
 
 class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView {
 
     private var mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
-    private var type = 0
     private var classPos = 0
     private var posImage = 0
     private var imageCount = 0
@@ -121,7 +119,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         tv_num.text = getScoreNum().toString()
 
         if (users.size > 0) {
-            tv_average_score.text = getAverageNum(totalScore.toDouble() / users.size)
+            tv_average_score.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
         } else {
             tv_average_score.text = ""
         }
@@ -181,7 +179,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         correctModule = correctList?.questionType!!
         scoreMode = correctList?.questionMode!!
-        type = correctList?.taskType!!
 
         for (item in correctList?.examList!!) {
             mExamClassGroups.add(ClassGroup().apply {
@@ -204,7 +201,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 pops.add(PopupBean(score, "${score}分", score==60))
             }
         }
-        fetchClassList()
+        fetchClassUser()
     }
 
     override fun initView() {
@@ -284,7 +281,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
     override fun onClassClickListener(view: View, position: Int) {
         if (classPos != position) {
             classPos = position
-            fetchClassList()
+            fetchClassUser()
         }
     }
 
@@ -325,7 +322,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 setOnItemChildClickListener { adapter, view, position ->
                     if (view.id == R.id.tv_wrong_num) {
                         val students = totalAnalyseItems[position].wrongStudents
-                        AnalyseUserDetailsDialog(this@TestPaperAnalyseActivity, students).builder()
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@TestPaperAnalyseActivity, students).builder()
                     }
                 }
             }
@@ -338,7 +336,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 setCustomItemChildClickListener { position, view, childPosition ->
                     if (view.id == R.id.tv_wrong_num) {
                         val students = totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
-                        AnalyseUserDetailsDialog(this@TestPaperAnalyseActivity, students).builder()
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@TestPaperAnalyseActivity, students).builder()
                     }
                 }
             }
@@ -355,16 +354,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
             if (scoreMode == 1) {
                 if (scoreIndex == 0) {
                     if (item.score < 60) {
-                        num += 1
-                    }
-                } else {
-                    if (item.score >= scoreIndex) {
-                        num += 1
-                    }
-                }
-            } else {
-                if (scoreIndex == 0) {
-                    if (item.score == 0) {
                         num += 1
                     }
                 } else {
@@ -450,20 +439,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
     /**
      * 获取班级学生列表
      */
-    private fun fetchClassList(){
+    private fun fetchClassUser(){
         mPresenter.getPaperClassPapers(correctList?.id!!, correctList?.examList!![classPos].classId)
-    }
-
-
-    /**
-     * 获取平均数
-     */
-    private fun getAverageNum(number: Double): String {
-        if (number == 0.0) {
-            return "0"
-        }
-        val decimalFormat = DecimalFormat("#.0")
-        return decimalFormat.format(number)
     }
 
     /**
@@ -496,13 +473,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
             analyseItem.rightNum += 1
             analyseItem.rightStudents.add(AnalyseItem.UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
         }
-        if (scoreMode == 1) {
-            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
-            analyseItem.scoreRate=analyseItem.totalScore/analyseItem.totalLabel
-        } else {
-            analyseItem.averageScore = analyseItem.rightNum.toDouble() / analyseItem.num
-            analyseItem.scoreRate=analyseItem.rightNum.toDouble() / analyseItem.num
-        }
+        analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
+        analyseItem.scoreRate=analyseItem.totalScore/analyseItem.totalLabel
     }
 
     override fun onDestroy() {

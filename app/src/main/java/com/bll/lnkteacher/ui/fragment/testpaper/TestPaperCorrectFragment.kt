@@ -40,7 +40,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     }
 
     override fun onSendSuccess() {
-        showToast("批改学生发送成功")
+        showToast("批改测验卷发送成功")
     }
 
     override fun getLayoutId(): Int {
@@ -67,6 +67,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,2, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
             setOnItemChildClickListener { _, view, position ->
                 pos=position
                 val item=items[position]

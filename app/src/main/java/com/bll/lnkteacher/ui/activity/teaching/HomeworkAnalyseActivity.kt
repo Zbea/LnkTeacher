@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.ac_homework_analyse.*
 import kotlinx.android.synthetic.main.common_drawing_page_number.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_title.*
-import java.text.DecimalFormat
 
 
 class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView {
@@ -109,7 +108,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         scoreIndex = pops[1].id
         if (scoreMode==1){
             if (users.size > 0) {
-                tv_average_score.text = getAverageNum(totalScore.toDouble() / users.size)
+                tv_average_score.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
             } else {
                 tv_average_score.text = ""
             }
@@ -119,7 +118,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
         else{
             if (users.size > 0) {
-                tv_average_topic.text = getAverageNum(totalScore.toDouble() / users.size)
+                tv_average_topic.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
             } else {
                 tv_average_topic.text = ""
             }
@@ -290,7 +289,8 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 setOnItemChildClickListener { adapter, view, position ->
                     if (view.id == R.id.tv_wrong_num) {
                         val students = totalAnalyseItems[position].wrongStudents
-                        AnalyseUserDetailsDialog(this@HomeworkAnalyseActivity, students).builder()
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@HomeworkAnalyseActivity, students).builder()
                     }
                 }
             }
@@ -303,7 +303,8 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 setCustomItemChildClickListener { position, view, childPosition ->
                     if (view.id == R.id.tv_wrong_num) {
                         val students = totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
-                        AnalyseUserDetailsDialog(this@HomeworkAnalyseActivity, students).builder()
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@HomeworkAnalyseActivity, students).builder()
                     }
                 }
             }
@@ -412,17 +413,6 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
     }
 
-
-    /**
-     * 获取平均数
-     */
-    private fun getAverageNum(number: Double): String {
-        if (number == 0.0) {
-            return "0"
-        }
-        val decimalFormat = DecimalFormat("#.0")
-        return decimalFormat.format(number)
-    }
 
     /**
      * 文件路径

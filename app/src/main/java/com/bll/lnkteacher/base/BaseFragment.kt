@@ -378,9 +378,9 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     override fun showLoading() {
         mDialog?.show()
     }
-    override fun fail(msg: String) {
+    override fun fail(screen: Int, msg: String) {
         if (mView==null||activity==null)return
-        showToast(msg)
+        showToast(screen,msg)
     }
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {
         showLog(R.string.connect_server_timeout)

@@ -29,9 +29,11 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
 
         tv_grade.setOnClickListener {
             PopupRadioList(requireActivity(), popGrades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
-                tv_grade?.text=item.name
-                grade=item.id
-                onGradeSelectorEvent()
+                if (grade!=item.id){
+                    tv_grade?.text=item.name
+                    grade=item.id
+                    onGradeSelectorEvent()
+                }
             }
         }
     }

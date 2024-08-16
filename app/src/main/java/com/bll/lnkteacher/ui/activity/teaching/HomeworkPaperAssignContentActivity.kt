@@ -71,7 +71,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
         }
         commitTime=System.currentTimeMillis()+Constants.dayLong
 
-        classPops=MethodManager.getCommitClassGroupPops(grade,typeBean?.id!!)
+        classPops=MethodManager.getCommitClassGroupPops(grade,typeBean?.id!!,typeBean?.classIds!!)
         fetchData()
     }
 

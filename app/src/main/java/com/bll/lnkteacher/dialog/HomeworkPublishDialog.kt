@@ -50,7 +50,7 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
         val classSelectBean=MethodManager.getCommitClass(typeId)
         endTime=System.currentTimeMillis()+Constants.dayLong
         tv_date.text=DateUtils.longToStringWeek(endTime)
-        classPops=MethodManager.getCommitClassGroupPops(grade, typeId)
+        classPops=MethodManager.getCommitClassGroupPops(grade, typeId,"")
 
         if (classSelectBean!=null){
             if (classSelectBean.isCommit){

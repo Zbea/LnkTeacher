@@ -478,7 +478,17 @@ interface APIService{
     @GET("school/exam/teacher")
     fun getExamList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamList>>
     /**
-     * 获取班级学生试卷
+     * 发送班级
+     */
+    @POST("school/exam/sendToStudent")
+    fun sendExamCorrectClass(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 删除考试列表
+     */
+    @POST("school/exam/delete")
+    fun deleteExamList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 获取班级学生
      */
     @GET("school/exam/job")
     fun getExamClass(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ExamClassUserList>>

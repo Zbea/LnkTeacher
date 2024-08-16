@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity.teaching
+package com.bll.lnkteacher.ui.activity.exam
 
 import PopupClick
 import android.text.TextUtils
@@ -14,10 +14,14 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
+import com.bll.lnkteacher.mvp.model.exam.ExamList.ExamBean
+import com.bll.lnkteacher.mvp.model.exam.ExamList.ExamClassBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.testpaper.*
+import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem.UserBean
-import com.bll.lnkteacher.mvp.presenter.TestPaperAnalyseTeachingPresenter
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
+import com.bll.lnkteacher.mvp.presenter.ExamAnalyseTeachingPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseTeachingAdapter
 import com.bll.lnkteacher.utils.ToolUtils
@@ -26,14 +30,14 @@ import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
 import org.greenrobot.eventbus.EventBus
 
-class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachingView {
+class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnalyseTeachingView {
 
-    private lateinit var mPresenter:TestPaperAnalyseTeachingPresenter
-    private var correctList:CorrectBean?=null
+    private lateinit var mPresenter:ExamAnalyseTeachingPresenter
+    private var examBean:ExamBean?=null
     private var classPos=0
     private var classId=0
     private var classGroupId=0
-    private var classList= mutableListOf<TestPaperClassBean>()
+    private var classList= mutableListOf<ExamClassBean>()
     private var users= mutableListOf<UserBean>()
     private var scoreItems= mutableListOf<ScoreItem>()
     private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
@@ -48,14 +52,22 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     private var resultChild=0
     private var isScore=true
 
-    override fun onClassPapers(bean: TestPaperClassUserList) {
+    override fun onClassPapers(bean: ExamClassUserList) {
         users.clear()
         scoreItems.clear()
         totalAnalyseItems.clear()
 
-        for (userItem in bean.taskList) {
+        for (userItem in bean.list) {
+            if (userItem.studentUrl.isNullOrEmpty()) {
+                userItem.status = 3
+            } else {
+                userItem.status = 1
+            }
+            if (userItem.teacherUrl.isNotEmpty()) {
+                userItem.status = 2
+            }
             if (userItem.status==2)
-                users.add(UserBean(userItem.userId,userItem.name,userItem.score))
+                users.add(UserBean(userItem.userId,userItem.studentName,userItem.score))
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 for (item in currentScores) {
@@ -75,12 +87,13 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
                             analyseItem.sort=item.sort
                             if (currentScore<item.label){
                                 analyseItem.wrongNum+=1
-                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.studentName, userItem.score))
                             }
                             else{
                                 analyseItem.rightNum+=1
-                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.studentName, userItem.score))
                             }
+
                             val childAnalyseItems= mutableListOf<AnalyseItem>()
                             for (childItem in item.childScores){
                                 val childAnalyseItem= AnalyseItem()
@@ -92,13 +105,14 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
                         }
                         else{
                             val analyseItem=totalAnalyseItems[item.sort-1]
+                            analyseItem.totalScore+=currentScore
                             if (currentScore<item.label){
                                 analyseItem.wrongNum+=1
-                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                                analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.studentName, userItem.score))
                             }
                             else{
                                 analyseItem.rightNum+=1
-                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
+                                analyseItem.rightStudents.add(UserBean(userItem.userId, userItem.studentName, userItem.score))
                             }
                             for (childItem in item.childScores){
                                 val index=item.childScores.indexOf(childItem)
@@ -162,15 +176,15 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     override fun initData() {
         initChangeScreenData()
         classPos=intent.getIntExtra("classPos",-1)
-        correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
-        classList=correctList!!.examList!!
-        correctModule=correctList!!.questionType
-        scoreMode=correctList!!.questionMode
+        examBean= intent.getBundleExtra("bundle")?.get("examBean") as ExamBean
+        classList=examBean!!.classList
+        correctModule=examBean!!.questionType
+        scoreMode=examBean!!.questionMode
         for (item in classList){
             mExamClassGroups.add(ClassGroup().apply {
                 classId=item.classId
                 classGroupId=item.classGroupId
-                name=item.name
+                name=item.className
             })
         }
 
@@ -182,7 +196,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     }
 
     override fun initChangeScreenData() {
-        mPresenter=TestPaperAnalyseTeachingPresenter(this,getCurrentScreenPos())
+        mPresenter=ExamAnalyseTeachingPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -403,15 +417,15 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     /**
      * 数据分析赋值
      */
-    private fun setAnalyseData(classUserBean: TestPaperClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem){
+    private fun setAnalyseData(classUserBean: ExamClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem){
         analyseItem.sort=scoreItem.sort
         if (scoreItem.result==0){
             analyseItem.wrongNum+=1
-            analyseItem.wrongStudents.add(UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
+            analyseItem.wrongStudents.add(UserBean(classUserBean.userId, classUserBean.studentName, classUserBean.score))
         }
         else{
             analyseItem.rightNum+=1
-            analyseItem.rightStudents.add(UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
+            analyseItem.rightStudents.add(UserBean(classUserBean.userId, classUserBean.studentName, classUserBean.score))
         }
     }
 
@@ -419,7 +433,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
      * 获取班级学生列表
      */
     private fun fetchClassUser(){
-        mPresenter.getPaperClassPapers(correctList?.id!!, classList[classPos].classId)
+        mPresenter.getExamPaperClassPapers(examBean?.id!!, classList[classPos].classId)
     }
 
 }

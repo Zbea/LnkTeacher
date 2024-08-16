@@ -49,6 +49,16 @@ object DataBeanManager {
         return popClasss
     }
 
+    fun getClassGroupPopsByClassIds(classIds:MutableList<Int> ): MutableList<PopupBean> {
+        val popClasss = mutableListOf<PopupBean>()
+        for (item in classGroups) {
+            if (classIds.contains(item.classId)) {
+                popClasss.add(PopupBean(item.classId, item.name, false))
+            }
+        }
+        return popClasss
+    }
+
     /**
      * 获取第一个主群的年级
      */

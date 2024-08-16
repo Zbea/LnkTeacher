@@ -40,15 +40,16 @@
 
             <TextView
                 android:id="@+id/tv_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
                 android:gravity="center"
-                android:text="完成"
+                android:text="批改完成"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_18"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@drawable/bg_gary_arch"
                 />
 
 

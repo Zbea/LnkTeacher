@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -227,9 +228,20 @@ public class MethodManager {
      * @param typeId
      * @return
      */
-    public static List<PopupBean> getCommitClassGroupPops(int grade,int typeId){
+    public static List<PopupBean> getCommitClassGroupPops(int grade,int typeId,String classIdStrs){
         HomeworkClassSelectItem classSelectItem=getCommitClass(typeId);
-        List<PopupBean> classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByGrade(grade);
+        List<PopupBean> classGroupPops;
+        if (TextUtils.isEmpty(classIdStrs)){
+            classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByGrade(grade);
+        }
+        else {
+            List<Integer> classIds=new ArrayList<>();
+            String[] classs=classIdStrs.split(",");
+            for (String classId :classs){
+                classIds.add(Integer.valueOf(classId));
+            }
+            classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByClassIds(classIds);
+        }
         if (classSelectItem!=null){
             for (int classId: classSelectItem.classIds) {
                 for (PopupBean popupBean:classGroupPops) {

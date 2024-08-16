@@ -25,6 +25,7 @@ import com.bll.lnkteacher.ui.activity.teaching.HomeworkPaperAssignContentActivit
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.*
 
@@ -120,6 +121,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         mAdapter = HomeworkAssignAdapter(R.layout.item_homework_assign, types).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
             rv_list.addItemDecoration(SpaceGridItemDeco(3, DP2PX.dip2px(requireActivity(),50f)))
             setOnItemClickListener { _, _, position ->
                 this@HomeworkAssignFragment.position=position
@@ -196,12 +198,13 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 添加作业本
      */
-    fun addHomeworkType(item: TypeBean, subType:Int){
+    fun addHomeworkType(item: TypeBean, subType:Int,ids:List<Int>){
         val map=HashMap<String,Any>()
         map["name"]=item.name
         map["type"]=2
         map["subType"]=subType
         map["grade"]=grade
+        map["classIds"]=ToolUtils.getImagesStr(ids)
         mPresenter.addType(map,true)
     }
 

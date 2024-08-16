@@ -4,19 +4,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.CountDownTimer
-import android.view.View
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.MD5Utils
+import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_register.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -31,7 +30,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     private var school=0
     private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
-    private var popCourses= mutableListOf<PopupBean>()
 
     override fun onListSchools(list: MutableList<SchoolBean>) {
         schools=list
@@ -53,7 +51,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
 
     override fun onEditPsd() {
         showToast("修改密码成功")
-        finish()
+        setIntent()
     }
 
     override fun layoutId(): Int {
@@ -76,15 +74,13 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         when (flags) {
             2 -> {
                 setPageTitle("修改密码")
-                ll_name.visibility= View.GONE
-                ll_user.visibility=View.GONE
-                ll_school.visibility=View.GONE
+                disMissView(ll_name,ll_user,ll_school)
                 btn_register.text="提交"
             }
             1 -> {
                 setPageTitle("找回密码")
-                ll_name.visibility= View.GONE
-                ll_school.visibility=View.GONE
+                disMissView(ll_name,ll_school)
+                ed_user.setText(SPUtil.getString("account"))
                 btn_register.text="提交"
             }
             else -> {

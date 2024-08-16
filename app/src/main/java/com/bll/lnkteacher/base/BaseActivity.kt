@@ -382,6 +382,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
 
     fun initRecyclerViewScore(){
+        iv_score_up.setOnClickListener {
+            rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+
+        iv_score_down.setOnClickListener {
+            rv_list_score.scrollBy(0, DP2PX.dip2px(this,100f))
+        }
+
         if (correctModule<3){
             rv_list_score.layoutManager = GridLayoutManager(this,2)
             mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,correctModule,null).apply {
@@ -505,6 +513,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      * 设置答案view
      */
     fun setAnswerView(){
+        tv_answer.setOnClickListener {
+            showView(rl_answer)
+        }
         iv_close_answer.setOnClickListener {
             disMissView(rl_answer)
         }
@@ -662,6 +673,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         SToast.showText(getCurrentScreenPos(),resId)
     }
 
+    fun showToast(screen: Int,s:String){
+        SToast.showText(screen,s)
+    }
+
+    fun showToast(screen: Int,sId:Int){
+        SToast.showText(screen,sId)
+    }
+
     protected fun showLog(s:String){
         Log.d("debug",s)
     }
@@ -763,8 +782,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         mDialog!!.show()
     }
 
-    override fun fail(msg: String) {
-        showToast(msg)
+    override fun fail(screen: Int, msg: String) {
+        showToast(screen,msg)
     }
 
     override fun onFailer(responeThrowable: ExceptionHandle.ResponeThrowable?) {

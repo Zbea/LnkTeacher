@@ -27,6 +27,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.htfy.params.ServerParams
 import kotlinx.android.synthetic.main.fragment_main_left.*
 import java.io.File
+import java.util.*
 
 class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
 
@@ -176,7 +177,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
                 listFiles[nowDayPos-1]
             }
             else{
-                listFiles[listFiles.size-1]
+                listFiles[Random().nextInt(listFiles.size)]
             }
             GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
         }
