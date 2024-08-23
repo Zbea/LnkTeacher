@@ -47,7 +47,7 @@ class DateEventActivity:BaseDrawingActivity() {
 
     private fun setContentView(){
         tv_date.text= SimpleDateFormat("MM月dd日 E", Locale.CHINA).format(nowLong)
-        val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowLong))+"/draw.tch"
+        val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowLong))+"/draw.png"
         elik_b?.setLoadFilePath(path, true)
     }
 

@@ -19,7 +19,6 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.*
 import kotlinx.android.synthetic.main.common_title.*
-import org.greenrobot.eventbus.EventBus
 
 class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
 
@@ -29,12 +28,9 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
     private var position=0
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
-        if (classGroups!=groups){
-            DataBeanManager.classGroups=groups
-            classGroups=groups
-            mAdapter?.setNewData(classGroups)
-            EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
-        }
+        DataBeanManager.classGroups=groups
+        classGroups=groups
+        mAdapter?.setNewData(classGroups)
     }
 
     override fun onSuccess() {
@@ -189,6 +185,12 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
                     }
                 }
             })
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if (msgFlag==Constants.CLASSGROUP_EVENT){
+            mGroupPresenter.getClassGroups()
+        }
     }
 
 }

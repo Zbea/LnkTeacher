@@ -183,7 +183,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         note_Content_b?.noteTitle = note?.title
         note_Content_b?.resId = note?.contentResId
         note_Content_b?.title = "未命名${noteContents.size + 1}"
-        note_Content_b?.filePath = "$path/$pathName.tch"
+        note_Content_b?.filePath = "$path/$pathName.png"
         note_Content_b?.pathName = pathName
         note_Content_b?.page = noteContents.size
         page = noteContents.size

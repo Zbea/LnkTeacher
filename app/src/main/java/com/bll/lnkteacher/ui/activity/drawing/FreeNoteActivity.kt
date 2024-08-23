@@ -56,7 +56,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         val imagePaths= mutableListOf<String>()
         for (i in images.indices){
             if (File(images[i]).exists()){
-                imagePaths.add(images[i].replace("tch","png"))
+                imagePaths.add(images[i])
                 sBgRes.add(bgResList[i])
             }
         }
@@ -316,7 +316,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
 
     override fun onChangeContent() {
         v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
-        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.tch"
+        val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)){
             images.add(path)
@@ -343,12 +343,10 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     private fun downloadShareNote(item:ShareNoteList.ShareNoteBean){
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(item.date))
         val savePaths= mutableListOf<String>()
-        val tchPaths= mutableListOf<String>()
         val urls=item.paths.split(",")
         for (i in urls.indices)
         {
             savePaths.add(path+"/${i+1}.png")
-            tchPaths.add(path+"/${i+1}.tch")
         }
         FileMultitaskDownManager.with(this).create(urls).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
@@ -360,7 +358,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                     freeNoteBean.title=item.title
                     freeNoteBean.date=item.date
                     freeNoteBean.bgRes= StringConverter().convertToEntityProperty(item.bgRes)
-                    freeNoteBean.paths=tchPaths
+                    freeNoteBean.paths=savePaths
                     freeNoteBean.isSave=true
                     freeNoteBean.type=1
                     FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)

@@ -14,6 +14,7 @@ public class ClassGroup implements Serializable {
     public int grade;
     public long userId;
     public int state;//1主群
+    public int isAllowJoin;
     public int classGroupId;//班级id
     public String imageUrl;//课程表
     public String teacher;

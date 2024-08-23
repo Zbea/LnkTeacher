@@ -91,6 +91,7 @@ public interface IContractView {
         void onOutSuccess();
         //修改学生职位成功
         void onEditSuccess();
+        void onAllowSuccess();
     }
 
     interface IClassGroupChildView extends IBaseView{

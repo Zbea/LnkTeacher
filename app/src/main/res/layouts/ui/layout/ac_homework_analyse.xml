@@ -92,7 +92,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:layout_marginStart="320dp"
+                    android:layout_marginStart="310dp"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:layout_alignParentBottom="true"
                     android:orientation="horizontal"
@@ -108,14 +108,14 @@
 
                     <TextView
                         android:id="@+id/tv_time_score"
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/dp_10"
                         android:background="@drawable/bg_line_bottom"
                         android:gravity="center"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:text="0"
+                        android:text=""
                         android:textSize="@dimen/sp_26" />
                 </LinearLayout>
 
@@ -263,7 +263,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:layout_marginStart="320dp"
+                    android:layout_marginStart="310dp"
                     android:layout_marginBottom="@dimen/dp_20"
                     android:layout_alignParentBottom="true"
                     android:orientation="horizontal"
@@ -279,14 +279,14 @@
 
                     <TextView
                         android:id="@+id/tv_time_topic"
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/dp_10"
                         android:background="@drawable/bg_line_bottom"
                         android:gravity="center"
                         android:textColor="@color/black"
                         android:textStyle="bold"
-                        android:text="0"
+                        android:text=""
                         android:textSize="@dimen/sp_26" />
                 </LinearLayout>
 

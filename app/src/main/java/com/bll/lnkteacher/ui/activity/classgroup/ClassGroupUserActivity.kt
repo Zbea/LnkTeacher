@@ -44,6 +44,18 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
         mAdapter?.notifyDataSetChanged()
     }
 
+    override fun onAllowSuccess() {
+        if (mClassGroup?.isAllowJoin==1){
+            mClassGroup?.isAllowJoin=2
+            setPageSetting("打开班群")
+        }
+        else{
+            mClassGroup?.isAllowJoin=1
+            setPageSetting("关闭班群")
+        }
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_classgroup_user
     }
@@ -62,16 +74,28 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
     override fun initView() {
         setPageTitle(R.string.details)
         if (mClassGroup?.state==1){
-            showView(tv_custom)
+            setPageSetting("教师详情")
+            if (mClassGroup?.userId==mUserId)
+                setPageCustom(if (mClassGroup?.isAllowJoin==1) "关闭班群" else "开启班群")
         }
 
-        tv_custom.text="教师详情"
-        tv_custom.setOnClickListener {
+        tv_setting.setOnClickListener {
             val intent = Intent(this, ClassGroupTeacherActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("classGroup", mClassGroup)
             intent.putExtra("bundle", bundle)
             startActivity(intent)
+        }
+
+        tv_custom.setOnClickListener {
+            val titleInfo=if (mClassGroup?.isAllowJoin==1) "不允许学生加入班群？" else "允许学生加入班群？"
+            CommonDialog(this).setContent(titleInfo).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    mPresenter.allowJoinGroup(mClassGroup?.classId!!,if (mClassGroup?.isAllowJoin==1) 2 else 1)
+                }
+            }
         }
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理

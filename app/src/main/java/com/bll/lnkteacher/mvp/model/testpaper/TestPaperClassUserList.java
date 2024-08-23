@@ -23,6 +23,7 @@ public class TestPaperClassUserList implements Serializable {
         public String studentUrl;
         public int status;//3学生未提交1已提交未批改2已批改
         public int score;
+        public long takeTime;//用时
         @SerializedName("Type")
         public int type;
         public String name;

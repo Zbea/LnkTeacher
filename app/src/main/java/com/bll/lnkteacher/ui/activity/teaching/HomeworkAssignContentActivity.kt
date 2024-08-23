@@ -148,10 +148,6 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                val item=items[position]
-                ImageDialog(this@HomeworkAssignContentActivity,item.examUrl.split(",")).builder()
-            }
             setOnItemChildClickListener { adapter, view, position ->
                 this@HomeworkAssignContentActivity.position=position
                 if (view.id==R.id.cb_check){

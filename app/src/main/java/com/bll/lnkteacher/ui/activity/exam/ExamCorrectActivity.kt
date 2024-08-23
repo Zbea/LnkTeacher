@@ -365,26 +365,23 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         for (i in currentImages.indices){
             val index=i+1
             val masterImage="${getPath()}/${index}.png"//原图
-            val drawPath = getPathDrawStr(index).replace("tch","png")
-            val mergePath = getPath()//合并后的路径
-            var mergePathStr = "${getPath()}/merge${index}.png"//合并后图片地址
+            val drawPath = getPathDrawStr(index)
             Thread {
                 val oldBitmap = BitmapFactory.decodeFile(masterImage)
                 val drawBitmap = BitmapFactory.decodeFile(drawPath)
                 if (drawBitmap!=null){
                     val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, mergePath, "merge${index}")
-                }
-                else{
-                    mergePathStr=masterImage
+                    BitmapUtils.saveBmpGallery(this, mergeBitmap, masterImage)
                 }
                 commitItems.add(ItemList().apply {
                     id = i
-                    url = mergePathStr
+                    url = masterImage
                 })
                 if (commitItems.size==currentImages.size){
                     commitItems.sort()
-                    mUploadPresenter.getToken()
+                    runOnUiThread {
+                        mUploadPresenter.getToken()
+                    }
                 }
             }.start()
         }
@@ -401,7 +398,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
      * 得到当前手绘图片
      */
     private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw${index}.tch"//手绘地址
+        return getPath()+"/draw${index}.png"//手绘地址
     }
 
     override fun onDestroy() {

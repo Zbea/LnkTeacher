@@ -55,6 +55,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         totalAnalyseItems.clear()
 
         var totalScore = 0
+        var totalTime=0L
         for (userItem in bean.list) {
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
@@ -102,6 +103,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             if (userItem.status == 2) {
                 users.add(userItem)
                 totalScore += userItem.score
+                totalTime+=userItem.takeTime
             }
         }
 
@@ -115,6 +117,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             tv_number_score.text = users.size.toString()
             tv_pop_score.text = scoreIndex.toString()
             tv_num_score.text = getScoreNum().toString()
+            tv_time_score.text=getMinutes(totalTime,users.size)
         }
         else{
             if (users.size > 0) {
@@ -125,6 +128,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             tv_number_topic.text = users.size.toString()
             tv_pop_topic.text = scoreIndex.toString()
             tv_num_topic.text = getScoreNum().toString()
+            tv_time_topic.text=getMinutes(totalTime,users.size)
         }
 
         if (correctModule > 0) {
@@ -413,6 +417,12 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
     }
 
+
+    private fun getMinutes(time:Long,userSize:Int):String{
+        if (userSize==0)
+            return "0分钟"
+        return "${time/userSize/60000}分钟"
+    }
 
     /**
      * 文件路径

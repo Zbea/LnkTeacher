@@ -15,8 +15,6 @@
         android:textStyle="bold"
         android:textSize="@dimen/sp_24"/>
 
-
-
     <EditText
         android:id="@+id/et_name"
         android:layout_width="match_parent"

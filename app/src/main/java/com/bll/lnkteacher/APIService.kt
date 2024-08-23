@@ -274,6 +274,11 @@ interface APIService{
     @POST("class/group/joinSubGroup")
     fun addClassGroupUserGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 是否允许加入班群
+     */
+    @POST("class/editAllowJoin")
+    fun allowJoinGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 学生安排职位
      */
     @POST("class/changeJob")
