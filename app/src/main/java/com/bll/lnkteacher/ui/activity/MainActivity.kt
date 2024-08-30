@@ -53,11 +53,20 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
 
+    private var eventType = ""
+
     override fun onToken(token: String) {
-        bookcaseFragment?.upload(token)
-        textbookFragment?.upload(token)
-        mainRightFragment?.uploadDiary(token)
-        mainRightFragment?.uploadScreenShot(token)
+        when(eventType){
+            Constants.DATA_UPLOAD_EVENT->{
+                bookcaseFragment?.upload(token)
+                textbookFragment?.upload(token)
+                mainRightFragment?.uploadScreenShot(token)
+            }
+            Constants.DIARY_UPLOAD_EVENT->{
+                mainRightFragment?.uploadDiary(token)
+            }
+        }
+
     }
 
     override fun layoutId(): Int {
@@ -243,6 +252,11 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         when(msgFlag){
             //上传
             Constants.DATA_UPLOAD_EVENT->{
+                eventType=Constants.DATA_UPLOAD_EVENT
+                mQiniuPresenter.getToken()
+            }
+            Constants.DIARY_UPLOAD_EVENT->{
+                eventType=Constants.DIARY_UPLOAD_EVENT
                 mQiniuPresenter.getToken()
             }
         }
@@ -256,9 +270,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (myBroadcastReceiver!=null){
-            unregisterReceiver(myBroadcastReceiver)
-        }
+        unregisterReceiver(myBroadcastReceiver)
     }
 
 }

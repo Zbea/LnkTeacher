@@ -67,7 +67,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                             setAnalyseData(userItem, item, analyseItem)
                             totalAnalyseItems.add(analyseItem)
                         } else {
-                            val examAnalyseItem = totalAnalyseItems[item.sort - 1]
+                            val examAnalyseItem = totalAnalyseItems[item.sort]
                             setAnalyseData(userItem, item, examAnalyseItem)
                         }
                     } else {
@@ -86,7 +86,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                             analyseItem.childAnalyses = childAnalyseItems
                             totalAnalyseItems.add(analyseItem)
                         } else {
-                            val analyseItem = totalAnalyseItems[item.sort - 1]
+                            val analyseItem = totalAnalyseItems[item.sort]
                             analyseItem.totalScore += currentScore
                             analyseItem.num += 1
                             analyseItem.averageScore = analyseItem.totalScore / analyseItem.num

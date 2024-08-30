@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_23"
                 android:textStyle="bold"
                 />
 
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22"
+                android:textSize="@dimen/sp_23"
                  />
 
             <TextView
@@ -64,35 +64,35 @@
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_23" />
 
             <TextView
                 android:id="@+id/tv_send"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_10"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/dp_20"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="发送学生"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_18" />
+                android:textSize="@dimen/sp_23" />
 
             <TextView
                 android:id="@+id/tv_analyse"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/dp_10"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/dp_20"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="@string/teaching_testpaper_analyse"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_18" />
+                android:textSize="@dimen/sp_23" />
 
             <ImageView
                 android:id="@+id/iv_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_30"
                 android:src="@mipmap/icon_delete" />
 

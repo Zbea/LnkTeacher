@@ -63,7 +63,8 @@ class Constants {
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
-        const val DATA_UPLOAD_EVENT = "AutoUploadEvent"
+        const val DATA_UPLOAD_EVENT = "AutoUploadEvent"//书籍、课本、截图上传
+        const val DIARY_UPLOAD_EVENT = "DiaryUploadEvent"//日记上传
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"

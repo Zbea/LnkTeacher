@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity.drawing
 
-import PopupFreeNoteFriendsList
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -37,7 +36,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     private var shareNotes= mutableListOf<ShareNoteList.ShareNoteBean>()
     private var friendIds= mutableListOf<Int>()
     private var friends= mutableListOf<FriendBean>()
-    private var posFriend=0
 
     override fun onReceiveList(list: ShareNoteList) {
         receiveNotes=list.list
@@ -100,7 +98,13 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     }
 
     override fun onUnbind() {
-        friends.removeAt(posFriend)
+        val iterator = friends.iterator()
+        while (iterator.hasNext()) {
+            val item = iterator.next()
+            if (friendIds.contains(item.friendId)) {
+                iterator.remove()
+            }
+        }
         showToast("解绑好友成功")
     }
 
@@ -128,7 +132,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     }
 
     override fun initView() {
-        disMissView(iv_catalog,iv_expand,iv_btn)
+        disMissView(iv_expand)
 
         tv_name.setOnClickListener {
             InputContentDialog(this,tv_name.text.toString()).builder().setOnDialogClickListener{
@@ -137,7 +141,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
             }
         }
 
-        tv_theme.setOnClickListener {
+        iv_btn.setOnClickListener {
             NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
@@ -161,14 +165,14 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                         createFreeNote()
                         posImage=0
                     }
-                    showView(iv_save)
+                    showView(tv_save)
                     initFreeNote()
                     onChangeContent()
                 }
             })
         }
 
-        iv_save.setOnClickListener {
+        tv_save.setOnClickListener {
             freeNoteBean?.isSave=true
             saveFreeNote()
             createFreeNote()
@@ -177,11 +181,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
             onChangeContent()
         }
 
-        tv_free_list.setOnClickListener {
-            PopupFreeNoteList(this,tv_free_list,freeNoteBean!!.date).builder().setOnSelectListener{
-                setChangeFreeNote(it)
-            }
-        }
 
         tv_receive_list.setOnClickListener {
             if (receivePopWindow==null){
@@ -233,24 +232,22 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                 showToast("未加好友")
                 return@setOnClickListener
             }
-            FriendSelectorDialog(this,friends).builder().setOnDialogClickListener{
-                friendIds= it as MutableList<Int>
-                presenter.getToken()
+            FreeNoteFriendManageDialog(this,friends).builder().setOnDialogClickListener{ type,ids->
+                if (type==0){
+                    friendIds= ids as MutableList<Int>
+                    presenter.getToken()
+                }
+                else{
+                    presenter.unbindFriend(ids)
+                }
             }
         }
 
-        iv_add_friend.setOnClickListener {
+        tv_add.setOnClickListener {
             InputContentDialog(this,"输入好友账号").builder()
                 .setOnDialogClickListener { string ->
                     presenter.onBindFriend(string)
                 }
-        }
-
-        iv_friends.setOnClickListener {
-            PopupFreeNoteFriendsList(this,friends,iv_friends).builder().setOnSelectListener{pos,item->
-                posFriend=pos
-                presenter.unbindFriend(item.id)
-            }
         }
 
         initFreeNote()
@@ -266,12 +263,42 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         posImage=freeNoteBean?.page!!
         initFreeNote()
         if (freeNoteBean?.isSave==true){
-            disMissView(iv_save)
+            disMissView(tv_save)
         }
         else{
-            showView(iv_save)
+            showView(tv_save)
         }
         onChangeContent()
+    }
+
+    private fun initFreeNote(){
+        bgResList= freeNoteBean?.bgRes as MutableList<String>
+        if (!freeNoteBean?.paths.isNullOrEmpty()) {
+            images= freeNoteBean?.paths as MutableList<String>
+        }
+        else{
+            images.clear()
+        }
+        tv_name.text=freeNoteBean?.title
+    }
+
+    /**
+     * 创建新随笔
+     */
+    private fun createFreeNote(){
+        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
+        freeNoteBean= FreeNoteBean()
+        freeNoteBean?.date=System.currentTimeMillis()
+        freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
+        freeNoteBean?.bgRes= arrayListOf(bgRes)
+        freeNoteBean?.type=0
+        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
+    }
+
+    override fun onCatalog() {
+        CatalogFreeNoteDialog(this,freeNoteBean!!.date).builder().setOnItemClickListener{
+            setChangeFreeNote(it)
+        }
     }
 
     override fun onPageDown() {
@@ -290,29 +317,6 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
         }
     }
 
-    private fun initFreeNote(){
-        bgResList= freeNoteBean?.bgRes as MutableList<String>
-        if (!freeNoteBean?.paths.isNullOrEmpty()) {
-            images= freeNoteBean?.paths as MutableList<String>
-        }
-         else{
-             images.clear()
-         }
-        tv_name.text=freeNoteBean?.title
-    }
-
-    /**
-     * 创建新随笔
-     */
-    private fun createFreeNote(){
-        bgRes= ToolUtils.getImageResStr(this,R.mipmap.icon_freenote_bg_1)
-        freeNoteBean= FreeNoteBean()
-        freeNoteBean?.date=System.currentTimeMillis()
-        freeNoteBean?.title=DateUtils.longToStringNoYear(freeNoteBean?.date!!)
-        freeNoteBean?.bgRes= arrayListOf(bgRes)
-        freeNoteBean?.type=0
-        FreeNoteDaoManager.getInstance().insertOrReplace(freeNoteBean)
-    }
 
     override fun onChangeContent() {
         v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))

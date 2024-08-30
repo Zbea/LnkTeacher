@@ -2,6 +2,7 @@ package com.bll.lnkteacher.mvp.model;
 
 import com.bll.lnkteacher.greendao.StringConverter;
 import com.bll.lnkteacher.utils.SPUtil;
+import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
@@ -10,6 +11,7 @@ import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,15 +29,12 @@ public class DiaryBean {
     public int month;
     public String bgRes;
     public int page;
+    public Boolean isUpload=false;//是否已上传
     @Convert(columnType = String.class,converter = StringConverter.class)
     public List<String> paths=new ArrayList<>();
-    @Transient
-    public int cloudId;
-    @Transient
-    public String downloadUrl;
-    @Generated(hash = 325776954)
+    @Generated(hash = 106746443)
     public DiaryBean(Long id, long userId, String title, long date, int year, int month, String bgRes,
-            int page, List<String> paths) {
+            int page, Boolean isUpload, List<String> paths) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -44,6 +43,7 @@ public class DiaryBean {
         this.month = month;
         this.bgRes = bgRes;
         this.page = page;
+        this.isUpload = isUpload;
         this.paths = paths;
     }
     @Generated(hash = 1749744078)
@@ -97,11 +97,19 @@ public class DiaryBean {
     public void setPage(int page) {
         this.page = page;
     }
+    public Boolean getIsUpload() {
+        return this.isUpload;
+    }
+    public void setIsUpload(Boolean isUpload) {
+        this.isUpload = isUpload;
+    }
     public List<String> getPaths() {
         return this.paths;
     }
     public void setPaths(List<String> paths) {
         this.paths = paths;
     }
+
+
 
 }

@@ -1,8 +1,10 @@
 package com.bll.lnkteacher.ui.fragment
 
+import PopupClick
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
@@ -11,6 +13,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.DiaryManageDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
@@ -28,6 +31,7 @@ import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
 import com.bll.lnkteacher.utils.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_main_right.*
+import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
@@ -42,6 +46,9 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
     private var uploadType=0//上传类型
     private var privacyPassword:PrivacyPassword?=null
+    private var diaryStartLong=0L
+    private var diaryEndLong=0L
+    private var diaryUploadTitleStr=""
 
     override fun onList(message: Message) {
         messages=message.list
@@ -78,24 +85,70 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         }
 
         tv_diary.setOnLongClickListener {
+            val pops= mutableListOf<PopupBean>()
             if (privacyPassword==null){
-                PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                    privacyPassword=it
-                    showToast("日记密码设置成功")
-                }
+                pops.add(PopupBean(1,"设置密码"))
             }
             else{
-                val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                            privacyPassword!!.isSet=!privacyPassword!!.isSet
-                            MethodManager.savePrivacyPassword(0,privacyPassword)
+                if (privacyPassword?.isSet==true){
+                    pops.add(PopupBean(1,"取消密码"))
+                }
+                else{
+                    pops.add(PopupBean(1,"设置密码"))
+                }
+            }
+            pops.add(PopupBean(2,"上传日记"))
+            pops.add(PopupBean(3,"删除日记"))
+            PopupClick(requireActivity(),pops,tv_diary,5).builder().setOnSelectListener{
+                when(it.id){
+                    1->{
+                        if (privacyPassword==null){
+                            PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                                privacyPassword=it
+                                showToast("日记密码设置成功")
+                            }
+                        }
+                        else{
+                            val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                            CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                                override fun cancel() {
+                                }
+                                override fun ok() {
+                                    PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                        MethodManager.savePrivacyPassword(0,privacyPassword)
+                                    }
+                                }
+                            })
                         }
                     }
-                })
+                    2->{
+                        DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                            titleStr,startLong,endLong->
+                            diaryStartLong=startLong
+                            diaryEndLong=endLong
+                            diaryUploadTitleStr=titleStr
+                            if (NetworkUtil.isNetworkAvailable(requireActivity())){
+                                EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
+                            }
+                            else{
+                                showToast("网络连接失败")
+                            }
+                        }
+                    }
+                    3->{
+                        DiaryManageDialog(requireActivity(),2).builder().setOnDialogClickListener{
+                                titleStr,startLong,endLong->
+                            val diarys=DiaryDaoManager.getInstance().queryList(startLong, endLong)
+                            for (item in diarys){
+                                val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
+                                FileUtils.deleteFile(File(path))
+                                DiaryDaoManager.getInstance().delete(item)
+                            }
+                            showToast(2,"删除日记成功")
+                        }
+                    }
+                }
             }
             return@setOnLongClickListener true
         }
@@ -188,34 +241,27 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
      */
     fun uploadDiary(token:String){
         cloudList.clear()
-        val nullItems= mutableListOf<DiaryBean>()
-        val diarys=DiaryDaoManager.getInstance().queryList()
-        for (diaryBean in diarys){
-            val fileName=DateUtils.longToStringCalender(diaryBean.date)
-            val path=FileAddress().getPathDiary(fileName)
-            if (FileUtils.isExistContent(path)){
-                FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=4
-                            subTypeStr="日记"
-                            year=DateUtils.getYear()
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(diaryBean)
-                            downloadUrl=it
-                        })
-                        //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== diarys.size-nullItems.size){
-                            mCloudUploadPresenter.upload(cloudList)
-                            uploadType=1
-                        }
-                    }
-                }
+        val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
+        if (diarys.isNotEmpty()){
+            val paths= mutableListOf<String>()
+            for (item in diarys){
+                paths.add(FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date)))
             }
-            else{
-                //没有内容不上传
-                nullItems.add(diaryBean)
+            val time=System.currentTimeMillis()
+            FileUploadManager(token).apply {
+                startUpload(paths,DateUtils.longToString(time))
+                setCallBack{
+                    cloudList.add(CloudListBean().apply {
+                        type=4
+                        subTypeStr=diaryUploadTitleStr
+                        year=DateUtils.getYear()
+                        date=time
+                        listJson= Gson().toJson(diarys)
+                        downloadUrl=it
+                    })
+                    mCloudUploadPresenter.upload(cloudList)
+                    uploadType=1
+                }
             }
         }
     }
@@ -225,12 +271,12 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
      */
     fun uploadFreeNote(token:String){
         cloudList.clear()
-        val beans=FreeNoteDaoManager.getInstance().queryList()
+        val beans=FreeNoteDaoManager.getInstance().queryListByType()
         val nullItems= mutableListOf<FreeNoteBean>()
         for (item in beans){
             val fileName=DateUtils.longToString(item.date)
             val path=FileAddress().getPathFreeNote(fileName)
-            if (!FileUtils.getAscFiles(path).isNullOrEmpty()){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -264,15 +310,16 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         cloudList.clear()
         val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
         val nullItems= mutableListOf<ItemTypeBean>()
+        val currentTime=System.currentTimeMillis()
         val itemTypeBean=ItemTypeBean()
-        itemTypeBean.title="全部"
-        itemTypeBean.date=System.currentTimeMillis()
+        itemTypeBean.title="未分类"+DateUtils.longToStringDataNoYear(currentTime)
+        itemTypeBean.date=currentTime
         itemTypeBean.path=FileAddress().getPathScreen("未分类")
         screenTypes.add(0,itemTypeBean)
         for (item in screenTypes){
             val fileName=DateUtils.longToString(item.date)
             val path=item.path
-            if (!FileUtils.getAscFiles(path).isNullOrEmpty()){
+            if (FileUtils.isExistContent(path)){
                 FileUploadManager(token).apply {
                     startUpload(path,fileName)
                     setCallBack{
@@ -303,9 +350,12 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         super.uploadSuccess(cloudIds)
         when(uploadType){
             1->{
-                val path=FileAddress().getPathDiary(DateUtils.longToString(System.currentTimeMillis()))
-                FileUtils.deleteFile(File(path).parentFile)
-                DiaryDaoManager.getInstance().clear()
+                val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
+                for (item in diarys){
+                    val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
+                    FileUtils.deleteFile(File(path))
+                    DiaryDaoManager.getInstance().delete(item)
+                }
             }
             2->{
                 val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))

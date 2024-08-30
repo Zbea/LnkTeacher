@@ -5,7 +5,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.DrawingCatalogDialog
+import com.bll.lnkteacher.dialog.CatalogDialog
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
@@ -66,7 +66,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             }
 
         }
-        DrawingCatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(position: Int) {
                 if (page!=noteContents[position].page){
                     page = noteContents[position].page

@@ -50,7 +50,7 @@
                 android:text="添加"
                 android:textColor="@color/black"
                 android:layout_marginEnd="@dimen/dp_30"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 />
 
@@ -61,7 +61,7 @@
                 android:gravity="center"
                 android:text="踢出"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:background="@drawable/bg_black_stroke_5dp_corner"
                 />
 

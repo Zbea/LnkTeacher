@@ -578,6 +578,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             }
         }
         else{
+            var totalChildSort=0//小题累加
             val scores= Gson().fromJson(json, object : TypeToken<List<List<ScoreItem>>>() {}.type) as MutableList<List<ScoreItem>>
             for (i in scores.indices){
                 items.add(ScoreItem().apply {
@@ -605,9 +606,15 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         score=totalRight.toString()
                     }
                     for (item in scores[i]){
-                        item.sort=scores[i].indexOf(item)
+                        if (correctModule==3){
+                            item.sort=scores[i].indexOf(item)
+                        }
+                        else{
+                            item.sort=totalChildSort+scores[i].indexOf(item)
+                        }
                     }
                     childScores=scores[i]
+                    totalChildSort+=scores[i].size
                 })
             }
         }

@@ -66,7 +66,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
                             setAnalyseData(userItem,item, analyseItem)
                             totalAnalyseItems.add(analyseItem)
                         } else {
-                            val examAnalyseItem = totalAnalyseItems[item.sort - 1]
+                            val examAnalyseItem = totalAnalyseItems[item.sort]
                             setAnalyseData(userItem,item, examAnalyseItem)
                         }
                     } else {
@@ -91,7 +91,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
                             totalAnalyseItems.add(analyseItem)
                         }
                         else{
-                            val analyseItem=totalAnalyseItems[item.sort-1]
+                            val analyseItem=totalAnalyseItems[item.sort]
                             if (currentScore<item.label){
                                 analyseItem.wrongNum+=1
                                 analyseItem.wrongStudents.add(UserBean(userItem.userId, userItem.name, userItem.score))
@@ -134,7 +134,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
                         val topicChildPops= mutableListOf<PopupBean>()
                         for (childPos in item.childAnalyses.indices){
                             val childItem=item.childAnalyses[childPos]
-                            topicChildPops.add(PopupBean(childPos,"第 ${childItem.sort} 题 "))
+                            topicChildPops.add(PopupBean(childPos,"第 ${childItem.sort+1} 题 "))
                         }
                         topicChildMap[i]=topicChildPops
                     }

@@ -18,7 +18,7 @@
         android:gravity="center"
         android:lines="1"
         android:ellipsize="end"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"/>
+        android:background="@drawable/bg_black_stroke_10dp_corner"/>
 
 
 </LinearLayout>

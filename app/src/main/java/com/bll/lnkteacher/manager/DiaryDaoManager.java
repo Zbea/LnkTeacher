@@ -54,6 +54,7 @@ public class DiaryDaoManager {
         WhereCondition whereCondition= DiaryBeanDao.Properties.Date.eq(time);
         return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().unique();
     }
+
     /**
      * 查找除开当前时间最近的日期
      * @param time
@@ -76,6 +77,16 @@ public class DiaryDaoManager {
 
     public List<DiaryBean> queryList() {
         return dao.queryBuilder().where(whereUser).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+    public List<DiaryBean> queryList(long startLong,long endLong) {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Date.between(startLong,endLong);
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
+    }
+
+    public List<DiaryBean> queryListByTitle() {
+        WhereCondition whereCondition= DiaryBeanDao.Properties.Title.isNotNull();
+        return dao.queryBuilder().where(whereUser,whereCondition).orderDesc(DiaryBeanDao.Properties.Date).build().list();
     }
 
     public List<Long> queryLongList(int year,int month) {

@@ -7,7 +7,7 @@ import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.DrawingCatalogDialog
+import com.bll.lnkteacher.dialog.CatalogDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CatalogChildBean
@@ -81,7 +81,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
-        DrawingCatalogDialog(this,screenPos, getCurrentScreenPos(),catalogs, 1, pageStart).builder().setOnDialogClickListener(object : DrawingCatalogDialog.OnDialogClickListener {
+        CatalogDialog(this,screenPos, getCurrentScreenPos(),catalogs, 1, pageStart).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
             override fun onClick(position: Int) {
                 if (page!=position-1){
                     page = position - 1
