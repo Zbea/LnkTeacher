@@ -14,7 +14,12 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
+import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -25,8 +30,10 @@ import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_list_tab.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list_tab.rv_list
+import kotlinx.android.synthetic.main.common_title.et_search
+import kotlinx.android.synthetic.main.common_title.ll_search
+import kotlinx.android.synthetic.main.common_title.tv_grade
 
 /**
  * 书城
@@ -287,6 +294,10 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         if (bookNameStr.isNotEmpty())
             map["bookName"] = bookNameStr
         presenter.getBooks(map)
+    }
+
+    override fun onRefreshData() {
+        presenter.getBookType()
     }
 
 }

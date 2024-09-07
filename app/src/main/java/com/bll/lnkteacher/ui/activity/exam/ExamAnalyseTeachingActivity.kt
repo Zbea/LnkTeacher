@@ -27,7 +27,16 @@ import com.bll.lnkteacher.ui.adapter.ExamAnalyseTeachingAdapter
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
-import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.ll_topic_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_group
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_topic
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_topic_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_create_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_left_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_refresh_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_right_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic_child
 import org.greenrobot.eventbus.EventBus
 
 class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnalyseTeachingView {
@@ -436,4 +445,7 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
         mPresenter.getExamPaperClassPapers(examBean?.id!!, classList[classPos].classId)
     }
 
+    override fun onRefreshData() {
+        fetchClassUser()
+    }
 }

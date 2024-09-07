@@ -38,7 +38,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                 }
             }
             Constants.NET_REFRESH->{
-                if (NetworkUtil.isNetworkAvailable(context)){
+                if (NetworkUtil(context).isNetworkConnected()){
                     EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
                 }
             }

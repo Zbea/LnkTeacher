@@ -13,8 +13,9 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupUserPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserAdapter
-import kotlinx.android.synthetic.main.ac_classgroup_user.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_custom
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 
 class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView {
@@ -148,6 +149,10 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
             isCreate=false
             mAdapter?.setChange(false)
         }
+    }
+
+    override fun onRefreshData() {
+        mPresenter.getClassList(mClassGroup!!.classId)
     }
 
 }

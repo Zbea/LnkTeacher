@@ -36,10 +36,27 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.barChart
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_down
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_up
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_topic
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_answer
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_average_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_correct_number
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_num
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_info
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_label
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_pop
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import kotlinx.android.synthetic.main.common_title.tv_custom
+import kotlinx.android.synthetic.main.common_title.tv_setting
 
 
 class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView {
@@ -482,4 +499,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         ActivityManager.getInstance().finishActivity(TestPaperAnalyseTeachingActivity::class.java.name)
     }
 
+    override fun onRefreshData() {
+        fetchClassUser()
+    }
 }

@@ -14,7 +14,11 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -27,11 +31,14 @@ import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_list_tab.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list_tab.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_course
+import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_province
+import kotlinx.android.synthetic.main.common_title.tv_semester
+import kotlinx.android.synthetic.main.common_title.tv_type
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.concurrent.locks.ReentrantLock
 
 class TextBookStoreActivity : BaseActivity(),
     IContractView.IBookStoreView {
@@ -39,7 +46,6 @@ class TextBookStoreActivity : BaseActivity(),
     private var tabId = 0
     private var tabStr = ""
     private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
-    private val lock = ReentrantLock()
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter? = null
@@ -82,6 +88,7 @@ class TextBookStoreActivity : BaseActivity(),
 
     override fun onType(bookStoreType: BookStoreType) {
         if (!bookStoreType.bookLibType.isNullOrEmpty()){
+            subTypeList.clear()
             val types=bookStoreType.bookLibType
             for (item in types){
                 subTypeList.add(PopupBean(item.type,item.desc,types.indexOf(item)==0))
@@ -344,10 +351,8 @@ class TextBookStoreActivity : BaseActivity(),
                         complete(book)
                     }
                     else{
-                        lock.lock()
                         val fileTargetPath = FileAddress().getPathTextBook(fileName)
                         unzip(book, path, fileTargetPath)
-                        lock.unlock()
                     }
                 }
 
@@ -473,5 +478,9 @@ class TextBookStoreActivity : BaseActivity(),
                 presenter.getTeachingBooks(map)
             }
         }
+    }
+
+    override fun onRefreshData() {
+        presenter.getBookType()
     }
 }

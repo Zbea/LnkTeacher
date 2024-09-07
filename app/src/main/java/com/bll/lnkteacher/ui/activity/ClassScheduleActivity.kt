@@ -82,6 +82,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     }
 
     override fun initData() {
+        initChangeScreenData()
         type = intent.flags
         classGroupId=intent.getIntExtra("classGroupId",0)
 
@@ -595,7 +596,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     private fun getCourseView(): TextView {
         return TextView(this).apply {
             setTextColor(Color.BLACK)
-            textSize = if (type==1)24f else 28f
+            textSize = if (type==1)24f else 32f
             setLines(1)
             gravity = Gravity.CENTER
         }

@@ -29,10 +29,35 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_homework_analyse.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_homework_analyse.iv_score_down
+import kotlinx.android.synthetic.main.ac_homework_analyse.iv_score_up
+import kotlinx.android.synthetic.main.ac_homework_analyse.ll_score_statistics
+import kotlinx.android.synthetic.main.ac_homework_analyse.ll_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.ll_topic_statistics
+import kotlinx.android.synthetic.main.ac_homework_analyse.rv_list
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_answer
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_average_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_average_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_info_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_info_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_num_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_num_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_number_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_number_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_pop_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_pop_topic
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_score_label
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_time_score
+import kotlinx.android.synthetic.main.ac_homework_analyse.tv_time_topic
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import kotlinx.android.synthetic.main.common_title.tv_custom
+import kotlinx.android.synthetic.main.common_title.tv_setting
 
 
 class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView {
@@ -468,4 +493,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         ActivityManager.getInstance().finishActivity(TestPaperAnalyseTeachingActivity::class.java.name)
     }
 
+    override fun onRefreshData() {
+        mPresenter.getClassPapers(correctList?.examList!![classPos].examChangeId)
+    }
 }

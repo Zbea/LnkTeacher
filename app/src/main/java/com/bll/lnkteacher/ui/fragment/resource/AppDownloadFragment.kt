@@ -73,7 +73,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())) {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
         }
     }

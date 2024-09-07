@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -221,8 +222,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         mDialog = ProgressDialog(this,screen)
     }
 
-    private fun fetchCommonData(){
-        if (NetworkUtil.isNetworkAvailable(this) && DataBeanManager.grades.size==0)
+    protected fun fetchCommonData(){
+        if (NetworkUtil(this).isNetworkConnected() && DataBeanManager.grades.size==0)
             mCommonPresenter.getCommon()
     }
 
@@ -812,7 +813,20 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     //更新数据
     @Subscribe(threadMode = ThreadMode.MAIN,sticky = true)
     fun onMessageEvent(msgFlag: String) {
-        onEventBusMessage(msgFlag)
+        when(msgFlag){
+            Constants.NETWORK_CONNECTION_COMPLETE_EVENT->{
+                onRefreshData()
+            }
+            else->{
+                onEventBusMessage(msgFlag)
+            }
+        }
+    }
+
+    /**
+     * 刷新数据
+     */
+    open fun onRefreshData(){
     }
 
     /**

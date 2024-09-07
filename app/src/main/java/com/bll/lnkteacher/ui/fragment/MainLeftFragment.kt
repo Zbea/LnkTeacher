@@ -22,12 +22,27 @@ import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
-import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.utils.CalenderUtils
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.DeviceUtil
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.htfy.params.ServerParams
-import kotlinx.android.synthetic.main.fragment_main_left.*
+import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
+import kotlinx.android.synthetic.main.fragment_main_left.iv_date
+import kotlinx.android.synthetic.main.fragment_main_left.rv_main_plan
+import kotlinx.android.synthetic.main.fragment_main_left.tv_calender
+import kotlinx.android.synthetic.main.fragment_main_left.tv_date_today
+import kotlinx.android.synthetic.main.fragment_main_left.tv_planover
+import kotlinx.android.synthetic.main.fragment_main_left.tv_screenshot
+import kotlinx.android.synthetic.main.fragment_main_left.v_calender_down
+import kotlinx.android.synthetic.main.fragment_main_left.v_calender_up
+import kotlinx.android.synthetic.main.fragment_main_left.v_date_down
+import kotlinx.android.synthetic.main.fragment_main_left.v_date_up
 import java.io.File
-import java.util.*
+import java.util.Random
 
 class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
 
@@ -100,7 +115,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             fetchCommonData()
             mCommonPresenter.getAppUpdate()
 
@@ -209,7 +224,6 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         }
         mTeachingAdapter?.setNewData(classGroups)
     }
-
 
     override fun onRefreshData() {
         lazyLoad()

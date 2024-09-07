@@ -15,10 +15,21 @@ import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.MD5Utils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_account_register.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_account_register.btn_code
+import kotlinx.android.synthetic.main.ac_account_register.btn_register
+import kotlinx.android.synthetic.main.ac_account_register.ed_code
+import kotlinx.android.synthetic.main.ac_account_register.ed_name
+import kotlinx.android.synthetic.main.ac_account_register.ed_password
+import kotlinx.android.synthetic.main.ac_account_register.ed_phone
+import kotlinx.android.synthetic.main.ac_account_register.ed_user
+import kotlinx.android.synthetic.main.ac_account_register.ll_name
+import kotlinx.android.synthetic.main.ac_account_register.ll_school
+import kotlinx.android.synthetic.main.ac_account_register.ll_user
+import kotlinx.android.synthetic.main.ac_account_register.tv_course_btn
+import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
 class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView{
@@ -61,7 +72,14 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     override fun initData() {
         initChangeScreenData()
         flags=intent.flags
-        mSchoolPresenter.getSchool()
+        if (flags==0){
+            if (NetworkUtil(this).isNetworkConnected()){
+                mSchoolPresenter.getSchool()
+            }
+            else{
+                showToast("网络连接失败")
+            }
+        }
     }
 
     override fun initChangeScreenData() {
@@ -240,4 +258,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         }
     }
 
+    override fun onRefreshData() {
+        mSchoolPresenter.getSchool()
+    }
 }

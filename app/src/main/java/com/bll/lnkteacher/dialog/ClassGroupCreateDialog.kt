@@ -36,7 +36,7 @@ class ClassGroupCreateDialog(val context: Context,private val name:String,privat
         val grades=DataBeanManager.popupGrades(grade)
 
         tv_grade?.setOnClickListener {
-            PopupRadioList(context, grades, tv_grade,tv_grade.width,  5).builder().setOnSelectListener { item ->
+            PopupRadioList(context, grades, tv_grade,  5).builder().setOnSelectListener { item ->
                 tv_grade.text=item.name
                 grade=item.id
             }

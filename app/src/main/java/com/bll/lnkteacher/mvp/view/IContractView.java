@@ -326,7 +326,7 @@ public interface IContractView {
         void onCorrectSuccess();
     }
 
-    interface IShareNoteView extends IBaseView{
+    interface IFreeNoteView extends IBaseView{
         void onReceiveList(ShareNoteList list);
         void onShareList(ShareNoteList list);
         void onToken(String token);

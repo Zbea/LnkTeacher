@@ -18,27 +18,20 @@
 
 
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_30"
-        android:orientation="horizontal"
-        >
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="@dimen/sp_22"
-            android:textColor="@color/black"
-            android:hint="输入名称"
-            android:paddingStart="@dimen/dp_10"
-            android:paddingEnd="@dimen/dp_10"
-            android:lines="1"
-            android:textColorHint="@color/color_text_hint"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"/>
-
-    </LinearLayout>
+        android:layout_weight="1"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:hint="输入名称"
+        android:paddingStart="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_10"
+        android:lines="1"
+        android:textColorHint="@color/color_text_hint"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"/>
 
 
     <LinearLayout

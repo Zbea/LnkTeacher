@@ -10,7 +10,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserSelectorAdapter
 import kotlinx.android.synthetic.main.ac_app_tool.tv_add
 import kotlinx.android.synthetic.main.ac_app_tool.tv_out
-import kotlinx.android.synthetic.main.ac_classgroup_child_manage.*
+import kotlinx.android.synthetic.main.ac_classgroup_child_manage.rv_list_all
 import kotlinx.android.synthetic.main.ac_list.rv_list
 
 class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupChildView {
@@ -125,6 +125,10 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
                 mAllAdapter?.notifyItemChanged(position)
             }
         }
+    }
+
+    override fun onRefreshData() {
+        mPresenter.getClassUser(mClassGroup!!.classGroupId)
     }
 
 }

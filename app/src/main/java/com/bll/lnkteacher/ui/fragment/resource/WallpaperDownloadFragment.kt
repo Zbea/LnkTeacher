@@ -50,7 +50,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())) {
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
             fetchData()
         }
     }

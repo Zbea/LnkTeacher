@@ -9,7 +9,7 @@ import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.ui.adapter.AppListAdapter
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_app.*
+import kotlinx.android.synthetic.main.fragment_app.rv_list
 
 class AppFragment: BaseFragment() {
 
@@ -68,7 +68,6 @@ class AppFragment: BaseFragment() {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         initData()
     }
 

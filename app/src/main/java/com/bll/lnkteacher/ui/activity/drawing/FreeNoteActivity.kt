@@ -11,7 +11,7 @@ import com.bll.lnkteacher.mvp.model.FreeNoteBean
 import com.bll.lnkteacher.mvp.model.FriendList
 import com.bll.lnkteacher.mvp.model.FriendList.FriendBean
 import com.bll.lnkteacher.mvp.model.ShareNoteList
-import com.bll.lnkteacher.mvp.presenter.ShareNotePresenter
+import com.bll.lnkteacher.mvp.presenter.FreeNotePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.*
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -19,9 +19,9 @@ import kotlinx.android.synthetic.main.ac_free_note.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import java.io.File
 
-class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
+class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
 
-    private lateinit var presenter:ShareNotePresenter
+    private lateinit var presenter:FreeNotePresenter
     private var bgRes=""
     private var freeNoteBean:FreeNoteBean?=null
     private var posImage=0
@@ -40,11 +40,13 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     override fun onReceiveList(list: ShareNoteList) {
         receiveNotes=list.list
         receiveTotal=list.total
+        receivePopWindow?.setData(receiveNotes)
     }
 
     override fun onShareList(list: ShareNoteList) {
         shareNotes=list.list
         shareTotal=list.total
+        sharePopWindow?.setData(shareNotes)
     }
 
     override fun onToken(token: String) {
@@ -58,22 +60,15 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
                 sBgRes.add(bgResList[i])
             }
         }
-        if (imagePaths.size==0){
-            hideLoading()
-            showToast("暂无分享内容")
-            return
-        }
         FileImageUploadManager(token, imagePaths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    val urls=ToolUtils.getImagesStr(urls)
-                    val bgs=ToolUtils.getImagesStr(sBgRes)
                     val map=HashMap<String,Any>()
                     map["userIds"]=friendIds
                     map["title"]=freeNoteBean?.title!!
-                    map["bgRes"]=bgs
-                    map["paths"]=urls
+                    map["bgRes"]=ToolUtils.getImagesStr(sBgRes)
+                    map["paths"]=ToolUtils.getImagesStr(urls)
                     map["date"]=freeNoteBean?.date!!
                     presenter.commitShare(map)
                 }
@@ -125,7 +120,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
     }
 
     override fun initChangeScreenData() {
-        presenter=ShareNotePresenter(this)
+        presenter=FreeNotePresenter(this)
         fetchShareNotes(1,false)
         fetchReceiveNotes(1,false)
         presenter.getFriends()
@@ -234,8 +229,14 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IShareNoteView {
             }
             FreeNoteFriendManageDialog(this,friends).builder().setOnDialogClickListener{ type,ids->
                 if (type==0){
-                    friendIds= ids as MutableList<Int>
-                    presenter.getToken()
+                    val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))
+                    if (FileUtils.isExistContent(path)){
+                        friendIds= ids as MutableList<Int>
+                        presenter.getToken()
+                    }
+                    else{
+                        showToast("暂无分享内容")
+                    }
                 }
                 else{
                     presenter.unbindFriend(ids)

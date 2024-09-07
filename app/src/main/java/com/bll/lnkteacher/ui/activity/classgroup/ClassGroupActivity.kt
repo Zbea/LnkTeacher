@@ -9,7 +9,11 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.dialog.ClassGroupAddDialog
+import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
+import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -17,8 +21,9 @@ import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.iv_manager
+import kotlinx.android.synthetic.main.common_title.iv_setting
 
 class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
 
@@ -191,6 +196,10 @@ class ClassGroupActivity:BaseActivity(), IContractView.IClassGroupView {
         if (msgFlag==Constants.CLASSGROUP_EVENT){
             mGroupPresenter.getClassGroups()
         }
+    }
+
+    override fun onRefreshData() {
+        mGroupPresenter.getClassGroups()
     }
 
 }

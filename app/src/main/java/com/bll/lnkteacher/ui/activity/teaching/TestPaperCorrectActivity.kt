@@ -17,14 +17,30 @@ import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
-import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.utils.BitmapUtils
+import com.bll.lnkteacher.utils.FileImageUploadManager
+import com.bll.lnkteacher.utils.FileMultitaskDownManager
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_testpaper_correct.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_record
+import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
+import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
+import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_answer
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_save
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_total_score
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import kotlinx.android.synthetic.main.common_title.tv_setting
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -421,4 +437,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         FileDownloader.getImpl().pauseAll()
     }
 
+    override fun onRefreshData() {
+        fetchClassList()
+    }
 }

@@ -391,7 +391,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        if (!hidden&&NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (!hidden&&NetworkUtil(requireActivity()).isNetworkConnected()){
             onRefreshData()
         }
     }

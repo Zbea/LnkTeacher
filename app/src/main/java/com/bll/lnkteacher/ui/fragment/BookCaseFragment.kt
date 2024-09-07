@@ -18,7 +18,12 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_bookcase.*
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_down
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_up
+import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
+import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
+import kotlinx.android.synthetic.main.fragment_bookcase.tv_type
 import java.io.File
 
 /**
@@ -168,7 +173,6 @@ class BookCaseFragment : BaseMainFragment() {
     }
 
     override fun onRefreshData() {
-        super.onRefreshData()
         findBook()
     }
 

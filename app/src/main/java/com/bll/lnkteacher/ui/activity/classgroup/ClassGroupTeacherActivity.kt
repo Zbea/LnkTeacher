@@ -10,7 +10,7 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher
 import com.bll.lnkteacher.mvp.presenter.ClassGroupTeacherPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupTeacherAdapter
-import kotlinx.android.synthetic.main.ac_classgroup_user.*
+import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
 import org.greenrobot.eventbus.EventBus
 
 class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherView {
@@ -105,6 +105,10 @@ class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherV
                 mPresenter.outTeacher(map)
             }
         })
+    }
+
+    override fun onRefreshData() {
+        mPresenter.getClassList(mClassGroup?.classGroupId!!)
     }
 
 }

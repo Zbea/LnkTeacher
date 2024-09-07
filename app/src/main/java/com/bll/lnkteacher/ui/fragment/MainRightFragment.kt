@@ -128,7 +128,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
                             diaryStartLong=startLong
                             diaryEndLong=endLong
                             diaryUploadTitleStr=titleStr
-                            if (NetworkUtil.isNetworkAvailable(requireActivity())){
+                            if (NetworkUtil(requireActivity()).isNetworkConnected()){
                                 EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
                             }
                             else{
@@ -165,7 +165,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkAvailable(requireActivity())){
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
             fetchCommonData()
         }

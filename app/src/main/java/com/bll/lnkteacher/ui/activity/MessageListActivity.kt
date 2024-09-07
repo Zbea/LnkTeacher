@@ -13,8 +13,8 @@ import com.bll.lnkteacher.mvp.presenter.MessagePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.MessageListAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.iv_manager
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity : BaseActivity(),IContractView.IMessageView {
@@ -125,5 +125,7 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
         mPresenter.getList(map,true)
     }
 
-
+    override fun onRefreshData() {
+        fetchData()
+    }
 }
