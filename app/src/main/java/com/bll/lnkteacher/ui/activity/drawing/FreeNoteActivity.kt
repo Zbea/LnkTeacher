@@ -4,7 +4,13 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.dialog.CatalogFreeNoteDialog
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.FreeNoteFriendManageDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.PopupFreeNoteReceiveList
+import com.bll.lnkteacher.dialog.PopupFreeNoteShareList
 import com.bll.lnkteacher.greendao.StringConverter
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.mvp.model.FreeNoteBean
@@ -13,10 +19,24 @@ import com.bll.lnkteacher.mvp.model.FriendList.FriendBean
 import com.bll.lnkteacher.mvp.model.ShareNoteList
 import com.bll.lnkteacher.mvp.presenter.FreeNotePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.FileImageUploadManager
+import com.bll.lnkteacher.utils.FileMultitaskDownManager
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ToolUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.ac_free_note.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_free_note.tv_add
+import kotlinx.android.synthetic.main.ac_free_note.tv_delete
+import kotlinx.android.synthetic.main.ac_free_note.tv_name
+import kotlinx.android.synthetic.main.ac_free_note.tv_receive_list
+import kotlinx.android.synthetic.main.ac_free_note.tv_save
+import kotlinx.android.synthetic.main.ac_free_note.tv_share
+import kotlinx.android.synthetic.main.ac_free_note.tv_share_list
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_expand
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
@@ -140,7 +160,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
             NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgRes))
+                    GlideUtils.setImageUrl(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage]=bgRes
                 }
         }
@@ -320,7 +340,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
 
 
     override fun onChangeContent() {
-        v_content_b?.setImageResource(ToolUtils.getImageResId(this,bgResList[posImage]))
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgResList[posImage]),v_content_b)
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)){

@@ -23,8 +23,9 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.SystemSettingUtils
-import kotlinx.android.synthetic.main.ac_class_schedule.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_class_schedule.grid
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
+import kotlinx.android.synthetic.main.common_title.tv_btn_2
 import org.greenrobot.eventbus.EventBus
 
 //课程表
@@ -108,11 +109,10 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
 
     override fun initView() {
         setPageTitle(if (type==1)"排课表   编辑" else "课程表    编辑")
-        showView(tv_custom,iv_manager)
-        iv_manager.setImageResource(R.mipmap.icon_save)
-        tv_custom.text="模板"
+        showView(tv_btn_1,tv_btn_2)
 
-        tv_custom.setOnClickListener {
+        tv_btn_2.text="模板"
+        tv_btn_2.setOnClickListener {
             CourseModuleDialog(this).builder().setOnClickListener {
                 mode=it
                 ClassScheduleGreenDaoManager.getInstance().editByTypeLists(type, classGroupId, mode)
@@ -122,7 +122,8 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             }
         }
 
-        iv_manager?.setOnClickListener {
+        tv_btn_1.text="保存"
+        tv_btn_1?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)

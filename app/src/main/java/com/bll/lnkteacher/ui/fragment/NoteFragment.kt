@@ -13,11 +13,19 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
-import com.bll.lnkteacher.dialog.*
+import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
+import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteContentDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.CloudListBean
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.Note
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -25,8 +33,8 @@ import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_fragment_title.*
-import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.fragment_list.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -78,7 +86,7 @@ class NoteFragment : BaseMainFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(0, DP2PX.dip2px(requireActivity(),25f), 0,0)
+        layoutParams.setMargins(0, DP2PX.dip2px(requireActivity(),30f), 0,0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 

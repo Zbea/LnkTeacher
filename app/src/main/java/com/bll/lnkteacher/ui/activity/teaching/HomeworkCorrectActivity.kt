@@ -46,7 +46,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
-import kotlinx.android.synthetic.main.common_title.tv_setting
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -166,7 +166,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
             tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
         }
 
-        tv_setting.setOnClickListener {
+        tv_custom_1.setOnClickListener {
             mPresenter.complete(correctList?.id!!,mClassBean?.classId!!)
         }
 

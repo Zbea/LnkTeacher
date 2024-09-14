@@ -25,46 +25,20 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22"
         android:gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_20"
         android:text="班级选择："
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:gravity="center"
-        android:orientation="horizontal">
+    <include
+        layout="@layout/common_dialog_ok"
+        />
 
-        <TextView
-            android:id="@+id/tv_cancel"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="取消"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-
-        <TextView
-            android:id="@+id/tv_ok"
-            android:layout_width="120dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_60"
-            android:gravity="center"
-            android:text="发送"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            />
-    </LinearLayout>
 
 </LinearLayout>

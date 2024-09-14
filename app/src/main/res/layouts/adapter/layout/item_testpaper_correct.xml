@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_30"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_23"
+                android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 />
 
@@ -54,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_23"
+                android:textSize="@dimen/sp_25"
                  />
 
             <TextView
@@ -64,29 +64,29 @@
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_23" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_send"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
+                android:layout_width="130dp"
+                android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_20"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="发送学生"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_23" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_analyse"
-                android:layout_width="120dp"
-                android:layout_height="50dp"
+                android:layout_width="130dp"
+                android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_20"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center"
                 android:text="@string/teaching_testpaper_analyse"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_23" />
+                android:textSize="@dimen/sp_25" />
 
             <ImageView
                 android:id="@+id/iv_delete"

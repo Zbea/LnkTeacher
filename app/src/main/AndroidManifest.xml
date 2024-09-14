@@ -140,7 +140,7 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.WalletActivity"
-            android:theme="@style/styleDialogCustom"
+            android:theme="@style/activityCustom"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.teaching.ScoreRankActivity"

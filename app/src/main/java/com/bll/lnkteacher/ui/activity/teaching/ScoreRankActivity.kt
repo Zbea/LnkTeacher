@@ -3,19 +3,19 @@ package com.bll.lnkteacher.ui.activity.teaching
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.PopupCheckList
+import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.exam.ExamList.ExamBean
 import com.bll.lnkteacher.mvp.model.exam.ExamRankList
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.RankBean
 import com.bll.lnkteacher.mvp.presenter.TestPaperRankPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.ClassAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.widget.FlowLayoutManager
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
-import kotlinx.android.synthetic.main.ac_testpaper_grade.*
+import kotlinx.android.synthetic.main.ac_testpaper_grade.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_grade.tv_class_s
 
 class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
 
@@ -23,6 +23,7 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
     private var mPresenter= TestPaperRankPresenter(this,3)
     private var mAdapter: TestPaperGradeAdapter?=null
     private var grades= mutableListOf<RankBean>()
+    private var popClasss= mutableListOf<PopupBean>()
 
     override fun onGrade(list: MutableList<RankBean>) {
         grades=list
@@ -47,25 +48,18 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
 
     override fun initData() {
         type=intent.flags
+
         if (type==0){
             val correctBean=intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
             for (item in correctBean.examList){
-                mExamClassGroups.add(ClassGroup().apply {
-                    classId=item.classId
-                    name=item.name
-                    isCheck=true
-                })
+                popClasss.add(PopupBean(item.classId,item.name,true))
             }
             mPresenter.getPaperGrade(correctBean.id)
         }
         else{
             val examBean=intent.getBundleExtra("bundle")?.get("examBean") as ExamBean
             for (item in examBean.classList){
-                mExamClassGroups.add(ClassGroup().apply {
-                    classId=item.classId
-                    name=item.className
-                    isCheck=true
-                })
+                popClasss.add(PopupBean(item.classId,item.className,true))
             }
             mPresenter.getExamGrade(examBean.id)
         }
@@ -74,21 +68,34 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
     override fun initView() {
         setPageTitle("成绩统计")
 
-        initRecyclerView()
-        initRecyclerViewClass()
-    }
-
-    private fun initRecyclerViewClass(){
-        rv_class.layoutManager = FlowLayoutManager()//创建布局管理
-        mClassAdapter = ClassAdapter(R.layout.item_class, mExamClassGroups)
-        rv_class.adapter = mClassAdapter
-        mClassAdapter?.bindToRecyclerView(rv_class)
-        mClassAdapter?.setOnItemClickListener { adapter, view, position ->
-            val item=mExamClassGroups[position]
-            item.isCheck=!item.isCheck
-            mClassAdapter?.notifyItemChanged(position)
-            changeClassGroup()
+        tv_class_s.text="全部班级"
+        tv_class_s.setOnClickListener {
+            PopupCheckList(this,popClasss,tv_class_s,5).builder().setOnSelectListener{ items->
+                if (items.size==popClasss.size){
+                    tv_class_s.text="全部班级"
+                }
+                else{
+                    var className=""
+                    for (item in items){
+                        className+=item.name+if (items.indexOf(item)==items.size-1) "" else "、"
+                    }
+                    tv_class_s.text=className
+                }
+                val ids= mutableListOf<Int>()
+                for (item in items){
+                    ids.add(item.id)
+                }
+                val selectRanks= mutableListOf<RankBean>()
+                for (item in grades){
+                    if (ids.contains(item.classId)){
+                        selectRanks.add(item)
+                    }
+                }
+                mAdapter?.setNewData(selectRanks)
+            }
         }
+
+        initRecyclerView()
     }
 
     private fun initRecyclerView(){
@@ -97,26 +104,6 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this,40f),0))
-    }
-
-    private fun changeClassGroup(){
-        val ids= mutableListOf<Int>()
-        for (item in mExamClassGroups){
-            if (item.isCheck)
-                ids.add(item.classId)
-        }
-        var items= mutableListOf<RankBean>()
-        if (ids.size>0){
-            for (item in grades){
-                if (ids.contains(item.classId)){
-                    items.add(item)
-                }
-            }
-        }
-        else{
-            items=grades
-        }
-        mAdapter?.setNewData(items)
     }
 
 }

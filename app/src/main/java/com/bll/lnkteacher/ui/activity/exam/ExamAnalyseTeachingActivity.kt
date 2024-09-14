@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity.exam
 
 import PopupClick
 import android.text.TextUtils
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
@@ -12,6 +11,7 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
@@ -37,6 +37,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_refresh_c
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_right_score
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic_child
+import kotlinx.android.synthetic.main.common_title.tv_class
 import org.greenrobot.eventbus.EventBus
 
 class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnalyseTeachingView {
@@ -60,6 +61,7 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
     private var result=0//选中结果0错 1 正确
     private var resultChild=0
     private var isScore=true
+    private var popClasss= mutableListOf<PopupBean>()
 
     override fun onClassPapers(bean: ExamClassUserList) {
         users.clear()
@@ -190,16 +192,11 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
         correctModule=examBean!!.questionType
         scoreMode=examBean!!.questionMode
         for (item in classList){
-            mExamClassGroups.add(ClassGroup().apply {
-                classId=item.classId
-                classGroupId=item.classGroupId
-                name=item.className
-            })
+            popClasss.add(PopupBean(classList.indexOf(item),item.className,classList.indexOf(item)==classPos))
         }
 
-        mExamClassGroups[classPos].isCheck=true
-        classId=mExamClassGroups[classPos].classId
-        classGroupId= mExamClassGroups[classPos].classGroupId
+        classId=classList[classPos].classId
+        classGroupId= classList[classPos].classGroupId
 
         fetchClassUser()
     }
@@ -210,12 +207,23 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
 
     override fun initView() {
         setPageTitle("因材施教")
-
+        showView(tv_class)
         if (correctModule<3){
             disMissView(ll_topic_child)
         }
 
-        mClassAdapter?.setNewData(mExamClassGroups)
+        tv_class.text=classList[classPos].className
+        tv_class.setOnClickListener {
+            PopupRadioList(this,popClasss,tv_class,5).builder().setOnSelectListener{
+                if (classPos != it.id) {
+                    classPos = it.id
+                    classId=classList[classPos].classId
+                    classGroupId= classList[classPos].classGroupId
+                    tv_class.text=classList[classPos].className
+                    fetchClassUser()
+                }
+            }
+        }
 
         tv_refresh_child.setOnClickListener {
             val classGroups=getClassChild()
@@ -338,15 +346,6 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
         }
 
         initRecyclerView()
-    }
-
-    override fun onClassClickListener(view: View, position: Int) {
-        if (classPos!=position){
-            classPos=position
-            classId=mExamClassGroups[classPos].classId
-            classGroupId= mExamClassGroups[classPos].classGroupId
-            fetchClassUser()
-        }
     }
 
     private fun initRecyclerView(){

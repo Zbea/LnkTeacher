@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.activity.exam
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -17,7 +16,7 @@ import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.exam.ExamList.ExamClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
@@ -55,8 +54,9 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import kotlinx.android.synthetic.main.common_title.tv_class
 import kotlinx.android.synthetic.main.common_title.tv_custom
-import kotlinx.android.synthetic.main.common_title.tv_setting
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
 
 class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private val mPresenter= ExamCorrectPresenter(this,3)
@@ -64,6 +64,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private var posImage=0
     private var imageCount=0
     private var examBean: ExamList.ExamBean?=null
+    private var classList= mutableListOf<ExamClassBean>()
     private var images= mutableListOf<String>()
     private var scoreItems= mutableListOf<ScoreItem>()
     private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
@@ -72,6 +73,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private var mAnalyseMultiAdapter:ExamAnalyseMultiAdapter?=null
     private var users = mutableListOf<ExamClassUserList.ClassUserBean>()
     private var scoreIndex = 0//当前分数下标
+    private var popClasss= mutableListOf<PopupBean>()
 
     override fun onExamClassUser(classUserList: ExamClassUserList) {
         scoreItems.clear()
@@ -204,6 +206,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     override fun initData() {
         screenPos=Constants.SCREEN_LEFT
         examBean= intent.getBundleExtra("bundle")?.get("examBean") as ExamList.ExamBean
+        classList=examBean!!.classList
         correctModule = examBean?.questionType!!
         scoreMode = examBean?.questionMode!!
 
@@ -214,14 +217,9 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             answerImages = ToolUtils.getImages(examBean?.answerUrl)
         }
 
-        for (item in examBean?.classList!!) {
-            mExamClassGroups.add(ClassGroup().apply {
-                classId = item.classId
-                classGroupId = item.classGroupId
-                name = item.className
-            })
+        for (item in classList) {
+            popClasss.add(PopupBean(classList.indexOf(item),item.className,classList.indexOf(item)==classPos))
         }
-        mExamClassGroups[0].isCheck = true
 
         if (scoreMode == 1) {
             for (score in intArrayOf(0, 60, 70, 80, 90, 100)) {
@@ -235,7 +233,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     override fun initView() {
         setPageTitle(R.string.teaching_testpaper_analyse)
         disMissView(iv_tool,iv_catalog,iv_btn)
-
+        showView(tv_class)
         setPageSetting("成绩统计")
 
         if (correctModule>0){
@@ -244,6 +242,17 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         }
 
         tv_score_label.text = if (scoreMode == 1) "赋分统计数据" else "对错统计数据"
+
+        tv_class.text=classList[classPos].className
+        tv_class.setOnClickListener {
+            PopupRadioList(this,popClasss,tv_class,5).builder().setOnSelectListener{
+                if (classPos != it.id) {
+                    classPos = it.id
+                    tv_class.text=classList[classPos].className
+                    fetchClassUser()
+                }
+            }
+        }
 
         tv_answer.setOnClickListener {
             ImageDialog(this, 2, answerImages).builder()
@@ -259,7 +268,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             customStartActivity(intent)
         }
 
-        tv_setting.setOnClickListener {
+        tv_custom_1.setOnClickListener {
             val intent = Intent(this, ScoreRankActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("examBean", examBean)
@@ -294,19 +303,12 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
 
         initChartView()
         initRecyclerView()
-        mClassAdapter?.setNewData(mExamClassGroups)
+
         onChangeExpandView()
 
         if (images.size>0){
             imageCount=images.size
             onChangeContent()
-        }
-    }
-
-    override fun onClassClickListener(view: View, position: Int) {
-        if (classPos != position) {
-            classPos = position
-            fetchClassUser()
         }
     }
 
@@ -503,7 +505,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private fun fetchClassUser(){
         val map=HashMap<String,Any>()
         map["schoolExamJobId"]=examBean!!.id
-        map["classId"]=mExamClassGroups[classPos].classId
+        map["classId"]=classList[classPos].classId
         mPresenter.getExamClassUser(map)
     }
 

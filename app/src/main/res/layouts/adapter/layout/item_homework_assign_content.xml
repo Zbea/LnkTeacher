@@ -25,7 +25,7 @@
             android:textColor="@color/black"
             android:ellipsize="end"
             android:button="@drawable/bg_check_selector"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
             android:clickable="false"
             android:lines="1"/>
 
@@ -38,11 +38,11 @@
             android:gravity="center_vertical"
             >
             <TextView
-                android:layout_width="25dp"
+                android:layout_width="30dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:lines="1"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp_20"
                 android:text="预"
                 android:gravity="center"
                 android:background="@drawable/bg_gray_stroke_5dp_corner"
@@ -55,7 +55,7 @@
                 android:layout_marginStart="@dimen/dp_10"
                 android:textColor="@color/black"
                 android:lines="1"
-                android:textSize="22sp"
+                android:textSize="@dimen/sp_25"
                 />
 
         </LinearLayout>
@@ -67,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="@dimen/sp_25"
         android:layout_marginStart="@dimen/dp_20"
         android:text="答案"
         />

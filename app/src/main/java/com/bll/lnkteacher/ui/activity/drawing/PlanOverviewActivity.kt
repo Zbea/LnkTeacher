@@ -8,9 +8,17 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_plan_overview.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
+import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
+import kotlinx.android.synthetic.main.ac_plan_overview.rg_group
+import kotlinx.android.synthetic.main.ac_plan_overview.tv_date
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_expand
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
 class PlanOverviewActivity: BaseDrawingActivity() {
@@ -38,6 +46,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand)
         setPageTitle("月周计划")
+        GlideUtils.setImageUrl(this,R.mipmap.icon_freenote_bg_1,v_content_b)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

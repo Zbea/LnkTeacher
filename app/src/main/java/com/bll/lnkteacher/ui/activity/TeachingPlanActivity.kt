@@ -21,7 +21,23 @@ import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.rv_list
 import kotlinx.android.synthetic.main.ac_date.tv_month
 import kotlinx.android.synthetic.main.ac_date.tv_year
-import kotlinx.android.synthetic.main.ac_teaching_plan.*
+import kotlinx.android.synthetic.main.ac_teaching_plan.cb_all_copy
+import kotlinx.android.synthetic.main.ac_teaching_plan.cb_all_delete
+import kotlinx.android.synthetic.main.ac_teaching_plan.et_content
+import kotlinx.android.synthetic.main.ac_teaching_plan.et_num
+import kotlinx.android.synthetic.main.ac_teaching_plan.iv_copy_save
+import kotlinx.android.synthetic.main.ac_teaching_plan.iv_delete_save
+import kotlinx.android.synthetic.main.ac_teaching_plan.iv_move_save
+import kotlinx.android.synthetic.main.ac_teaching_plan.iv_save
+import kotlinx.android.synthetic.main.ac_teaching_plan.ll_copy
+import kotlinx.android.synthetic.main.ac_teaching_plan.rg_group
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_class
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_end_time
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_start_time
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_end_time
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_start_time
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_end_time
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_start_time
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -196,14 +212,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_move_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,405f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,510f).builder().setOnDateListener{
                 moveStartTime=it
                 tv_move_start_time.text=DateUtils.longToStringDataNoYear(moveStartTime)
             }
         }
 
         tv_move_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,405f).builder().setOnDateListener{
+            CalendarSingleDialog(this,360f,510f).builder().setOnDateListener{
                 moveEndTime=it
                 tv_move_end_time.text=DateUtils.longToStringDataNoYear(moveEndTime)
             }
@@ -221,14 +237,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_copy_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,660f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,775f).builder().setOnDateListener{
                 copyStartTime=it
                 tv_copy_start_time.text=DateUtils.longToStringDataNoYear(copyStartTime)
             }
         }
 
         tv_copy_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,660f).builder().setOnDateListener{
+            CalendarSingleDialog(this,360f,775f).builder().setOnDateListener{
                 copyEndTime=it
                 tv_copy_end_time.text=DateUtils.longToStringDataNoYear(copyEndTime)
             }
@@ -288,14 +304,14 @@ class TeachingPlanActivity:BaseActivity() {
 
     private fun setDeleteView(){
         tv_delete_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,925f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,965f).builder().setOnDateListener{
                 deleteStartTime=it
                 tv_delete_start_time.text=DateUtils.longToStringDataNoYear(deleteStartTime)
             }
         }
 
         tv_delete_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,925f).builder().setOnDateListener{
+            CalendarSingleDialog(this,360f,965f).builder().setOnDateListener{
                 deleteEndTime=it
                 tv_delete_end_time.text=DateUtils.longToStringDataNoYear(deleteEndTime)
             }

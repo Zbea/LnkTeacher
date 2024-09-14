@@ -236,16 +236,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         }
     }
 
-
-    fun showSearchView(isShow:Boolean) {
-       if (isShow){
-            showView(ll_search)
-        }
-        else{
-            disMissView(ll_search)
-        }
-    }
-
     protected fun setImageSetting(setId:Int){
         showView(iv_setting)
         iv_setting?.setImageResource(setId)
@@ -265,13 +255,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     protected fun setPageOk(str: String){
-        showView(tv_ok)
-        tv_ok.text=str
+        showView(tv_btn_1)
+        tv_btn_1.text=str
     }
 
     protected fun setPageSetting(str: String){
-        showView(tv_setting)
-        tv_setting.text=str
+        showView(tv_custom_1)
+        tv_custom_1.text=str
     }
 
     protected fun setPageCustom(str: String){

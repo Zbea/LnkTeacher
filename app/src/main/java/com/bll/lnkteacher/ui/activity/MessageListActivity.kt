@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.MessageSendDialog
 import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
@@ -15,6 +16,7 @@ import com.bll.lnkteacher.ui.adapter.MessageListAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.iv_manager
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import org.greenrobot.eventbus.EventBus
 
 class MessageListActivity : BaseActivity(),IContractView.IMessageView {
@@ -60,24 +62,11 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
 
     override fun initView() {
         setPageTitle("消息通知")
-        showView(iv_manager)
+        showView(tv_btn_1)
         iv_manager.setImageResource(R.mipmap.icon_save)
 
-//        iv_setting.setOnClickListener {
-//            val ids= mutableListOf<Int>()
-//            for (item in lists){
-//                if (item.isCheck){
-//                    ids.add(item.id)
-//                }
-//            }
-//            if (ids.size>0){
-//                val map=HashMap<String,Any>()
-//                map["ids"]=ids.toIntArray()
-//                mPresenter.deleteMessages(map)
-//            }
-//        }
-
-        iv_manager.setOnClickListener {
+        tv_btn_1.text="发送"
+        tv_btn_1.setOnClickListener {
             if (sendDialog == null) {
                 sendDialog = MessageSendDialog(this).builder()
                 sendDialog?.setOnClickListener { contenStr, ids ->
@@ -108,12 +97,19 @@ class MessageListActivity : BaseActivity(),IContractView.IMessageView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-//            setOnItemChildClickListener { adapter, view, position ->
-//                if (view.id==R.id.cb_check){
-//                    lists[position].isCheck=!lists[position].isCheck
-//                    notifyItemChanged(position)
-//                }
-//            }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            CommonDialog(this).setContent("确定删除？").builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                override fun cancel() {
+                }
+                override fun ok() {
+                    val item=lists[position]
+                val map=HashMap<String,Any>()
+                map["ids"]= mutableListOf(item.id)
+                mPresenter.deleteMessages(map)
+                }
+            }
+            true
         }
     }
 

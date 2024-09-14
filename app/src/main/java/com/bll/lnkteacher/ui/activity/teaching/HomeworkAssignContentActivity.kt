@@ -21,8 +21,12 @@ import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_correct
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
 class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
 
@@ -87,7 +91,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         setPageOk("发送")
 
         tv_group.setOnClickListener {
-            PopupCheckList(this,classPops,tv_group,0).builder().setOnSelectListener{
+            PopupCheckList(this,classPops,tv_group,5).builder().setOnSelectListener{
                 classIds.clear()
                 for (item in it){
                     classIds.add(item.id)
@@ -98,12 +102,12 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         tv_commit_time.text=DateUtils.longToStringWeek(commitTime)
         tv_commit_time.setOnClickListener {
             CalendarSingleDialog(this,300f,180f).builder().setOnDateListener{
-                if (it>System.currentTimeMillis()){
-                    tv_commit_time.text= DateUtils.longToStringWeek(it)
-                    commitTime=it
+                if (it<DateUtils.getStartOfDayInMillis()){
+                    showToast("提交时间不能小于当天")
                 }
                 else{
-                    showToast("设置提交日期错误")
+                    tv_commit_time.text= DateUtils.longToStringWeek(it)
+                    commitTime=it
                 }
             }
         }
@@ -118,7 +122,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
             isCorrect=b
         }
 
-        tv_ok.setOnClickListener {
+        tv_btn_1.setOnClickListener {
             if (classIds.size==0){
                 showToast("请选择班级")
                 return@setOnClickListener

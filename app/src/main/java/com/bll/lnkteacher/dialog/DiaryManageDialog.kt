@@ -30,7 +30,7 @@ class DiaryManageDialog(val context: Context,val type:Int) {
         tv_title.text=if (type==1) "上传日记" else "删除日记"
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
         et_name.visibility=if (type==1) View.VISIBLE else View.GONE
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_btn_1)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val tv_start_date = dialog.findViewById<TextView>(R.id.tv_start_date)
         val tv_end_date = dialog.findViewById<TextView>(R.id.tv_end_date)

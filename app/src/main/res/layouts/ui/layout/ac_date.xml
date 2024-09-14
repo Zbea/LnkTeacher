@@ -33,7 +33,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="@dimen/navigation_type_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical"
@@ -44,7 +44,7 @@
                 android:layout_width="118dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
@@ -52,7 +52,7 @@
                 android:paddingEnd="@dimen/dp_10"
                 android:text="2022"
                 android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,14 +60,14 @@
                 android:layout_marginEnd="@dimen/dp_30"
                 android:text="年"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_26" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_month"
                 android:layout_width="85dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
                 android:drawableRight="@mipmap/icon_arrow_down"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
@@ -75,7 +75,7 @@
                 android:paddingEnd="@dimen/dp_10"
                 android:text="8"
                 android:textColor="@color/black"
-                android:textSize="25sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
                 android:text="月"
                 android:textColor="@color/black"
                 android:layout_marginEnd="@dimen/dp_50"
-                android:textSize="@dimen/sp_26" />
+                android:textSize="@dimen/sp_25" />
 
         </LinearLayout>
 
@@ -106,7 +106,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期一"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期二"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -124,7 +124,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期三"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -133,7 +133,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期四"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -142,7 +142,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期五"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -151,7 +151,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期六"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
         <TextView
@@ -160,7 +160,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="星期日"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             />
 

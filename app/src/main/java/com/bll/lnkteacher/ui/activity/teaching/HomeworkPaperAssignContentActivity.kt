@@ -18,8 +18,12 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_correct
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
 class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
 
@@ -84,7 +88,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
         setPageOk("发送")
 
         tv_group.setOnClickListener {
-            PopupCheckList(this,classPops,tv_group,0).builder().setOnSelectListener{
+            PopupCheckList(this,classPops,tv_group,5).builder().setOnSelectListener{
                 classIds.clear()
                 for (item in it){
                     classIds.add(item.id)
@@ -115,7 +119,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
             isCorrect=b
         }
 
-        tv_ok.setOnClickListener {
+        tv_btn_1.setOnClickListener {
             if (classIds.size==0){
                 showToast("请选择班级")
                 return@setOnClickListener
@@ -185,7 +189,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,20))
     }
 
     /**

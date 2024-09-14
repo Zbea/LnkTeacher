@@ -57,7 +57,7 @@ class SchoolSelectDialog(val context: Context, private val beans:MutableList<Sch
         getSchool()
 
         val tvCancel=dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val tvOk=dialog?.findViewById<TextView>(R.id.tv_ok)
+        val tvOk=dialog?.findViewById<TextView>(R.id.tv_btn_1)
         val tvProvince=dialog?.findViewById<TextView>(R.id.tv_province)
         tvProvince?.text=provinceStr
         val tvCity=dialog?.findViewById<TextView>(R.id.tv_city)

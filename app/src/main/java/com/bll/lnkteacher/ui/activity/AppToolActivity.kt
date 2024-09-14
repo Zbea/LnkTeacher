@@ -5,13 +5,17 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
 import com.bll.lnkteacher.ui.adapter.AppListAdapter
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_app_tool.*
+import kotlinx.android.synthetic.main.ac_app_tool.rv_list
+import kotlinx.android.synthetic.main.ac_app_tool.rv_list_tool
+import kotlinx.android.synthetic.main.ac_app_tool.tv_add
+import kotlinx.android.synthetic.main.ac_app_tool.tv_out
 
 class AppToolActivity:BaseActivity() {
 
@@ -84,6 +88,23 @@ class AppToolActivity:BaseActivity() {
                 item.isCheck=!item.isCheck
                 mAdapter?.notifyItemChanged(position)
             }
+        }
+        mAdapter?.setOnItemLongClickListener { adapter, view, position ->
+            val item=apps[position]
+            val packageName= item.packageName
+            if (packageName!=Constants.PACKAGE_GEOMETRY){
+                CommonDialog(this).setContent("卸载应用？").builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        AppUtils.uninstallAPK(this@AppToolActivity,apps[position].packageName)
+                        AppDaoManager.getInstance().delete(item)
+                        return
+                    }
+                })
+            }
+            true
         }
     }
 

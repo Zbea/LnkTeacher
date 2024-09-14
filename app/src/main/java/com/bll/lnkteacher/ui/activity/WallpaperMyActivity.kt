@@ -38,7 +38,7 @@ class WallpaperMyActivity:BaseActivity(){
 
         setPageSetting("设为壁纸")
 
-        tv_setting.setOnClickListener {
+        tv_custom_1.setOnClickListener {
             if (leftPath.isEmpty()&&rightPath.isEmpty())
                 return@setOnClickListener
             if(File(leftPath).exists()){

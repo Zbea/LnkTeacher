@@ -26,17 +26,6 @@
             >
             <include layout="@layout/common_title" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_class"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_30"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:layout_gravity="end"
-                />
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -391,10 +380,11 @@
             <LinearLayout
                 android:id="@+id/ll_topic"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="80dp"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_40"
+                android:layout_marginBottom="@dimen/dp_40"
                 android:orientation="vertical"
                 >
                 <RelativeLayout
@@ -427,7 +417,7 @@
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="560dp"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_10"
                     android:background="@drawable/bg_black_stroke_10dp_corner"
                     >

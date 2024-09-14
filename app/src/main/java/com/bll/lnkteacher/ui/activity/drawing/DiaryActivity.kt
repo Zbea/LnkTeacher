@@ -92,8 +92,7 @@ class DiaryActivity:BaseDrawingActivity() {
                 .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
-                    v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-                    v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+                    setBg()
                     SPUtil.putString("dirayBgRes",bgRes)
                 }
         }
@@ -171,8 +170,7 @@ class DiaryActivity:BaseDrawingActivity() {
             }
         }
 
-        v_content_b?.setImageResource(ToolUtils.getImageResId(this, bgRes))
-        v_content_a?.setImageResource(ToolUtils.getImageResId(this, bgRes))
+        setBg()
 
         setPWEnabled(!diaryBean?.isUpload!!)
 
@@ -226,6 +224,11 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun onElikSava_b() {
         elik_b?.saveBitmap(true) {}
+    }
+
+    private fun setBg(){
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_b)
+        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_a)
     }
 
     private fun saveDiary() {

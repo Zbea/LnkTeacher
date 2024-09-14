@@ -31,13 +31,15 @@
         android:layout_marginTop="@dimen/dp_30"
         android:text="支付方式"
         android:textColor="@color/black"
-        android:textSize="30sp" />
+        android:textSize="@dimen/sp_25" />
 
     <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         android:orientation="horizontal">
 
         <RadioButton
@@ -55,7 +57,7 @@
             android:textSize="20sp" />
 
         <View
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content" />
 
         <RadioButton
@@ -71,37 +73,11 @@
             android:textSize="20sp" />
     </RadioGroup>
 
-    <LinearLayout
+    <include
+        layout="@layout/common_dialog_ok"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="@dimen/dp_50"
-        android:orientation="horizontal"
-        >
+        android:layout_marginTop="@dimen/dp_30"
+        />
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="28sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="取消"
-            android:textColor="@color/black" />
-
-        <View
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            />
-
-        <Button
-            android:id="@+id/btn_ok"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:textSize="28sp"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:text="购买"
-            android:textColor="@color/black" />
-
-    </LinearLayout>
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -14,10 +13,10 @@ import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -56,8 +55,9 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import kotlinx.android.synthetic.main.common_title.tv_class
 import kotlinx.android.synthetic.main.common_title.tv_custom
-import kotlinx.android.synthetic.main.common_title.tv_setting
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
 
 
 class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView {
@@ -67,6 +67,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private var posImage = 0
     private var imageCount = 0
     private var correctList: CorrectBean? = null
+    private var classList= mutableListOf<TestPaperClassBean>()
     private var images = mutableListOf<String>()
     private var pops = mutableListOf<PopupBean>()
     private var totalAnalyseItems = mutableListOf<AnalyseItem>() //题目集合
@@ -74,6 +75,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private var mAnalyseMultiAdapter: ExamAnalyseMultiAdapter? = null
     private var users = mutableListOf<TestPaperClassUserList.ClassUserBean>()
     private var scoreIndex = 0//当前分数下标
+    private var popClasss= mutableListOf<PopupBean>()
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         users.clear()
@@ -182,17 +184,13 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         screenPos = Constants.SCREEN_LEFT
 
         correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
+        classList=correctList?.examList!!
         correctModule = correctList?.questionType!!
         scoreMode = correctList?.questionMode!!
 
-        for (item in correctList?.examList!!) {
-            mExamClassGroups.add(ClassGroup().apply {
-                classId = item.classId
-                classGroupId = item.classGroupId
-                name = item.name
-            })
+        for (item in classList) {
+            popClasss.add(PopupBean(classList.indexOf(item),item.name,classList.indexOf(item)==classPos))
         }
-        mExamClassGroups[classPos].isCheck = true
 
         if (!correctList?.examUrl.isNullOrEmpty()) {
             images = ToolUtils.getImages(correctList?.examUrl)
@@ -211,13 +209,16 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             }
         }
 
-        mPresenter.getClassPapers(correctList?.examList!![classPos].examChangeId)
+        mPresenter.getClassPapers(classList[classPos].examChangeId)
     }
 
     override fun initView() {
         setPageTitle(R.string.teaching_testpaper_analyse)
         disMissView(iv_tool, iv_catalog, iv_btn)
+        showView(tv_class)
         setPageSetting("成绩统计")
+
+
         if (answerImages.size > 0)
             showView(tv_answer)
 
@@ -259,6 +260,17 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             }
         }
 
+        tv_class.text=classList[classPos].name
+        tv_class.setOnClickListener {
+            PopupRadioList(this,popClasss,tv_class,5).builder().setOnSelectListener{
+                if (classPos != it.id) {
+                    classPos = it.id
+                    tv_class.text=classList[classPos].name
+                    mPresenter.getClassPapers(classList[classPos].examChangeId)
+                }
+            }
+        }
+
         tv_answer.setOnClickListener {
             ImageDialog(this, 2, answerImages).builder()
         }
@@ -273,7 +285,7 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             customStartActivity(intent)
         }
 
-        tv_setting.setOnClickListener {
+        tv_custom_1.setOnClickListener {
             val intent = Intent(this, ScoreRankActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("paperCorrect", correctList)
@@ -294,18 +306,10 @@ class HomeworkAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         onChangeExpandView()
 
         initRecyclerView()
-        mClassAdapter?.setNewData(mExamClassGroups)
 
         if (images.size > 0) {
             imageCount = images.size
             onChangeContent()
-        }
-    }
-
-    override fun onClassClickListener(view: View, position: Int) {
-        if (classPos != position) {
-            classPos = position
-            mPresenter.getClassPapers(correctList?.examList!![classPos].examChangeId)
         }
     }
 

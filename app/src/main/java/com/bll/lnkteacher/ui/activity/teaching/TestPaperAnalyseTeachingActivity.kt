@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import PopupClick
 import android.text.TextUtils
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
@@ -12,18 +11,33 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.model.testpaper.*
+import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem.UserBean
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.presenter.TestPaperAnalyseTeachingPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseTeachingAdapter
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
-import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.ll_topic_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_group
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_topic
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.rg_topic_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_create_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_left_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_refresh_child
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_right_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic
+import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic_child
+import kotlinx.android.synthetic.main.common_title.tv_class
 import org.greenrobot.eventbus.EventBus
 
 class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachingView {
@@ -47,6 +61,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     private var result=0//选中结果0错 1 正确
     private var resultChild=0
     private var isScore=true
+    private var popClasss= mutableListOf<PopupBean>()
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         users.clear()
@@ -166,18 +181,12 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
         classList=correctList!!.examList!!
         correctModule=correctList!!.questionType
         scoreMode=correctList!!.questionMode
-        for (item in classList){
-            mExamClassGroups.add(ClassGroup().apply {
-                classId=item.classId
-                classGroupId=item.classGroupId
-                name=item.name
-            })
+
+        for (item in classList) {
+            popClasss.add(PopupBean(correctList?.examList!!.indexOf(item),item.name,correctList?.examList!!.indexOf(item)==classPos))
         }
-
-        mExamClassGroups[classPos].isCheck=true
-        classId=mExamClassGroups[classPos].classId
-        classGroupId= mExamClassGroups[classPos].classGroupId
-
+        classId=classList[classPos].classId
+        classGroupId= classList[classPos].classGroupId
         fetchClassUser()
     }
 
@@ -187,12 +196,24 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
 
     override fun initView() {
         setPageTitle("因材施教")
+        showView(tv_class)
 
         if (correctModule<3){
             disMissView(ll_topic_child)
         }
 
-        mClassAdapter?.setNewData(mExamClassGroups)
+        tv_class.text=classList[classPos].name
+        tv_class.setOnClickListener {
+            PopupRadioList(this,popClasss,tv_class,5).builder().setOnSelectListener{
+                if (classPos != it.id) {
+                    classPos = it.id
+                    classId=classList[classPos].classId
+                    classGroupId= classList[classPos].classGroupId
+                    tv_class.text=classList[classPos].name
+                    fetchClassUser()
+                }
+            }
+        }
 
         tv_refresh_child.setOnClickListener {
             val classGroups=getClassChild()
@@ -315,15 +336,6 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
         }
 
         initRecyclerView()
-    }
-
-    override fun onClassClickListener(view: View, position: Int) {
-        if (classPos!=position){
-            classPos=position
-            classId=mExamClassGroups[classPos].classId
-            classGroupId= mExamClassGroups[classPos].classGroupId
-            fetchClassUser()
-        }
     }
 
     private fun initRecyclerView(){

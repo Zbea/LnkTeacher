@@ -25,7 +25,7 @@ class MessageSendDialog(private val context: Context) {
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 
-        val tvOK = dialog?.findViewById<TextView>(R.id.tv_ok)
+        val tvOK = dialog?.findViewById<TextView>(R.id.tv_btn_1)
         val tvCancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
         val et_content = dialog?.findViewById<EditText>(R.id.et_content)
         val rvList=dialog?.findViewById<RecyclerView>(R.id.rv_list)

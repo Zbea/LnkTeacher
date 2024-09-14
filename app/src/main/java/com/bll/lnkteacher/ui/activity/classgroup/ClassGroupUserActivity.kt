@@ -15,7 +15,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserAdapter
 import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_custom
-import kotlinx.android.synthetic.main.common_title.tv_setting
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 
 class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView {
@@ -80,7 +80,7 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
                 setPageCustom(if (mClassGroup?.isAllowJoin==1) "关闭班群" else "开启班群")
         }
 
-        tv_setting.setOnClickListener {
+        tv_custom_1.setOnClickListener {
             val intent = Intent(this, ClassGroupTeacherActivity::class.java)
             val bundle = Bundle()
             bundle.putSerializable("classGroup", mClassGroup)

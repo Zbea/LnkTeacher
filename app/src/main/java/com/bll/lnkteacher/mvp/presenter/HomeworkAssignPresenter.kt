@@ -1,10 +1,13 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.BookStore
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 /**
  * 考卷布置
@@ -122,26 +125,6 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 view.onDetailsDeleteSuccess()
             }
         }, true)
-    }
-
-    /**
-     * 教辅本
-     */
-    fun getHomeworkBooks(map: HashMap<String,Any>) {
-
-        val books = RetrofitManager.service.getHomeworkBooks(map)
-
-        doRequest(books, object : Callback<BookStore>(view) {
-            override fun failed(tBaseResult: BaseResult<BookStore>): Boolean {
-                return false
-            }
-
-            override fun success(tBaseResult: BaseResult<BookStore>) {
-                view.onBook(tBaseResult.data)
-            }
-
-        }, false)
-
     }
 
 }

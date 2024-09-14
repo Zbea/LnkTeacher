@@ -17,7 +17,7 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         android:layout_marginStart="@dimen/dp_10"
         android:lines="1"
@@ -27,7 +27,7 @@
         android:id="@+id/tv_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         android:layout_marginStart="@dimen/dp_10"
         />

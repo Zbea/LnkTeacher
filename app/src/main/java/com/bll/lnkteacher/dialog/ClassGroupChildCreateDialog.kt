@@ -19,7 +19,7 @@ class ClassGroupChildCreateDialog(val context: Context, val titleStr:String,val 
         dialog.show()
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
         val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_btn_1)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         et_name.setText(titleStr)
         et_name.setSelection(titleStr.length)

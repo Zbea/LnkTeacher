@@ -4,8 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import android.text.InputType
 import android.view.Gravity
-import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DP2PX
@@ -34,8 +34,8 @@ class InputContentDialog(val context: Context, private val screenPos:Int,val str
         }
         dialog.show()
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
-        val btn_cancel = dialog.findViewById<Button>(R.id.btn_cancel)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         tvName = dialog.findViewById(R.id.ed_name)
         tvName?.hint=string
         if (type==1)

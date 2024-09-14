@@ -4,7 +4,6 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
@@ -31,9 +30,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
-import kotlinx.android.synthetic.main.common_title.et_search
-import kotlinx.android.synthetic.main.common_title.ll_search
-import kotlinx.android.synthetic.main.common_title.tv_grade
+import kotlinx.android.synthetic.main.common_title.tv_subgrade
 
 /**
  * 书城
@@ -53,7 +50,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private var position=0
     private var gradeList = mutableListOf<PopupBean>()
     private var subTypeList = mutableListOf<ItemList>()
-    private var bookNameStr=""
 
     override fun onBook(bookStore: BookStore) {
         setPageNumber(bookStore.total)
@@ -99,29 +95,22 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     override fun initView() {
         setPageTitle(tabStr)
-        showView(tv_grade,ll_search)
+        showView(tv_subgrade)
 
         initRecyclerView()
 
-        et_search.addTextChangedListener {
-            bookNameStr =it.toString()
-            if (bookNameStr.isNotEmpty()){
-                pageIndex=1
-                fetchData()
-            }
-        }
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
-        tv_grade.text = gradeList[0].name
-        tv_grade.setOnClickListener {
-            PopupRadioList(this, gradeList, tv_grade, 5).builder()
+        tv_subgrade.text = gradeList[0].name
+        tv_subgrade.setOnClickListener {
+            PopupRadioList(this, gradeList, tv_subgrade,tv_subgrade.width, 5).builder()
             .setOnSelectListener { item ->
                 grade = item.id
-                tv_grade.text = item.name
+                tv_subgrade.text = item.name
                 typeFindData()
             }
         }
@@ -133,7 +122,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
      */
     private fun typeFindData(){
         pageIndex = 1
-        bookNameStr=""//清除搜索标记
         fetchData()
     }
 
@@ -291,8 +279,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         map["grade"] = grade
         map["type"] = type
         map["subType"] = subType
-        if (bookNameStr.isNotEmpty())
-            map["bookName"] = bookNameStr
         presenter.getBooks(map)
     }
 

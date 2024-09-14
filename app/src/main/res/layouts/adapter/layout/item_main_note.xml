@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_18" />
 
     <TextView
         android:id="@+id/tv_date"
@@ -23,6 +23,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:layout_marginStart="@dimen/dp_10"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_18" />
 
 </LinearLayout>

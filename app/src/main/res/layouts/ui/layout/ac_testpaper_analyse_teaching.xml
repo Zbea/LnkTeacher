@@ -162,13 +162,13 @@
                     android:layout_height="wrap_content"
                     android:button="@drawable/bg_correct_selector"
                     android:checked="true"
-                    android:text="  0" />
+                    android:text="  错" />
 
                 <RadioButton
                     android:id="@+id/rb_right_topic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  100"
+                    android:text="  对"
                     android:layout_marginStart="@dimen/dp_50"
                     android:button="@drawable/bg_correct_selector"
                     />
@@ -223,14 +223,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="  0"
+                    android:text="  错"
                     android:button="@drawable/bg_correct_selector"
                     />
                 <RadioButton
                     android:id="@+id/rb_right_topic_child"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="  100"
+                    android:text="  对"
                     android:layout_marginStart="@dimen/dp_50"
                     android:button="@drawable/bg_correct_selector"
                     />

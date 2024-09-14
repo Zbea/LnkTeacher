@@ -12,7 +12,7 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
 
@@ -21,8 +21,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -30,17 +32,20 @@
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="老师名称"
         />
 
     <TextView
         android:id="@+id/tv_course"
-        android:layout_width="80dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="课程表"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
 
@@ -50,17 +55,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="人数"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
-        />
-
-    <TextView
-        android:id="@+id/tv_edit"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="修改"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
 
@@ -70,28 +65,35 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="子群创建"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
-
     <TextView
         android:id="@+id/tv_detail"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="详情"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
     <TextView
+        android:id="@+id/tv_edit"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="修改"
+        android:textSize="@dimen/sp_25"
+        android:textColor="@color/black"
+        />
+
+    <TextView
         android:id="@+id/tv_dissolve"
-        android:layout_width="wrap_content"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="解散"
-        android:layout_marginStart="@dimen/dp_15"
-        android:layout_marginEnd="@dimen/dp_15"
-        android:textSize="@dimen/sp_22"
+        android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />
 

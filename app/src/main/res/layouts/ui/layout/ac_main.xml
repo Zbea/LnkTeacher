@@ -27,12 +27,12 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center"
                 android:text="账户"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_22" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list_a"
@@ -111,7 +111,7 @@
                 android:gravity="center"
                 android:text="班群"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_22" />
 
 
             <androidx.recyclerview.widget.RecyclerView

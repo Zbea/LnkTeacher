@@ -21,6 +21,7 @@ import android.util.Log;
 import androidx.core.content.FileProvider;
 
 import com.bll.lnkteacher.Constants;
+import com.bll.lnkteacher.R;
 import com.bll.lnkteacher.mvp.model.AppBean;
 
 import java.io.File;
@@ -130,7 +131,7 @@ public class AppUtils {
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             Uri contentUri = FileProvider.getUriForFile(
                     context
-                    , "com.bll.lnkteacher"
+                    , context.getString(R.string.authority)
                     , apkFile);
             intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         } else {

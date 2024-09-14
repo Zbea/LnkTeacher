@@ -14,7 +14,10 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text=""
         />
 
     <TextView
@@ -24,7 +27,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_23"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -34,7 +39,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -44,7 +51,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -54,7 +63,9 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_23"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -64,8 +75,10 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         android:hint="职务"
+        android:lines="1"
+        android:ellipsize="end"
         />
 
     <TextView
@@ -75,7 +88,7 @@
         android:text="踢出"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
 
 

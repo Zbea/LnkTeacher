@@ -19,7 +19,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/dp_70"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center_vertical">
 
@@ -29,19 +29,19 @@
                 android:layout_height="wrap_content"
                 android:text="账号："
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/dp_70"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center_vertical">
 
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="姓名："
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_name"
@@ -59,23 +59,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
             <TextView
                 android:id="@+id/btn_edit_name"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="@dimen/navigation_type_height"
                 android:gravity="center"
                 android:text="修改姓名"
-                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:background="@drawable/bg_black_solid_5dp_corner"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp_22"/>
 
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/dp_70"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center_vertical">
 
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:text="手机："
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_phone"
@@ -93,22 +93,22 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
             <TextView
                 android:id="@+id/btn_edit_phone"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="@dimen/navigation_type_height"
                 android:gravity="center"
                 android:text="修改手机"
-                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:background="@drawable/bg_black_solid_5dp_corner"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/dp_70"
             android:background="@drawable/bg_line_bottom"
             android:gravity="center_vertical">
 
@@ -118,19 +118,19 @@
                 android:layout_height="wrap_content"
                 android:text="科目："
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="@dimen/sp_25" />
 
             <TextView
                 android:id="@+id/tv_course_str"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:textSize="20sp"/>
+                android:textSize="@dimen/sp_25"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:gravity="center_vertical"
             android:layout_marginTop="@dimen/dp_30"
             android:orientation="horizontal">
@@ -139,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_25"
                 android:text="学校：" />
 
             <TextView
@@ -152,8 +152,8 @@
                 android:paddingStart="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_10"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+                android:textSize="@dimen/sp_25"
+                android:background="@drawable/bg_black_stroke_5dp_corner"/>
 
             <TextView
                 android:id="@+id/tv_city"
@@ -166,8 +166,8 @@
                 android:paddingStart="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_10"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+                android:textSize="@dimen/sp_25"
+                android:background="@drawable/bg_black_stroke_5dp_corner"/>
             <TextView
                 android:id="@+id/tv_area"
                 android:layout_width="match_parent"
@@ -179,13 +179,13 @@
                 android:paddingStart="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_10"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+                android:textSize="@dimen/sp_25"
+                android:background="@drawable/bg_black_stroke_5dp_corner"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:layout_marginTop="@dimen/dp_30"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -209,17 +209,17 @@
                 android:paddingStart="@dimen/dp_10"
                 android:paddingEnd="@dimen/dp_10"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+                android:textSize="@dimen/sp_25"
+                android:background="@drawable/bg_black_stroke_5dp_corner"/>
             <TextView
                 android:id="@+id/btn_edit_school"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="120dp"
+                android:layout_height="@dimen/navigation_type_height"
                 android:gravity="center"
                 android:text="修改学校"
-                android:background="@drawable/bg_black_solid_10dp_corner"
+                android:background="@drawable/bg_black_solid_5dp_corner"
                 android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:textSize="@dimen/sp_22"/>
 
         </LinearLayout>
 
@@ -228,12 +228,12 @@
     <Button
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/login_btn_height"
         android:layout_marginBottom="100dp"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
         android:background="@drawable/bg_btn_black_solid"
         android:text="退出登录"
         android:textColor="@color/white"
-        android:textSize="24sp" />
+        android:textSize="@dimen/sp_25" />
 </LinearLayout>

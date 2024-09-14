@@ -16,31 +16,31 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/navigation_type_height"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/dp_10"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center_vertical"
         >
 
         <TextView
             android:id="@+id/tv_grade"
-            android:layout_width="160dp"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/navigation_type_width"
+            android:layout_height="@dimen/dp_45"
             android:drawableRight="@mipmap/icon_arrow_down"
             android:drawablePadding="@dimen/dp_10"
             android:paddingStart="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_30"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_24"
+            android:textSize="@dimen/sp_25"
             android:gravity="center"
             android:lines="1"
             android:ellipsize="end"
             android:text="@string/grade_selector"
             android:visibility="gone"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
         <TextView
@@ -48,7 +48,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_30"
-            android:background="@drawable/bg_black_stroke_10dp_corner"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
             android:drawableStart="@mipmap/icon_search"
             android:gravity="center_vertical"
             android:paddingStart="@dimen/dp_20"

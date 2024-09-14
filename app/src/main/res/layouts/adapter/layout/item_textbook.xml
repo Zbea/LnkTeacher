@@ -20,7 +20,7 @@
         android:layout_width="205dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
         android:gravity="center"
         android:layout_marginTop="@dimen/dp_10"
         android:lines="1"/>

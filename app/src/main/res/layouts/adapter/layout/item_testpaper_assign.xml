@@ -22,7 +22,7 @@
             android:lines="1"
             android:ellipsize="end"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="@dimen/sp_25"
             android:textStyle="bold" />
 
     </RelativeLayout>

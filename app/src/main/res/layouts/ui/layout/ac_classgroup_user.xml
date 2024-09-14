@@ -25,7 +25,9 @@
             android:gravity="center"
             android:text="姓名"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
+            />
 
         <TextView
             android:layout_width="0dp"
@@ -34,7 +36,8 @@
             android:text="出生年月"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -44,7 +47,8 @@
             android:text="家长"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -54,7 +58,8 @@
             android:text="称谓"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -64,7 +69,8 @@
             android:text="联系方式"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -74,14 +80,16 @@
             android:gravity="center"
             android:text="班级职务"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22" />
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             />
 
 

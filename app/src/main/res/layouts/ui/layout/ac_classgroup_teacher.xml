@@ -21,7 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             android:text="姓名"
             android:gravity="center"
             />
@@ -31,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             android:text="科目"
             android:gravity="center"
             />
@@ -40,19 +42,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_22"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold"
             android:text="号码"
             android:gravity="center"
             />
 
         <TextView
-            android:layout_width="@dimen/dp_60"
+            android:layout_width="@dimen/dp_80"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
             />
         <TextView
-            android:layout_width="@dimen/dp_60"
+            android:layout_width="@dimen/dp_80"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"

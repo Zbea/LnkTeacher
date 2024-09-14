@@ -8,10 +8,10 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupChildPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserSelectorAdapter
-import kotlinx.android.synthetic.main.ac_app_tool.tv_add
-import kotlinx.android.synthetic.main.ac_app_tool.tv_out
 import kotlinx.android.synthetic.main.ac_classgroup_child_manage.rv_list_all
 import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
+import kotlinx.android.synthetic.main.common_title.tv_btn_2
 
 class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupChildView {
 
@@ -71,9 +71,10 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
 
     override fun initView() {
         setPageTitle(mClassGroup?.name+"    管理")
+        showView(tv_btn_2,tv_btn_1)
 
-
-        tv_add.setOnClickListener {
+        tv_btn_2.text="添加"
+        tv_btn_2.setOnClickListener {
             val selectIds= mutableListOf<Int>()
             for (item in surplusUsers){
                 if (item.isCheck)
@@ -84,7 +85,8 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
             }
         }
 
-        tv_out.setOnClickListener {
+        tv_btn_1.text="踢出"
+        tv_btn_1.setOnClickListener {
             val selectIds= mutableListOf<Int>()
             for (item in currentUsers){
                 if (item.isCheck)

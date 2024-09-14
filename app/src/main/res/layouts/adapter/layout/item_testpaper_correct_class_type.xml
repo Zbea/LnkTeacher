@@ -22,7 +22,7 @@
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_40"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             />
 
         <TextView
@@ -33,7 +33,7 @@
             android:gravity="center"
             android:layout_marginTop="@dimen/dp_5"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_22"
             />
 
     </RelativeLayout>
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:text="收到"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             />
         <TextView
             android:id="@+id/tv_receive_number"
@@ -61,7 +61,7 @@
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             />
 
         <TextView
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:text="批改"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             />
         <TextView
             android:id="@+id/tv_correct_number"
@@ -80,7 +80,7 @@
             android:background="@drawable/bg_line_bottom"
             android:gravity="center"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/sp_20"
             />
 
     </LinearLayout>

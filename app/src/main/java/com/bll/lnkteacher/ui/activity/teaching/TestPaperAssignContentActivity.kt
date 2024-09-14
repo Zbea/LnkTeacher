@@ -19,8 +19,13 @@ import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_commit
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_correct
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.rv_list
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
+import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
+import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
 class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignContentView {
 
@@ -92,7 +97,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         setPageTitle(typeBean?.name.toString())
         setPageOk("发送")
         disMissView(ll_correct,cb_commit)
-        ll_commit.layoutParams.width=DP2PX.dip2px(this,180f)
+        ll_commit.layoutParams.width=DP2PX.dip2px(this,200f)
 
         tv_group.setOnClickListener {
             PopupCheckList(this, popGroups, tv_group,tv_group.width,  2).builder().setOnSelectListener{
@@ -115,7 +120,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
             }
         }
 
-        tv_ok.setOnClickListener {
+        tv_btn_1.setOnClickListener {
             if (classIds.size==0){
                 showToast("请选择班级")
                 return@setOnClickListener
@@ -171,7 +176,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,20))
     }
 
     /**

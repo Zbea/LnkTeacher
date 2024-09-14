@@ -26,7 +26,7 @@ class DateTimeSelectorDialog(private val context: Context) {
         tp_time?.setIs24HourView(true)
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
+        val okTv = dialog?.findViewById<TextView>(R.id.tv_btn_1)
 
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {

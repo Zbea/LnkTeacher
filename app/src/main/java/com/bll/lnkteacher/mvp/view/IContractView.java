@@ -238,7 +238,6 @@ public interface IContractView {
          */
         void onDetails(HomeworkAssignDetailsList details);
         void onDetailsDeleteSuccess();
-        void onBook(BookStore bookStore);
     }
 
     interface IHomeworkPaperAssignView extends IBaseView{

@@ -19,7 +19,7 @@ import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.fragment_list.rv_list
 
 class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
@@ -63,7 +63,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -72,7 +72,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 50))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 40))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
@@ -94,7 +94,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
         val beans = mutableListOf<ItemList>()
-        if (textBook==DataBeanManager.textbookType[3]) {
+        if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
             beans.add(ItemList().apply {
                 name = "删除"
                 resId = R.mipmap.icon_setting_delete

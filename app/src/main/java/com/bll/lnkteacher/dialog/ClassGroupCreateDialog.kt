@@ -20,7 +20,7 @@ class ClassGroupCreateDialog(val context: Context,private val name:String,privat
         dialog.show()
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
         val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_btn_1)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val tv_grade = dialog.findViewById<TextView>(R.id.tv_grade)
         if (grade!=0){

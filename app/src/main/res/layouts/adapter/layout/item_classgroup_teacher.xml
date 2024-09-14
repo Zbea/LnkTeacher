@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
     <TextView
         android:id="@+id/tv_phone"
@@ -33,27 +33,27 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
 
     <TextView
         android:id="@+id/tv_transfer"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
         android:text="转让"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
 
     <TextView
         android:id="@+id/tv_out"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
         android:text="踢出"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_25"
         />
 
 </LinearLayout>

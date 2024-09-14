@@ -16,7 +16,7 @@
         android:ellipsize="end"
         android:lines="1"
         android:textColor="@color/black"
-        android:textSize="22sp"
+        android:textSize="@dimen/sp_25"
         />
 
     <TextView
@@ -28,6 +28,6 @@
         android:lines="1"
         android:layout_marginStart="@dimen/dp_20"
         android:textColor="@color/black"
-        android:textSize="22sp" />
+        android:textSize="@dimen/sp_25" />
 
 </LinearLayout>
