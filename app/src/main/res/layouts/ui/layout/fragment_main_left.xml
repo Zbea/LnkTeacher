@@ -10,15 +10,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height">
+        android:layout_height="110dp">
 
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/navigation_height"
             android:layout_centerVertical="true"
             android:layout_marginStart="33dp"
             android:textColor="@color/black"
+            android:gravity="center_vertical"
             android:textSize="@dimen/sp_36"
             />
 
@@ -63,7 +64,7 @@
         android:layout_width="800dp"
         android:layout_height="552dp"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_10"
         android:orientation="horizontal">
         <LinearLayout
             android:layout_width="0dp"

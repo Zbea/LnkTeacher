@@ -22,7 +22,7 @@ import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import java.io.File
 
 class CloudDiaryFragment: BaseCloudFragment() {
@@ -35,7 +35,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=15
+        pageSize=14
         initRecyclerView()
     }
 
@@ -45,7 +45,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -55,9 +55,16 @@ class CloudDiaryFragment: BaseCloudFragment() {
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
-                showLoading()
-                val item=items[position]
-                download(item)
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            showLoading()
+                            val item=items[position]
+                            download(item)
+                        }
+                    })
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudDiaryFragment.position=position
@@ -73,7 +80,7 @@ class CloudDiaryFragment: BaseCloudFragment() {
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(20))
+        rv_list.addItemDecoration(SpaceItemDeco(30))
     }
 
     private fun deleteItem(){

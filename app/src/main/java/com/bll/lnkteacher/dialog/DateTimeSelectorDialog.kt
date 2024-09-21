@@ -7,7 +7,7 @@ import android.widget.TimePicker
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DateUtils
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 
 class DateTimeSelectorDialog(private val context: Context) {
@@ -26,7 +26,7 @@ class DateTimeSelectorDialog(private val context: Context) {
         tp_time?.setIs24HourView(true)
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val okTv = dialog?.findViewById<TextView>(R.id.tv_btn_1)
+        val okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
 
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {

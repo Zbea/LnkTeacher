@@ -23,10 +23,11 @@ import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
+import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -43,7 +44,7 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun initView() {
-        pageSize=10
+        pageSize=13
         initRecyclerView()
     }
 
@@ -73,23 +74,24 @@ class CloudNoteFragment: BaseCloudFragment() {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(0, DP2PX.dip2px(activity,25f), 0,0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        mAdapter = CloudNoteAdapter(R.layout.item_note, null).apply {
+        mAdapter = CloudNoteAdapter(R.layout.item_cloud_diary, null).apply {
             rv_list.layoutManager = LinearLayoutManager(activity)//创建布局管理
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setOnItemClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
-                val note=notes[position]
-                if (NoteDaoManager.getInstance().isExistCloud(note.typeStr,note.title,note.date)){
-                    showToast("已下载")
-                }
-                else{
-                    downloadNote(note)
-                }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             setOnItemChildClickListener { adapter, view, position ->
                 this@CloudNoteFragment.position=position
@@ -104,6 +106,17 @@ class CloudNoteFragment: BaseCloudFragment() {
                         })
                 }
             }
+        }
+        rv_list.addItemDecoration(SpaceItemDeco(30))
+    }
+
+    private fun downloadItem(){
+        val note=notes[position]
+        if (NoteDaoManager.getInstance().isExistCloud(note.typeStr,note.title,note.date)){
+            showToast("已下载")
+        }
+        else{
+            downloadNote(note)
         }
     }
 

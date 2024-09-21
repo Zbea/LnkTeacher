@@ -10,7 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
+        android:layout_height="110dp"
         >
 
         <LinearLayout
@@ -27,12 +27,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="30dp"
-                android:drawableStart="@mipmap/icon_diary"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="日记"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_22"
+                app:drawableStartCompat="@mipmap/icon_diary" />
 
             <TextView
                 android:id="@+id/tv_free_note"
@@ -52,7 +52,7 @@
     <LinearLayout
         android:layout_width="800dp"
         android:layout_height="380dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 

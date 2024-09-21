@@ -19,8 +19,6 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.rv_list
-import kotlinx.android.synthetic.main.ac_date.tv_month
-import kotlinx.android.synthetic.main.ac_date.tv_year
 import kotlinx.android.synthetic.main.ac_teaching_plan.cb_all_copy
 import kotlinx.android.synthetic.main.ac_teaching_plan.cb_all_delete
 import kotlinx.android.synthetic.main.ac_teaching_plan.et_content
@@ -38,6 +36,9 @@ import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_end_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_start_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_end_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_start_time
+import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.tv_month
+import kotlinx.android.synthetic.main.common_title.tv_year
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -77,6 +78,7 @@ class TeachingPlanActivity:BaseActivity() {
 
     override fun initView() {
         setPageTitle("${classGroup?.name}  教学计划")
+        showView(ll_date)
 
         tv_year.text=yearNow.toString()
         tv_month.text=monthNow.toString()

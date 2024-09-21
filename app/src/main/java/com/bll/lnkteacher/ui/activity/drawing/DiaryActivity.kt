@@ -12,10 +12,21 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NoteModuleAddDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.mvp.model.DiaryBean
-import com.bll.lnkteacher.utils.*
-import kotlinx.android.synthetic.main.ac_diary.*
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.SPUtil
+import com.bll.lnkteacher.utils.ToolUtils
+import kotlinx.android.synthetic.main.ac_diary.iv_down
+import kotlinx.android.synthetic.main.ac_diary.iv_up
+import kotlinx.android.synthetic.main.ac_diary.ll_date
+import kotlinx.android.synthetic.main.ac_diary.tv_date
+import kotlinx.android.synthetic.main.ac_diary.tv_digest
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class DiaryActivity:BaseDrawingActivity() {
     private var nowLong=0L//当前时间
@@ -227,8 +238,8 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     private fun setBg(){
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_b)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgRes),v_content_a)
+        v_content_a?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
+        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
     }
 
     private fun saveDiary() {

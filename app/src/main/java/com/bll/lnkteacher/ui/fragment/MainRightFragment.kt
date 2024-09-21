@@ -20,20 +20,37 @@ import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.CloudListBean
+import com.bll.lnkteacher.mvp.model.FreeNoteBean
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.Message
+import com.bll.lnkteacher.mvp.model.MessageBean
+import com.bll.lnkteacher.mvp.model.Note
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.*
+import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
+import com.bll.lnkteacher.ui.activity.MessageListActivity
 import com.bll.lnkteacher.ui.activity.drawing.DiaryActivity
 import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkteacher.ui.adapter.MainMessageAdapter
 import com.bll.lnkteacher.ui.adapter.MainNoteAdapter
-import com.bll.lnkteacher.utils.*
+import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.FileUploadManager
+import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_main_right.*
+import kotlinx.android.synthetic.main.fragment_main_right.iv_course
+import kotlinx.android.synthetic.main.fragment_main_right.ll_course
+import kotlinx.android.synthetic.main.fragment_main_right.ll_message
+import kotlinx.android.synthetic.main.fragment_main_right.rv_main_message
+import kotlinx.android.synthetic.main.fragment_main_right.rv_main_note
+import kotlinx.android.synthetic.main.fragment_main_right.tv_diary
+import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.*
 
 class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
@@ -356,6 +373,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
                     FileUtils.deleteFile(File(path))
                     DiaryDaoManager.getInstance().delete(item)
                 }
+                showToast("日记上传成功")
             }
             2->{
                 val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))

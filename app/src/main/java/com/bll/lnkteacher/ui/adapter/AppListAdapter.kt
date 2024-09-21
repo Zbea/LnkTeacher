@@ -13,7 +13,7 @@ class AppListAdapter(layoutResId: Int,val type:Int, data: List<AppBean>?) : Base
             setText(R.id.tv_name,item.appName)
             setImageDrawable(R.id.iv_image, BitmapUtils.byteToDrawable(item.imageByte))
             if (type==0){
-                setGone(R.id.cb_check,true)
+                setVisible(R.id.cb_check,true)
                 setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
                 addOnClickListener(R.id.ll_name)
             }

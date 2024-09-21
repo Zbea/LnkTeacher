@@ -13,7 +13,10 @@ import com.bll.lnkteacher.ui.adapter.DateAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
-import kotlinx.android.synthetic.main.ac_date.*
+import kotlinx.android.synthetic.main.ac_date.rv_list
+import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.tv_month
+import kotlinx.android.synthetic.main.common_title.tv_year
 
 open class DateActivity: BaseActivity() {
 
@@ -34,6 +37,7 @@ open class DateActivity: BaseActivity() {
 
     override fun initView() {
         setPageTitle("日历")
+        showView(ll_date)
 
         initRecyclerView()
 

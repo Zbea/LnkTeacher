@@ -52,7 +52,7 @@
         android:text="摘要"
         android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_24" />
+        android:textSize="@dimen/sp_25" />
 
     <LinearLayout
         android:id="@+id/ll_date"

@@ -16,7 +16,7 @@ class ClassGroupAddDialog(val context: Context) {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
         val et_name = dialog.findViewById<EditText>(R.id.et_name)
-        val btn_ok = dialog.findViewById<TextView>(R.id.tv_btn_1)
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
 
         btn_cancel.setOnClickListener {

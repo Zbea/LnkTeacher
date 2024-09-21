@@ -24,7 +24,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.*
+import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.concurrent.CountDownLatch
@@ -86,24 +86,14 @@ class CloudTextbookFragment: BaseCloudFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity,22f),50))
             setOnItemClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
-                val book=books[position]
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(book.typeId,book.bookId)
-                if (localBook == null) {
-                    showLoading()
-                    //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
-                    if (!book.drawUrl.isNullOrEmpty()){
-                        countDownTasks= CountDownLatch(2)
-                        selectBookOrZip(book)
-                        downloadBookDrawing(book)
-                    }
-                    else{
-                        countDownTasks=CountDownLatch(1)
-                        selectBookOrZip(book)
-                    }
-                    downloadSuccess(book)
-                } else {
-                    showToast("已下载")
-                }
+                CommonDialog(requireActivity()).setContent("确定下载？").builder()
+                    .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            downloadItem()
+                        }
+                    })
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@CloudTextbookFragment.position=position
@@ -117,6 +107,27 @@ class CloudTextbookFragment: BaseCloudFragment() {
                     })
                 true
             }
+        }
+    }
+
+    private fun downloadItem(){
+        val book=books[position]
+        val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(book.typeId,book.bookId)
+        if (localBook == null) {
+            showLoading()
+            //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
+            if (!book.drawUrl.isNullOrEmpty()){
+                countDownTasks= CountDownLatch(2)
+                selectBookOrZip(book)
+                downloadBookDrawing(book)
+            }
+            else{
+                countDownTasks=CountDownLatch(1)
+                selectBookOrZip(book)
+            }
+            downloadSuccess(book)
+        } else {
+            showToast("已下载")
         }
     }
 
