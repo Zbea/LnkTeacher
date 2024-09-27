@@ -183,8 +183,8 @@
                 <Button
                     android:id="@+id/btn_code"
                     android:layout_width="140dp"
-                    android:layout_height="@dimen/navigation_type_height"
-                    android:background="@drawable/bg_black_solid_5dp_corner"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_btn_black_solid_5dp"
                     android:text="获取验证码"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_22" />

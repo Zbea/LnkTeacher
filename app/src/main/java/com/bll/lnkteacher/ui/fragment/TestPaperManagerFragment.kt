@@ -9,7 +9,8 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperAssignFragment
 import com.bll.lnkteacher.ui.fragment.testpaper.TestPaperCorrectFragment
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 
 class TestPaperManagerFragment : BaseMainFragment(){
 
@@ -25,7 +26,7 @@ class TestPaperManagerFragment : BaseMainFragment(){
 
     override fun initView() {
         super.initView()
-        setTitle("测验卷")
+        setTitle(DataBeanManager.getIndexRightData()[2].name)
         showView(tv_grade)
         setImageManager(R.mipmap.icon_add)
 

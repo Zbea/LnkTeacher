@@ -62,7 +62,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
     }
 
     override fun initView() {
-        setTitle(R.string.main_home_title)
+        setTitle(DataBeanManager.getIndexLeftData()[0].name)
         initDialog(1)
 
         tv_date_today.setOnClickListener {

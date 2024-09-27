@@ -61,7 +61,7 @@ class NoteFragment : BaseMainFragment() {
         popupBeans.add(PopupBean(0, "管理笔记本", true))
         popupBeans.add(PopupBean(1, "创建笔记本", false))
 
-        setTitle(R.string.main_note_title)
+        setTitle(DataBeanManager.getIndexRightData()[4].name)
         showView(iv_manager)
 
         privacyPassword=MethodManager.getPrivacyPassword(1)

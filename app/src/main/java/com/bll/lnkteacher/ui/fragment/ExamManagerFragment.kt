@@ -2,12 +2,13 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.fragment.exam.ExamCorrectFragment
 import com.bll.lnkteacher.ui.fragment.exam.ExamListFragment
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 
 class ExamManagerFragment:BaseMainFragment() {
 
@@ -24,7 +25,7 @@ class ExamManagerFragment:BaseMainFragment() {
     override fun initView() {
         super.initView()
 
-        setTitle(R.string.main_exam_title)
+        setTitle(DataBeanManager.getIndexRightData()[3].name)
         showView(tv_grade)
 
         examCorrectFragment = ExamCorrectFragment()

@@ -14,7 +14,6 @@ object DataBeanManager {
     var courses = mutableListOf<ItemList>()
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
-    var yearlists= arrayListOf(2020,2021,2022,2023,2024,2025,2026,2027,2028,2029)
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
@@ -23,8 +22,7 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_homework),
         mContext.getString(R.string.textbook_tab_homework_other),
-        mContext.getString(R.string.textbook_tab_teaching),
-        "我的讲义"
+        mContext.getString(R.string.textbook_tab_teaching)
     )
 
     var teachingStrs = arrayOf(
@@ -221,7 +219,7 @@ object DataBeanManager {
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_learn_condition)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_learn_condition_check)
-            name = "教情"
+            name = "讲义"
         })
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_app)

@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.activity
 import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupDateSelector
@@ -14,7 +13,7 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.date.LunarSolarConverter
 import com.bll.lnkteacher.utils.date.Solar
 import kotlinx.android.synthetic.main.ac_date.rv_list
-import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
 
@@ -25,19 +24,33 @@ open class DateActivity: BaseActivity() {
     private var yearNow=DateUtils.getYear()
     private var monthNow=DateUtils.getMonth()
     private var mAdapter:DateAdapter?=null
-    var dates= mutableListOf<Date>()
+    private var dates= mutableListOf<Date>()
     private var position=0
+    private var yearList= mutableListOf<Int>()
+    private var monthList= mutableListOf<Int>()
 
     override fun layoutId(): Int {
         return R.layout.ac_date
     }
 
     override fun initData() {
+        val nowYear=DateUtils.getYear()
+        for (i in 4 downTo 0){
+            yearList.add(nowYear-i)
+        }
+        for (i in 1..5){
+            yearList.add(nowYear+i)
+        }
+
+        for (i in 1..12)
+        {
+            monthList.add(i)
+        }
     }
 
     override fun initView() {
         setPageTitle("日历")
-        showView(ll_date)
+        showView(ll_year)
 
         initRecyclerView()
 
@@ -46,7 +59,7 @@ open class DateActivity: BaseActivity() {
 
         tv_year.setOnClickListener {
             if (yearPop==null){
-                yearPop=PopupDateSelector(this,tv_year,DataBeanManager.yearlists,0).builder()
+                yearPop=PopupDateSelector(this,tv_year,yearList,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
@@ -62,13 +75,8 @@ open class DateActivity: BaseActivity() {
         }
 
         tv_month.setOnClickListener {
-            val list= mutableListOf<Int>()
-            for (i in 1..12)
-            {
-                list.add(i)
-            }
             if (monthPop==null){
-                monthPop=PopupDateSelector(this,tv_month,list,1).builder()
+                monthPop=PopupDateSelector(this,tv_month,monthList,1).builder()
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
@@ -153,7 +161,7 @@ open class DateActivity: BaseActivity() {
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
         for (i in 1 .. max)
         {
-            dates.add(getDateBean(yearNow,monthNow,i,true))
+            dates.add(getDateBean(yearNow,monthNow,i))
         }
 
         if (dates.size>35){
@@ -178,7 +186,7 @@ open class DateActivity: BaseActivity() {
         }
     }
 
-    private fun getDateBean(year:Int,month:Int,day:Int,isMonth: Boolean): Date {
+    private fun getDateBean(year:Int,month:Int,day:Int): Date {
         val solar=Solar()
         solar.solarYear=year
         solar.solarMonth=month
@@ -190,7 +198,6 @@ open class DateActivity: BaseActivity() {
         date.day=day
         date.time=DateUtils.dateToStamp("$year-$month-$day")
         date.isNow=day==DateUtils.getDay()&&DateUtils.getMonth()==month
-        date.isNowMonth=isMonth
         date.solar= solar
         date.week=DateUtils.getWeek(date.time)
         date.lunar= LunarSolarConverter.SolarToLunar(solar)

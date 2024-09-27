@@ -6,6 +6,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
@@ -82,19 +84,7 @@ public class MethodManager {
         EventBus.getDefault().post(Constants.BOOK_EVENT);
 
         List<AppBean> toolApps= getAppTools(context,1);
-        JSONArray result =new JSONArray();
-        for (AppBean item :toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
+        JSONArray result = getJsonArray(toolApps);
 
         String format = MethodManager.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
@@ -123,17 +113,9 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
-    /**
-     * 跳转阅读器
-     * @param context
-     */
-    public static void gotoHandouts(Context context, HandoutList.HandoutBean bean)  {
-        AppUtils.stopApp(context,Constants.PACKAGE_READER);
-        User user=SPUtil.INSTANCE.getObj("user", User.class);
-
-        List<AppBean> toolApps= getAppTools(context,1);
+    private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
         JSONArray result =new JSONArray();
-        for (AppBean item :toolApps) {
+        for (AppBean item : toolApps) {
             if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
                 continue;
             JSONObject jsonObject = new JSONObject();
@@ -145,6 +127,19 @@ public class MethodManager {
             }
             result.put(jsonObject);
         }
+        return result;
+    }
+
+    /**
+     * 跳转阅读器
+     * @param context
+     */
+    public static void gotoHandouts(Context context, HandoutList.HandoutBean bean)  {
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+
+        List<AppBean> toolApps= getAppTools(context,1);
+        JSONArray result = getJsonArray(toolApps);
 
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");

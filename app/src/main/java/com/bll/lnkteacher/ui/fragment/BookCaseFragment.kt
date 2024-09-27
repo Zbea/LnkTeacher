@@ -4,6 +4,7 @@ import android.content.Intent
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
@@ -40,7 +41,7 @@ class BookCaseFragment : BaseMainFragment() {
     }
 
     override fun initView() {
-        setTitle(R.string.main_bookcase_title)
+        setTitle(DataBeanManager.getIndexLeftData()[1].name)
 
         initRecyclerView()
         findBook()

@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.adapter
 import android.annotation.SuppressLint
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
-import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.Date
@@ -17,17 +16,9 @@ class MainTeachingDateAdapter(layoutResId: Int, data: List<Date>?) :
     override fun convert(helper: BaseViewHolder, item: Date) {
         val tvDay = helper.getView<TextView>(R.id.tv_day)
         val tvLunar=helper.getView<TextView>(R.id.tv_lunar)
-        var ivImage=helper.getView<ImageView>(R.id.iv_image)
         tvDay.text = if (item.day == 0) "" else item.day.toString()
         if (item.isNow)
             tvDay.typeface = defaultFromStyle(BOLD)
-        if (item.isNowMonth) {
-            tvDay.setTextColor(mContext.getColor(R.color.black))
-            tvLunar.setTextColor(mContext.getColor(R.color.gray))
-        } else {
-            tvDay.setTextColor(mContext.getColor(R.color.black_90))
-            tvLunar.setTextColor(mContext.getColor(R.color.black_90))
-        }
 
         val str = if (!item.solar.solar24Term.isNullOrEmpty()) {
             item.solar.solar24Term

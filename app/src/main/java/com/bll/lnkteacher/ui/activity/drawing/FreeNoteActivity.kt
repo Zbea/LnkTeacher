@@ -23,7 +23,6 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileMultitaskDownManager
 import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_free_note.tv_add
@@ -160,7 +159,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
             NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes=ToolUtils.getImageResStr(this, moduleBean.resContentId)
-                    GlideUtils.setImageUrl(this,moduleBean.resContentId,v_content_b)
+                    v_content_b?.setBackgroundResource(moduleBean.resContentId)
                     bgResList[posImage]=bgRes
                 }
         }
@@ -340,7 +339,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
 
 
     override fun onChangeContent() {
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this, bgResList[posImage]),v_content_b)
+        v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgResList[posImage]))
         val path=FileAddress().getPathFreeNote(DateUtils.longToString(freeNoteBean?.date!!))+"/${posImage+1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)){

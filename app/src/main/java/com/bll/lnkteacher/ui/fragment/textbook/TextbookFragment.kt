@@ -63,7 +63,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -72,7 +72,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 40))
+        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {

@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.adapter
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.graphics.Typeface.BOLD
 import android.graphics.Typeface.defaultFromStyle
 import android.view.View
@@ -11,6 +10,7 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
@@ -26,13 +26,6 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         tvDay.text = if (item.day == 0) "" else item.day.toString()
         if (item.isNow)
             tvDay.typeface = defaultFromStyle(BOLD)
-        if (item.isNowMonth) {
-            tvDay.setTextColor(mContext.getColor(R.color.black))
-            tvLunar.setTextColor(mContext.getColor(R.color.gray))
-        } else {
-            tvDay.setTextColor(mContext.getColor(R.color.black_90))
-            tvLunar.setTextColor(mContext.getColor(R.color.black_90))
-        }
 
         val str = if (!item.solar.solar24Term.isNullOrEmpty()) {
             item.solar.solar24Term
@@ -52,10 +45,8 @@ class DateAdapter(layoutResId: Int, data: List<Date>?) :
         if (item.year!=0){
             val path= FileAddress().getPathImage("date", DateUtils.longToStringCalender(item.time))+"/draw.png"
             if (File(path).exists()){
-                try {
-                    ivImage.setImageBitmap(BitmapFactory.decodeFile(path))
-                } catch (e: Exception) {
-                }
+                GlideUtils.setImageNoCacheUrl(mContext,path,ivImage)
+                ivImage.visibility= View.VISIBLE
             }
             else{
                 ivImage.visibility= View.GONE

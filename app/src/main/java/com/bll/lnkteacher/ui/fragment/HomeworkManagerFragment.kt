@@ -12,7 +12,8 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
-import kotlinx.android.synthetic.main.common_fragment_title.*
+import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
+import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 
 class HomeworkManagerFragment : BaseMainFragment(){
 
@@ -32,7 +33,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
     override fun initView() {
         super.initView()
 
-        setTitle(R.string.main_homework_title)
+        setTitle(DataBeanManager.getIndexRightData()[1].name)
         showView(iv_manager,tv_grade)
 
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details), true))

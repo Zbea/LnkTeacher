@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -21,7 +22,7 @@ class AppFragment: BaseFragment() {
     }
 
     override fun initView() {
-        setTitle(R.string.main_app_title)
+        setTitle(DataBeanManager.getIndexLeftData()[4].name)
         initRecycler()
         initData()
     }

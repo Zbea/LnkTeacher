@@ -36,7 +36,7 @@ import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_end_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_start_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_end_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_move_start_time
-import kotlinx.android.synthetic.main.common_title.ll_date
+import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
 import org.greenrobot.eventbus.EventBus
@@ -65,6 +65,8 @@ class TeachingPlanActivity:BaseActivity() {
     private var popClasss= mutableListOf<PopupBean>()
     private var popWindow:PopupRadioList?=null
     private var selectClassId=0
+    private var yearList= mutableListOf<Int>()
+    private var monthList= mutableListOf<Int>()
 
     override fun layoutId(): Int {
         return R.layout.ac_teaching_plan
@@ -74,18 +76,30 @@ class TeachingPlanActivity:BaseActivity() {
         classId=classGroup?.classId!!
 
         popClasss= DataBeanManager.getClassGroupPopsOtherClassId(classId)
+
+        for (i in 4 downTo 0){
+            yearList.add(yearNow-i)
+        }
+        for (i in 1..5){
+            yearList.add(yearNow+i)
+        }
+
+        for (i in 1..12)
+        {
+            monthList.add(i)
+        }
     }
 
     override fun initView() {
         setPageTitle("${classGroup?.name}  教学计划")
-        showView(ll_date)
+        showView(ll_year)
 
         tv_year.text=yearNow.toString()
         tv_month.text=monthNow.toString()
 
         tv_year.setOnClickListener {
             if (yearPop==null){
-                yearPop= PopupDateSelector(this,tv_year, DataBeanManager.yearlists,0).builder()
+                yearPop= PopupDateSelector(this,tv_year, yearList,0).builder()
                 yearPop ?.setOnSelectorListener {
                     tv_year.text=it
                     yearNow=it.toInt()
@@ -100,13 +114,8 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_month.setOnClickListener {
-            val list= mutableListOf<Int>()
-            for (i in 1..12)
-            {
-                list.add(i)
-            }
             if (monthPop==null){
-                monthPop= PopupDateSelector(this,tv_month,list,1).builder()
+                monthPop= PopupDateSelector(this,tv_month,monthList,1).builder()
                 monthPop?.setOnSelectorListener {
                     tv_month.text=it
                     monthNow=it.toInt()
@@ -356,7 +365,7 @@ class TeachingPlanActivity:BaseActivity() {
         val max=DateUtils.getMonthMaxDay(yearNow,monthNow-1)
         for (i in 1 .. max)
         {
-            dates.add(getDateBean(yearNow,monthNow,i,true))
+            dates.add(getDateBean(yearNow,monthNow,i))
         }
 
         if (dates.size>35){
@@ -384,7 +393,7 @@ class TeachingPlanActivity:BaseActivity() {
         }
     }
 
-    private fun getDateBean(year: Int, month: Int, day: Int, isMonth: Boolean): Date {
+    private fun getDateBean(year: Int, month: Int, day: Int): Date {
         val solar= Solar()
         solar.solarYear=year
         solar.solarMonth=month
@@ -396,7 +405,6 @@ class TeachingPlanActivity:BaseActivity() {
         date.day=day
         date.time= DateUtils.dateToStamp("$year-$month-$day")
         date.isNow=day== DateUtils.getDay()&&DateUtils.getMonth()==month
-        date.isNowMonth=isMonth
         date.solar= solar
         date.week= DateUtils.getWeek(date.time)
         date.lunar= LunarSolarConverter.SolarToLunar(solar)
