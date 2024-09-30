@@ -3,29 +3,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_page"
-    android:paddingTop="@dimen/statusbar_height"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/statusbar_height">
 
     <include layout="@layout/common_title" />
 
 
     <LinearLayout
-        android:layout_marginStart="150dp"
-        android:layout_marginEnd="150dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_marginStart="150dp"
         android:layout_marginTop="100dp"
+        android:layout_marginEnd="150dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/ll_user"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="120dp"
@@ -40,44 +39,43 @@
                 android:id="@+id/ed_user"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/user_tip"
-                android:textColorHint="@color/color_text_hint"
-                android:textColor="@color/black"
+                android:background="@drawable/bg_line_bottom"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_25"
+                android:hint="@string/user_tip"
                 android:lines="1"
-                android:background="@drawable/bg_line_bottom" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_text_hint"
+                android:textSize="@dimen/sp_25" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_30"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:text="密码"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                android:text="密码" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/ed_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/psw_tip"
-                android:textColorHint="@color/color_text_hint"
-                android:textColor="@color/black"
-                android:inputType="textPassword"
+                android:background="@drawable/bg_line_bottom"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_25"
+                android:hint="@string/psw_tip"
+                android:inputType="textPassword"
                 android:lines="1"
-                android:background="@drawable/bg_line_bottom" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_text_hint"
+                android:textSize="@dimen/sp_25" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,106 +83,103 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="@dimen/dp_30"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:text="姓名"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                android:text="姓名" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/ed_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="请输入姓名"
-                android:textColorHint="@color/color_text_hint"
-                android:textColor="@color/black"
+                android:background="@drawable/bg_line_bottom"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/sp_25"
+                android:hint="请输入姓名"
                 android:lines="1"
-                android:background="@drawable/bg_line_bottom" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_text_hint"
+                android:textSize="@dimen/sp_25" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="@dimen/dp_30"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:text="手机号码"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                android:text="手机号码" />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/ed_phone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/phone_tip"
-                android:textColorHint="@color/color_text_hint"
-                android:textColor="@color/black"
+                android:background="@drawable/bg_line_bottom"
                 android:gravity="center_vertical"
+                android:hint="@string/phone_tip"
                 android:inputType="phone"
-                android:textSize="@dimen/sp_25"
                 android:lines="1"
-                android:background="@drawable/bg_line_bottom" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/color_text_hint"
+                android:textSize="@dimen/sp_25" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="@dimen/dp_30"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:text="验证码"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                android:text="验证码" />
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_line_bottom"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
+
                 <EditText
                     android:id="@+id/ed_code"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:hint="请输入验证码"
                     android:layout_marginEnd="@dimen/dp_10"
-                    android:textColorHint="@color/color_text_hint"
-                    android:textColor="@color/black"
+                    android:layout_weight="1"
+                    android:background="@null"
                     android:gravity="center_vertical"
+                    android:hint="请输入验证码"
                     android:inputType="number"
-                    android:textSize="@dimen/sp_25"
                     android:lines="1"
-                    android:background="@null" />
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/color_text_hint"
+                    android:textSize="@dimen/sp_25" />
 
                 <Button
                     android:id="@+id/btn_code"
                     android:layout_width="140dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/bg_btn_black_solid_5dp"
+                    android:background="@drawable/click_btn_black_solid_5dp"
                     android:text="获取验证码"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_22" />
@@ -197,58 +192,54 @@
             android:id="@+id/ll_school"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="@dimen/dp_50"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            >
-
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                android:text="任教信息" />
-
-            <TextView
-                android:id="@+id/tv_course_btn"
-                android:layout_width="120dp"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp_5"
-                android:paddingStart="@dimen/dp_10"
-                android:textColor="@color/black"
-                android:drawableRight="@mipmap/icon_arrow_down"
-                android:textSize="@dimen/sp_25"
-                android:hint="科目"
-                android:textColorHint="@color/color_text_hint"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
-
-            <TextView
-                android:id="@+id/tv_school"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dp_20"
+                android:layout_height="55dp"
+                android:layout_marginTop="@dimen/dp_50"
                 android:gravity="center_vertical"
-                android:paddingEnd="@dimen/dp_5"
-                android:paddingStart="@dimen/dp_10"
-                android:textColor="@color/black"
-                android:drawableRight="@mipmap/icon_arrow_down"
-                android:textSize="@dimen/sp_25"
-                android:hint="学校"
-                android:textColorHint="@color/color_text_hint"
-                android:background="@drawable/bg_black_stroke_5dp_corner"
-                />
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="任教信息"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_25"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_course_btn"
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_black_stroke_5dp_corner"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:gravity="center_vertical"
+                    android:hint="科目"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/color_text_hint"
+                    android:textSize="@dimen/sp_25" />
+
+                <TextView
+                    android:id="@+id/tv_school"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:background="@drawable/bg_black_stroke_5dp_corner"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:gravity="center_vertical"
+                    android:hint="学校"
+                    android:paddingStart="@dimen/dp_10"
+                    android:paddingEnd="@dimen/dp_5"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/color_text_hint"
+                    android:textSize="@dimen/sp_25" />
+
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -262,7 +253,7 @@
         android:layout_marginStart="150dp"
         android:layout_marginEnd="150dp"
         android:layout_marginBottom="120dp"
-        android:background="@drawable/bg_btn_black_solid"
+        android:background="@drawable/click_btn_black_solid"
         android:text="注册"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_25" />

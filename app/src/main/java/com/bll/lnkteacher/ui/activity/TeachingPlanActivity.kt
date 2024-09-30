@@ -223,14 +223,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_move_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,510f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,520f).builder().setOnDateListener{
                 moveStartTime=it
                 tv_move_start_time.text=DateUtils.longToStringDataNoYear(moveStartTime)
             }
         }
 
         tv_move_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,510f).builder().setOnDateListener{
+            CalendarSingleDialog(this,360f,520f).builder().setOnDateListener{
                 moveEndTime=it
                 tv_move_end_time.text=DateUtils.longToStringDataNoYear(moveEndTime)
             }
@@ -248,14 +248,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_copy_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,775f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,785f).builder().setOnDateListener{
                 copyStartTime=it
                 tv_copy_start_time.text=DateUtils.longToStringDataNoYear(copyStartTime)
             }
         }
 
         tv_copy_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,775f).builder().setOnDateListener{
+            CalendarSingleDialog(this,360f,785f).builder().setOnDateListener{
                 copyEndTime=it
                 tv_copy_end_time.text=DateUtils.longToStringDataNoYear(copyEndTime)
             }

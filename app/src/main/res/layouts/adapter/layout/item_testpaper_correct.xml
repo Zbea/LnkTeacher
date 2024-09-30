@@ -29,7 +29,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="312dp"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:background="@drawable/bg_black_stroke_10dp_corner"
         android:orientation="vertical">
 
         <LinearLayout
@@ -71,7 +71,7 @@
                 android:layout_width="130dp"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
+                android:background="@drawable/click_btn_line_black_5dp"
                 android:gravity="center"
                 android:text="发送学生"
                 android:textColor="@color/black"
@@ -82,7 +82,7 @@
                 android:layout_width="130dp"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginStart="@dimen/dp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
+                android:background="@drawable/click_btn_line_black_5dp"
                 android:gravity="center"
                 android:text="@string/teaching_testpaper_analyse"
                 android:textColor="@color/black"
@@ -90,11 +90,14 @@
 
             <ImageView
                 android:id="@+id/iv_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_30"
-                android:src="@mipmap/icon_delete" />
+                android:layout_marginEnd="@dimen/dp_20"
+                android:src="@mipmap/icon_delete"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
 
         </LinearLayout>
 

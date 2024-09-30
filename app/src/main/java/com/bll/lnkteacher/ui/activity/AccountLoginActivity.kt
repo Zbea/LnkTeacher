@@ -84,7 +84,6 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
             map ["account"]=account
             map ["password"]=password
             map ["role"]= 1
-
             presenter.login(map)
 
         }

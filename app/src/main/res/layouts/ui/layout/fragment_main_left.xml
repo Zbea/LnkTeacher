@@ -35,26 +35,32 @@
             <TextView
                 android:id="@+id/tv_screenshot"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="30dp"
                 android:drawableStart="@mipmap/icon_main_screen"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="图库"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_22"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
 
 
             <TextView
                 android:id="@+id/tv_planover"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:drawableStart="@mipmap/icon_plan"
                 android:drawablePadding="@dimen/dp_10"
                 android:gravity="center"
                 android:text="总览"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_22"
+                android:padding="@dimen/click_line_width"
+                android:background="@drawable/click_btn_transparent_line_black"
+                />
         </LinearLayout>
 
     </RelativeLayout>
@@ -131,7 +137,6 @@
                     android:id="@+id/v_date_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
                     android:layout_centerVertical="true"
                     android:src="@mipmap/icon_main_up"/>
 
@@ -141,7 +146,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
                     android:src="@mipmap/icon_main_down"/>
 
             </RelativeLayout>
@@ -210,7 +214,6 @@
                 android:id="@+id/v_calender_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/icon_main_up"/>
 
@@ -220,7 +223,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="5dp"
                 android:src="@mipmap/icon_main_down"/>
 
             </RelativeLayout>

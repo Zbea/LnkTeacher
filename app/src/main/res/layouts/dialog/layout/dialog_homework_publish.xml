@@ -67,13 +67,11 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_35"
         />
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
         />
 
 </LinearLayout>

@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_45"
         android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginBottom="@dimen/dp_35"
         android:hint="请正确输入11位新手机号码"
         android:textColorHint="@color/color_text_hint"
         android:textColor="@color/black"
@@ -40,9 +41,6 @@
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
         />
 
 </LinearLayout>

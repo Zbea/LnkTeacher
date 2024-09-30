@@ -133,9 +133,11 @@
 
             <ImageView
                 android:id="@+id/iv_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@mipmap/icon_save"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
         </LinearLayout>
@@ -175,9 +177,11 @@
 
             <ImageView
                 android:id="@+id/iv_move_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@mipmap/icon_save"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
         </LinearLayout>
@@ -314,9 +318,11 @@
 
                 <ImageView
                     android:id="@+id/iv_copy_save"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
                     android:src="@mipmap/icon_save"
+                    android:scaleType="center"
+                    android:background="@drawable/click_btn_transparent_line_black"
                     />
 
             </LinearLayout>
@@ -426,9 +432,11 @@
 
             <ImageView
                 android:id="@+id/iv_delete_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:src="@mipmap/icon_save"
+                android:scaleType="center"
+                android:background="@drawable/click_btn_transparent_line_black"
                 />
 
         </LinearLayout>

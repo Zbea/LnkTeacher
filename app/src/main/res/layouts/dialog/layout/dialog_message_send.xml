@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="480dp"
+    android:layout_width="500dp"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_30"
+    android:padding="@dimen/dp_40"
     android:background="@drawable/dialog_bg">
 
     <EditText
@@ -34,7 +34,7 @@
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_20"/>
+        android:layout_marginBottom="@dimen/dp_35"/>
 
     <include
         layout="@layout/common_dialog_ok"

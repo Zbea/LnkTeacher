@@ -67,7 +67,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:text="修改姓名"
-                android:background="@drawable/bg_btn_black_solid_5dp"
+                android:background="@drawable/click_btn_black_solid_5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_22"/>
 
@@ -101,7 +101,7 @@
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:text="修改手机"
-                android:background="@drawable/bg_btn_black_solid_5dp"
+                android:background="@drawable/click_btn_black_solid_5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_22"/>
 
@@ -217,7 +217,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="修改学校"
-                android:background="@drawable/bg_btn_black_solid_5dp"
+                android:background="@drawable/click_btn_black_solid_5dp"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_22"/>
 
@@ -232,7 +232,7 @@
         android:layout_marginBottom="100dp"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
-        android:background="@drawable/bg_btn_black_solid"
+        android:background="@drawable/click_btn_black_solid"
         android:text="退出登录"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_25" />

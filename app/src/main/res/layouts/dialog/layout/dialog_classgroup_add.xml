@@ -13,7 +13,7 @@
         android:textColor="@color/black"
         android:text="加入班群"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_24"/>
+        android:textSize="@dimen/sp_26"/>
 
     <EditText
         android:id="@+id/et_name"
@@ -27,14 +27,13 @@
         android:paddingStart="@dimen/dp_10"
         android:inputType="number"
         android:textColorHint="@color/color_text_hint"
-        android:background="@drawable/bg_gray_stroke_5dp_corner"/>
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        android:layout_marginBottom="@dimen/dp_35"
+        />
 
 
     <include
         layout="@layout/common_dialog_ok"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_30"
         />
 
 </LinearLayout>

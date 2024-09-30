@@ -32,7 +32,7 @@ class NoteModuleAddDialog(private val context: Context, val screenPos:Int,val li
         }
         dialog?.show()
 
-        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_cancel)
+        val iv_cancel = dialog?.findViewById<ImageView>(R.id.iv_close)
         iv_cancel?.setOnClickListener { dialog?.dismiss() }
 
         val count=if (list.size>4) 3 else 2

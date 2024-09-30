@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="@dimen/sp_22"
+            android:textStyle="bold"
             android:text="作业本内容"
             android:textColor="@color/black"
             />
@@ -27,6 +28,7 @@
             android:textSize="@dimen/sp_22"
             android:text="作业本"
             android:gravity="center"
+            android:textStyle="bold"
             android:textColor="@color/black"
             />
 
@@ -36,6 +38,7 @@
             android:textSize="@dimen/sp_22"
             android:text="班级"
             android:gravity="center"
+            android:textStyle="bold"
             android:textColor="@color/black"
             />
 
@@ -45,6 +48,7 @@
             android:textSize="@dimen/sp_22"
             android:text="布置时间"
             android:gravity="center"
+            android:textStyle="bold"
             android:textColor="@color/black"
             />
 
@@ -53,6 +57,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_22"
             android:text="提交时间"
+            android:textStyle="bold"
             android:textColor="@color/black"
             />
 

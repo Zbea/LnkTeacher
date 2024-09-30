@@ -22,7 +22,7 @@ class LongClickManageDialog(val context: Context,val screenPos:Int, val name:Str
 
     fun builder(): LongClickManageDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_long_click_manage)
+        dialog.setContentView(R.layout.dialog_item_select)
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = dialog.window?.attributes
         if (screenPos==1){
