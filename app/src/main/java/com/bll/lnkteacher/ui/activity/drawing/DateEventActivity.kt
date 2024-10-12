@@ -7,10 +7,12 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.utils.DateUtils
-import kotlinx.android.synthetic.main.ac_date_event.*
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class DateEventActivity:BaseDrawingActivity() {
     private var nowLong=0L

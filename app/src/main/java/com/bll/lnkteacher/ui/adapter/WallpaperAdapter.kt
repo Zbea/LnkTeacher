@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.adapter
 
-import android.widget.ImageView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.WallpaperBean
 import com.bll.lnkteacher.utils.GlideUtils
@@ -12,10 +11,8 @@ class WallpaperAdapter(layoutResId: Int, data: List<WallpaperBean>?) : BaseQuick
     override fun convert(helper: BaseViewHolder, item: WallpaperBean) {
         helper.apply {
             setText(R.id.tv_name,item.title)
-            val image=getView<ImageView>(R.id.iv_image)
-            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,image,5)
-            setText(R.id.tv_price,if (item.price==0) "免费" else item.price.toString())
-            setGone(R.id.tv_price_title,item.price!=0)
+            GlideUtils.setImageRoundUrl(mContext,item.bodyUrl,getView(R.id.iv_image),10)
+            setText(R.id.tv_price,if (item.price==0) "免费" else item.price.toString()+"学豆")
             setText(R.id.btn_download,if (item.buyStatus==1) "下载" else "购买")
             addOnClickListener(R.id.btn_download)
         }

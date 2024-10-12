@@ -20,6 +20,7 @@
             android:layout_marginStart="33dp"
             android:textColor="@color/black"
             android:gravity="center_vertical"
+            android:layout_alignParentTop="true"
             android:textSize="@dimen/sp_36"
             />
 

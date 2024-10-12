@@ -11,7 +11,7 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.fragment.resource.AppDownloadFragment
 import com.bll.lnkteacher.ui.fragment.resource.CalenderDownloadFragment
 import com.bll.lnkteacher.ui.fragment.resource.WallpaperDownloadFragment
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.common_title.tv_type
 
 class ResourceCenterActivity:BaseActivity(){
     private var lastFragment: Fragment? = null
@@ -50,7 +50,7 @@ class ResourceCenterActivity:BaseActivity(){
 
         tv_type.text=popSupplys[0].name
         tv_type.setOnClickListener {
-            PopupRadioList(this,popSupplys,tv_type,tv_type.width,0).builder().setOnSelectListener {
+            PopupRadioList(this,popSupplys,tv_type,tv_type.width,5).builder().setOnSelectListener {
                 tv_type.text = it.name
                 appFragment?.changeSupply(it.id)
                 bookFragment?.changeSupply(it.id)

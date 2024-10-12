@@ -21,7 +21,7 @@ import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity
 import com.bll.lnkteacher.ui.adapter.ScreenshotAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
 import kotlinx.android.synthetic.main.common_title.iv_manager
@@ -109,17 +109,16 @@ class ScreenshotListActivity:BaseActivity() {
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,28f), DP2PX.dip2px(this,30f),
-            DP2PX.dip2px(this,28f),0)
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,30f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = ScreenshotAdapter(R.layout.item_book_type, null).apply {
+        mAdapter = ScreenshotAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this@ScreenshotListActivity, 22f), DP2PX.dip2px(this@ScreenshotListActivity, 30f)))
             setOnItemClickListener { adapter, view, position ->
                 val index=totalNum-1-((pageIndex-1)*pageSize+position)
                 customStartActivity(Intent(this@ScreenshotListActivity, FileDrawingActivity::class.java)
@@ -133,6 +132,7 @@ class ScreenshotListActivity:BaseActivity() {
                 true
             }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4, DP2PX.dip2px(this, 30f)))
 
     }
 

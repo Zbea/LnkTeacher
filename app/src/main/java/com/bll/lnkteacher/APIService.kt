@@ -1,6 +1,22 @@
 package com.bll.lnkteacher
 
-import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.AccountOrder
+import com.bll.lnkteacher.mvp.model.AccountQdBean
+import com.bll.lnkteacher.mvp.model.AppList
+import com.bll.lnkteacher.mvp.model.AppUpdateBean
+import com.bll.lnkteacher.mvp.model.BookStore
+import com.bll.lnkteacher.mvp.model.BookStoreType
+import com.bll.lnkteacher.mvp.model.CalenderList
+import com.bll.lnkteacher.mvp.model.CloudList
+import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.FriendList
+import com.bll.lnkteacher.mvp.model.HandoutList
+import com.bll.lnkteacher.mvp.model.Message
+import com.bll.lnkteacher.mvp.model.SchoolBean
+import com.bll.lnkteacher.mvp.model.ShareNoteList
+import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
+import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.WallpaperList
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
@@ -9,12 +25,22 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
-import com.bll.lnkteacher.mvp.model.testpaper.*
+import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
+import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
+import com.bll.lnkteacher.mvp.model.testpaper.RankBean
+import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
+import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.net.BaseResult
 import com.bll.lnkteacher.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 interface APIService{
@@ -243,6 +269,12 @@ interface APIService{
      */
     @POST("class/group/uploadCourse")
     fun uploadClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+
+    /**
+     * 上传老师排课表
+     */
+    @POST("course/update")
+    fun uploadClassSchedule(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 获取班群学生列表
      */
@@ -439,7 +471,11 @@ interface APIService{
      */
     @GET("message/inform/list")
     fun getMessages(@QueryMap map: HashMap<String, Any>): Observable<BaseResult<Message>>
-
+    /**
+     * 获取任课课程表
+     */
+    @GET("course/info")
+    fun getClassSchedule(): Observable<BaseResult<String>>
     /**
      * 应用列表
      */

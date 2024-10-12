@@ -23,4 +23,17 @@ class MainPresenter(view: IContractView.IMainView, val screen:Int=0):BasePresent
         },false)
     }
 
+    fun getClassSchedule(){
+        val list=RetrofitManager.service.getClassSchedule()
+        doRequest(list, object : Callback<String>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<String>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<String>) {
+                if (tBaseResult.data!=null)
+                    view.onClassSchedule(tBaseResult.data)
+            }
+        },false)
+    }
+
 }

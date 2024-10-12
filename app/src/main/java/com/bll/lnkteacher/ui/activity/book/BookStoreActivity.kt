@@ -26,7 +26,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.ToolUtils
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
@@ -143,7 +143,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(this,28f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,28f),0)
+        layoutParams.setMargins(DP2PX.dip2px(this,30f),DP2PX.dip2px(this,50f),DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -152,7 +152,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(this, 22f), 60))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position=position
             showBookDetails(books[position])

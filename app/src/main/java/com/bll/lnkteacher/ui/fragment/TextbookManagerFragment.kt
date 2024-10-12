@@ -6,21 +6,58 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
+import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudListBean
+import com.bll.lnkteacher.mvp.model.HandoutList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.presenter.HandoutPresenter
+import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.ui.fragment.textbook.HandoutFragment
 import com.bll.lnkteacher.ui.fragment.textbook.TextbookFragment
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextbookManagerFragment : BaseMainFragment(){
+class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
+    private val presenter=HandoutPresenter(this,1)
     private var textFragments= mutableListOf<TextbookFragment>()
+    private var handoutFragment: HandoutFragment? = null
+
     private var lastPosition = 0
     private var lastFragment: Fragment? = null
+
+    private val handoutsTypes= mutableListOf<PopupBean>()
+    private var types= mutableListOf<String>()
+
+    override fun onType(list: MutableList<String>) {
+        if (list.size>0){
+            if (types!=list){
+                SPUtil.putListString("handoutTypes",list)
+                handoutsTypes.clear()
+                for (i in list.indices){
+                    handoutsTypes.add(PopupBean(i,list[i],i==0))
+                }
+                types=list
+                tv_grade.text=list[0]
+                handoutFragment?.changeType(list[0])
+            }
+        }
+        else{
+            SPUtil.putListString("handoutTypes", mutableListOf())
+            disMissView(tv_grade)
+        }
+    }
+    override fun onList(list: HandoutList?) {
+    }
+    override fun onSuccess() {
+    }
 
 
     override fun getLayoutId(): Int {
@@ -28,34 +65,63 @@ class TextbookManagerFragment : BaseMainFragment(){
     }
 
     override fun initView() {
+        super.initView()
         setTitle(DataBeanManager.getIndexLeftData()[2].name)
+        types=SPUtil.getListStrings("handoutTypes")
+        for (i in types.indices){
+            handoutsTypes.add(PopupBean(i,types[i],i==0))
+        }
 
         val list=DataBeanManager.textbookType.toMutableList()
+        list.removeLast()
+
         for (textbook in list){
             textFragments.add(TextbookFragment().newInstance(textbook))
         }
-
+        handoutFragment = HandoutFragment()
         switchFragment(lastFragment, textFragments[0])
+
+        if (types.size>0){
+            tv_grade.text=types[0]
+            handoutFragment?.changeType(types[0])
+        }
+
+        tv_grade.setOnClickListener {
+            PopupRadioList(requireActivity(),handoutsTypes,tv_grade,5).builder().setOnSelectListener{
+                handoutFragment?.changeType(it.name)
+            }
+        }
 
         initTab()
     }
 
     override fun lazyLoad() {
+        presenter.getTypeList()
     }
 
     private fun initTab() {
         val strs=DataBeanManager.textbookType
         for (i in strs.indices){
-           itemTabTypes.add(ItemTypeBean().apply {
-               title=strs[i]
-               isCheck=i==0
-           })
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=strs[i]
+                isCheck=i==0
+            })
         }
         mTabTypeAdapter?.setNewData(itemTabTypes)
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        switchFragment(lastFragment, textFragments[position])
+        when (position) {
+            5 -> {
+                if (handoutsTypes.size>0)
+                    showView(tv_grade)
+                switchFragment(lastFragment, handoutFragment)
+            }
+            else -> {
+                disMissView(tv_grade)
+                switchFragment(lastFragment, textFragments[position])
+            }
+        }
         lastPosition = position
     }
 

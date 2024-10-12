@@ -59,7 +59,12 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    mPresenter.uploadClassGroup(classGroupId,urls[0])
+                    if (type==1){
+                        mPresenter.uploadClassSchedule(urls[0])
+                    }
+                    else{
+                        mPresenter.uploadClassGroup(classGroupId,urls[0])
+                    }
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -75,6 +80,9 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     override fun onSuccess() {
     }
     override fun onUploadSuccess() {
+        if (type==1){
+            EventBus.getDefault().post(Constants.COURSE_EVENT)
+        }
         finish()
     }
 
@@ -98,7 +106,6 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             for (item in DataBeanManager.courses){
                 lists.add(ItemList(item.type,item.desc))
             }
-
         }
     }
 
@@ -128,13 +135,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)
             SystemSettingUtils.saveScreenShot(this, grid, "course${classGroupId}")
-            if (type==1) {
-                EventBus.getDefault().post(Constants.COURSE_EVENT)
-                finish()
-            }
-            else{
-                mUploadPresenter.getToken()
-            }
+            mUploadPresenter.getToken()
         }
 
         val oldCourses= ClassScheduleGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)

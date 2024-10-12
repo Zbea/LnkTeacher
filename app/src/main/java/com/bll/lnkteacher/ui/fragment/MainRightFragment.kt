@@ -72,6 +72,10 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         mMessageAdapter?.setNewData(messages)
     }
 
+    override fun onClassSchedule(url: String) {
+        GlideUtils.setImageNoCacheUrl(requireActivity(),url,iv_course)
+    }
+
     override fun getLayoutId(): Int {
         return R.layout.fragment_main_right
     }
@@ -191,13 +195,14 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
     //课程表相关处理
     private fun initCourse() {
-        val path=FileAddress().getPathCourse("course") + "/course0.png"
-        if (File(path).exists()){
-            GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
-        }
-        else{
-            iv_course.setImageResource(0)
-        }
+//        val path=FileAddress().getPathCourse("course") + "/course0.png"
+//        if (File(path).exists()){
+//            GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
+//        }
+//        else{
+//            iv_course.setImageResource(0)
+//        }
+        mPresenter.getClassSchedule()
     }
 
     private fun initNoteView(){

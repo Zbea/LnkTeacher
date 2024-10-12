@@ -45,11 +45,11 @@
                 android:gravity="center"
                 android:text="批改完成"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_18"
+                android:textSize="@dimen/sp_20"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/bg_gary_arch"
+                android:background="@drawable/click_btn_line_black_5dp"
                 />
 
 

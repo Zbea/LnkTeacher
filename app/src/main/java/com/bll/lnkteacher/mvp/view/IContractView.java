@@ -256,6 +256,7 @@ public interface IContractView {
 
     interface IMainView extends IBaseView{
         void onList(Message message);
+        void onClassSchedule(String url);
     }
 
     interface IMessageView extends IBaseView{

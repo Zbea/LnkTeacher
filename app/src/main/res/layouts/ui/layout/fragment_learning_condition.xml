@@ -6,21 +6,19 @@
     android:background="@color/bg_page"
     >
 
-    <include
-        layout="@layout/common_fragment_title"
-        />
+    <include layout="@layout/common_fragment_title"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
+        android:id="@+id/rv_tab"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_tab_left"
+        android:layout_marginTop="@dimen/dp_15"
         />
 
-    <include
-        layout="@layout/common_page_number" />
+    <FrameLayout
+        android:id="@+id/fl_content_learning"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

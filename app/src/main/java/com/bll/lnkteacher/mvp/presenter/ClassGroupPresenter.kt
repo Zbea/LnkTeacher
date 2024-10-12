@@ -3,7 +3,11 @@ package com.bll.lnkteacher.mvp.presenter
 import android.util.Pair
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 
 class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : BasePresenter<IContractView.IClassGroupView>(view) {
@@ -142,6 +146,24 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             Pair.create("imageUrl", imageUrl)
         )
         val createGroup = RetrofitManager.service.uploadClassGroup(body)
+        doRequest(createGroup, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onUploadSuccess()
+            }
+        }, true)
+    }
+
+    /**
+     * 上传老师排课表
+     */
+    fun uploadClassSchedule(imageUrl:String) {
+        val body = RequestUtils.getBody(
+            Pair.create("courseUrl", imageUrl)
+        )
+        val createGroup = RetrofitManager.service.uploadClassSchedule(body)
         doRequest(createGroup, object : Callback<Any>(view,screen) {
             override fun failed(tBaseResult: BaseResult<Any>): Boolean {
                 return false

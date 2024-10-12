@@ -64,7 +64,7 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
         rv_list.layoutParams = layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, 1,null).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

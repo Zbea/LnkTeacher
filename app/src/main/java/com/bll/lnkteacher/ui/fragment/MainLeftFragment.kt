@@ -100,14 +100,14 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         v_calender_up.setOnClickListener{
             if (nowDayPos>1){
                 nowDayPos-=1
-                setCalenderBg()
+                setCalenderImage()
             }
         }
 
         v_calender_down.setOnClickListener {
             if (nowDayPos<=366){
                 nowDayPos+=1
-                setCalenderBg()
+                setCalenderImage()
             }
         }
 
@@ -177,7 +177,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         if (item!=null){
             showView(v_calender_up,v_calender_down)
             calenderPath=item.path
-            setCalenderBg()
+            setCalenderImage()
         }
         else{
             disMissView(v_calender_up,v_calender_down)
@@ -185,7 +185,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         }
     }
 
-    private fun setCalenderBg(){
+    private fun setCalenderImage(){
         val listFiles= FileUtils.getFiles(calenderPath)
         if (listFiles.size>0){
             val file=if (listFiles.size>nowDayPos-1){

@@ -20,7 +20,7 @@ import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
 import kotlinx.android.synthetic.main.common_title.iv_manager
@@ -82,8 +82,8 @@ class BookTypeListActivity : BaseActivity() {
     private fun initRecycleView(){
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this, 28f), DP2PX.dip2px(this, 30f),
-            DP2PX.dip2px(this, 28f), 0
+            DP2PX.dip2px(this, 30f), DP2PX.dip2px(this, 30f),
+            DP2PX.dip2px(this, 30f), 0
         )
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
@@ -93,9 +93,6 @@ class BookTypeListActivity : BaseActivity() {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(
-                SpaceGridItemDeco1(4, DP2PX.dip2px(this@BookTypeListActivity, 22f), DP2PX.dip2px(this@BookTypeListActivity, 30f))
-            )
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
                 MethodManager.gotoBookDetails(this@BookTypeListActivity,1,bookBean)
@@ -106,6 +103,7 @@ class BookTypeListActivity : BaseActivity() {
                 true
             }
         }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 30f)))
     }
 
     //顶部弹出选择

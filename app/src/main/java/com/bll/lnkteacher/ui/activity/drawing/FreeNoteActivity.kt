@@ -418,4 +418,8 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
         saveFreeNote()
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveFreeNote()
+    }
 }

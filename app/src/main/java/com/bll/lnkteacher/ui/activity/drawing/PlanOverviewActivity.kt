@@ -9,10 +9,10 @@ import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_plan_overview.iv_down
-import kotlinx.android.synthetic.main.ac_plan_overview.iv_up
 import kotlinx.android.synthetic.main.ac_plan_overview.rg_group
-import kotlinx.android.synthetic.main.ac_plan_overview.tv_date
+import kotlinx.android.synthetic.main.common_date_arrow.iv_down
+import kotlinx.android.synthetic.main.common_date_arrow.iv_up
+import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_expand

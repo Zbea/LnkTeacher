@@ -22,7 +22,8 @@ object DataBeanManager {
         mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_homework),
         mContext.getString(R.string.textbook_tab_homework_other),
-        mContext.getString(R.string.textbook_tab_teaching)
+        mContext.getString(R.string.textbook_tab_teaching),
+        "我的讲义"
     )
 
     var teachingStrs = arrayOf(
@@ -219,7 +220,7 @@ object DataBeanManager {
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_learn_condition)
             icon_check = mContext.getDrawable(R.mipmap.icon_tab_learn_condition_check)
-            name = "讲义"
+            name = "教情"
         })
         list.add(ItemList().apply {
             icon = mContext.getDrawable(R.mipmap.icon_tab_app)

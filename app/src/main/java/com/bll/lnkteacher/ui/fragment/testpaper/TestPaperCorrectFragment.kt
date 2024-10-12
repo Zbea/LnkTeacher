@@ -20,7 +20,7 @@ import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectView {
 
@@ -64,7 +64,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = LinearLayoutManager(requireActivity())
 
-        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct,2, items).apply {
+        mAdapter = TestPaperCorrectAdapter(R.layout.item_testpaper_correct, items).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
