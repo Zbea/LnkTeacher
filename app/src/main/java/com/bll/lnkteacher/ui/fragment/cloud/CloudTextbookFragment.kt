@@ -34,6 +34,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
     private var mAdapter: BookAdapter?=null
     private var books= mutableListOf<Book>()
     private var position=0
+    private var tabPos=0
     private var textBook=""
 
     override fun getLayoutId(): Int {
@@ -65,7 +66,8 @@ class CloudTextbookFragment: BaseCloudFragment() {
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        textBook=itemTabTypes[position].title
+        tabPos=position
+        textBook=itemTabTypes[tabPos].title
         pageIndex=1
         fetchData()
     }
@@ -138,7 +140,7 @@ class CloudTextbookFragment: BaseCloudFragment() {
     }
 
     private fun selectBookOrZip(book: Book){
-        if (position==1||position==2){
+        if (tabPos==1||tabPos==2){
             downloadBookZip(book)
         }
         else{

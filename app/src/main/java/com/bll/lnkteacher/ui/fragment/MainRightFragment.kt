@@ -14,6 +14,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.DiaryManageDialog
+import com.bll.lnkteacher.dialog.DiaryUploadListDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
@@ -27,7 +28,6 @@ import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.mvp.presenter.MainPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
@@ -62,7 +62,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     private var mNoteAdapter:MainNoteAdapter?=null
 
     private var uploadType=0//上传类型
-    private var privacyPassword:PrivacyPassword?=null
+    private var privacyPassword=MethodManager.getPrivacyPassword(0)
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
@@ -73,7 +73,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     }
 
     override fun onClassSchedule(url: String) {
-        GlideUtils.setImageNoCacheUrl(requireActivity(),url,iv_course)
+        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
     }
 
     override fun getLayoutId(): Int {
@@ -82,9 +82,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
-
-        privacyPassword=MethodManager.getPrivacyPassword(0)
-
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
@@ -96,81 +93,11 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         }
 
         tv_diary.setOnClickListener {
-            if (privacyPassword!=null&&privacyPassword?.isSet==true){
-                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    customStartActivity(Intent(requireActivity(), DiaryActivity::class.java))
-                }
-            } else{
-                customStartActivity(Intent(requireActivity(), DiaryActivity::class.java))
-            }
+            startDiaryActivity(0)
         }
 
         tv_diary.setOnLongClickListener {
-            val pops= mutableListOf<PopupBean>()
-            if (privacyPassword==null){
-                pops.add(PopupBean(1,"设置密码"))
-            }
-            else{
-                if (privacyPassword?.isSet==true){
-                    pops.add(PopupBean(1,"取消密码"))
-                }
-                else{
-                    pops.add(PopupBean(1,"设置密码"))
-                }
-            }
-            pops.add(PopupBean(2,"上传日记"))
-            pops.add(PopupBean(3,"删除日记"))
-            PopupClick(requireActivity(),pops,tv_diary,5).builder().setOnSelectListener{
-                when(it.id){
-                    1->{
-                        if (privacyPassword==null){
-                            PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                                privacyPassword=it
-                                showToast("日记密码设置成功")
-                            }
-                        }
-                        else{
-                            val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                            CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                                override fun cancel() {
-                                }
-                                override fun ok() {
-                                    PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                        MethodManager.savePrivacyPassword(0,privacyPassword)
-                                    }
-                                }
-                            })
-                        }
-                    }
-                    2->{
-                        DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                            titleStr,startLong,endLong->
-                            diaryStartLong=startLong
-                            diaryEndLong=endLong
-                            diaryUploadTitleStr=titleStr
-                            if (NetworkUtil(requireActivity()).isNetworkConnected()){
-                                EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
-                            }
-                            else{
-                                showToast("网络连接失败")
-                            }
-                        }
-                    }
-                    3->{
-                        DiaryManageDialog(requireActivity(),2).builder().setOnDialogClickListener{
-                                titleStr,startLong,endLong->
-                            val diarys=DiaryDaoManager.getInstance().queryList(startLong, endLong)
-                            for (item in diarys){
-                                val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
-                                FileUtils.deleteFile(File(path))
-                                DiaryDaoManager.getInstance().delete(item)
-                            }
-                            showToast(2,"删除日记成功")
-                        }
-                    }
-                }
-            }
+            onLongDiary()
             return@setOnLongClickListener true
         }
 
@@ -180,9 +107,9 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         }
 
         initMessageView()
-        initCourse()
         initNoteView()
         initDialog(2)
+        mPresenter.getClassSchedule()
     }
 
     override fun lazyLoad() {
@@ -191,18 +118,6 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
             fetchCommonData()
         }
         findNotes()
-    }
-
-    //课程表相关处理
-    private fun initCourse() {
-//        val path=FileAddress().getPathCourse("course") + "/course0.png"
-//        if (File(path).exists()){
-//            GlideUtils.setImageNoCacheUrl(activity,path,iv_course)
-//        }
-//        else{
-//            iv_course.setImageResource(0)
-//        }
-        mPresenter.getClassSchedule()
     }
 
     private fun initNoteView(){
@@ -226,6 +141,79 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
         }
     }
 
+    /**
+     * 跳转日记
+     */
+    private fun startDiaryActivity(typeId:Int){
+        if (privacyPassword!=null&&privacyPassword?.isSet==true){
+            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+            }
+        }
+        else{
+            customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+        }
+    }
+
+    /**
+     * 长按日记管理
+     */
+    private fun onLongDiary(){
+        val pops= mutableListOf<PopupBean>()
+        if (privacyPassword==null){
+            pops.add(PopupBean(1,"设置密码"))
+        }
+        else{
+            if (privacyPassword?.isSet==true){
+                pops.add(PopupBean(1,"取消密码"))
+            }
+            else{
+                pops.add(PopupBean(1,"设置密码"))
+            }
+        }
+        pops.add(PopupBean(2,"结集保存"))
+        pops.add(PopupBean(3,"云库日记"))
+        PopupClick(requireActivity(),pops,tv_diary,0).builder().setOnSelectListener{
+            when(it.id){
+                1->{
+                    if (privacyPassword==null){
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
+                            privacyPassword=it
+                            showToast("日记密码设置成功")
+                        }
+                    }
+                    else{
+                        val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
+                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun cancel() {
+                            }
+                            override fun ok() {
+                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
+                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                    MethodManager.savePrivacyPassword(0,privacyPassword)
+                                }
+                            }
+                        })
+                    }
+                }
+                2->{
+                    DiaryManageDialog(requireActivity(),1).builder().setOnDialogClickListener{
+                            titleStr,startLong,endLong->
+                        diaryStartLong=startLong
+                        diaryEndLong=endLong
+                        diaryUploadTitleStr=titleStr
+                        EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
+                    }
+                }
+                3->{
+                    DiaryUploadListDialog(requireActivity()).builder().setOnDialogClickListener{ typeId->
+                        startDiaryActivity(typeId)
+                    }
+                }
+            }
+        }
+    }
+
     private fun findMessages(){
         val map=HashMap<String,Any>()
         map["page"]=1
@@ -242,7 +230,7 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     override fun onEventBusMessage(msgFlag: String) {
         when (msgFlag) {
             COURSE_EVENT -> {
-                initCourse()
+                mPresenter.getClassSchedule()
             }
             MESSAGE_EVENT -> {
                 findMessages()

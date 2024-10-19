@@ -104,7 +104,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                 true
             }
         }
-        rv_list.addItemDecoration(SpaceGridItemDeco(3,40))
+        rv_list.addItemDecoration(SpaceGridItemDeco(3,20))
     }
 
     private fun downloadItem(){

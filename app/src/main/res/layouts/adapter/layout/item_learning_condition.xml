@@ -20,7 +20,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_25"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold"
             />
 
         <TextView
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_25"
+            android:textSize="@dimen/sp_24"
             />
 
         <TextView
@@ -39,7 +40,7 @@
             android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_25" />
+            android:textSize="@dimen/sp_24" />
 
         <TextView
             android:id="@+id/tv_date_create"
@@ -75,7 +76,7 @@
             android:gravity="center_vertical"
             android:lines="1"
             android:ellipsize="end"
-            android:textSize="@dimen/sp_25"
+            android:textSize="@dimen/sp_24"
             />
 
         <TextView

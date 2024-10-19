@@ -1,7 +1,10 @@
 package com.bll.lnkteacher;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
@@ -340,7 +343,31 @@ public class MethodManager {
             return 0;
         }
         else {
-            return Integer.valueOf(scoreStr);
+            return Integer.parseInt(scoreStr);
         }
+    }
+
+    /**
+     * 打开屏幕
+     *
+     * @param context
+     */
+    @SuppressLint("InvalidWakeLockTag")
+    public static void wakeUpScreen(Context context) {
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                try {
+                    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                    PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "Loneworker - FULL WAKE LOCK");
+                    fullWakeLock.acquire(5 * 60 * 1000L);
+                    if (fullWakeLock.isHeld())
+                        fullWakeLock.release();
+                } catch (Exception e) {
+                    return e;
+                }
+                return null;
+            }
+        }.execute();
     }
 }

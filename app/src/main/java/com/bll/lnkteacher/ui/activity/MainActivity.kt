@@ -167,7 +167,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             timeInMillis = currentTimeMillisLong
             timeZone = TimeZone.getTimeZone("GMT+8")
             set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
+            set(Calendar.MINUTE, 1)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
             var selectLong = timeInMillis
@@ -177,10 +177,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             }
             val intent = Intent(this@MainActivity, MyBroadcastReceiver::class.java)
             intent.action = Constants.ACTION_REFRESH
-            val pendingIntent =if (Build.VERSION.SDK_INT >= 31)
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-            else
-                PendingIntent.getBroadcast(this@MainActivity, 0, intent, PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE )
+            val pendingIntent=PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP, selectLong,

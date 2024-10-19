@@ -29,6 +29,8 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
 class DiaryActivity:BaseDrawingActivity() {
+
+    private var uploadId=0
     private var nowLong=0L//当前时间
     private var diaryBean:DiaryBean?=null
     private var images = mutableListOf<String>()//手写地址
@@ -40,11 +42,22 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun initData() {
+        uploadId=intent.flags
         nowLong=DateUtils.getStartOfDayInMillis()
 
-        diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
-        if (diaryBean==null){
-            initCurrentDiaryBean()
+        if (uploadId==0){
+            diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
+            if (diaryBean==null){
+                initCurrentDiaryBean()
+            }
+            changeContent()
+        }
+        else{
+            diaryBean=DiaryDaoManager.getInstance().queryBean(uploadId)
+            if (diaryBean!=null){
+                nowLong=diaryBean?.date!!
+                changeContent()
+            }
         }
     }
 
@@ -54,7 +67,7 @@ class DiaryActivity:BaseDrawingActivity() {
         elik_b?.addOnTopView(tv_digest)
 
         iv_up.setOnClickListener {
-            val lastDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,0)
+            val lastDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,0,uploadId)
             if (lastDiaryBean!=null){
                 saveDiary()
                 diaryBean=lastDiaryBean
@@ -64,7 +77,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_down.setOnClickListener {
-            val nextDiaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,1)
+            val nextDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,1,uploadId)
             if (nextDiaryBean!=null){
                 saveDiary()
                 diaryBean=nextDiaryBean
@@ -72,29 +85,24 @@ class DiaryActivity:BaseDrawingActivity() {
                 changeContent()
             }
             else{
-                if (nowLong<DateUtils.getStartOfDayInMillis()){
-                    nowLong=DateUtils.getStartOfDayInMillis()
-                    initCurrentDiaryBean()
-                    changeContent()
+                //本地日记：当最新的当天还没有保存时，可以切换到当天
+                if (uploadId==0){
+                    if (nowLong<DateUtils.getStartOfDayInMillis()){
+                        saveDiary()
+                        nowLong=DateUtils.getStartOfDayInMillis()
+                        initCurrentDiaryBean()
+                        changeContent()
+                    }
                 }
             }
         }
 
         tv_date.setOnClickListener {
-            CalendarDiaryDialog(this,getCurrentScreenPos()).builder().setOnDateListener{
+            CalendarDiaryDialog(this,getCurrentScreenPos(),uploadId).builder().setOnDateListener{
                 saveDiary()
                 nowLong=it
-                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong)
-                if (diaryBean==null){
-                    initCurrentDiaryBean()
-                }
+                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
                 changeContent()
-            }
-        }
-
-        tv_digest.setOnClickListener {
-            InputContentDialog(this,getCurrentScreenPos(),if (diaryBean?.title.isNullOrEmpty()) "输入摘要" else diaryBean?.title!!).builder().setOnDialogClickListener{
-                diaryBean?.title=it
             }
         }
 
@@ -104,18 +112,23 @@ class DiaryActivity:BaseDrawingActivity() {
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
                     setBg()
-                    SPUtil.putString("dirayBgRes",bgRes)
+                    SPUtil.putString(Constants.SP_DIARY_BG_SET,bgRes)
                 }
         }
 
-        changeContent()
+        tv_digest.setOnClickListener {
+            InputContentDialog(this,getCurrentScreenPos(),if (diaryBean?.title.isNullOrEmpty()) "输入摘要" else diaryBean?.title!!).builder().setOnDialogClickListener{
+                diaryBean?.title=it
+            }
+        }
+
     }
 
     /**
      * 初始化
      */
     private fun initCurrentDiaryBean(){
-        bgRes=SPUtil.getString("dirayBgRes").ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
+        bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
         diaryBean?.date=nowLong
         diaryBean?.year=DateUtils.getYear()
@@ -123,24 +136,29 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.bgRes=bgRes
     }
 
-    override fun onCatalog() {
-        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle()
-        CatalogDiaryDialog(this,screenPos,getCurrentScreenPos(),diaryBeans).builder().setOnDialogClickListener{
-            saveDiary()
-            diaryBean=diaryBeans[it]
-            nowLong=diaryBean?.date!!
-            changeContent()
-        }
-    }
-
     override fun onChangeExpandContent() {
         changeErasure()
+        //云书库下载日记，如果只存在一页不能全屏
+        if (uploadId>0&&diaryBean?.paths?.size==1){
+            return
+        }
         isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onChangeContent()
     }
 
+    override fun onCatalog() {
+        val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
+        CatalogDiaryDialog(this,screenPos,getCurrentScreenPos(),diaryBeans).builder().setOnDialogClickListener { position ->
+            diaryBean = diaryBeans[position]
+            if (nowLong != diaryBean?.date) {
+                saveDiary()
+                nowLong = diaryBean?.date!!
+                changeContent()
+            }
+        }
+    }
 
     override fun onPageDown() {
         posImage += if (isExpand)2 else 1
@@ -161,6 +179,9 @@ class DiaryActivity:BaseDrawingActivity() {
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
+        tv_date.text=DateUtils.longToStringWeek(nowLong)
+        setBg()
+        setPWEnabled(!diaryBean?.isUpload!!)
         onChangeContent()
     }
 
@@ -168,8 +189,6 @@ class DiaryActivity:BaseDrawingActivity() {
      * 显示内容
      */
     override fun onChangeContent() {
-        tv_date.text=DateUtils.longToStringWeek(nowLong)
-
         if (isExpand){
             if (posImage<1){
                 posImage=1
@@ -181,15 +200,12 @@ class DiaryActivity:BaseDrawingActivity() {
             }
         }
 
-        setBg()
-
-        setPWEnabled(!diaryBean?.isUpload!!)
-
         val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
         //判断路径是否已经创建
         if (!images.contains(path)) {
             images.add(path)
         }
+
         if (diaryBean?.isUpload!!){
             GlideUtils.setImageUrl(this, path, v_content_b)
         }
@@ -225,7 +241,7 @@ class DiaryActivity:BaseDrawingActivity() {
         tv_page_total_a.text="${images.size}"
     }
 
-    private fun setEinkImage(eink: EinkPWInterface, path:String){
+    private fun setEinkImage(eink:EinkPWInterface,path:String){
         eink.setLoadFilePath(path, true)
     }
 
@@ -251,14 +267,8 @@ class DiaryActivity:BaseDrawingActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        saveDiary()
-    }
-
     override fun onPause() {
         super.onPause()
         saveDiary()
     }
-
 }

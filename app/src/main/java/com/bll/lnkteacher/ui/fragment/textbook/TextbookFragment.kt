@@ -17,7 +17,7 @@ import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.fragment_list.rv_list
 
@@ -63,7 +63,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),50f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -72,7 +72,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco1(3, DP2PX.dip2px(activity, 33f), 50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
             if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
@@ -87,6 +86,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                 onLongClick(books[position])
                 true
             }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  30))
     }
 
 
@@ -124,7 +124,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                         map["bgResId"] = book.imageUrl
                         mPresenter.addType(map)
                     } else {
-                        showToast(1,"请勿重复设置")
+                        showToast(1,"已设置")
                     }
                 }
             }
