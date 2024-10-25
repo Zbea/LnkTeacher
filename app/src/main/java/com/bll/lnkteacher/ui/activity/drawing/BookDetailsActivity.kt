@@ -9,7 +9,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CatalogDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.mvp.model.CatalogChildBean
 import com.bll.lnkteacher.mvp.model.CatalogMsg
 import com.bll.lnkteacher.mvp.model.CatalogParentBean

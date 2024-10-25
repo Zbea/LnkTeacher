@@ -3,7 +3,11 @@ package com.bll.lnkteacher.mvp.presenter
 import com.bll.lnkteacher.mvp.model.AppList
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 /**
  * 应用相关
@@ -29,7 +33,6 @@ class AppCenterPresenter(view: IContractView.IAPPView,val screen:Int) : BasePres
 
 
     fun getAppList(map: HashMap<String,Any>) {
-
         val app = RetrofitManager.service.getApks(map)
 
         doRequest(app, object : Callback<AppList>(view,screen) {

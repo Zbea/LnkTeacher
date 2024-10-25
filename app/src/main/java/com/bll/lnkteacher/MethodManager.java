@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -15,7 +14,7 @@ import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
-import com.bll.lnkteacher.mvp.model.Book;
+import com.bll.lnkteacher.mvp.model.book.Book;
 import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
 import com.bll.lnkteacher.mvp.model.PopupBean;
@@ -47,6 +46,11 @@ public class MethodManager {
 
     public static void getUser(){
         user=SPUtil.INSTANCE.getObj("user", User.class);
+    }
+
+    public static boolean isLogin(){
+        String tokenStr=SPUtil.INSTANCE.getString("token");
+        return !TextUtils.isEmpty(tokenStr) && user!=null;
     }
 
     /**

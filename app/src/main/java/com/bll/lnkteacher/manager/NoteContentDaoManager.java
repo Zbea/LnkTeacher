@@ -60,7 +60,7 @@ public class NoteContentDaoManager {
     public List<NoteContent> queryAll(String type, String noteTitle) {
         WhereCondition whereCondition=NoteContentDao.Properties.TypeStr.eq(type);
         WhereCondition whereCondition1=NoteContentDao.Properties.NoteTitle.eq(noteTitle);
-        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).orderAsc(NoteContentDao.Properties.Date).build().list();
     }
 
     public void editNoteTitles(String type, String notebookTitle,String editTitle){

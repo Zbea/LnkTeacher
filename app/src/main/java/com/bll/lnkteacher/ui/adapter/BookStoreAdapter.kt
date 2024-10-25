@@ -2,7 +2,7 @@ package com.bll.lnkteacher.ui.adapter
 
 import android.widget.ImageView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder

@@ -56,7 +56,7 @@
             android:textSize="@dimen/sp_25"
             android:textColor="@color/black"
             android:gravity="center"
-            android:background="@drawable/bg_gary_arch"
+            android:background="@drawable/click_btn_line_black_5dp"
             />
 
     </LinearLayout>

@@ -11,9 +11,11 @@ import com.bll.lnkteacher.mvp.model.AccountOrder
 import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.mvp.presenter.WalletPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.SPUtil
 import com.king.zxing.util.CodeUtils
-import kotlinx.android.synthetic.main.ac_wallet.*
+import kotlinx.android.synthetic.main.ac_wallet.tv_buy
+import kotlinx.android.synthetic.main.ac_wallet.tv_xdmoney
 
 class WalletActivity:BaseActivity(),IContractView.IWalletView{
 
@@ -37,11 +39,10 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
         //订单支付成功
         if (order?.status == 2) {
             handlerThread.removeCallbacks(orderThread!!)
-            if (qrCodeDialog!=null)
                 qrCodeDialog?.dismiss()
             runOnUiThread {
-                tv_xdmoney.text = "" + order.amount
-                mUser?.balance = order.amount
+                mUser?.balance = mUser?.balance?.plus(order.amount)
+                tv_xdmoney.text = "" + mUser?.balance
                 SPUtil.putObj("user",mUser!!)
             }
         }
@@ -95,12 +96,15 @@ class WalletActivity:BaseActivity(),IContractView.IWalletView{
         qrCodeDialog = Dialog(this)
         qrCodeDialog?.setContentView(R.layout.dialog_account_qrcode)
         qrCodeDialog?.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        qrCodeDialog?.setCanceledOnTouchOutside(false)
         val iv_qrcode = qrCodeDialog?.findViewById<ImageView>(R.id.iv_qrcode)
         qrCodeDialog?.show()
-        val bitmap = CodeUtils.createQRCode(url, 300, null)
+        val bitmap = CodeUtils.createQRCode(url, DP2PX.dip2px(this,300f), null)
         iv_qrcode?.setImageBitmap(bitmap)
 
-        qrCodeDialog?.setOnDismissListener {
+        val iv_close = qrCodeDialog?.findViewById<ImageView>(R.id.iv_close)
+        iv_close?.setOnClickListener {
+            qrCodeDialog?.dismiss()
             handlerThread.removeCallbacks(orderThread!!)
         }
     }

@@ -15,7 +15,12 @@ import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
-import kotlinx.android.synthetic.main.ac_account_login_user.*
+import kotlinx.android.synthetic.main.ac_account_login_user.btn_login
+import kotlinx.android.synthetic.main.ac_account_login_user.ed_psw
+import kotlinx.android.synthetic.main.ac_account_login_user.ed_user
+import kotlinx.android.synthetic.main.ac_account_login_user.ll_tips
+import kotlinx.android.synthetic.main.ac_account_login_user.tv_find_psd
+import kotlinx.android.synthetic.main.ac_account_login_user.tv_register
 
 class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
@@ -88,9 +93,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
         }
 
-        val tokenStr=SPUtil.getString("token")
-        if (tokenStr.isNotEmpty() && mUser!=null)
-        {
+        if (MethodManager.isLogin()){
             gotoMain()
         }
 
@@ -100,7 +103,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
         MethodManager.setStatusBarValue(statusBarValue)
 
         val intent1=Intent(this,MainActivity::class.java)
-        intent1.putExtra("android.intent.extra.LAUNCH_SCREEN", 3)
+        intent1.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL)
         intent1.flags=Intent.FLAG_ACTIVITY_TASK_ON_HOME
         startActivity(intent1)
         ActivityManager.getInstance().finishOthers(MainActivity::class.java)

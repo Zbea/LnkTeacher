@@ -15,12 +15,12 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.ITestPaperCorrectView
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkAnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
 
@@ -76,7 +76,8 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
                         deleteCorrect()
                     }
                     R.id.tv_analyse->{
-                        val intent=Intent(requireActivity(), HomeworkAnalyseActivity::class.java)
+                        val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
+                        intent.flags=1
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)

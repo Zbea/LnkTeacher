@@ -29,7 +29,8 @@ import kotlinx.android.synthetic.main.ac_teaching_plan.iv_move_save
 import kotlinx.android.synthetic.main.ac_teaching_plan.iv_save
 import kotlinx.android.synthetic.main.ac_teaching_plan.ll_copy
 import kotlinx.android.synthetic.main.ac_teaching_plan.rg_group
-import kotlinx.android.synthetic.main.ac_teaching_plan.tv_class
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_content_date
+import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_class
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_end_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_start_time
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_delete_end_time
@@ -170,6 +171,7 @@ class TeachingPlanActivity:BaseActivity() {
             val item=dates[position]
             if (item.time>0){
                 this.position= position
+                tv_content_date.text=DateUtils.longToStringDataNoYear(item.time)+"  教学内容"
                 //当前点击存在内容
                 if(item.dateEvent!=null){
                     et_content.setText(item.dateEvent.content)
@@ -223,14 +225,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_move_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,520f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,505f).builder().setOnDateListener{
                 moveStartTime=it
                 tv_move_start_time.text=DateUtils.longToStringDataNoYear(moveStartTime)
             }
         }
 
         tv_move_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,520f).builder().setOnDateListener{
+            CalendarSingleDialog(this,330f,505f).builder().setOnDateListener{
                 moveEndTime=it
                 tv_move_end_time.text=DateUtils.longToStringDataNoYear(moveEndTime)
             }
@@ -241,32 +243,32 @@ class TeachingPlanActivity:BaseActivity() {
         if (popClasss.size>0){
             popClasss[0].isCheck=true
             selectClassId=popClasss[0].id
-            tv_class.text=popClasss[0].name
+            tv_copy_class.text=popClasss[0].name
         }
         else{
             disMissView(ll_copy)
         }
 
         tv_copy_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,785f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,770f).builder().setOnDateListener{
                 copyStartTime=it
                 tv_copy_start_time.text=DateUtils.longToStringDataNoYear(copyStartTime)
             }
         }
 
         tv_copy_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,785f).builder().setOnDateListener{
+            CalendarSingleDialog(this,330f,770f).builder().setOnDateListener{
                 copyEndTime=it
                 tv_copy_end_time.text=DateUtils.longToStringDataNoYear(copyEndTime)
             }
         }
 
-        tv_class.setOnClickListener {
+        tv_copy_class.setOnClickListener {
             if (popWindow==null)
             {
-                popWindow= PopupRadioList(this, popClasss, tv_class,  20).builder()
+                popWindow= PopupRadioList(this, popClasss, tv_copy_class,  15).builder()
                 popWindow  ?.setOnSelectListener { item ->
-                    tv_class.text = item.name
+                    tv_copy_class.text = item.name
                     selectClassId=item.id
                 }
             }
@@ -322,7 +324,7 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_delete_end_time.setOnClickListener {
-            CalendarSingleDialog(this,360f,965f).builder().setOnDateListener{
+            CalendarSingleDialog(this,330f,965f).builder().setOnDateListener{
                 deleteEndTime=it
                 tv_delete_end_time.text=DateUtils.longToStringDataNoYear(deleteEndTime)
             }
@@ -438,6 +440,7 @@ class TeachingPlanActivity:BaseActivity() {
     private fun setCurrentDateContent(){
         val dateBean=dates[position]
         val dateEvent=DateEventDaoManager.getInstance().queryBean(classId,dateBean.time)
+        tv_content_date.text=DateUtils.longToStringDataNoYear(dateBean.time)+"  教学内容"
         if (dateEvent!=null){
             et_content.setText(dateEvent.content)
             et_content.setSelection(dateEvent.content.length)

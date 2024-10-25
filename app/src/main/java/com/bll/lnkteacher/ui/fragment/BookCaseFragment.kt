@@ -9,9 +9,9 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudListBean
-import com.bll.lnkteacher.ui.activity.book.BookTypeListActivity
+import com.bll.lnkteacher.mvp.model.book.Book
+import com.bll.lnkteacher.ui.activity.book.BookcaseTypeActivity
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUploadManager
@@ -47,7 +47,7 @@ class BookCaseFragment : BaseMainFragment() {
         findBook()
 
         tv_book_type.setOnClickListener {
-            startActivity(Intent(activity, BookTypeListActivity::class.java))
+            startActivity(Intent(activity, BookcaseTypeActivity::class.java))
         }
 
         ll_book_top.setOnClickListener {
@@ -112,15 +112,8 @@ class BookCaseFragment : BaseMainFragment() {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks = mutableListOf<Book>()
-        val books = BookGreenDaoManager.getInstance().queryAllBook()
-        //遍历获取所有需要上传的书籍数目
-        for (item in books) {
-            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
-                maxBooks.add(item)
-            }
-        }
-        for (book in maxBooks) {
+        val books = BookGreenDaoManager.getInstance().queryAllByHalfYear(1)
+        for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {
@@ -135,7 +128,7 @@ class BookCaseFragment : BaseMainFragment() {
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
                         })
-                        if (cloudList.size == maxBooks.size)
+                        if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
@@ -148,7 +141,7 @@ class BookCaseFragment : BaseMainFragment() {
                     listJson = Gson().toJson(book)
                     bookId = book.bookId
                 })
-                if (cloudList.size == maxBooks.size)
+                if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
             }
         }

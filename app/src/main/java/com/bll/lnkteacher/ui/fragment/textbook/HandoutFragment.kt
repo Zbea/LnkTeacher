@@ -69,7 +69,7 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -78,7 +78,7 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(5, 40))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(5, 50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position = position
             val item=items[position]

@@ -22,7 +22,6 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
         AppBeanDao.createTable(db, ifNotExists);
-        BookDao.createTable(db, ifNotExists);
         CalenderItemBeanDao.createTable(db, ifNotExists);
         ClassScheduleBeanDao.createTable(db, ifNotExists);
         DateEventDao.createTable(db, ifNotExists);
@@ -32,12 +31,12 @@ public class DaoMaster extends AbstractDaoMaster {
         NoteDao.createTable(db, ifNotExists);
         NoteContentDao.createTable(db, ifNotExists);
         WallpaperBeanDao.createTable(db, ifNotExists);
+        BookDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         AppBeanDao.dropTable(db, ifExists);
-        BookDao.dropTable(db, ifExists);
         CalenderItemBeanDao.dropTable(db, ifExists);
         ClassScheduleBeanDao.dropTable(db, ifExists);
         DateEventDao.dropTable(db, ifExists);
@@ -47,6 +46,7 @@ public class DaoMaster extends AbstractDaoMaster {
         NoteDao.dropTable(db, ifExists);
         NoteContentDao.dropTable(db, ifExists);
         WallpaperBeanDao.dropTable(db, ifExists);
+        BookDao.dropTable(db, ifExists);
     }
 
     /**
@@ -66,7 +66,6 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(AppBeanDao.class);
-        registerDaoClass(BookDao.class);
         registerDaoClass(CalenderItemBeanDao.class);
         registerDaoClass(ClassScheduleBeanDao.class);
         registerDaoClass(DateEventDao.class);
@@ -76,6 +75,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(NoteDao.class);
         registerDaoClass(NoteContentDao.class);
         registerDaoClass(WallpaperBeanDao.class);
+        registerDaoClass(BookDao.class);
     }
 
     public DaoSession newSession() {

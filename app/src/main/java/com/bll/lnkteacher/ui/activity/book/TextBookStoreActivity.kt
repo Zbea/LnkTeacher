@@ -14,11 +14,11 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
-import com.bll.lnkteacher.mvp.model.BookStore
-import com.bll.lnkteacher.mvp.model.BookStoreType
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.book.Book
+import com.bll.lnkteacher.mvp.model.book.BookStore
+import com.bll.lnkteacher.mvp.model.book.BookStoreType
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -45,7 +45,6 @@ class TextBookStoreActivity : BaseActivity(),
 
     private var tabId = 0
     private var tabStr = ""
-    private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter? = null
@@ -116,8 +115,7 @@ class TextBookStoreActivity : BaseActivity(),
     override fun initData() {
         pageSize=12
 
-        tabList = DataBeanManager.textbookType.toMutableList()
-        tabList.removeLast()
+        tabList = DataBeanManager.textbookStoreType.toMutableList()
         tabStr = tabList[0]
 
         getSemester()
@@ -205,18 +203,12 @@ class TextBookStoreActivity : BaseActivity(),
             PopupRadioList(this, subTypeList, tv_type, tv_type.width, 5).builder()
                 .setOnSelectListener { item ->
                     subType = item.id
+                    tabStr =  if (subType==1) "教学期刊" else "教学教育"
                     tv_type.text = item.name
                     pageIndex = 1
                     fetchData()
                 }
         }
-    }
-
-    /**
-     * 设置课本学期（月份为9月份之前为下学期）
-     */
-    private fun getSemester(){
-        semester=if (DateUtils.getMonth()<9) 2 else 1
     }
 
     private fun initTab() {
@@ -246,16 +238,9 @@ class TextBookStoreActivity : BaseActivity(),
         }
         tabId = position
         isZip = !(tabId==0||tabId==1||tabId==4)
-        tabStr = tabList[position]
+        tabStr =  if (subType==1&&tabId==4) "教学期刊" else tabList[position]
         pageIndex = 1
         fetchData()
-    }
-
-    /**
-     * 得到课本主类型
-     */
-    private fun getHostType():Int{
-        return when(tabId){0,1->0 2,3->6 else->7}
     }
 
     private fun initRecyclerView() {
@@ -284,11 +269,10 @@ class TextBookStoreActivity : BaseActivity(),
         downloadBookDialog?.builder()
         downloadBookDialog?.setOnClickListener {
             if (book.buyStatus == 1) {
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(getHostType(),book.bookId)
+                val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(getHostType(book.type),book.bookId)
                 if (localBook == null) {
                     showLoading()
-                    val downloadTask = downLoadStart(book.downloadUrl, book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    downLoadStart(book.downloadUrl, book)
                 } else {
                     book.loadSate = 2
                     showToast("已下载")
@@ -329,7 +313,7 @@ class TextBookStoreActivity : BaseActivity(),
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                    if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+ "/"+
                                     ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
@@ -342,9 +326,6 @@ class TextBookStoreActivity : BaseActivity(),
                 }
 
                 override fun completed(task: BaseDownloadTask?) {
-                    //删除缓存 poolmap
-                    deleteDoneTask(task)
-
                     if (!isZip){
                         book.bookPath = path
                         book.bookDrawPath=FileAddress().getPathBookDraw(fileName)
@@ -361,7 +342,6 @@ class TextBookStoreActivity : BaseActivity(),
                     hideLoading()
                     showToast("${book.bookName}下载失败")
                     downloadBookDialog?.setChangeStatus()
-                    deleteDoneTask(task)
                 }
             })
         return download
@@ -395,7 +375,7 @@ class TextBookStoreActivity : BaseActivity(),
             id=null
             loadSate = 2
             category = 0
-            typeId=getHostType()
+            typeId=getHostType(book.type)
             subtypeStr=tabStr
             time = System.currentTimeMillis()
         }
@@ -412,29 +392,18 @@ class TextBookStoreActivity : BaseActivity(),
     }
 
     /**
-     * 下载完成 需要删除列表
+     * 得到课本主类型
+     * type 1 教学期刊 2教学教育
      */
-    private fun deleteDoneTask(task: BaseDownloadTask?) {
-
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-
-            val iterator = entries.iterator();
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-
-        }
+    private fun getHostType(type:Int):Int{
+        return when(tabId){0,1->0 2,3->6 else->if(type==2)7 else 8}
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
+    /**
+     * 设置课本学期（月份为9月份之前为下学期）
+     */
+    private fun getSemester(){
+        semester=if (DateUtils.getMonth()<9) 2 else 1
     }
 
     override fun fetchData() {
@@ -482,5 +451,10 @@ class TextBookStoreActivity : BaseActivity(),
 
     override fun onRefreshData() {
         presenter.getBookType()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FileDownloader.getImpl().pauseAll()
     }
 }

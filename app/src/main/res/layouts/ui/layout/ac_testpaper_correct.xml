@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/dp_30"
-            android:layout_marginEnd="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_40"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_60"
+            android:layout_marginTop="@dimen/dp_20"
             />
 
 
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text="赋分批改框"
+                    android:text="自动着分批改框"
                     android:textColor="@color/black"
                     android:textSize="26sp"
                     android:textStyle="bold"/>
@@ -94,7 +94,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_list_score"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
                     android:layout_marginTop="@dimen/dp_25"
                     android:layout_marginBottom="@dimen/dp_25"
                     android:layout_marginStart="@dimen/dp_60"
@@ -226,10 +227,6 @@
 
     <include
         android:id="@+id/rl_answer"
-        android:layout_width="@dimen/width"
-        android:layout_height="680dp"
-        android:layout_marginTop="@dimen/statusbar_height"
-        android:layout_alignParentEnd="true"
         android:visibility="gone"
         layout="@layout/common_answer"
         />

@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 class DiaryActivity:BaseDrawingActivity() {
 
@@ -55,7 +56,6 @@ class DiaryActivity:BaseDrawingActivity() {
         else{
             diaryBean=DiaryDaoManager.getInstance().queryBean(uploadId)
             if (diaryBean!=null){
-                nowLong=diaryBean?.date!!
                 changeContent()
             }
         }
@@ -71,7 +71,6 @@ class DiaryActivity:BaseDrawingActivity() {
             if (lastDiaryBean!=null){
                 saveDiary()
                 diaryBean=lastDiaryBean
-                nowLong=lastDiaryBean.date
                 changeContent()
             }
         }
@@ -81,7 +80,6 @@ class DiaryActivity:BaseDrawingActivity() {
             if (nextDiaryBean!=null){
                 saveDiary()
                 diaryBean=nextDiaryBean
-                nowLong=nextDiaryBean.date
                 changeContent()
             }
             else{
@@ -119,6 +117,7 @@ class DiaryActivity:BaseDrawingActivity() {
         tv_digest.setOnClickListener {
             InputContentDialog(this,getCurrentScreenPos(),if (diaryBean?.title.isNullOrEmpty()) "输入摘要" else diaryBean?.title!!).builder().setOnDialogClickListener{
                 diaryBean?.title=it
+                saveDiary()
             }
         }
 
@@ -134,18 +133,7 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.year=DateUtils.getYear()
         diaryBean?.month=DateUtils.getMonth()
         diaryBean?.bgRes=bgRes
-    }
-
-    override fun onChangeExpandContent() {
-        changeErasure()
-        //云书库下载日记，如果只存在一页不能全屏
-        if (uploadId>0&&diaryBean?.paths?.size==1){
-            return
-        }
-        isExpand = !isExpand
-        moveToScreen(isExpand)
-        onChangeExpandView()
-        onChangeContent()
+        diaryBean?.paths= mutableListOf(getPath(posImage))
     }
 
     override fun onCatalog() {
@@ -154,21 +142,83 @@ class DiaryActivity:BaseDrawingActivity() {
             diaryBean = diaryBeans[position]
             if (nowLong != diaryBean?.date) {
                 saveDiary()
-                nowLong = diaryBean?.date!!
                 changeContent()
             }
         }
     }
 
-    override fun onPageDown() {
-        posImage += if (isExpand)2 else 1
+    override fun onChangeExpandContent() {
+        changeErasure()
+        //云书库下载日记，如果只存在一页不能全屏
+        if (uploadId>0&&images.size==1){
+            return
+        }
+        if (images.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (File(images[posImage]).exists()){
+                images.add(getPath(posImage+1))
+            }
+            else{
+                return
+            }
+        }
+        if (posImage==0){
+            posImage=1
+        }
+        isExpand = !isExpand
+        moveToScreen(isExpand)
+        onChangeExpandView()
         onChangeContent()
     }
 
+    override fun onPageDown() {
+        val total=images.size-1
+        if(isExpand){
+            if (posImage<total-1){
+                posImage+=2
+                onChangeContent()
+            }
+            else if (posImage==total-1){
+                if (isDrawLastContent()){
+                    images.add(getPath(images.size))
+                    posImage=images.size-1
+                    onChangeContent()
+                }
+                else{
+                    posImage=total
+                    onChangeContent()
+                }
+            }
+        }
+        else{
+            if (posImage ==total) {
+                if (isDrawLastContent()){
+                    images.add(getPath(images.size))
+                    posImage+=1
+                    onChangeContent()
+                }
+            } else {
+                posImage += 1
+                onChangeContent()
+            }
+        }
+    }
+
     override fun onPageUp() {
-        if (posImage > 0) {
-            posImage -= if (isExpand)2 else 1
-            onChangeContent()
+        if(isExpand){
+            if (posImage>2){
+                posImage-=2
+                onChangeContent()
+            }
+            else if (posImage==2){
+                posImage=1
+                onChangeContent()
+            }
+        }else{
+            if (posImage>0){
+                posImage-=1
+                onChangeContent()
+            }
         }
     }
 
@@ -176,6 +226,13 @@ class DiaryActivity:BaseDrawingActivity() {
      * 切换日记
      */
     private fun changeContent(){
+        nowLong = diaryBean?.date!!
+        if (nowLong==DateUtils.getStartOfDayInMillis()&&uploadId==0){
+            showView(iv_btn)
+        }
+        else {
+            disMissView(iv_btn)
+        }
         bgRes=diaryBean?.bgRes.toString()
         images= diaryBean?.paths as MutableList<String>
         posImage=diaryBean?.page!!
@@ -189,22 +246,7 @@ class DiaryActivity:BaseDrawingActivity() {
      * 显示内容
      */
     override fun onChangeContent() {
-        if (isExpand){
-            if (posImage<1){
-                posImage=1
-            }
-        }
-        else{
-            if (posImage<0){
-                posImage=0
-            }
-        }
-
-        val path = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage + 1}.png"
-        //判断路径是否已经创建
-        if (!images.contains(path)) {
-            images.add(path)
-        }
+        val path = getPath(posImage)
 
         if (diaryBean?.isUpload!!){
             GlideUtils.setImageUrl(this, path, v_content_b)
@@ -215,11 +257,8 @@ class DiaryActivity:BaseDrawingActivity() {
         tv_page.text = "${posImage + 1}"
 
         if (isExpand){
-            val path_a = FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${posImage}.png"
-            //判断路径是否已经创建
-            if (!images.contains(path_a)) {
-                images.add(path_a)
-            }
+            val path_a =getPath(posImage-1)
+
             if (diaryBean?.isUpload!!){
                 GlideUtils.setImageUrl(this, path_a, v_content_a)
             }
@@ -245,17 +284,21 @@ class DiaryActivity:BaseDrawingActivity() {
         eink.setLoadFilePath(path, true)
     }
 
-    override fun onElikSava_a() {
-        elik_a?.saveBitmap(true) {}
-    }
-
-    override fun onElikSava_b() {
-        elik_b?.saveBitmap(true) {}
-    }
-
     private fun setBg(){
         v_content_a?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
         v_content_b?.setBackgroundResource(ToolUtils.getImageResId(this, bgRes))
+    }
+
+    /**
+     * 当前本地日记并且最后一个已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val path = images.last()
+        return File(path).exists()&&uploadId==0
+    }
+
+    private fun getPath(index:Int):String{
+        return FileAddress().getPathDiary(DateUtils.longToStringCalender(nowLong)) + "/${index + 1}.png"
     }
 
     private fun saveDiary() {

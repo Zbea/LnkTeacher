@@ -1,17 +1,12 @@
 package com.bll.lnkteacher.ui.activity.exam
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
-import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
@@ -22,31 +17,19 @@ import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.ScoreRankActivity
-import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
-import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import com.bll.lnkteacher.widget.SpaceItemDeco
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.barChart
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_down
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_up
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_answer
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_average_score
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_correct_number
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_num
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_info
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_label
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_score_pop
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_info_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_num_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_number_score
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_pop_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
@@ -58,6 +41,7 @@ import kotlinx.android.synthetic.main.common_title.tv_class
 import kotlinx.android.synthetic.main.common_title.tv_custom
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
 
+
 class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private val mPresenter= ExamCorrectPresenter(this,3)
     private var classPos=0
@@ -66,17 +50,12 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
     private var examBean: ExamList.ExamBean?=null
     private var classList= mutableListOf<ExamClassBean>()
     private var images= mutableListOf<String>()
-    private var scoreItems= mutableListOf<ScoreItem>()
-    private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
     private var pops = mutableListOf<PopupBean>()
-    private var mAnalyseAdapter:ExamAnalyseAdapter?=null
-    private var mAnalyseMultiAdapter:ExamAnalyseMultiAdapter?=null
     private var users = mutableListOf<ExamClassUserList.ClassUserBean>()
     private var scoreIndex = 0//当前分数下标
     private var popClasss= mutableListOf<PopupBean>()
 
     override fun onExamClassUser(classUserList: ExamClassUserList) {
-        scoreItems.clear()
         totalAnalyseItems.clear()
         var totalScore=0
         for (userItem in classUserList.list) {
@@ -139,10 +118,10 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         }
 
         scoreIndex = pops[1].id
-        tv_correct_number.text = users.size.toString()
-        tv_score_pop.text = scoreIndex.toString()
-        tv_score_info.text = "以上"
-        tv_num.text = getScoreNum().toString()
+        tv_number_score.text = users.size.toString()
+        tv_pop_score.text = scoreIndex.toString()
+        tv_info_score.text = "以上"
+        tv_num_score.text = getScoreNum().toString()
 
         if (users.size > 0) {
             tv_average_score.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
@@ -157,41 +136,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             else{
                 mAnalyseMultiAdapter?.setNewData(totalAnalyseItems)
             }
-        }
-
-        if (correctModule > 0) {
-            val barEntries= mutableListOf<BarEntry>()
-            val topicStrs= mutableListOf<String>()
-            if (correctModule < 3) {
-                mAnalyseAdapter?.setNewData(totalAnalyseItems)
-                for (i in 0 until totalAnalyseItems.size){
-                    topicStrs.add("${i+1}")
-                    barEntries.add(BarEntry(i.toFloat(), totalAnalyseItems[i].scoreRate.toFloat()))
-                }
-            } else {
-                mAnalyseMultiAdapter?.setNewData(totalAnalyseItems)
-                var count=0
-                for (item in totalAnalyseItems){
-                    val childItems=item.childAnalyses
-                    for (i in 0 until childItems.size){
-                        topicStrs.add("${count+i+1}")
-                        barEntries.add(BarEntry((count+i).toFloat(), childItems[i].scoreRate.toFloat()))
-                    }
-                    count+=childItems.size
-                }
-            }
-
-            val barDataSet= BarDataSet(barEntries,"")
-            val barDataSets= mutableListOf<IBarDataSet>()
-            barDataSets.add(barDataSet)
-            val barData= BarData(barDataSets)
-
-            val xAxis=barChart.xAxis
-            xAxis.valueFormatter= IndexAxisValueFormatter(topicStrs)
-            xAxis.labelCount=topicStrs.size
-
-            barChart.data=barData
-            barChart.invalidate()
+            setChartView()
         }
     }
 
@@ -241,7 +186,10 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             showView(rv_list)
         }
 
-        tv_score_label.text = if (scoreMode == 1) "赋分统计数据" else "对错统计数据"
+        if (answerImages.size > 0){
+            showView(tv_answer)
+            setAnswerView()
+        }
 
         tv_class.text=classList[classPos].className
         tv_class.setOnClickListener {
@@ -252,10 +200,6 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
                     fetchClassUser()
                 }
             }
-        }
-
-        tv_answer.setOnClickListener {
-            ImageDialog(this, 2, answerImages).builder()
         }
 
         tv_custom.setOnClickListener {
@@ -278,18 +222,18 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             customStartActivity(intent)
         }
 
-        tv_score_pop.setOnClickListener {
-            PopupRadioList(this, pops, tv_score_pop, 170, 5).builder().setOnSelectListener {
+        tv_pop_score.setOnClickListener {
+            PopupRadioList(this, pops, tv_pop_score, 170, 5).builder().setOnSelectListener {
                 if (scoreMode == 1) {
                     if (it.id == 0) {
-                        tv_score_pop.text = "60"
-                        tv_score_info.text = "以下"
+                        tv_pop_score.text = "60"
+                        tv_info_score.text = "分以下"
                     } else {
-                        tv_score_pop.text = "${it.id}"
-                        tv_score_info.text = "以上"
+                        tv_pop_score.text = "${it.id}"
+                        tv_info_score.text = "分以上"
                     }
                 }
-                tv_num.text = getScoreNum().toString()
+                tv_num_score.text = getScoreNum().toString()
             }
         }
 
@@ -302,7 +246,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         }
 
         initChartView()
-        initRecyclerView()
+        initRecyclerAnalyse()
 
         onChangeExpandView()
 
@@ -312,65 +256,6 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         }
     }
 
-    private fun initChartView() {
-        barChart.description.isEnabled=false
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-        barChart.setScaleEnabled(false)
-        barChart.setFitBars(true)
-        barChart.setTouchEnabled(false)
-        barChart.setPinchZoom(false)
-
-        //x轴设置
-        val xAxis=barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false)
-        xAxis.axisLineColor= Color.parseColor("#000000")
-        xAxis.textColor= Color.parseColor("#000000")
-        xAxis.textSize=14f
-        // Y轴左边
-        val  leftAxis = barChart.axisLeft
-        leftAxis.setAxisMinValue(0f) // 设置最小值
-        leftAxis.setDrawGridLines(false)
-        leftAxis.axisLineColor= Color.parseColor("#000000")
-        //y轴右边设置
-        val rightAxis = barChart.axisRight
-        rightAxis.setAxisMinValue(0f) // 设置最小值
-        rightAxis.setDrawGridLines(false) // 不绘制网格线
-        rightAxis.isEnabled=false
-    }
-
-    private fun initRecyclerView(){
-        if (correctModule < 3) {
-            rv_list.layoutManager = GridLayoutManager(this, 2)//创建布局管理
-            mAnalyseAdapter = ExamAnalyseAdapter(R.layout.item_exam_analyse_score, correctModule, null).apply {
-                rv_list.adapter = this
-                bindToRecyclerView(rv_list)
-                setOnItemChildClickListener { adapter, view, position ->
-                    if (view.id == R.id.tv_wrong_num) {
-                        val students = totalAnalyseItems[position].wrongStudents
-                        if (students.size>0)
-                            AnalyseUserDetailsDialog(this@ExamAnalyseActivity, students).builder()
-                    }
-                }
-            }
-            rv_list.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(this, 15f)))
-        } else {
-            rv_list.layoutManager = LinearLayoutManager(this)
-            mAnalyseMultiAdapter = ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score, null).apply {
-                rv_list.adapter = this
-                bindToRecyclerView(rv_list)
-                setCustomItemChildClickListener { position, view, childPosition ->
-                    if (view.id == R.id.tv_wrong_num) {
-                        val students = totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
-                        if (students.size>0)
-                            AnalyseUserDetailsDialog(this@ExamAnalyseActivity, students).builder()
-                    }
-                }
-            }
-            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this, 15f)))
-        }
-    }
 
     override fun onChangeExpandContent() {
         changeErasure()

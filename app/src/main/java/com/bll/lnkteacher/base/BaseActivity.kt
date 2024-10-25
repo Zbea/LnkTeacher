@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -27,6 +28,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
+import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
@@ -34,12 +36,15 @@ import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
 import com.bll.lnkteacher.ui.adapter.ClassAdapter
+import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
+import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
@@ -47,11 +52,20 @@ import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_list_tab.*
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.barChart
+import kotlinx.android.synthetic.main.ac_testpaper_analyse.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
 import kotlinx.android.synthetic.main.common_answer.*
@@ -86,6 +100,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     var mTopicScoreAdapter: TopicScoreAdapter?=null
     var mTopicMultiAdapter: TopicMultiScoreAdapter?=null
+
+    var mAnalyseAdapter: ExamAnalyseAdapter?=null
+    var mAnalyseMultiAdapter: ExamAnalyseMultiAdapter?=null
+    var totalAnalyseItems = mutableListOf<AnalyseItem>() //题目集合
+
     var currentScores=mutableListOf<ScoreItem>()//初始题目分数
     var correctModule=-1//批改摸排
     var scoreMode = 0//1打分
@@ -371,7 +390,9 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     }
 
-
+    /**
+     * 小题得分数据展示初始化
+     */
     fun initRecyclerViewScore(){
         iv_score_up.setOnClickListener {
             rv_list_score.scrollBy(0,-DP2PX.dip2px(this,100f))
@@ -510,12 +531,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         iv_close_answer.setOnClickListener {
             disMissView(rl_answer)
         }
-        iv_answer_up.setOnClickListener {
-            sv_answer.scrollBy(0,-DP2PX.dip2px(this,100f))
-        }
-        iv_answer_down.setOnClickListener {
-            sv_answer.scrollBy(0,DP2PX.dip2px(this,100f))
-        }
 
         btn_answer_down.setOnClickListener {
             if (answerPos< answerImages.size-1){
@@ -540,6 +555,129 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     private fun setAnswerPageView(){
         tv_answer_total?.text="${answerImages.size}"
         tv_answer_current?.text="${answerPos+1}"
+    }
+
+    /**
+     * 数据分析初始化
+     */
+    fun initRecyclerAnalyse() {
+        if (correctModule < 3) {
+            rv_list.layoutManager = GridLayoutManager(this, 2)//创建布局管理
+            mAnalyseAdapter = ExamAnalyseAdapter(R.layout.item_exam_analyse_score, correctModule, null).apply {
+                rv_list.adapter = this
+                bindToRecyclerView(rv_list)
+                setOnItemChildClickListener { adapter, view, position ->
+                    if (view.id == R.id.tv_wrong_num) {
+                        val students = totalAnalyseItems[position].wrongStudents
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@BaseActivity, students).builder()
+                    }
+                }
+            }
+            rv_list.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(this, 15f)))
+        } else {
+            rv_list.layoutManager = LinearLayoutManager(this)
+            mAnalyseMultiAdapter = ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score, null).apply {
+                rv_list.adapter = this
+                bindToRecyclerView(rv_list)
+                setCustomItemChildClickListener { position, view, childPosition ->
+                    if (view.id == R.id.tv_wrong_num) {
+                        val students = totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
+                        if (students.size>0)
+                            AnalyseUserDetailsDialog(this@BaseActivity, students).builder()
+                    }
+                }
+            }
+            rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this, 15f)))
+        }
+    }
+
+    /**
+     * 初始化柱状图
+     */
+    fun initChartView() {
+        barChart.description.isEnabled=false
+        barChart.setDrawBarShadow(false)
+        barChart.setDrawGridBackground(false)
+        barChart.setScaleEnabled(false)
+        barChart.setFitBars(true)
+        barChart.setTouchEnabled(false)
+        barChart.setPinchZoom(false)
+        barChart.setMaxVisibleValueCount(30)
+
+        //x轴设置
+        val xAxis=barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.axisLineColor= Color.parseColor("#000000")
+        xAxis.textColor= Color.parseColor("#000000")
+        xAxis.textSize=18f
+
+        // Y轴左边
+        val  leftAxis = barChart.axisLeft
+        leftAxis.setAxisMinValue(0f) // 设置最小值
+        leftAxis.setDrawGridLines(false)
+        leftAxis.axisLineColor= Color.parseColor("#000000")
+        leftAxis.textSize=14f
+        //右侧Y轴自定义值
+        leftAxis.valueFormatter = object : ValueFormatter() {
+            override fun getAxisLabel(value: Float, axis: AxisBase): String {
+                return  ToolUtils.getFormatNum(value*100,"#")+"%"
+            }
+        }
+
+        //y轴右边设置
+        val rightAxis = barChart.axisRight
+        rightAxis.setAxisMinValue(0f) // 设置最小值
+        rightAxis.setDrawGridLines(false) // 不绘制网格线
+        rightAxis.isEnabled=false
+    }
+
+    /**
+     * 设置柱状图
+     */
+    fun setChartView(){
+        if (correctModule > 0) {
+            val barEntries= mutableListOf<BarEntry>()
+            val topicStrs= mutableListOf<String>()
+            if (correctModule < 3) {
+                for (i in 0 until totalAnalyseItems.size){
+                    topicStrs.add("${i+1}")
+                    barEntries.add(BarEntry(i.toFloat(), totalAnalyseItems[i].scoreRate.toFloat()))
+                }
+            } else {
+                var count=0
+                for (item in totalAnalyseItems){
+                    val childItems=item.childAnalyses
+                    for (i in 0 until childItems.size){
+                        topicStrs.add("${count+i+1}")
+                        barEntries.add(BarEntry((count+i).toFloat(), childItems[i].scoreRate.toFloat()))
+                    }
+                    count+=childItems.size
+                }
+            }
+
+            if (barEntries.size<30){
+                for (i in barEntries.size until 30){
+                    topicStrs.add("")
+                    barEntries.add(BarEntry(i.toFloat(), 0f))
+                }
+            }
+
+            val barDataSet= BarDataSet(barEntries,"")
+            barDataSet.barBorderWidth=0.5f
+            barDataSet.barBorderColor=Color.BLACK
+            val barData= BarData(barDataSet)
+
+            val xAxis=barChart.xAxis
+            xAxis.valueFormatter= IndexAxisValueFormatter(topicStrs)
+            xAxis.labelCount=topicStrs.size
+
+            barChart.data=barData
+            barChart.setFitBars(false)
+            barChart.invalidate()
+        }
+
     }
 
     /**
@@ -575,18 +713,22 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 items.add(ScoreItem().apply {
                     sort=i
                     if (scoreMode==1){
+                        //统计小题标准分
                         var totalLabel=0
                         for (item in scores[i]){
                             totalLabel+=item.label
                         }
                         label=totalLabel
+                        //统计小题得分
                         var totalItem=0
                         for (item in scores[i]){
                             totalItem+= MethodManager.getScore(item.score)
                         }
                         score=totalItem.toString()
+                        result=if (totalLabel==totalItem) 1 else 0
                     }
                     else{
+                        //统计小题对数
                         var totalRight=0
                         for (item in scores[i]){
                             item.score=item.result.toString()
@@ -594,13 +736,18 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                 totalRight+= 1
                             }
                         }
+                        label=scores.size
                         score=totalRight.toString()
+                        result=if (scores.size==totalRight) 1 else 0
                     }
+                    //小题重新排序
                     for (item in scores[i]){
+                        //重置
                         if (correctModule==3){
                             item.sort=scores[i].indexOf(item)
                         }
                         else{
+                            //小题累加
                             item.sort=totalChildSort+scores[i].indexOf(item)
                         }
                     }

@@ -26,7 +26,7 @@ import java.io.File
 class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
 
     private var index=0
-    private var presenter= AppCenterPresenter(this,getScreenPosition())
+    private lateinit var presenter:AppCenterPresenter
     private var mAdapter: AppCenterListAdapter?=null
     private var apps= mutableListOf<AppList.ListBean>()
     private var currentDownLoadTask: BaseDownloadTask?=null
@@ -69,6 +69,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
     override fun initView() {
         index= arguments?.getInt("index")!!
         pageSize=8
+        initChangeScreenData()
         initRecyclerView()
     }
 

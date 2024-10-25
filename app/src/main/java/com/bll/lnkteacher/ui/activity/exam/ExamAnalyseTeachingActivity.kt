@@ -50,7 +50,6 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
     private var classList= mutableListOf<ExamClassBean>()
     private var users= mutableListOf<UserBean>()
     private var scoreItems= mutableListOf<ScoreItem>()
-    private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
     private var mAdapter:ExamAnalyseTeachingAdapter?=null
     private var startScore=0
     private var endScore=100

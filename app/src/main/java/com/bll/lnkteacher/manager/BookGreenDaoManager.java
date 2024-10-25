@@ -1,10 +1,11 @@
 package com.bll.lnkteacher.manager;
 
 
+import com.bll.lnkteacher.Constants;
 import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.BookDao;
 import com.bll.lnkteacher.greendao.DaoSession;
-import com.bll.lnkteacher.mvp.model.Book;
+import com.bll.lnkteacher.mvp.model.book.Book;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.utils.SPUtil;
 
@@ -68,6 +69,18 @@ public class BookGreenDaoManager {
     }
 
     /**
+     * 获取半年以前的书籍
+     * category 0课本 1书籍
+     * @return
+     */
+    public List<Book> queryAllByHalfYear(int category){
+        long time=System.currentTimeMillis()- Constants.halfYear;
+        WhereCondition whereCondition= BookDao.Properties.Category.eq(category);
+        WhereCondition whereCondition1= BookDao.Properties.Time.le(time);
+        return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
+    }
+
+    /**
      * 查找书籍
      * @param bookID
      * @return
@@ -113,29 +126,21 @@ public class BookGreenDaoManager {
     }
 
     //查找课本 细分子类
-    public List<Book> queryAllTextBook() {
+    public List<Book> queryAllTextBook(int typeId) {
         WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
-        return bookDao.queryBuilder().where(whereUser,whereCondition1)
-                .orderDesc(BookDao.Properties.Time).build().list();
-    }
-
-    //查找课本 细分子类
-    public List<Book> queryAllTextBook(String textType) {
-        WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(textType);
+        WhereCondition whereCondition2=BookDao.Properties.TypeId.eq(typeId);
         return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookDao.Properties.Time).build().list();
     }
 
-    public List<Book> queryAllTextBook(String textType, int page, int pageSize) {
+    public List<Book> queryAllTextBook(int typeId, int page, int pageSize) {
         WhereCondition whereCondition1=BookDao.Properties.Category.eq(0);
-        WhereCondition whereCondition2=BookDao.Properties.SubtypeStr.eq(textType);
+        WhereCondition whereCondition2=BookDao.Properties.TypeId.eq(typeId);
         return bookDao.queryBuilder().where(whereUser,whereCondition1,whereCondition2)
                 .orderDesc(BookDao.Properties.Time)
                 .offset((page-1)*pageSize).limit(pageSize)
                 .build().list();
     }
-
 
     //删除书籍数据d对象
     public void deleteBook(Book book){

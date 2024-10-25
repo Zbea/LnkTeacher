@@ -149,7 +149,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
 
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn)
-        setPageSetting("全部批改")
+        setPageSetting("全部保存")
 
         if (answerImages.size>0){
             showView(tv_answer)
@@ -163,7 +163,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
         } else {
             disMissView(ll_record)
             showView(ll_draw_content)
-            tv_score_label.text=if (scoreMode==1) "赋分批改框" else "对错批改框"
+            tv_score_label.text=if (scoreMode==1) "自动着分批改框" else "对错批改框"
         }
 
         tv_custom_1.setOnClickListener {
@@ -303,8 +303,10 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
                 onChangeContent()
             }
             3->{
-                currentImages=ToolUtils.getImages(correctList?.examUrl)
+                currentImages= mutableListOf()
                 disMissView(ll_score)
+                tv_page.text=""
+                tv_page_total.text=""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 setPWEnabled(false)

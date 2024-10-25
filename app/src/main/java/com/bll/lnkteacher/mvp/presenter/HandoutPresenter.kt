@@ -2,7 +2,11 @@ package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.HandoutList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 /**
  * 应用相关
@@ -20,7 +24,7 @@ class HandoutPresenter(view: IContractView.IHandoutView, val screen:Int) : BaseP
                 if (tBaseResult.data!=null)
                     view.onType(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
 

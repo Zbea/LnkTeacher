@@ -88,6 +88,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         userItems=bean.taskList
+
         if (userItems.size>0){
             userItems[posUser].isCheck=true
             setContentView()
@@ -140,7 +141,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
-        setPageSetting("全部批改")
+        setPageSetting("全部保存")
 
         if (answerImages.size>0){
             showView(tv_answer)
@@ -251,8 +252,10 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 onChangeContent()
             }
             3->{
-                currentImages=ToolUtils.getImages(correctList?.examUrl)
+                currentImages= mutableListOf()
                 disMissView(ll_score)
+                tv_page.text=""
+                tv_page_total.text=""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 setPWEnabled(false)

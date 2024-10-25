@@ -5,14 +5,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookAdapter
@@ -26,7 +25,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     private val mPresenter = TextbookPresenter(this,1)
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()
-    private var textBook = ""//用来区分课本类型
+    private var typeId = 0//用来区分课本类型
     private var position = 0
 
     override fun onAddHomeworkBook() {
@@ -39,10 +38,10 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     /**
      * 实例 传送数据
      */
-    fun newInstance(index:String): TextbookFragment {
+    fun newInstance(typeId:Int): TextbookFragment {
         val fragment= TextbookFragment()
         val bundle= Bundle()
-        bundle.putString("textbook",index)
+        bundle.putInt("textbook",typeId)
         fragment.arguments=bundle
         return fragment
     }
@@ -52,7 +51,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun initView() {
-        textBook= arguments?.getString("textbook")!!
+        typeId= arguments?.getInt("textbook")!!
         pageSize = 9
         initRecyclerView()
     }
@@ -63,7 +62,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),30f), DP2PX.dip2px(requireActivity(),20f),0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f), DP2PX.dip2px(requireActivity(),20f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -74,7 +73,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
-            if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
+            if (typeId==6) {
                 MethodManager.gotoTextBookDetails(requireActivity(),book)
             } else {
                 MethodManager.gotoBookDetails(requireActivity(),2, book)
@@ -86,7 +85,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                 onLongClick(books[position])
                 true
             }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  38))
     }
 
 
@@ -94,7 +93,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     private fun onLongClick(book: Book) {
         //题卷本可以设置为作业
         val beans = mutableListOf<ItemList>()
-        if (textBook==DataBeanManager.textbookType[2]||textBook==DataBeanManager.textbookType[3]) {
+        if (typeId==6) {
             beans.add(ItemList().apply {
                 name = "删除"
                 resId = R.mipmap.icon_setting_delete
@@ -137,8 +136,8 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun fetchData() {
-        books = BookGreenDaoManager.getInstance().queryAllTextBook(textBook, pageIndex, pageSize)
-        val total = BookGreenDaoManager.getInstance().queryAllTextBook(textBook)
+        books = BookGreenDaoManager.getInstance().queryAllTextBook(typeId, pageIndex, pageSize)
+        val total = BookGreenDaoManager.getInstance().queryAllTextBook(typeId)
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }

@@ -12,6 +12,10 @@ import org.greenrobot.eventbus.EventBus
 class MyBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        //未登录不执行
+        if (!MethodManager.isLogin()){
+            return
+        }
         when(intent.action){
             "android.intent.action.PACKAGE_ADDED"->{
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)

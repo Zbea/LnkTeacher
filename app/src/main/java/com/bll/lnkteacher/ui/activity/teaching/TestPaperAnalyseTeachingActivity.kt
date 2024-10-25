@@ -11,7 +11,6 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
-import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
@@ -37,7 +36,6 @@ import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_refresh_c
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_right_score
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.tv_topic_child
-import kotlinx.android.synthetic.main.common_title.tv_class
 import org.greenrobot.eventbus.EventBus
 
 class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnalyseTeachingView {
@@ -50,7 +48,6 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     private var classList= mutableListOf<TestPaperClassBean>()
     private var users= mutableListOf<UserBean>()
     private var scoreItems= mutableListOf<ScoreItem>()
-    private var totalAnalyseItems= mutableListOf<AnalyseItem>() //题目集合
     private var mAdapter:ExamAnalyseTeachingAdapter?=null
     private var startScore=0
     private var endScore=100
@@ -196,23 +193,9 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
 
     override fun initView() {
         setPageTitle("因材施教")
-        showView(tv_class)
 
         if (correctModule<3){
             disMissView(ll_topic_child)
-        }
-
-        tv_class.text=classList[classPos].name
-        tv_class.setOnClickListener {
-            PopupRadioList(this,popClasss,tv_class,5).builder().setOnSelectListener{
-                if (classPos != it.id) {
-                    classPos = it.id
-                    classId=classList[classPos].classId
-                    classGroupId= classList[classPos].classGroupId
-                    tv_class.text=classList[classPos].name
-                    fetchClassUser()
-                }
-            }
         }
 
         tv_refresh_child.setOnClickListener {

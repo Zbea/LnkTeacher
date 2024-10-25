@@ -9,7 +9,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseCloudFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.mvp.model.CloudList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.BookAdapter

@@ -17,13 +17,16 @@ object DataBeanManager {
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
-    val textbookType = arrayOf(
+    val textbookStoreType = arrayOf(
         mContext.getString(R.string.textbook_tab_text),
         mContext.getString(R.string.textbook_tab_course),
         mContext.getString(R.string.textbook_tab_homework),
         mContext.getString(R.string.textbook_tab_homework_other),
         mContext.getString(R.string.textbook_tab_teaching),
-        "我的讲义"
+    )
+
+    val textbookType = arrayOf(
+        "我的教材","教辅教学","教学教育","教学期刊","我的讲义"
     )
 
     var teachingStrs = arrayOf(
@@ -73,8 +76,7 @@ object DataBeanManager {
     fun getClassGroupPopsOtherClassId(classId:Int): MutableList<PopupBean>
        {
             val popClasss = mutableListOf<PopupBean>()
-            for (i in classGroups.indices) {
-                val item = classGroups[i]
+            for (item in classGroups) {
                 if (item.state==1&&item.classId!=classId)
                     popClasss.add(PopupBean(item.classId, item.name, false))
             }
@@ -154,6 +156,28 @@ object DataBeanManager {
             }
             return list
         }
+
+
+    fun getTextbookFragment(): MutableList<ItemList> {
+        val list = mutableListOf<ItemList>()
+        list.add(ItemList().apply {
+            type=0
+            desc= textbookType[0]
+        })
+        list.add(ItemList().apply {
+            type=6
+            desc= textbookType[1]
+        })
+        list.add(ItemList().apply {
+            type=7
+            desc= textbookType[2]
+        })
+        list.add(ItemList().apply {
+            type=8
+            desc= textbookType[3]
+        })
+        return list
+    }
 
     /**
      * 获取index栏目

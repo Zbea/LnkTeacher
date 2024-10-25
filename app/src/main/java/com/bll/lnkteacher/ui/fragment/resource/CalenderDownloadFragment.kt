@@ -33,7 +33,7 @@ import java.text.DecimalFormat
 
 class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
 
-    private var presenter=CalenderPresenter(this,getScreenPosition())
+    private lateinit var presenter:CalenderPresenter
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null
     private var detailsDialog:DownloadCalenderDialog?=null
@@ -58,6 +58,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     }
 
     override fun initView() {
+        initChangeScreenData()
         pageSize=12
         initRecycleView()
     }

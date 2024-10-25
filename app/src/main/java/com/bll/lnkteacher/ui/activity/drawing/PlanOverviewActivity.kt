@@ -44,7 +44,7 @@ class PlanOverviewActivity: BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand)
-        setPageTitle("月周计划")
+        setPageTitle("规划")
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){
@@ -112,12 +112,12 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun onPageUp() {
         if (posImage>0)
             posImage-=1
-        setContentImage()
+        onChangeContent()
     }
 
     override fun onPageDown() {
         posImage+=1
-        setContentImage()
+        onChangeContent()
     }
 
     /**
@@ -147,13 +147,10 @@ class PlanOverviewActivity: BaseDrawingActivity() {
         }
         posImage=0
         getPathsSize()
-        setContentImage()
+        onChangeContent()
     }
 
-    /**
-     * 更换内容
-     */
-    private fun setContentImage() {
+    override fun onChangeContent() {
         val path = if (type==1){
             FileAddress().getPathPlan(nowYear,nowMonth)+ "/${posImage + 1}.png"
         }

@@ -25,20 +25,20 @@ import android.os.Environment
 class Constants {
 
     companion object {
-
+        const val DEBUG = "debug"
         const val WIDTH = 1404
         const val HEIGHT = 1872 //38->52 50->69
-        const val halfYear = 180 * 24 * 60 * 60 * 1000
-        const val dayLong = 24 * 60 * 60 * 1000
-        const val weekTime = 7 * 24 * 60 * 60 * 1000
+        const val halfYear = 180 * 24 * 60 * 60 * 1000L
+        const val dayLong = 24 * 60 * 60 * 1000L
+        const val weekTime = 7 * 24 * 60 * 60 * 1000L
         const val SCREEN_LEFT = 1//左屏
         const val SCREEN_RIGHT = 2//右屏
         const val SCREEN_FULL = 3//全屏
         const val STATUS_BAR_SHOW = 2147483647//永不消失
 
-//                                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+        //                                                const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
-        const val  RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
+        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -105,7 +105,8 @@ class Constants {
         const val KEY = "Key"
         const val VERSION_NO = "VersionNO"
 
-        const val SP_DIARY_BG_SET ="dirayBgRes"//日记
+        const val SP_DIARY_BG_SET = "dirayBgRes"//日记
+        const val SP_HANDOUT_TYPES = "handoutTypes"//讲义分类
     }
 
 }

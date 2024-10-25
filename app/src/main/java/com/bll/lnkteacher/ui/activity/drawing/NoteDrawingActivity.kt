@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 class NoteDrawingActivity : BaseDrawingActivity() {
 
@@ -40,7 +41,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr, note?.title)
 
-        if (noteContents.size > 0) {
+        if (!noteContents.isNullOrEmpty()) {
             note_Content_b = noteContents[noteContents.size - 1]
             page = note?.page!!
         } else {
@@ -87,30 +88,35 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun onPageDown() {
         val total = noteContents.size - 1
-        if (isExpand) {
-            when (page) {
-                total -> {
-                    newNoteContent()
-                    newNoteContent()
-                    page = noteContents.size - 1
-                }
-                total - 1 -> {
-                    newNoteContent()
-                    page = noteContents.size - 1
-                }
-                else -> {
-                    page += 2
-                }
+        if(isExpand){
+            if (page<total-1){
+                page+=2
+                onChangeContent()
             }
-        } else {
-            if (page >= total) {
-                newNoteContent()
-                page = noteContents.size - 1
-            } else {
-                page += 1
+            else if (page==total-1){
+                if (isDrawLastContent()){
+                    newNoteContent()
+                    page=noteContents.size-1
+                    onChangeContent()
+                }
+                else{
+                    page=total
+                    onChangeContent()
+                }
             }
         }
-        onChangeContent()
+        else{
+            if (page ==total) {
+                if (isDrawLastContent()){
+                    newNoteContent()
+                    page=noteContents.size-1
+                    onChangeContent()
+                }
+            } else {
+                page += 1
+                onChangeContent()
+            }
+        }
     }
 
     override fun onPageUp() {
@@ -118,7 +124,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             if (page > 2) {
                 page -= 2
                 onChangeContent()
-            } else if (page == 2) {//当页面不够翻两页时
+            } else if (page == 2) {
                 page = 1
                 onChangeContent()
             }
@@ -132,22 +138,35 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun onChangeExpandContent() {
         changeErasure()
-        isExpand = !isExpand
-        if (noteContents.size == 1 && isExpand) {
-            newNoteContent()
+        if (noteContents.size==1){
+            //如果最后一张已写,则可以在全屏时创建新的
+            if (isDrawLastContent()){
+                newNoteContent()
+            }
+            else{
+                return
+            }
         }
+        if (page==0){
+            page=1
+        }
+        isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
         onChangeContent()
     }
 
+    /**
+     * 最后一个是否已写
+     */
+    private fun isDrawLastContent():Boolean{
+        val contentBean = noteContents.last()
+        return File(contentBean.filePath).exists()
+    }
+
     override fun onChangeContent() {
         note_Content_b = noteContents[page]
         if (isExpand) {
-            if (page<=0){
-                page=1
-                note_Content_b = noteContents[page]
-            }
             note_Content_a = noteContents[page-1]
         }
 
@@ -176,9 +195,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //创建新的作业内容
     private fun newNoteContent() {
-
         val date = System.currentTimeMillis()
-        val path = FileAddress().getPathNote(typeStr, note?.title, date)
+        val path = FileAddress().getPathNote(typeStr, note?.title)
         val pathName = DateUtils.longToString(date)
 
         note_Content_b = NoteContent()

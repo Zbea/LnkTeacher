@@ -45,6 +45,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     }
 
     override fun initView() {
+        initChangeScreenData()
         pageSize=12
         initRecyclerView()
     }

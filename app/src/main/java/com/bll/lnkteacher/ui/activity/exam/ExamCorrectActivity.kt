@@ -135,7 +135,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     }
 
     override fun initView() {
-        setPageTitle("考试批改  ${examBean?.examName}  ${examBean?.className}")
+        setPageTitle("考卷批改  ${examBean?.examName}  ${examBean?.className}")
         elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
@@ -241,8 +241,10 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 onChangeContent()
             }
             3->{
+                currentImages= mutableListOf()
                 disMissView(ll_score)
-                tv_total_score.text = ""
+                tv_page.text=""
+                tv_page_total.text=""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 setPWEnabled(false)

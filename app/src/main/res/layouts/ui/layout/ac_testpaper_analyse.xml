@@ -27,11 +27,148 @@
             <include layout="@layout/common_title" />
 
             <RelativeLayout
+                android:id="@+id/ll_topic_statistics"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginTop="@dimen/dp_40"
-                android:layout_marginBottom="@dimen/dp_30"
+                android:layout_marginEnd="@dimen/dp_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:background="@drawable/bg_black_stroke_10dp_corner"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="@dimen/dp_40"
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="平均答对"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_26" />
+
+                    <TextView
+                        android:id="@+id/tv_average_topic"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:background="@drawable/bg_line_bottom"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_26" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_centerVertical="true"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_pop_topic"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:drawableEnd="@mipmap/icon_arrow_down"
+                        android:gravity="center"
+                        android:paddingEnd="@dimen/dp_5"
+                        android:background="@drawable/bg_black_stroke_5dp_corner"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_26" />
+
+                    <TextView
+                        android:id="@+id/tv_info_topic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:gravity="center"
+                        android:text="以上"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_26" />
+
+                    <TextView
+                        android:id="@+id/tv_num_topic"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:textStyle="bold"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:background="@drawable/bg_line_bottom"
+                        android:textSize="@dimen/sp_26" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="人"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_26" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="@dimen/dp_40"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="批改"
+                        android:textSize="@dimen/sp_26"
+                        android:textColor="@color/black"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_number_topic"
+                        android:layout_width="80dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:textSize="@dimen/sp_26"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:background="@drawable/bg_line_bottom"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="人"
+                        android:textSize="@dimen/sp_26"
+                        android:textColor="@color/black"
+                        />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ll_score_statistics"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -77,20 +214,20 @@
                     >
 
                     <TextView
-                        android:id="@+id/tv_score_pop"
+                        android:id="@+id/tv_pop_score"
                         android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical"
                         android:drawableEnd="@mipmap/icon_arrow_down"
                         android:gravity="center"
                         android:paddingEnd="@dimen/dp_5"
-                        android:background="@drawable/bg_gray_stroke_10dp_corner"
+                        android:background="@drawable/bg_black_stroke_5dp_corner"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="@dimen/sp_26" />
 
                     <TextView
-                        android:id="@+id/tv_score_info"
+                        android:id="@+id/tv_info_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_10"
@@ -100,7 +237,7 @@
                         android:textSize="@dimen/sp_26" />
 
                     <TextView
-                        android:id="@+id/tv_num"
+                        android:id="@+id/tv_num_score"
                         android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:textStyle="bold"
@@ -140,7 +277,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/tv_correct_number"
+                        android:id="@+id/tv_number_score"
                         android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/dp_10"
@@ -162,29 +299,39 @@
 
             </RelativeLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="题目得分率"
-                android:textColor="@color/black"
-                android:textSize="26sp"
-                android:textStyle="bold"/>
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:orientation="vertical"
+                >
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginTop="@dimen/dp_10"
-                />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_50"
+                    android:gravity="center"
+                    android:text="题目得分率"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
+                    android:textStyle="bold"/>
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="@dimen/dp_20"
+                    />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_topic"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_height="600dp"
+                android:layout_marginTop="50dp"
                 android:layout_marginStart="@dimen/dp_40"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:layout_marginBottom="@dimen/dp_40"
@@ -200,7 +347,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:gravity="center"
-                        android:text="统计数据"
+                        android:text="小题平均数统计"
                         android:textColor="@color/black"
                         android:textSize="26sp"
                         android:textStyle="bold"/>
@@ -245,7 +392,8 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
                         android:layout_marginTop="@dimen/dp_20"
                         android:layout_marginBottom="@dimen/dp_20"
                         android:layout_marginStart="@dimen/dp_60"
@@ -256,7 +404,6 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
 
     </LinearLayout>
@@ -264,6 +411,12 @@
     <include
         android:id="@+id/ll_draw_content"
         layout="@layout/common_correct_drawing"
+        />
+
+    <include
+        android:id="@+id/rl_answer"
+        android:visibility="gone"
+        layout="@layout/common_answer"
         />
 
 </RelativeLayout>

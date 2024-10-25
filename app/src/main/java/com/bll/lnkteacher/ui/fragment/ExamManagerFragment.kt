@@ -31,7 +31,7 @@ class ExamManagerFragment:BaseMainFragment() {
         examCorrectFragment = ExamCorrectFragment()
         examListFragment = ExamListFragment()
 
-        switchFragment(lastFragment, examListFragment)
+        switchFragment(lastFragment, examCorrectFragment)
 
         initTab()
     }
@@ -41,7 +41,7 @@ class ExamManagerFragment:BaseMainFragment() {
     }
 
     private fun initTab() {
-        val strs= arrayListOf("考试列表","考试批改")
+        val strs= arrayListOf("考卷批改","考卷收发")
         for (i in strs.indices){
             itemTabTypes.add(ItemTypeBean().apply {
                 title=strs[i]
@@ -55,11 +55,11 @@ class ExamManagerFragment:BaseMainFragment() {
         when (position) {
             0 -> {
                 showView(tv_grade)
-                switchFragment(lastFragment, examListFragment)
+                switchFragment(lastFragment, examCorrectFragment)
             }
             1 -> {
                 disMissView(tv_grade)
-                switchFragment(lastFragment, examCorrectFragment)
+                switchFragment(lastFragment, examListFragment)
             }
         }
         lastPosition = position

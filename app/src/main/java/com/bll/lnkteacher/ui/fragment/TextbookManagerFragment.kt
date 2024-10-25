@@ -3,12 +3,12 @@ package com.bll.lnkteacher.ui.fragment
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.Constants.Companion.SP_HANDOUT_TYPES
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.Book
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.HandoutList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
@@ -39,7 +39,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     override fun onType(list: MutableList<String>) {
         if (list.size>0){
             if (types!=list){
-                SPUtil.putListString("handoutTypes",list)
+                SPUtil.putListString(SP_HANDOUT_TYPES,list)
                 handoutsTypes.clear()
                 for (i in list.indices){
                     handoutsTypes.add(PopupBean(i,list[i],i==0))
@@ -50,7 +50,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
             }
         }
         else{
-            SPUtil.putListString("handoutTypes", mutableListOf())
+            SPUtil.putListString(SP_HANDOUT_TYPES, mutableListOf())
             disMissView(tv_grade)
         }
     }
@@ -67,16 +67,13 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     override fun initView() {
         super.initView()
         setTitle(DataBeanManager.getIndexLeftData()[2].name)
-        types=SPUtil.getListStrings("handoutTypes")
+        types=SPUtil.getListStrings(SP_HANDOUT_TYPES)
         for (i in types.indices){
             handoutsTypes.add(PopupBean(i,types[i],i==0))
         }
 
-        val list=DataBeanManager.textbookType.toMutableList()
-        list.removeLast()
-
-        for (textbook in list){
-            textFragments.add(TextbookFragment().newInstance(textbook))
+        for (item in DataBeanManager.getTextbookFragment()){
+            textFragments.add(TextbookFragment().newInstance(item.type))
         }
         handoutFragment = HandoutFragment()
         switchFragment(lastFragment, textFragments[0])
@@ -112,7 +109,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
 
     override fun onTabClickListener(view: View, position: Int) {
         when (position) {
-            5 -> {
+            4 -> {
                 if (handoutsTypes.size>0)
                     showView(tv_grade)
                 switchFragment(lastFragment, handoutFragment)
@@ -156,15 +153,8 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val maxBooks = mutableListOf<Book>()
-        val books = BookGreenDaoManager.getInstance().queryAllTextBook()
-        //遍历获取所有需要上传的书籍数目
-        for (item in books) {
-            if (System.currentTimeMillis() >= item.time + Constants.halfYear) {
-                maxBooks.add(item)
-            }
-        }
-        for (book in maxBooks) {
+        val books = BookGreenDaoManager.getInstance().queryAllByHalfYear(0)
+        for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
                 FileUploadManager(tokenStr).apply {
@@ -180,7 +170,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
                             bookId = book.bookId
                             bookTypeId = book.typeId
                         })
-                        if (cloudList.size == maxBooks.size)
+                        if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
                     }
                 }
@@ -194,7 +184,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
                     bookId = book.bookId
                     bookTypeId = book.typeId
                 })
-                if (cloudList.size == maxBooks.size)
+                if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
             }
         }

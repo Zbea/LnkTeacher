@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.Book
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.utils.GlideUtils
 
 
