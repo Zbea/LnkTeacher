@@ -63,6 +63,8 @@ class DownloadBookDialog(private val context: Context, private val book: Book) {
 
     fun setChangeStatus() {
         book.buyStatus=1
+        btn_ok?.isClickable = true
+        btn_ok?.isEnabled = true
         btn_ok?.text = "点击下载"
     }
 

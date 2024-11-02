@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_answer
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_play
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_save
-import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_score_label
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -163,7 +162,6 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
         } else {
             disMissView(ll_record)
             showView(ll_draw_content)
-            tv_score_label.text=if (scoreMode==1) "自动着分批改框" else "对错批改框"
         }
 
         tv_custom_1.setOnClickListener {

@@ -53,7 +53,7 @@ public class BookGreenDaoManager {
     }
     /**
      *  查找课本、作业、教学
-     * @param type 0课本 6作业 7教学
+     * @param type 0课本 6作业 7教学 8期刊
      * @param bookID
      * @return
      */
@@ -76,7 +76,7 @@ public class BookGreenDaoManager {
     public List<Book> queryAllByHalfYear(int category){
         long time=System.currentTimeMillis()- Constants.halfYear;
         WhereCondition whereCondition= BookDao.Properties.Category.eq(category);
-        WhereCondition whereCondition1= BookDao.Properties.Time.le(time);
+        WhereCondition whereCondition1= BookDao.Properties.Time.ge(time);
         return bookDao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 

@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_book_type
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
-import java.io.File
 
 /**
  * 书架
@@ -152,12 +151,8 @@ class BookCaseFragment : BaseMainFragment() {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookGreenDaoManager.getInstance().queryBookByBookID(item.bookId)
-            //删除书籍
-            FileUtils.deleteFile(File(bookBean.bookPath))
-            FileUtils.deleteFile(File(bookBean.bookDrawPath))
-            BookGreenDaoManager.getInstance().deleteBook(bookBean)
+            MethodManager.deleteBook(bookBean,1)
         }
-        findBook()
     }
 
     override fun onEventBusMessage(msgFlag: String) {

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
     android:gravity="center_horizontal"
-    android:padding="@dimen/dp_40"
+    android:padding="@dimen/dp_30"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,6 +21,7 @@
             android:layout_weight="1"
             android:maxLines="1"
             android:layout_marginEnd="20dp"
+            android:layout_marginStart="@dimen/dp_10"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -42,6 +43,9 @@
         android:layout_height="wrap_content"
         android:minHeight="70dp"
         android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
         />
 
 </LinearLayout>

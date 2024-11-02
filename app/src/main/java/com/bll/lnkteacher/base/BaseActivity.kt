@@ -181,10 +181,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             initTabView()
         }
 
-        if (rv_class!=null){
-            initRecyclerViewClass()
-        }
-
         initCreate()
         initDialog()
         initData()
@@ -366,29 +362,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
 
     }
 
-    private fun initRecyclerViewClass(){
-        rv_class.layoutManager = FlowLayoutManager()
-        mClassAdapter = ClassAdapter(R.layout.item_class, null)
-        rv_class.adapter = mClassAdapter
-        mClassAdapter?.bindToRecyclerView(rv_class)
-        mClassAdapter?.setOnItemClickListener { adapter, view, position ->
-            for (item in mExamClassGroups){
-                item.isCheck=false
-            }
-            val item=mExamClassGroups[position]
-            item.isCheck=true
-            mClassAdapter?.notifyDataSetChanged()
-
-            onClassClickListener(view,position)
-        }
-    }
-
-    /**
-     * clas点击监听
-     */
-    open fun onClassClickListener(view:View, position:Int){
-
-    }
 
     /**
      * 小题得分数据展示初始化
@@ -531,6 +504,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         iv_close_answer.setOnClickListener {
             disMissView(rl_answer)
         }
+        iv_answer_up.setOnClickListener {
+            sv_answer.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+        iv_answer_down.setOnClickListener {
+            sv_answer.scrollBy(0,DP2PX.dip2px(this,100f))
+        }
 
         btn_answer_down.setOnClickListener {
             if (answerPos< answerImages.size-1){
@@ -567,10 +546,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 setOnItemChildClickListener { adapter, view, position ->
+                    val item=totalAnalyseItems[position]
                     if (view.id == R.id.tv_wrong_num) {
-                        val students = totalAnalyseItems[position].wrongStudents
+                        val students = item.wrongStudents
+                        val titleStr="第${if (correctModule==1) ToolUtils.numbers[item.sort+1] else item.sort+1}题 错误学生"
                         if (students.size>0)
-                            AnalyseUserDetailsDialog(this@BaseActivity, students).builder()
+                            AnalyseUserDetailsDialog(this@BaseActivity, titleStr,students).builder()
                     }
                 }
             }
@@ -581,10 +562,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
                 setCustomItemChildClickListener { position, view, childPosition ->
+                    val item=totalAnalyseItems[position]
                     if (view.id == R.id.tv_wrong_num) {
-                        val students = totalAnalyseItems[position].childAnalyses[childPosition].wrongStudents
+                        val students = item.childAnalyses[childPosition].wrongStudents
+                        val titleStr="第${ToolUtils.numbers[item.sort+1]}大题 第${item.childAnalyses[childPosition].sort+1}小题 错误学生"
                         if (students.size>0)
-                            AnalyseUserDetailsDialog(this@BaseActivity, students).builder()
+                            AnalyseUserDetailsDialog(this@BaseActivity,titleStr, students).builder()
                     }
                 }
             }

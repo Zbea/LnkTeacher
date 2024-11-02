@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_50"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -168,7 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="@dimen/dp_40"
+                android:layout_marginTop="@dimen/dp_50"
                 android:layout_marginEnd="@dimen/dp_40"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -305,13 +305,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"
+                android:layout_marginTop="@dimen/dp_50"
                 android:orientation="vertical"
                 >
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_50"
+
                     android:gravity="center"
                     android:text="题目得分率"
                     android:textColor="@color/black"
@@ -415,6 +416,10 @@
 
     <include
         android:id="@+id/rl_answer"
+        android:layout_width="@dimen/width"
+        android:layout_height="680dp"
+        android:layout_marginTop="@dimen/statusbar_height"
+        android:layout_alignParentEnd="true"
         android:visibility="gone"
         layout="@layout/common_answer"
         />

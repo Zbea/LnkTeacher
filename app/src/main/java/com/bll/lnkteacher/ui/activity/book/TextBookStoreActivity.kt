@@ -284,10 +284,10 @@ class TextBookStoreActivity : BaseActivity(),
                 map["bookId"] = book.bookId
                 when(tabId){
                     0,1->{
-                        map["type"] = 1
+                        map["type"] = 2
                     }
                     2,3->{
-                        map["type"] = 2
+                        map["type"] = 1
                     }
                     4->{
                         map["type"] = 6

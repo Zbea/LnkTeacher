@@ -27,7 +27,6 @@ import kotlinx.android.synthetic.main.ac_teaching_plan.iv_copy_save
 import kotlinx.android.synthetic.main.ac_teaching_plan.iv_delete_save
 import kotlinx.android.synthetic.main.ac_teaching_plan.iv_move_save
 import kotlinx.android.synthetic.main.ac_teaching_plan.iv_save
-import kotlinx.android.synthetic.main.ac_teaching_plan.ll_copy
 import kotlinx.android.synthetic.main.ac_teaching_plan.rg_group
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_content_date
 import kotlinx.android.synthetic.main.ac_teaching_plan.tv_copy_class
@@ -225,14 +224,14 @@ class TeachingPlanActivity:BaseActivity() {
         }
 
         tv_move_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,505f).builder().setOnDateListener{
+            CalendarSingleDialog(this,460f,840f).builder().setOnDateListener{
                 moveStartTime=it
                 tv_move_start_time.text=DateUtils.longToStringDataNoYear(moveStartTime)
             }
         }
 
         tv_move_end_time.setOnClickListener {
-            CalendarSingleDialog(this,330f,505f).builder().setOnDateListener{
+            CalendarSingleDialog(this,300f,840f).builder().setOnDateListener{
                 moveEndTime=it
                 tv_move_end_time.text=DateUtils.longToStringDataNoYear(moveEndTime)
             }
@@ -245,19 +244,16 @@ class TeachingPlanActivity:BaseActivity() {
             selectClassId=popClasss[0].id
             tv_copy_class.text=popClasss[0].name
         }
-        else{
-            disMissView(ll_copy)
-        }
 
         tv_copy_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,770f).builder().setOnDateListener{
+            CalendarSingleDialog(this,490f,505f).builder().setOnDateListener{
                 copyStartTime=it
                 tv_copy_start_time.text=DateUtils.longToStringDataNoYear(copyStartTime)
             }
         }
 
         tv_copy_end_time.setOnClickListener {
-            CalendarSingleDialog(this,330f,770f).builder().setOnDateListener{
+            CalendarSingleDialog(this,330f,505f).builder().setOnDateListener{
                 copyEndTime=it
                 tv_copy_end_time.text=DateUtils.longToStringDataNoYear(copyEndTime)
             }
@@ -266,7 +262,7 @@ class TeachingPlanActivity:BaseActivity() {
         tv_copy_class.setOnClickListener {
             if (popWindow==null)
             {
-                popWindow= PopupRadioList(this, popClasss, tv_copy_class,  15).builder()
+                popWindow= PopupRadioList(this, popClasss, tv_copy_class,  5).builder()
                 popWindow  ?.setOnSelectListener { item ->
                     tv_copy_class.text = item.name
                     selectClassId=item.id
@@ -317,14 +313,14 @@ class TeachingPlanActivity:BaseActivity() {
 
     private fun setDeleteView(){
         tv_delete_start_time.setOnClickListener {
-            CalendarSingleDialog(this,490f,965f).builder().setOnDateListener{
+            CalendarSingleDialog(this,460f,965f).builder().setOnDateListener{
                 deleteStartTime=it
                 tv_delete_start_time.text=DateUtils.longToStringDataNoYear(deleteStartTime)
             }
         }
 
         tv_delete_end_time.setOnClickListener {
-            CalendarSingleDialog(this,330f,965f).builder().setOnDateListener{
+            CalendarSingleDialog(this,300f,965f).builder().setOnDateListener{
                 deleteEndTime=it
                 tv_delete_end_time.text=DateUtils.longToStringDataNoYear(deleteEndTime)
             }
@@ -419,7 +415,7 @@ class TeachingPlanActivity:BaseActivity() {
      * 检查时间设置是否正常
      */
     private fun checkSetTimeCorrect(startTime:Long,endTime:Long):Boolean{
-        if (startTime==0L||endTime==0L||startTime>endTime){
+        if (startTime==0L||endTime==0L){
             showToast("请设置正确时间")
             return false
         }

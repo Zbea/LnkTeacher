@@ -305,7 +305,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
                     else{
-                        elik_b?.setPWEnabled(false,false)
+                        elik_b?.setPWEnabled(false)
                         v_content_b?.setImageResource(0)
                     }
                 }
@@ -327,14 +327,14 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         else{
             when(correctStatus){
                 1->{
-                    elik_b?.setPWEnabled(true,true)
+                    elik_b?.setPWEnabled(true)
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
                     GlideUtils.setImageFile(this,File(masterImage),v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
                 }
                 2->{
-                    elik_b?.setPWEnabled(false,false)
+                    elik_b?.setPWEnabled(false)
                     GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
                 }
             }

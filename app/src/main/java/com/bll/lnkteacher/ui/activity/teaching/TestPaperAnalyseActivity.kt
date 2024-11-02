@@ -199,9 +199,9 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         setPageTitle(R.string.teaching_testpaper_analyse)
         disMissView(iv_tool, iv_catalog, iv_btn)
         showView(tv_class)
-        setPageSetting("成绩统计")
         if (flag==0){
             setPageCustom("因材施教")
+            setPageSetting("成绩统计")
         }
         if (scoreMode!=1){
             showView(ll_topic_statistics)

@@ -2,9 +2,9 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.SP_HANDOUT_TYPES
 import com.bll.lnkteacher.DataBeanManager
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -22,8 +22,6 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
-import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     private val presenter=HandoutPresenter(this,1)
@@ -195,12 +193,8 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookGreenDaoManager.getInstance().queryTextBookByBookID(item.bookTypeId, item.bookId)
-            //删除书籍
-            FileUtils.deleteFile(File(bookBean.bookPath))
-            FileUtils.deleteFile(File(bookBean.bookDrawPath))
-            BookGreenDaoManager.getInstance().deleteBook(bookBean)
+            MethodManager.deleteBook(bookBean,0)
         }
-        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
     }
 
 }

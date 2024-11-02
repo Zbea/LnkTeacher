@@ -65,8 +65,7 @@ public class DateEventDaoManager {
      */
     public List<DateEvent> queryBeans(int classId) {
         WhereCondition whereCondition=DateEventDao.Properties.ClassId.eq(classId);
-        List<DateEvent> lists = dao.queryBuilder().where(whereUser,whereCondition).build().list();
-        return lists;
+        return dao.queryBuilder().where(whereUser,whereCondition).build().list();
     }
     /**
      * @return
@@ -74,8 +73,7 @@ public class DateEventDaoManager {
     public List<DateEvent> queryBeans(int classId,long start,long end) {
         WhereCondition whereCondition=DateEventDao.Properties.ClassId.eq(classId);
         WhereCondition whereCondition1=DateEventDao.Properties.Date.between(start,end);
-        List<DateEvent> lists = dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
-        return lists;
+        return dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().list();
     }
 
     public void deleteBean(DateEvent bean){

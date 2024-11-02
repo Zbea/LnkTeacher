@@ -64,7 +64,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="子群创建"
+        android:text="层群创建"
         android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
         />

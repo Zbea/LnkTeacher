@@ -24,7 +24,7 @@ class ClassGroupChildCreateDialog(val context: Context, val titleStr:String,val 
         et_name.setText(titleStr)
         et_name.setSelection(titleStr.length)
         if (type==1){
-            tv_title.text="修改子群"
+            tv_title.text="修改层群"
         }
 
         btn_cancel.setOnClickListener {

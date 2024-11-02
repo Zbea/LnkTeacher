@@ -24,9 +24,7 @@ class ExamManagerFragment:BaseMainFragment() {
 
     override fun initView() {
         super.initView()
-
         setTitle(DataBeanManager.getIndexRightData()[3].name)
-        showView(tv_grade)
 
         examCorrectFragment = ExamCorrectFragment()
         examListFragment = ExamListFragment()
@@ -54,11 +52,11 @@ class ExamManagerFragment:BaseMainFragment() {
     override fun onTabClickListener(view: View, position: Int) {
         when (position) {
             0 -> {
-                showView(tv_grade)
+                disMissView(tv_grade)
                 switchFragment(lastFragment, examCorrectFragment)
             }
             1 -> {
-                disMissView(tv_grade)
+                showView(tv_grade)
                 switchFragment(lastFragment, examListFragment)
             }
         }

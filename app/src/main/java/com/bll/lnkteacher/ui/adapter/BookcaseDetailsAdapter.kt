@@ -18,6 +18,9 @@ class BookcaseDetailsAdapter(layoutResId: Int, data: List<BookcaseDetailsBean>?)
         recyclerView?.layoutManager = FlowLayoutManager()
         val mAdapter = ChildAdapter(R.layout.item_bookcase_name,item.books)
         recyclerView?.adapter = mAdapter
+        mAdapter.setOnItemClickListener { adapter, view, position ->
+            listener?.onClick(item.books[position])
+        }
     }
 
     class ChildAdapter(layoutResId: Int,  data: List<Book>?) : BaseQuickAdapter<Book, BaseViewHolder>(layoutResId, data) {
@@ -26,6 +29,16 @@ class BookcaseDetailsAdapter(layoutResId: Int, data: List<BookcaseDetailsBean>?)
                 helper.setText(R.id.tv_name, item.bookName)
             }
         }
+    }
+
+    private var listener: OnChildClickListener? = null
+
+    fun interface OnChildClickListener {
+        fun onClick(book: Book)
+    }
+
+    fun setOnChildClickListener(listener: OnChildClickListener?) {
+        this.listener = listener
     }
 
 }

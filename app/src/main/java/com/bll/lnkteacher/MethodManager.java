@@ -171,16 +171,13 @@ public class MethodManager {
     public static void deleteBook(Book book,int type){
         BookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
-        File file=new File(book.bookDrawPath);
-        if (file.exists())
-            FileUtils.deleteFile(file);
+        FileUtils.deleteFile(new File(book.bookDrawPath));
         if (type==1){
             EventBus.getDefault().post(Constants.BOOK_EVENT) ;
         }
         else {
             EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
         }
-
     }
 
     /**

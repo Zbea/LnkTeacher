@@ -165,29 +165,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_50"
             >
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="教学内容移动"
+                android:text="教学计划复制"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_25"
                 android:textStyle="bold"
                 />
 
             <TextView
-                android:id="@+id/iv_move_save"
+                android:id="@+id/iv_copy_save"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
-                android:text="保存"
+                android:text="复制"
                 android:textColor="@color/black"
                 android:textSize="@dimen/sp_24"
-                android:gravity="center"
                 android:textStyle="bold"
+                android:gravity="center"
                 android:background="@drawable/click_btn_transparent_line_black"
                 />
         </LinearLayout>
@@ -207,7 +207,7 @@
                 >
 
                 <TextView
-                    android:id="@+id/tv_move_start_time"
+                    android:id="@+id/tv_copy_start_time"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -224,7 +224,7 @@
                     android:textColor="@color/black"
                     />
                 <TextView
-                    android:id="@+id/tv_move_end_time"
+                    android:id="@+id/tv_copy_end_time"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -239,60 +239,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_50"
                 android:layout_marginTop="@dimen/dp_20"
-                android:background="@drawable/bg_gray_stroke_5dp_corner"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/et_num"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="10"
-                    android:inputType="number"
-                    android:layout_marginStart="@dimen/dp_20"
-                    android:gravity="center"
-                    android:background="@drawable/bg_line_bottom"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_25" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="天"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_25"
-                    />
-
-                <RadioGroup
-                    android:id="@+id/rg_group"
+                <CheckBox
+                    android:id="@+id/cb_all_copy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:orientation="horizontal"
-                    >
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:gravity="center_vertical"
+                    android:button="@drawable/bg_check_selector"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_25"
+                    android:text=" 全部"
+                    />
 
-                    <RadioButton
-                        android:id="@+id/rb_up"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:checked="true"
-                        android:text="  往前"
-                        android:button="@drawable/bg_check_selector"
-                        />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    />
 
-                    <RadioButton
-                        android:id="@+id/rb_down"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_20"
-                        android:gravity="center_vertical"
-                        android:text="  往后"
-                        android:button="@drawable/bg_check_selector"
-                        />
+                <TextView
+                    android:id="@+id/tv_copy_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_45"
+                    android:gravity="center"
+                    android:paddingStart="@dimen/dp_20"
+                    android:paddingEnd="@dimen/dp_20"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:drawableRight="@mipmap/icon_arrow_down"
+                    android:text="选择班级"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_25"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"
+                    />
 
-                </RadioGroup>
 
             </LinearLayout>
 
@@ -300,11 +283,29 @@
 
 
         <LinearLayout
-            android:id="@+id/ll_copy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginTop="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="教学计划修改"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_25"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
             android:orientation="vertical"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:padding="@dimen/dp_30"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -316,19 +317,157 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="教学内容复制"
+                    android:text="教学内容移动"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_25"
+                    android:textSize="@dimen/sp_22"
                     android:textStyle="bold"
                     />
 
                 <TextView
-                    android:id="@+id/iv_copy_save"
-                    android:layout_width="60dp"
-                    android:layout_height="40dp"
-                    android:text="保存"
+                    android:id="@+id/iv_move_save"
+                    android:layout_width="50dp"
+                    android:layout_height="35dp"
+                    android:text="移动"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_24"
+                    android:textSize="@dimen/sp_22"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="vertical"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                android:padding="@dimen/dp_30"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/tv_move_start_time"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="开始时间"
+                        android:textSize="@dimen/sp_25"
+                        android:textColor="@color/black"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="~"
+                        android:textSize="@dimen/sp_25"
+                        android:textColor="@color/black"
+                        />
+                    <TextView
+                        android:id="@+id/tv_move_end_time"
+                        android:layout_width="140dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="结束时间"
+                        android:textSize="@dimen/sp_25"
+                        android:textColor="@color/black"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_50"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/bg_gray_stroke_5dp_corner"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_num"
+                        android:layout_width="60dp"
+                        android:layout_height="40dp"
+                        android:text="1"
+                        android:inputType="number"
+                        android:layout_marginStart="@dimen/dp_20"
+                        android:gravity="center"
+                        android:background="@drawable/bg_line_bottom"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_25" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="天"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_25"
+                        />
+
+                    <RadioGroup
+                        android:id="@+id/rg_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_20"
+                        android:orientation="horizontal"
+                        >
+
+                        <RadioButton
+                            android:id="@+id/rb_up"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:checked="true"
+                            android:text="  往前"
+                            android:button="@drawable/bg_check_selector"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rb_down"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/dp_20"
+                            android:gravity="center_vertical"
+                            android:text="  往后"
+                            android:button="@drawable/bg_check_selector"
+                            />
+
+                    </RadioGroup>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_30"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="教学内容删除"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
+                    android:textStyle="bold"
+                    />
+
+                <TextView
+                    android:id="@+id/iv_delete_save"
+                    android:layout_width="50dp"
+                    android:layout_height="35dp"
+                    android:text="删除"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_22"
                     android:textStyle="bold"
                     android:gravity="center"
                     android:background="@drawable/click_btn_transparent_line_black"
@@ -350,7 +489,7 @@
                     >
 
                     <TextView
-                        android:id="@+id/tv_copy_start_time"
+                        android:id="@+id/tv_delete_start_time"
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -367,7 +506,7 @@
                         android:textColor="@color/black"
                         />
                     <TextView
-                        android:id="@+id/tv_copy_end_time"
+                        android:id="@+id/tv_delete_end_time"
                         android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -376,22 +515,17 @@
                         android:textColor="@color/black"
                         />
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_50"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:background="@drawable/bg_gray_stroke_5dp_corner"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        />
 
                     <CheckBox
-                        android:id="@+id/cb_all_copy"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="@dimen/dp_20"
+                        android:id="@+id/cb_all_delete"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/dp_20"
                         android:gravity="center_vertical"
                         android:button="@drawable/bg_check_selector"
                         android:textColor="@color/black"
@@ -399,120 +533,12 @@
                         android:text=" 全部"
                         />
 
-
-                    <TextView
-                        android:id="@+id/tv_copy_class"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:lines="1"
-                        android:ellipsize="end"
-                        android:layout_marginEnd="@dimen/dp_20"
-                        android:drawableRight="@mipmap/icon_arrow_down"
-                        android:text="选择班级"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/sp_25"
-                        />
-
-
                 </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_50"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            >
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="教学内容删除"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25"
-                android:textStyle="bold"
-                />
-
-            <TextView
-                android:id="@+id/iv_delete_save"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                android:text="保存"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_24"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:background="@drawable/click_btn_transparent_line_black"
-                />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
-            android:orientation="vertical"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            android:padding="@dimen/dp_30"
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/tv_delete_start_time"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="开始时间"
-                    android:textSize="@dimen/sp_25"
-                    android:textColor="@color/black"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="~"
-                    android:textSize="@dimen/sp_25"
-                    android:textColor="@color/black"
-                    />
-                <TextView
-                    android:id="@+id/tv_delete_end_time"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="结束时间"
-                    android:textSize="@dimen/sp_25"
-                    android:textColor="@color/black"
-                    />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    />
-
-                <CheckBox
-                    android:id="@+id/cb_all_delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_20"
-                    android:gravity="center_vertical"
-                    android:button="@drawable/bg_check_selector"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_25"
-                    android:text=" 全部"
-                     />
-
-            </LinearLayout>
-
-        </LinearLayout>
 
     </LinearLayout>
 

@@ -9,9 +9,9 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseCloudFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.mvp.model.CloudList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
@@ -228,11 +228,11 @@ class CloudBookcaseFragment:BaseCloudFragment() {
     }
 
     override fun onCloudType(types: MutableList<String>) {
-        types.remove("全部")
         types.add(0,"全部")
-        this.types=types
-        if (types.size>0)
+        if (this.types!=types){
+            this.types=types
             initTab()
+        }
     }
 
     override fun onCloudList(cloudList: CloudList) {
