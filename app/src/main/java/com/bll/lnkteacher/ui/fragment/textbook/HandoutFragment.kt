@@ -5,17 +5,20 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
+import com.bll.lnkteacher.MyApplication
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.manager.HandoutDaoManager
+import com.bll.lnkteacher.mvp.model.HandoutBean
 import com.bll.lnkteacher.mvp.model.HandoutList
-import com.bll.lnkteacher.mvp.model.HandoutList.HandoutBean
 import com.bll.lnkteacher.mvp.presenter.HandoutPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -28,6 +31,7 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
     private var items = mutableListOf<HandoutBean>()
     private var position = 0
     private var type=""
+    private var isNet=true
 
     override fun onType(list: MutableList<String>) {
     }
@@ -36,8 +40,8 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
         setPageNumber(list.total)
         for (item in list.list){
             val fileName=item.id.toString()
-            item.bookPath=FileAddress().getPathBook(fileName+MethodManager.getUrlFormat(item.bodyUrl))
-            item.bookDrawPath=FileAddress().getPathBookDraw(fileName)
+            item.bookPath=FileAddress().getPathHandout(fileName+MethodManager.getUrlFormat(item.bodyUrl))
+            item.bookDrawPath=FileAddress().getPathHandoutDraw(fileName)
         }
         items=list.list
         mAdapter?.setNewData(items)
@@ -49,6 +53,7 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
         if (FileUtils.isExist(item.bookPath)){
             FileUtils.deleteFile(File(item.bookPath))
             FileUtils.deleteFile(File(item.bookDrawPath))
+            HandoutDaoManager.getInstance().deleteBean(item)
         }
         fetchData()
     }
@@ -58,9 +63,9 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
     }
 
     override fun initView() {
-        pageSize = 30
-        initRecyclerView()
+        pageSize = 25
         initDialog(1)
+        initRecyclerView()
     }
 
     override fun lazyLoad() {
@@ -82,7 +87,7 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position = position
             val item=items[position]
-            if (FileUtils.isExist(item.bookPath)){
+            if (HandoutDaoManager.getInstance().isExist(item.id)){
                 MethodManager.gotoHandouts(requireActivity(),item)
             }
             else{
@@ -110,6 +115,8 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
+                    item.date=System.currentTimeMillis()
+                    HandoutDaoManager.getInstance().insertOrReplace(item)
                     mAdapter?.notifyItemChanged(position)
                     showToast(1,item.title+getString(R.string.book_download_success))
                     hideLoading()
@@ -143,11 +150,25 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
     }
 
     override fun fetchData() {
-        val map=HashMap<String,Any>()
-        map["page"]=pageIndex
-        map["size"]=pageSize
-        map["grade"]=type
-        presenter.getList(map)
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
+            if (!isNet)
+                pageIndex=1
+            isNet=true
+            val map=HashMap<String,Any>()
+            map["page"]=pageIndex
+            map["size"]=pageSize
+            map["grade"]=type
+            presenter.getList(map)
+        }
+        else{
+            if (isNet)
+                pageIndex=1
+            isNet=false
+            val total=HandoutDaoManager.getInstance().queryAll(type).size
+            setPageNumber(total)
+            items=HandoutDaoManager.getInstance().queryAll(type,pageIndex,pageSize)
+            mAdapter?.setNewData(items)
+        }
     }
 
 }

@@ -118,7 +118,7 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco( DP2PX.dip2px(activity, 20f)))
+        rv_list.addItemDecoration(SpaceItemDeco( DP2PX.dip2px(activity, 15f)))
     }
 
 

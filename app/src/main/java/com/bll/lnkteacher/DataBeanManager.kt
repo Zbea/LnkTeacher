@@ -14,6 +14,7 @@ object DataBeanManager {
     var courses = mutableListOf<ItemList>()
     var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
+    var schools= mutableListOf<SchoolBean>()
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
@@ -26,7 +27,7 @@ object DataBeanManager {
     )
 
     val textbookType = arrayOf(
-        "我的教材","教辅教学","教学教育","教学期刊","我的讲义"
+        "我的教材","参考教材","教学教育","专业期刊","我的文档"
     )
 
     var teachingStrs = arrayOf(

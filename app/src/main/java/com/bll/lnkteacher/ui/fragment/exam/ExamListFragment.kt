@@ -21,7 +21,7 @@ import com.bll.lnkteacher.ui.activity.exam.ExamDetailsActivity
 import com.bll.lnkteacher.ui.adapter.ExamListAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class ExamListFragment:BaseFragment(),IExamListView{
     private var mPresenter=ExamListPresenter(this,2)
@@ -126,7 +126,7 @@ class ExamListFragment:BaseFragment(),IExamListView{
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),20f)))
+        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),15f)))
     }
 
 

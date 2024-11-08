@@ -26,7 +26,7 @@ class HomeworkCreateDialog(val context: Context, val grade:Int,val string: Strin
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,460f))/2
         dialog.show()
 
-        val btn_ok = dialog.findViewById<Button>(R.id.btn_ok)
+        val btn_ok = dialog.findViewById<Button>(R.id.tv_ok)
         val tvClass = dialog.findViewById<TextView>(R.id.tv_class)
         val tvName = dialog.findViewById<EditText>(R.id.ed_name)
         tvName?.hint=string

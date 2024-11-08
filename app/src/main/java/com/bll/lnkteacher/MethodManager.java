@@ -14,6 +14,7 @@ import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
+import com.bll.lnkteacher.mvp.model.HandoutBean;
 import com.bll.lnkteacher.mvp.model.book.Book;
 import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
@@ -22,6 +23,7 @@ import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
+import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.BookDetailsActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
@@ -98,8 +100,6 @@ public class MethodManager {
         if (type==1){
             if (format.contains("pdf")) {
                 key_type = 1;
-            } else {
-                key_type = 0;
             }
         }
         else {
@@ -120,28 +120,11 @@ public class MethodManager {
         context.startActivity(intent);
     }
 
-    private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
-        JSONArray result =new JSONArray();
-        for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
-                continue;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("appName", item.appName);
-                jsonObject.put("packageName", item.packageName);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            result.put(jsonObject);
-        }
-        return result;
-    }
-
     /**
      * 跳转阅读器
      * @param context
      */
-    public static void gotoHandouts(Context context, HandoutList.HandoutBean bean)  {
+    public static void gotoHandouts(Context context, HandoutBean bean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
         User user=SPUtil.INSTANCE.getObj("user", User.class);
 
@@ -162,6 +145,23 @@ public class MethodManager {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+    }
+
+    private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
+        JSONArray result =new JSONArray();
+        for (AppBean item : toolApps) {
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+                continue;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("appName", item.appName);
+                jsonObject.put("packageName", item.packageName);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            result.put(jsonObject);
+        }
+        return result;
     }
 
     /**
@@ -202,6 +202,20 @@ public class MethodManager {
 
         Intent intent = new Intent(context, NoteDrawingActivity.class);
         intent.putExtra("noteId",note.id);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        context.startActivity(intent);
+    }
+
+    /**
+     * 跳转截图列表
+     * @param context
+     * @param index
+     * @param tabPath
+     */
+    public static void gotoScreenFile(Context context,int index,String tabPath){
+        Intent intent=new Intent(context, FileDrawingActivity.class);
+        intent.putExtra("pageIndex",index);
+        intent.putExtra("pagePath",tabPath);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }

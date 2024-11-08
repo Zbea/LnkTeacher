@@ -56,7 +56,7 @@ class DateEventActivity:BaseDrawingActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stopErasure()
-        Handler().postDelayed(Runnable {
+        Handler().postDelayed({
             EventBus.getDefault().post(Constants.DATE_EVENT)
         },500)
     }

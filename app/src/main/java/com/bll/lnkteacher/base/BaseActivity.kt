@@ -34,6 +34,7 @@ import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
@@ -141,10 +142,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         onCommonData()
     }
 
-    override fun onAppUpdate(item: AppUpdateBean?) {
-    }
-
-    override fun onClassList(classGroups: MutableList<ClassGroup>?) {
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        DataBeanManager.schools=list
     }
 
     override fun moveTaskToBack(nonRoot: Boolean): Boolean {
@@ -238,8 +237,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected() && DataBeanManager.grades.size==0)
+        if (NetworkUtil(this).isNetworkConnected()){
             mCommonPresenter.getCommon()
+            mCommonPresenter.getSchool()
+        }
     }
 
     fun showBackView(isShow:Boolean) {
@@ -342,14 +343,16 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in itemTabTypes){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
+                if (position<itemTabTypes.size){
+                    val item=itemTabTypes[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
 
-                onTabClickListener(view,position)
+                    onTabClickListener(view,position)
+                }
             }
         }
     }

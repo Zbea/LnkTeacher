@@ -436,7 +436,7 @@ class TeachingPlanActivity:BaseActivity() {
     private fun setCurrentDateContent(){
         val dateBean=dates[position]
         val dateEvent=DateEventDaoManager.getInstance().queryBean(classId,dateBean.time)
-        tv_content_date.text=DateUtils.longToStringDataNoYear(dateBean.time)+"  教学内容"
+        tv_content_date.text=DateUtils.longToStringDataNoYear(dateBean.time)
         if (dateEvent!=null){
             et_content.setText(dateEvent.content)
             et_content.setSelection(dateEvent.content.length)

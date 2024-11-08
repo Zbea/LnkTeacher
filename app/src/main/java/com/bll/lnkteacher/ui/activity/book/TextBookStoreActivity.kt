@@ -25,6 +25,7 @@ import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileDownManager
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
@@ -307,7 +308,7 @@ class TextBookStoreActivity : BaseActivity(),
             FileAddress().getPathZip(fileName)
         }
         else{
-            FileAddress().getPathBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
+            FileAddress().getPathTextBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
         val download = FileDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
@@ -328,11 +329,11 @@ class TextBookStoreActivity : BaseActivity(),
                 override fun completed(task: BaseDownloadTask?) {
                     if (!isZip){
                         book.bookPath = path
-                        book.bookDrawPath=FileAddress().getPathBookDraw(fileName)
+                        book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
                         complete(book)
                     }
                     else{
-                        val fileTargetPath = FileAddress().getPathTextBook(fileName)
+                        val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
                         unzip(book, path, fileTargetPath)
                     }
                 }
@@ -353,10 +354,11 @@ class TextBookStoreActivity : BaseActivity(),
     private fun unzip(book: Book, targetFileStr: String, fileTargetPath: String) {
         ZipUtils.unzip(targetFileStr, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                book.bookDrawPath=FileAddress().getPathTextBookDraw(File(fileTargetPath).name)
+                book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)
                 book.bookPath = fileTargetPath
                 //下载解压完成后更新存储的book
                 complete(book)
+                FileUtils.deleteFile(File(targetFileStr))
             }
             override fun onProgress(percentDone: Int) {
             }

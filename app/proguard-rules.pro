@@ -127,7 +127,39 @@
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.preference.Preference
 #-------------------------5.默认保留区 ↑-----------------------
+#greendao
+-keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
+   public static java.lang.String TABLENAME;
+}
+-keep class **$Properties
+-keepclassmembers class * {
+    public static ** $build;
+    public static ** $properties;
+}
+-keepclassmembers class * implements org.greenrobot.greendao.Property {
+   public static ** value();
+}
+-keep class * extends org.greenrobot.greendao.AbstractDaoMaster { *; }
+-keep class * extends org.greenrobot.greendao.AbstractDaoSession { *; }
+-keep class * extends org.greenrobot.greendao.AbstractDao { *; }
+-keep enum org.greenrobot.greendao.internal.DaoConfig$DaoPackage { *; }
 
+# EventBus
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+    public <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+# EventBus 3.0 and later:
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+
+# If you use AsyncExecutor (not recommended for Android), keep the following:
+-keepclassmembers class * extends org.greenrobot.eventbus.util.AsyncExecutor {
+    public <methods>;
+}
 
 # ============忽略警告，否则打包可能会不成功=============
 -ignorewarnings

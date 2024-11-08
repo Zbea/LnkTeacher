@@ -10,9 +10,12 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.AppSystemUpdateDialog
+import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.manager.CalenderDaoManager
+import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.presenter.MainLeftPresenter
 import com.bll.lnkteacher.mvp.presenter.SystemUpdateManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
@@ -22,14 +25,18 @@ import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
+import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.CalenderUtils
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.DeviceUtil
+import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.NetworkUtil
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.htfy.params.ServerParams
+import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
 import kotlinx.android.synthetic.main.fragment_main_left.iv_date
 import kotlinx.android.synthetic.main.fragment_main_left.rv_main_plan
@@ -44,8 +51,9 @@ import kotlinx.android.synthetic.main.fragment_main_left.v_date_up
 import java.io.File
 import java.util.Random
 
-class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
+class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
 
+    private var mMainLeftPresenter=MainLeftPresenter(this,1)
     private var mSystemUpdateManagerPresenter=SystemUpdateManagerPresenter(this,1)
     private var nowDayPos=1
     private var nowDate=0L
@@ -55,6 +63,25 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
 
     override fun onUpdateInfo(item: SystemUpdateInfo) {
         AppSystemUpdateDialog(requireActivity(),item).builder()
+    }
+
+    override fun onAppUpdate(item: AppUpdateBean) {
+        if (item.versionCode> AppUtils.getVersionCode(requireActivity())){
+            updateDialog= AppUpdateDialog(requireActivity(),item).builder()
+            downLoadStart(item)
+        }
+    }
+
+    override fun onClassList(groups: MutableList<ClassGroup>) {
+        DataBeanManager.classGroups=groups
+        classGroups.clear()
+        grade=DataBeanManager.getClassGroupsGrade()
+        for (item in DataBeanManager.classGroups){
+            if (item.state==1){
+                classGroups.add(item)
+            }
+        }
+        mTeachingAdapter?.setNewData(classGroups)
     }
 
     override fun getLayoutId(): Int {
@@ -115,9 +142,10 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
     }
 
     override fun lazyLoad() {
+        fetchCommonData()
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            fetchCommonData()
-            mCommonPresenter.getAppUpdate()
+            mMainLeftPresenter.getAppUpdate()
+            mMainLeftPresenter.getClassGroups()
 
             val systemUpdateMap = HashMap<String, String>()
             systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
@@ -194,7 +222,7 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
             else{
                 listFiles[Random().nextInt(listFiles.size)]
             }
-            GlideUtils.setImageFileRound(requireActivity(),file,iv_calender,15)
+            GlideUtils.setImageRoundUrl(requireActivity(),file.path,iv_calender,15)
         }
     }
 
@@ -214,16 +242,32 @@ class MainLeftFragment:BaseFragment(),IContractView.ISystemView {
         }
     }
 
-    override fun onClassGroupEvent() {
-        classGroups.clear()
-        grade=DataBeanManager.getClassGroupsGrade()
-        for (item in DataBeanManager.classGroups){
-            if (item.state==1){
-                classGroups.add(item)
+    //下载应用
+    private fun downLoadStart(bean: AppUpdateBean){
+        val targetFileStr= FileAddress().getPathApk("lnktecher")
+        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+            FileDownManager.SingleTaskCallBack {
+            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                if (task != null && task.isRunning) {
+                    requireActivity().runOnUiThread {
+                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                        updateDialog?.setUpdateBtn(s)
+                    }
+                }
             }
-        }
-        mTeachingAdapter?.setNewData(classGroups)
+            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+            }
+            override fun completed(task: BaseDownloadTask?) {
+                updateDialog?.dismiss()
+                AppUtils.installApp(requireActivity(), targetFileStr)
+            }
+            override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                updateDialog?.dismiss()
+            }
+        })
     }
+
 
     override fun onRefreshData() {
         lazyLoad()

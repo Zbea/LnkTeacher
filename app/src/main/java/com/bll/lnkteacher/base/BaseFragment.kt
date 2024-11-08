@@ -11,17 +11,15 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.User
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
@@ -31,15 +29,11 @@ import com.bll.lnkteacher.ui.activity.MainActivity
 import com.bll.lnkteacher.ui.activity.ResourceCenterActivity
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.utils.ActivityManager
-import com.bll.lnkteacher.utils.AppUtils
-import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
-import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.FlowLayoutManager
-import com.liulishuo.filedownloader.BaseDownloadTask
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import kotlinx.android.synthetic.main.common_fragment_title.tv_search
@@ -84,11 +78,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var itemTabTypes= mutableListOf<ItemTypeBean>()
     var grade=0
 
-    override fun onClassList(groups: MutableList<ClassGroup>) {
-        DataBeanManager.classGroups=groups
-        onClassGroupEvent()
-    }
-
     override fun onCommon(commonData: CommonData) {
         if (!commonData.grade.isNullOrEmpty())
             DataBeanManager.grades=commonData.grade
@@ -100,11 +89,8 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
             DataBeanManager.versions=commonData.version
     }
 
-    override fun onAppUpdate(item: AppUpdateBean) {
-        if (item.versionCode>AppUtils.getVersionCode(requireActivity())){
-            updateDialog= AppUpdateDialog(requireActivity(),item).builder()
-            downLoadStart(item)
-        }
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        DataBeanManager.schools=list
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -354,32 +340,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         }
     }
 
-    //下载应用
-    fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk("lnktecher")
-        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog?.setUpdateBtn(s)
-                    }
-                }
-            }
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun completed(task: BaseDownloadTask?) {
-                updateDialog?.dismiss()
-                AppUtils.installApp(requireActivity(), targetFileStr)
-            }
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog?.dismiss()
-            }
-        })
-    }
-
     override fun addSubscription(d: Disposable) {
     }
     override fun login() {
@@ -414,9 +374,10 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     }
 
     fun fetchCommonData(){
-        mCommonPresenter.getClassGroups()
-        if (DataBeanManager.grades.size==0)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
             mCommonPresenter.getCommon()
+            mCommonPresenter.getSchool()
+        }
     }
 
     //更新数据
@@ -454,11 +415,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
      */
     open fun changeInitData(){
         initDialog()
-    }
-    /**
-     * 班级列表回调事件
-     */
-    open fun onClassGroupEvent(){
     }
 
     override fun onDestroy() {

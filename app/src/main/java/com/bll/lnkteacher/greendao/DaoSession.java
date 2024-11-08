@@ -14,6 +14,7 @@ import com.bll.lnkteacher.mvp.model.ClassScheduleBean;
 import com.bll.lnkteacher.mvp.model.DateEvent;
 import com.bll.lnkteacher.mvp.model.DiaryBean;
 import com.bll.lnkteacher.mvp.model.FreeNoteBean;
+import com.bll.lnkteacher.mvp.model.HandoutBean;
 import com.bll.lnkteacher.mvp.model.ItemTypeBean;
 import com.bll.lnkteacher.mvp.model.Note;
 import com.bll.lnkteacher.mvp.model.NoteContent;
@@ -26,6 +27,7 @@ import com.bll.lnkteacher.greendao.ClassScheduleBeanDao;
 import com.bll.lnkteacher.greendao.DateEventDao;
 import com.bll.lnkteacher.greendao.DiaryBeanDao;
 import com.bll.lnkteacher.greendao.FreeNoteBeanDao;
+import com.bll.lnkteacher.greendao.HandoutBeanDao;
 import com.bll.lnkteacher.greendao.ItemTypeBeanDao;
 import com.bll.lnkteacher.greendao.NoteDao;
 import com.bll.lnkteacher.greendao.NoteContentDao;
@@ -47,6 +49,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig dateEventDaoConfig;
     private final DaoConfig diaryBeanDaoConfig;
     private final DaoConfig freeNoteBeanDaoConfig;
+    private final DaoConfig handoutBeanDaoConfig;
     private final DaoConfig itemTypeBeanDaoConfig;
     private final DaoConfig noteDaoConfig;
     private final DaoConfig noteContentDaoConfig;
@@ -59,6 +62,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DateEventDao dateEventDao;
     private final DiaryBeanDao diaryBeanDao;
     private final FreeNoteBeanDao freeNoteBeanDao;
+    private final HandoutBeanDao handoutBeanDao;
     private final ItemTypeBeanDao itemTypeBeanDao;
     private final NoteDao noteDao;
     private final NoteContentDao noteContentDao;
@@ -87,6 +91,9 @@ public class DaoSession extends AbstractDaoSession {
         freeNoteBeanDaoConfig = daoConfigMap.get(FreeNoteBeanDao.class).clone();
         freeNoteBeanDaoConfig.initIdentityScope(type);
 
+        handoutBeanDaoConfig = daoConfigMap.get(HandoutBeanDao.class).clone();
+        handoutBeanDaoConfig.initIdentityScope(type);
+
         itemTypeBeanDaoConfig = daoConfigMap.get(ItemTypeBeanDao.class).clone();
         itemTypeBeanDaoConfig.initIdentityScope(type);
 
@@ -108,6 +115,7 @@ public class DaoSession extends AbstractDaoSession {
         dateEventDao = new DateEventDao(dateEventDaoConfig, this);
         diaryBeanDao = new DiaryBeanDao(diaryBeanDaoConfig, this);
         freeNoteBeanDao = new FreeNoteBeanDao(freeNoteBeanDaoConfig, this);
+        handoutBeanDao = new HandoutBeanDao(handoutBeanDaoConfig, this);
         itemTypeBeanDao = new ItemTypeBeanDao(itemTypeBeanDaoConfig, this);
         noteDao = new NoteDao(noteDaoConfig, this);
         noteContentDao = new NoteContentDao(noteContentDaoConfig, this);
@@ -120,6 +128,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(DateEvent.class, dateEventDao);
         registerDao(DiaryBean.class, diaryBeanDao);
         registerDao(FreeNoteBean.class, freeNoteBeanDao);
+        registerDao(HandoutBean.class, handoutBeanDao);
         registerDao(ItemTypeBean.class, itemTypeBeanDao);
         registerDao(Note.class, noteDao);
         registerDao(NoteContent.class, noteContentDao);
@@ -134,6 +143,7 @@ public class DaoSession extends AbstractDaoSession {
         dateEventDaoConfig.clearIdentityScope();
         diaryBeanDaoConfig.clearIdentityScope();
         freeNoteBeanDaoConfig.clearIdentityScope();
+        handoutBeanDaoConfig.clearIdentityScope();
         itemTypeBeanDaoConfig.clearIdentityScope();
         noteDaoConfig.clearIdentityScope();
         noteContentDaoConfig.clearIdentityScope();
@@ -163,6 +173,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public FreeNoteBeanDao getFreeNoteBeanDao() {
         return freeNoteBeanDao;
+    }
+
+    public HandoutBeanDao getHandoutBeanDao() {
+        return handoutBeanDao;
     }
 
     public ItemTypeBeanDao getItemTypeBeanDao() {

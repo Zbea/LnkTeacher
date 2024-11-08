@@ -9,16 +9,19 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CatalogDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.mvp.model.CatalogChildBean
 import com.bll.lnkteacher.mvp.model.CatalogMsg
 import com.bll.lnkteacher.mvp.model.CatalogParentBean
+import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.common_drawing_page_number.*
-import kotlinx.android.synthetic.main.common_drawing_tool.*
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
+import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
+import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
+import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -172,9 +175,7 @@ class BookDetailsActivity:BaseDrawingActivity() {
         val showFile = getIndexFile(index)
         if (showFile!=null){
             book?.pageUrl=showFile.path //设置当前页面路径
-
-            GlideUtils.setImageFile(this,showFile,view)
-
+            GlideUtils.setImageCacheUrl(this,showFile.path,view)
             val drawPath=book?.bookDrawPath+"/${index+1}.png"
             elik.setLoadFilePath(drawPath,true)
         }

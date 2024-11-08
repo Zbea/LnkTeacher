@@ -294,13 +294,13 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     setPWEnabled(true)
 
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageFile(this,File(masterImage),v_content_a)
+                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_a)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
                     if (posImage+1<getImageSize()){
                         val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
-                        GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
+                        GlideUtils.setImageCacheUrl(this,File(masterImage_b).path,v_content_b)
                         val drawPath_b = getPathDrawStr(posImage+1+1)
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
@@ -312,9 +312,9 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 2->{
                     setPWEnabled(false)
 
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
+                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_a)
                     if (posImage+1<getImageSize()){
-                        GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
+                        GlideUtils.setImageCacheUrl(this, currentImages[posImage+1],v_content_b)
                     }
                     else{
                         v_content_b?.setImageResource(0)
@@ -329,13 +329,13 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 1->{
                     elik_b?.setPWEnabled(true)
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageFile(this,File(masterImage),v_content_b)
+                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
                 }
                 2->{
                     elik_b?.setPWEnabled(false)
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
+                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_b)
                 }
             }
             tv_page.text="${posImage+1}"

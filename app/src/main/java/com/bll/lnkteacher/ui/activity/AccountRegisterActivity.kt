@@ -9,11 +9,8 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
-import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
-import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
@@ -32,19 +29,13 @@ import kotlinx.android.synthetic.main.ac_account_register.tv_course_btn
 import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
-class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView,ISchoolView{
+class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView{
 
-    private lateinit var mSchoolPresenter:SchoolPresenter
     private lateinit var presenter:RegisterOrFindPsdPresenter
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var school=0
-    private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
-
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        schools=list
-    }
 
     override fun onSms() {
         showToast("发送验证码成功")
@@ -73,10 +64,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            if (NetworkUtil(this).isNetworkConnected()){
-                mSchoolPresenter.getSchool()
-            }
-            else{
+            if (!NetworkUtil(this).isNetworkConnected()){
                 showToast("网络连接失败")
             }
         }
@@ -84,11 +72,9 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
 
     override fun initChangeScreenData() {
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
-        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
-
         when (flags) {
             2 -> {
                 setPageTitle("修改密码")
@@ -247,7 +233,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
      */
     private fun selectorSchool(){
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,DataBeanManager.schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
                 tv_school.text=it.name
@@ -259,6 +245,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     }
 
     override fun onRefreshData() {
-        mSchoolPresenter.getSchool()
+        fetchCommonData()
     }
 }

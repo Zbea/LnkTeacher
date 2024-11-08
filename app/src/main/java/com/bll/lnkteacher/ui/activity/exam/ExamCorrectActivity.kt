@@ -279,32 +279,32 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         if (isExpand){
             when(correctStatus){
                 1->{
-                    elik_a?.setPWEnabled(true,true)
-                    elik_b?.setPWEnabled(true,true)
+                    elik_a?.setPWEnabled(true)
+                    elik_b?.setPWEnabled(true)
 
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageFile(this,File(masterImage),v_content_a)
+                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_a)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
                     if (posImage+1<getImageSize()){
                         val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
-                        GlideUtils.setImageFile(this,File(masterImage_b),v_content_b)
+                        GlideUtils.setImageCacheUrl(this,File(masterImage_b).path,v_content_b)
                         val drawPath_b = getPathDrawStr(posImage+1+1)
                         elik_b?.setLoadFilePath(drawPath_b, true)
                     }
                     else{
-                        elik_b?.setPWEnabled(false,false)
+                        elik_b?.setPWEnabled(false)
                         v_content_b?.setImageResource(0)
                     }
                 }
                 2->{
-                    elik_a?.setPWEnabled(false,false)
-                    elik_b?.setPWEnabled(false,false)
+                    elik_a?.setPWEnabled(false)
+                    elik_b?.setPWEnabled(false)
 
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
+                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_a)
                     if (posImage+1<getImageSize()){
-                        GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
+                        GlideUtils.setImageCacheUrl(this, currentImages[posImage+1],v_content_b)
                     }
                     else{
                         v_content_b?.setImageResource(0)
@@ -317,15 +317,15 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         else{
             when(correctStatus){
                 1->{
-                    elik_b?.setPWEnabled(true,true)
+                    elik_b?.setPWEnabled(true)
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageFile(this,File(masterImage),v_content_b)
+                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
                 }
                 2->{
-                    elik_b?.setPWEnabled(false,false)
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
+                    elik_b?.setPWEnabled(false)
+                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_b)
                 }
             }
             tv_page.text="${posImage+1}"

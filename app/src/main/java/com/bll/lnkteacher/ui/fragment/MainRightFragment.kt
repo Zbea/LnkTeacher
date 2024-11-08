@@ -28,7 +28,7 @@ import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.presenter.MainPresenter
+import com.bll.lnkteacher.mvp.presenter.MainRightPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
 import com.bll.lnkteacher.ui.activity.MessageListActivity
@@ -52,9 +52,9 @@ import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
+class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
 
-    private var mPresenter=MainPresenter(this,2)
+    private var mPresenter=MainRightPresenter(this,2)
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
 
@@ -113,9 +113,9 @@ class MainRightFragment : BaseMainFragment(),IContractView.IMainView {
     }
 
     override fun lazyLoad() {
+        fetchCommonData()
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
             findMessages()
-            fetchCommonData()
         }
         findNotes()
     }

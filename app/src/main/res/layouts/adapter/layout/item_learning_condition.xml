@@ -26,8 +26,11 @@
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:ellipsize="end"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24"
@@ -35,9 +38,8 @@
 
         <TextView
             android:id="@+id/tv_self_correct"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24" />
@@ -46,6 +48,7 @@
             android:id="@+id/tv_date_create"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
             android:textColor="@color/black"
             android:text="布置时间"
             android:textSize="@dimen/sp_22" />

@@ -9,7 +9,7 @@ import com.bll.lnkteacher.net.system.BaseResult1
 import com.bll.lnkteacher.net.system.Callback1
 
 
-class SystemUpdateManagerPresenter(view: IContractView.ISystemView, val screen: Int) : BasePresenter1<IContractView.ISystemView>(view) {
+class SystemUpdateManagerPresenter(view: IContractView.IMainLeftView, val screen: Int) : BasePresenter1<IContractView.IMainLeftView>(view) {
 
     fun checkSystemUpdate(map: Map<String,String>) {
 

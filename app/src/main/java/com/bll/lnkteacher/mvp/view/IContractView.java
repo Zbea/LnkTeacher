@@ -36,10 +36,6 @@ import java.util.List;
 
 public interface IContractView {
 
-    interface ISystemView extends IBaseView{
-        void onUpdateInfo(SystemUpdateInfo item);
-    }
-
     //登录
     interface ILoginView extends IBaseView {
         void getLogin(User user);
@@ -110,12 +106,7 @@ public interface IContractView {
 
     //主页
     interface ICommonView extends IBaseView{
-        void onClassList(List<ClassGroup> classGroups);
         void onCommon(CommonData commonData);
-        void onAppUpdate(AppUpdateBean item);
-    }
-
-    interface ISchoolView extends IBaseView{
         void onListSchools(List<SchoolBean> list);
     }
 
@@ -254,9 +245,15 @@ public interface IContractView {
         void onDeleteSuccess();
     }
 
-    interface IMainView extends IBaseView{
+    interface IMainRightView extends IBaseView{
         void onList(Message message);
         void onClassSchedule(String url);
+    }
+
+    interface IMainLeftView extends IBaseView{
+        void onUpdateInfo(SystemUpdateInfo item);
+        void onAppUpdate(AppUpdateBean item);
+        void onClassList(List<ClassGroup> classGroups);
     }
 
     interface IMessageView extends IBaseView{

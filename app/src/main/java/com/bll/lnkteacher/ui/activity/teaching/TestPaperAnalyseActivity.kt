@@ -200,7 +200,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         disMissView(iv_tool, iv_catalog, iv_btn)
         showView(tv_class)
         if (flag==0){
-            setPageCustom("因材施教")
+            setPageCustom("层群创建")
             setPageSetting("成绩统计")
         }
         if (scoreMode!=1){

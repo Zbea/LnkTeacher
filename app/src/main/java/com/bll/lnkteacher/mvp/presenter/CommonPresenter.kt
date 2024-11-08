@@ -2,6 +2,7 @@ package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
+import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
@@ -12,19 +13,6 @@ import com.bll.lnkteacher.net.RetrofitManager
 
 class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContractView.ICommonView>(view) {
 
-    fun getClassGroups() {
-        val list = RetrofitManager.service.getListClassGroup()
-        doRequest(list, object : Callback<ClassGroupList>(view,0,false) {
-            override fun failed(tBaseResult: BaseResult<ClassGroupList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<ClassGroupList>) {
-                if (tBaseResult.data!=null)
-                    view.onClassList(tBaseResult.data?.list)
-            }
-        }, false)
-
-    }
 
     fun getCommon() {
 
@@ -43,18 +31,18 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
 
     }
 
-    //获取更新信息
-    fun getAppUpdate() {
-        val list= RetrofitManager.service.onAppUpdate()
-        doRequest(list, object : Callback<AppUpdateBean>(view,0,false) {
-            override fun failed(tBaseResult: BaseResult<AppUpdateBean>): Boolean {
+    fun getSchool() {
+        val grade = RetrofitManager.service.getCommonSchool()
+        doRequest(grade, object : Callback<MutableList<SchoolBean>>(view,0) {
+            override fun failed(tBaseResult: BaseResult<MutableList<SchoolBean>>): Boolean {
                 return false
             }
-            override fun success(tBaseResult: BaseResult<AppUpdateBean>) {
-                if (tBaseResult.data!=null)
-                    view.onAppUpdate(tBaseResult.data)
+            override fun success(tBaseResult: BaseResult<MutableList<SchoolBean>>) {
+                if (!tBaseResult.data.isNullOrEmpty())
+                    view.onListSchools(tBaseResult.data)
             }
         }, false)
     }
+
 
 }

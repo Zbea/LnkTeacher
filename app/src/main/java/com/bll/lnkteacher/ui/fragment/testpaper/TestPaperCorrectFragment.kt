@@ -117,7 +117,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                 }
             }
         }
-        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),20f)))
+        rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),15f)))
     }
 
     /**

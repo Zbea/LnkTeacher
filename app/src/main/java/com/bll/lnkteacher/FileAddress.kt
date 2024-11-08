@@ -30,16 +30,31 @@ class FileAddress {
     }
     /**
      * 书籍手写地址
-     * /storage/emulated/0/Notes
+     * /storage/emulated/0/books/draw
      */
     fun getPathBookDraw(fileName: String):String{
         return "$BOOK_PATH/$mUserId/${fileName}draw"
     }
 
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+        return "$BOOK_PATH/$mUserId/textbook/$fileName"
     }
     fun getPathTextBookDraw(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/textbook/${fileName}draw"
+    }
+
+    fun getPathHandout(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/handout/$fileName"
+    }
+    fun getPathHandoutDraw(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/handout/${fileName}draw"
+    }
+
+
+    fun getPathHomeworkBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+    }
+    fun getPathHomeworkBookDraw(fileName: String):String{
         return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
     }
     /**

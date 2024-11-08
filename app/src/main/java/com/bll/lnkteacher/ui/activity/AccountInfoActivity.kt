@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
@@ -10,10 +11,7 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
-import com.bll.lnkteacher.mvp.presenter.SchoolPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.ISchoolView
-import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_phone
@@ -28,14 +26,12 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_province_str
 import kotlinx.android.synthetic.main.ac_account_info.tv_school
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
 
-class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchoolView {
+class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
-    private lateinit var mSchoolPresenter:SchoolPresenter
     private lateinit var presenter:AccountInfoPresenter
     private var nickname=""
     private var school=0
     private var schoolBean: SchoolBean?=null
-    private var schools= mutableListOf<SchoolBean>()
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
 
@@ -66,9 +62,6 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         tv_area.text = schoolBean?.area
     }
 
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        schools=list
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_account_info
@@ -76,13 +69,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
 
     override fun initData() {
         initChangeScreenData()
-        if (NetworkUtil(this).isNetworkConnected()){
-            mSchoolPresenter.getSchool()
-        }
     }
 
     override fun initChangeScreenData() {
-        mSchoolPresenter=SchoolPresenter(this,getCurrentScreenPos())
         presenter=AccountInfoPresenter(this,getCurrentScreenPos())
     }
 
@@ -107,12 +96,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         }
 
         btn_edit_school.setOnClickListener {
-            if (schools.isNotEmpty()){
-                editSchool()
-            }
-            else{
-                showToast("数据加载失败，请重新加载")
-            }
+            editSchool()
         }
 
         btn_edit_phone.setOnClickListener {
@@ -158,13 +142,11 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
      */
     private fun editSchool() {
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,DataBeanManager.schools).builder()
             schoolSelectDialog?.setOnDialogClickListener {
                 school=it.id
-                if (school==mUser?.schoolId)
-                    return@setOnDialogClickListener
                 presenter.editSchool(it.id)
-                for (item in schools){
+                for (item in DataBeanManager.schools){
                     if (item.id==school)
                         schoolBean=item
                 }
@@ -179,9 +161,4 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView,ISchool
         super.onDestroy()
         mUser?.let { SPUtil.putObj("user", it) }
     }
-
-    override fun onRefreshData() {
-        mSchoolPresenter.getSchool()
-    }
-
 }
