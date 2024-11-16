@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
-import android.text.TextUtils
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
@@ -8,8 +7,8 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
+import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem.UserBean
@@ -37,8 +36,8 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
     private var classList= mutableListOf<TestPaperClassBean>()
     private var users= mutableListOf<UserBean>()
     private var mAdapter:ExamAnalyseTeachingAdapter?=null
-    private var startScore=0
-    private var endScore=100
+    private var startScore=0.0
+    private var endScore=100.0
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         users.clear()
@@ -134,22 +133,18 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
         }
 
         tv_left_score.setOnClickListener {
-            InputContentDialog(this,getCurrentScreenPos(),startScore.toString(),1).builder().setOnDialogClickListener{
-                if (TextUtils.isDigitsOnly(it)) {
-                    tv_left_score.text=it
-                    startScore=MethodManager.getScore(it)
-                    setChangeScoreUser()
-                }
+            NumberDialog(this,getCurrentScreenPos(),startScore.toString()).builder().setDialogClickListener{
+                tv_left_score.text=it.toString()
+                startScore=MethodManager.getScore(it.toString())
+                setChangeScoreUser()
             }
         }
 
         tv_right_score.setOnClickListener {
-            InputContentDialog(this,getCurrentScreenPos(),endScore.toString(),1).builder().setOnDialogClickListener{
-                if (TextUtils.isDigitsOnly(it)) {
-                    tv_right_score.text=it
-                    endScore=MethodManager.getScore(it)
-                    setChangeScoreUser()
-                }
+            NumberDialog(this,getCurrentScreenPos(),endScore.toString()).builder().setDialogClickListener{
+                tv_right_score.text=it.toString()
+                endScore=MethodManager.getScore(it.toString())
+                setChangeScoreUser()
             }
         }
 

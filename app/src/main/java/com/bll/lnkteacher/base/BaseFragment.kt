@@ -67,7 +67,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var mView:View?=null
     var mDialog: ProgressDialog? = null
     var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -266,14 +265,15 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in mTabTypeAdapter?.data!!){
+                for (item in data){
                     item.isCheck=false
                 }
-                val item=mTabTypeAdapter?.data!![position]
-                item.isCheck=true
-                mTabTypeAdapter?.notifyDataSetChanged()
-
-                onTabClickListener(view,position)
+                if (position<data.size){
+                    val item=data[position]
+                    item.isCheck=true
+                    mTabTypeAdapter?.notifyDataSetChanged()
+                    onTabClickListener(view,position)
+                }
             }
         }
     }

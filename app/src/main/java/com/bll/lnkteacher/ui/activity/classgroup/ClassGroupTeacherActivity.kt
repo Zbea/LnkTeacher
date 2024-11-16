@@ -28,7 +28,6 @@ class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherV
     }
 
     override fun onOutSuccess() {
-        showToast("踢出老师成功")
         users.removeAt(position)
         mAdapter?.notifyDataSetChanged()
     }
@@ -58,7 +57,7 @@ class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherV
     }
 
     override fun initView() {
-        setPageTitle("教师详情")
+        setPageTitle("${mClassGroup?.name}  教师详情")
 
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupTeacherAdapter(R.layout.item_classgroup_teacher, isCreate,users)
@@ -79,7 +78,7 @@ class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherV
     }
 
     private fun transferDialog(){
-        CommonDialog(this).setContent("确认转让班主任？").builder().setDialogClickListener(object :
+        CommonDialog(this).setContent("该教师接管班主任？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

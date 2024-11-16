@@ -77,6 +77,12 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     override fun onClasss(classGroups: MutableList<ClassGroup>) {
     }
 
+    override fun onSubjects(subjects: MutableList<String>) {
+        for (subject in subjects){
+            lists.add(ItemList(DataBeanManager.getCourseId(subject),subject))
+        }
+    }
+
     override fun onSuccess() {
     }
     override fun onUploadSuccess() {
@@ -103,9 +109,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             }
         }
         else{
-            for (item in DataBeanManager.courses){
-                lists.add(ItemList(item.type,item.desc))
-            }
+            mPresenter.getClassGroupSubject(classGroupId)
         }
     }
 

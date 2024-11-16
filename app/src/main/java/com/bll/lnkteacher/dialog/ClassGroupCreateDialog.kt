@@ -30,7 +30,7 @@ class ClassGroupCreateDialog(val context: Context,private val name:String,privat
         if (name.isNotEmpty()){
             et_name.setText(name)
             et_name.setSelection(name.length)
-            tv_title.text = "修改班群"
+            tv_title.text = "修改班群名称"
         }
 
         val grades=DataBeanManager.popupGrades(grade)

@@ -54,6 +54,7 @@ public interface IContractView {
     interface IAccountInfoView extends IBaseView {
 
         void onSms();
+        void onCheckSuccess();
         void onEditPhone();
         void onEditNameSuccess();
         void onEditSchool();
@@ -76,6 +77,7 @@ public interface IContractView {
     //班群
     interface IClassGroupView extends IBaseView{
         void onClasss(List<ClassGroup> classGroups);
+        void onSubjects(List<String> subjects);
         void onSuccess();
         void onUploadSuccess();
     }

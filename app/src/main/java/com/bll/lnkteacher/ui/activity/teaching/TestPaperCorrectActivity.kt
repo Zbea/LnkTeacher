@@ -72,7 +72,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     url=ToolUtils.getImagesStr(urls)
                     val map= HashMap<String, Any>()
                     map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=tv_total_score.text.toString().toInt()
+                    map["score"]=tv_total_score.text.toString().toDouble()
                     map["submitUrl"]=url
                     map["status"]=2
                     map["question"]=toJson(currentScores)
@@ -97,7 +97,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     }
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=tv_total_score.text.toString().toInt()
+        userItems[posUser].score=tv_total_score.text.toString().toDouble()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=toJson(currentScores)
@@ -162,8 +162,8 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
         tv_total_score.setOnClickListener {
             if (correctStatus==1){
-                NumberDialog(this).builder().setDialogClickListener{
-                    tv_total_score.text=it.toString()
+                NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
+                    tv_total_score.text= ToolUtils.getFormatNum(it,"0.0")
                 }
             }
         }

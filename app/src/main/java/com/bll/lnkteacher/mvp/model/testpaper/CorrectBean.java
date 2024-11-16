@@ -1,10 +1,8 @@
 package com.bll.lnkteacher.mvp.model.testpaper;
 
-import com.bll.lnkteacher.utils.DateUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.List;
 
 public class CorrectBean implements Serializable {

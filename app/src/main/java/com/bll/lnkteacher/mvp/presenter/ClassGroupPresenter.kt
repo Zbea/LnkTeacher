@@ -23,6 +23,21 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
                     view.onClasss(tBaseResult.data?.list)
             }
         }, false)
+    }
+
+    fun getClassGroupSubject(classGroupId: Int) {
+        val map=HashMap<String,Any>()
+        map["classGroupId"]=classGroupId
+        val list = RetrofitManager.service.getClassGroupSubjects(map)
+        doRequest(list, object : Callback<List<String>>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<List<String>>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<List<String>>) {
+                if (tBaseResult.data!=null)
+                    view.onSubjects(tBaseResult.data)
+            }
+        }, true)
 
     }
 

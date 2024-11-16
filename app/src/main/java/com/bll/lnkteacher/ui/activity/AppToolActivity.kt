@@ -116,7 +116,7 @@ class AppToolActivity:BaseActivity() {
         rv_list_tool.addItemDecoration(SpaceGridItemDeco(6,30))
         mMenuAdapter?.setOnItemChildClickListener { adapter, view, position ->
             val item=menuApps[position]
-            if (view.id==R.id.cb_check){
+            if (view.id==R.id.ll_name){
                 item.isCheck=!item.isCheck
                 mMenuAdapter?.notifyItemChanged(position)
             }

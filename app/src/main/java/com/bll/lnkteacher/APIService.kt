@@ -4,8 +4,6 @@ import com.bll.lnkteacher.mvp.model.AccountOrder
 import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.mvp.model.AppList
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
-import com.bll.lnkteacher.mvp.model.book.BookStore
-import com.bll.lnkteacher.mvp.model.book.BookStoreType
 import com.bll.lnkteacher.mvp.model.CalenderList
 import com.bll.lnkteacher.mvp.model.CloudList
 import com.bll.lnkteacher.mvp.model.CommonData
@@ -17,6 +15,8 @@ import com.bll.lnkteacher.mvp.model.ShareNoteList
 import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.WallpaperList
+import com.bll.lnkteacher.mvp.model.book.BookStore
+import com.bll.lnkteacher.mvp.model.book.BookStoreType
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
@@ -127,6 +127,11 @@ interface APIService{
      */
     @PATCH("accounts/nickname")
     fun editName(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 验证手机号
+     */
+    @POST("accounts/checkCode")
+    fun checkPhone(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 修改电话
      */
@@ -252,7 +257,11 @@ interface APIService{
      */
     @GET("class/page")
     fun getListClassGroup(): Observable<BaseResult<ClassGroupList>>
-
+    /**
+     * 班群科目
+     */
+    @GET("class/teacherSubject")
+    fun getClassGroupSubjects(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<List<String>>>
     /**
      * 解散班群
      */

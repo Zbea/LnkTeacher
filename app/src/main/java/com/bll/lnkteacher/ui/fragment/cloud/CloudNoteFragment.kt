@@ -198,7 +198,6 @@ class CloudNoteFragment: BaseCloudFragment() {
         map["page"]=pageIndex
         map["size"] = pageSize
         map["type"] = 3
-        map["subTypeStr"] = noteTypeStr
         mCloudPresenter.getList(map)
     }
 

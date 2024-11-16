@@ -57,7 +57,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
 
     override fun onExamClassUser(classUserList: ExamClassUserList) {
         totalAnalyseItems.clear()
-        var totalScore=0
+        var totalScore=0.0
         for (userItem in classUserList.list) {
             if (userItem.studentUrl.isNullOrEmpty()) {
                 userItem.status = 3

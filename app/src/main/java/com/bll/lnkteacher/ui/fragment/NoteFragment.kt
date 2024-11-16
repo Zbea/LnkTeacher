@@ -43,7 +43,6 @@ import java.io.File
  */
 class NoteFragment : BaseMainFragment() {
     private var popupBeans = mutableListOf<PopupBean>()
-    private var notebooks = mutableListOf<ItemTypeBean>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
     private var position = 0 //当前笔记标记
@@ -71,7 +70,7 @@ class NoteFragment : BaseMainFragment() {
                 .setOnSelectListener { item ->
                     when (item.id) {
                         0 -> startActivity(Intent(activity, NotebookManagerActivity::class.java))
-                        1 -> createNoteBookType()
+                        1 -> createNoteBook()
                     }
                 }
         }
@@ -83,6 +82,34 @@ class NoteFragment : BaseMainFragment() {
     override fun lazyLoad() {
     }
 
+    /**
+     * tab数据设置
+     */
+    private fun initTabs() {
+        pageIndex=1
+        itemTabTypes=ItemTypeDaoManager.getInstance().queryAll(1)
+        itemTabTypes.add(0,ItemTypeBean().apply {
+            title = getString(R.string.note_tab_diary)
+        })
+        if (positionType>=itemTabTypes.size){
+            positionType=0
+        }
+        for (item in itemTabTypes){
+            item.isCheck=false
+        }
+        itemTabTypes[positionType].isCheck=true
+        typeStr = itemTabTypes[positionType].title
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        positionType=position
+        typeStr=itemTabTypes[position].title
+        pageIndex=1
+        fetchData()
+    }
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -110,23 +137,12 @@ class NoteFragment : BaseMainFragment() {
             val note=notes[position]
             when (view.id) {
                 R.id.iv_delete -> {
-                    CommonDialog(requireActivity()).setContent("确定要删除主题？").builder()
+                    CommonDialog(requireActivity()).setContent("确定删除主题？").builder()
                         .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                //删除笔记本
-                                NoteDaoManager.getInstance().deleteBean(note)
-                                //删除笔记本中的所有笔记
-                                NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.title)
-                                val path= FileAddress().getPathNote(note.typeStr,note.title)
-                                FileUtils.deleteFile(File(path))
-
-                                notes.remove(note)
-                                if (pageIndex>1&&notes.size==0){
-                                    pageIndex-=1
-                                }
-                                EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+                                deleteNote()
                             }
                         })
                 }
@@ -141,7 +157,7 @@ class NoteFragment : BaseMainFragment() {
                             NoteContentDaoManager.getInstance().editNoteTitles(note.typeStr,note.title,string)
                             note.title = string
                             NoteDaoManager.getInstance().insertOrReplace(note)
-                            EventBus.getDefault().post(NOTE_EVENT)//更新全局通知
+                            mAdapter?.notifyItemChanged(position)
                         }
                 }
                 R.id.iv_password->{
@@ -168,12 +184,12 @@ class NoteFragment : BaseMainFragment() {
                     }
                 }
                 R.id.iv_upload->{
-                    val noteContents = NoteContentDaoManager.getInstance().queryAll(note.typeStr,note.title)
-                    if (noteContents.size==0){
-                        showToast("主题没有内容无法上传")
+                    val path=FileAddress().getPathNote(note.typeStr,note.title)
+                    if (!FileUtils.isExistContent(path)){
+                        showToast("主题暂无内容，无法上传")
                         return@setOnItemChildClickListener
                     }
-                    CommonDialog(requireActivity()).setContent("确定上传主题到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                    CommonDialog(requireActivity()).setContent("确定上传该主题到云书库？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {
                         }
                         override fun ok() {
@@ -193,35 +209,25 @@ class NoteFragment : BaseMainFragment() {
         mAdapter?.addFooterView(view)
     }
 
-    /**
-     * tab数据设置
-     */
-    private fun initTabs() {
-        notebooks.clear()
-        notebooks=ItemTypeDaoManager.getInstance().queryAll(1)
-        notebooks.add(0,ItemTypeBean().apply {
-            title = getString(R.string.note_tab_diary)
-        })
-        if (positionType>=notebooks.size){
-            positionType=0
-        }
-        for (item in notebooks){
-            item.isCheck=false
-        }
-        notebooks[positionType].isCheck=true
-        typeStr = notebooks[positionType].title
-        fetchData()
-        mTabTypeAdapter?.setNewData(notebooks)
+    //新建笔记本
+    private fun createNoteBook() {
+        InputContentDialog(requireContext(),  2,"请输入笔记本").builder()
+            .setOnDialogClickListener { string ->
+                if (ItemTypeDaoManager.getInstance().isExist(string,1)){
+                    showToast(R.string.toast_existed)
+                }
+                else{
+                    val noteBook = ItemTypeBean()
+                    noteBook.type=1
+                    noteBook.title = string
+                    noteBook.date=System.currentTimeMillis()
+                    ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
+                    mTabTypeAdapter?.addData(noteBook)
+                }
+            }
     }
 
-    override fun onTabClickListener(view: View, position: Int) {
-        positionType=position
-        typeStr=notebooks[position].title
-        pageIndex=1
-        fetchData()
-    }
-
-    //新建笔记
+    //新建主题
     private fun createNote(resId:String) {
         val note = Note()
         InputContentDialog(requireContext(),  2,"请输入主题").builder()
@@ -235,33 +241,28 @@ class NoteFragment : BaseMainFragment() {
                 note.typeStr = typeStr
                 note.contentResId = resId
                 NoteDaoManager.getInstance().insertOrReplace(note)
-
-                if(notes.size==10){
+                if (notes.size==10){
                     pageIndex+=1
-                }
-                EventBus.getDefault().post(NOTE_EVENT)
-            }
-    }
-
-
-    //新建笔记分类
-    private fun createNoteBookType() {
-        InputContentDialog(requireContext(),  2,"请输入笔记本").builder()
-            .setOnDialogClickListener { string ->
-                if (ItemTypeDaoManager.getInstance().isExist(string,1)){
-                    showToast(R.string.toast_existed)
+                    EventBus.getDefault().post(NOTE_EVENT)
                 }
                 else{
-                    val noteBook = ItemTypeBean()
-                    noteBook.type=1
-                    noteBook.title = string
-                    noteBook.date=System.currentTimeMillis()
-                    ItemTypeDaoManager.getInstance().insertOrReplace(noteBook)
-                    notebooks.add(noteBook)
-                    mTabTypeAdapter?.setNewData(notebooks)
+                    mAdapter?.addData(0,note)
                 }
             }
     }
+
+    private fun deleteNote(){
+        val note=notes[position]
+        //删除主题
+        NoteDaoManager.getInstance().deleteBean(note)
+        //删除主题内容
+        NoteContentDaoManager.getInstance().deleteType(note.typeStr, note.title)
+        val path= FileAddress().getPathNote(note.typeStr,note.title)
+        FileUtils.deleteFile(File(path))
+
+        mAdapter?.remove(position)
+    }
+
 
     override fun fetchData() {
         notes = NoteDaoManager.getInstance().queryAll(typeStr, pageIndex, pageSize)
@@ -292,6 +293,7 @@ class NoteFragment : BaseMainFragment() {
             setCallBack{
                 cloudList.add(CloudListBean().apply {
                     type=3
+                    title=note.title
                     subTypeStr=note.typeStr
                     date=note.date
                     listJson= Gson().toJson(note)
@@ -304,13 +306,7 @@ class NoteFragment : BaseMainFragment() {
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
-        val note=notes[position]
-        NoteDaoManager.getInstance().deleteBean(note)
-        NoteContentDaoManager.getInstance().deleteType(typeStr,note.title)
-        val path= FileAddress().getPathNote(typeStr,note.title)
-        FileUtils.deleteFile(File(path))
-        mAdapter?.remove(position)
+        deleteNote()
     }
 
 }

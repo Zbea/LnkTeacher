@@ -1,80 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/dp_20"
-    android:background="@drawable/bg_black_stroke_0dp_corner"
-    >
+    android:layout_width="450dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:padding="@dimen/dialog_padding"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <EditText
+        android:id="@+id/ed_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioGroup
-            android:id="@+id/rg_group"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_45"
-            android:layout_marginStart="@dimen/dp_20"
-            android:orientation="horizontal">
+        android:layout_height="50dp"
+        android:textColorHint="@color/color_text_hint"
+        android:background="@drawable/bg_line_bottom"
+        android:layout_gravity="center_horizontal"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="35dp"
+        android:layout_marginTop="30dp"
+        android:inputType="numberDecimal"
+        android:digits="0123456789."
+        android:padding="5dp"/>
 
-            <RadioButton
-                android:id="@+id/rb_0"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:button="@null"
-                android:text="0-49"
-                android:textSize="@dimen/sp_24"
-                android:textColor="@drawable/color_black_gray_selector"
-                android:textStyle="bold"
-                android:checked="true"
-                android:gravity="center"
-                android:background="@drawable/bg_rb_line_selector"/>
 
-            <RadioButton
-                android:id="@+id/rb_1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="44dp"
-                android:button="@null"
-                android:gravity="center"
-                android:text="50-99"
-                android:textSize="@dimen/sp_24"
-                android:textStyle="bold"
-                android:textColor="@drawable/color_black_gray_selector"
-                android:background="@drawable/bg_rb_line_selector"/>
-
-            <RadioButton
-                android:id="@+id/rb_2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="44dp"
-                android:button="@null"
-                android:gravity="center"
-                android:text="100-150"
-                android:textSize="@dimen/sp_24"
-                android:textStyle="bold"
-                android:textColor="@drawable/color_black_gray_selector"
-                android:background="@drawable/bg_rb_line_selector"/>
-
-        </RadioGroup>
-
-        <ImageView
-            android:id="@+id/iv_close"
-            android:layout_width="@dimen/dp_45"
-            android:layout_height="@dimen/dp_45"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_close"
-            android:scaleType="center"
-            android:background="@drawable/click_btn_transparent_line_black"
-            />
-    </RelativeLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
+    <include
+        layout="@layout/common_dialog_ok"
         />
 
 </LinearLayout>

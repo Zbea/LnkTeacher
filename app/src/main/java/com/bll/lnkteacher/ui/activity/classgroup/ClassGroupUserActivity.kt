@@ -48,11 +48,11 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
     override fun onAllowSuccess() {
         if (mClassGroup?.isAllowJoin==1){
             mClassGroup?.isAllowJoin=2
-            setPageSetting("打开班群")
+            setPageCustom("打开班群")
         }
         else{
             mClassGroup?.isAllowJoin=1
-            setPageSetting("关闭班群")
+            setPageCustom("关闭班群")
         }
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
@@ -73,7 +73,7 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
     }
 
     override fun initView() {
-        setPageTitle(R.string.details)
+        setPageTitle("${mClassGroup?.name}  详情")
         if (mClassGroup?.state==1){
             setPageSetting("教师详情")
             if (mClassGroup?.userId==mUserId)
@@ -99,6 +99,11 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
             }
         }
 
+        initRecyclerView()
+    }
+
+
+    private fun initRecyclerView(){
         rv_list.layoutManager = LinearLayoutManager(this)//创建布局管理
         mAdapter = ClassGroupUserAdapter(R.layout.item_classgroup_user, isCreate, users)
         rv_list.adapter = mAdapter
@@ -116,15 +121,16 @@ class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView
                 }
             }
         }
-
     }
+
 
 
     /**
      * 踢出学生
      */
     private fun outDialog() {
-        CommonDialog(this).setContent(R.string.classgroup_is_kick_tips).builder().setDialogClickListener(object :
+        val titleStr="确认踢出${users[position].nickname}同学?"
+        CommonDialog(this).setContent(titleStr).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {
             }

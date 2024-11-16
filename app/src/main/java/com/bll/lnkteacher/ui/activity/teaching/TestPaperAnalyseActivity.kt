@@ -69,7 +69,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         users.clear()
         totalAnalyseItems.clear()
 
-        var totalScore = 0
+        var totalScore = 0.0
         for (userItem in bean.taskList) {
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
@@ -259,7 +259,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                         tv_pop_score.text = "$scoreIndex"
                         tv_info_score.text = "以上"
                     }
-                    tv_num_score.text = getScoreNum().toString()
+                    tv_num_score.text ="${getScoreNum()}"
                 }
             }
 
@@ -274,7 +274,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                     } else {
                         tv_info_topic.text = "以上"
                     }
-                    tv_num_score.text = getScoreNum().toString()
+                    tv_num_score.text = "${getScoreNum()}"
                 }
             }
         }
@@ -317,7 +317,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 }
             } else {
                 if (scoreIndex == 0) {
-                    if (item.score == 0) {
+                    if (item.score.toInt() == 0) {
                         num += 1
                     }
                 } else {

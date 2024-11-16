@@ -16,8 +16,6 @@ class InputContentDialog(val context: Context, private val screenPos:Int,val str
     constructor(context: Context ,screenPos: Int,string: String) :this(context,screenPos,string,0)
     constructor(context: Context ,string: String) :this(context,1,string,0)
 
-    private var tvName:EditText?=null
-
     fun builder(): InputContentDialog{
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_input_content)
@@ -36,10 +34,10 @@ class InputContentDialog(val context: Context, private val screenPos:Int,val str
 
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
-        tvName = dialog.findViewById(R.id.ed_name)
+        val tvName = dialog.findViewById<EditText>(R.id.ed_name)
         tvName?.hint=string
         if (type==1)
-            tvName?.inputType = InputType.TYPE_CLASS_NUMBER // 设置输入类型为数字
+            tvName.inputType=InputType.TYPE_CLASS_NUMBER
 
         btn_cancel.setOnClickListener {
             dialog.dismiss()

@@ -13,4 +13,5 @@ public class ClassGroupUser {
     public String parentAddr;
     public String job;
     public boolean isCheck;
+    public boolean isDisable;
 }

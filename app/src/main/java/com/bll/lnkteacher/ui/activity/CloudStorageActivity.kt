@@ -6,9 +6,13 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
-import com.bll.lnkteacher.ui.fragment.cloud.*
+import com.bll.lnkteacher.ui.fragment.cloud.CloudBookcaseFragment
+import com.bll.lnkteacher.ui.fragment.cloud.CloudDiaryFragment
+import com.bll.lnkteacher.ui.fragment.cloud.CloudNoteFragment
+import com.bll.lnkteacher.ui.fragment.cloud.CloudScreenshotFragment
+import com.bll.lnkteacher.ui.fragment.cloud.CloudTextbookFragment
 import com.liulishuo.filedownloader.FileDownloader
-import kotlinx.android.synthetic.main.ac_cloud_storage.*
+import kotlinx.android.synthetic.main.ac_cloud_storage.rv_list
 
 class CloudStorageActivity:BaseActivity() {
     private var lastPosition = 0
@@ -19,7 +23,6 @@ class CloudStorageActivity:BaseActivity() {
     private var textbookFragment: CloudTextbookFragment? = null
     private var noteFragment: CloudNoteFragment? = null
     private var diaryFragment: CloudDiaryFragment? = null
-    private var freeNoteFragment: CloudFreeNoteFragment? = null
     private var screenshotFragment: CloudScreenshotFragment? = null
 
     override fun layoutId(): Int {
@@ -44,7 +47,6 @@ class CloudStorageActivity:BaseActivity() {
         textbookFragment= CloudTextbookFragment()
         noteFragment= CloudNoteFragment()
         diaryFragment = CloudDiaryFragment()
-        freeNoteFragment= CloudFreeNoteFragment()
         screenshotFragment = CloudScreenshotFragment()
 
         switchFragment(lastFragment, bookcaseFragment)

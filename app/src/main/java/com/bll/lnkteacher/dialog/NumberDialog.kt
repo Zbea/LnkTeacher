@@ -3,99 +3,72 @@ package com.bll.lnkteacher.dialog
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
-import android.widget.ImageView
-import android.widget.RadioGroup
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.EditText
+import android.widget.TextView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
-import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 
-class NumberDialog(val context: Context,val totalNum:Int=-1) {
+class NumberDialog(val context: Context,val screenPos:Int,val string: String,val totalNum:Double=-1.0) {
 
-    private var list= mutableListOf<ItemList>()
+    constructor(context: Context ,screenPos: Int,string: String) :this(context,screenPos,string,-1.0)
+    constructor(context: Context ,string: String) :this(context,1,string,-1.0)
 
     fun builder(): NumberDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_score_number)
+        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog.window!!
-        window.setBackgroundDrawableResource(android.R.color.transparent)
-        val layoutParams =window.attributes
-        layoutParams.width=Constants.WIDTH
-        layoutParams?.gravity = Gravity.TOP or Gravity.END
-        layoutParams?.y=DP2PX.dip2px(context,38f)
+        val layoutParams=window.attributes
+        if (screenPos==1){
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.START
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
+        }
+        else{
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,450f))/2
+        }
         dialog.show()
 
-        for (i in 0..49){
-            list.add(ItemList(i,i.toString()))
-        }
+        val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
+        val tvName = dialog.findViewById<EditText>(R.id.ed_name)
+        tvName?.hint=string
 
-        val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
-        rv_list?.layoutManager = GridLayoutManager(context,12)
-        val mAdapter = MyAdapter(R.layout.item_number, list)
-        rv_list?.adapter = mAdapter
-        mAdapter.bindToRecyclerView(rv_list)
-        rv_list.addItemDecoration(SpaceGridItemDeco(12,20))
-        mAdapter.setOnItemClickListener { adapter, view, position ->
-            if (totalNum>0&&list[position].id>totalNum){
-                SToast.showText(2,"输入最大分数为$totalNum")
-                return@setOnItemClickListener
-            }
-            listener?.onClick(list[position].id)
+        btn_cancel.setOnClickListener {
             dialog.dismiss()
         }
-
-        val rg_group=dialog.findViewById<RadioGroup>(R.id.rg_group)
-        rg_group?.setOnCheckedChangeListener { radioGroup, id ->
-            when(id){
-                R.id.rb_0->{
-                    list.clear()
-                    for (i in 0..49){
-                        list.add(ItemList(i,i.toString()))
+        btn_ok.setOnClickListener {
+            val content = tvName?.text.toString()
+            if (content.isNotEmpty()) {
+                val score=content.toDouble()
+                if (totalNum>0){
+                    if (totalNum>=score){
+                        dialog.dismiss()
+                        listener?.onClick(score)
                     }
-                    mAdapter.setNewData(list)
+                    else{
+                        SToast.showText(screenPos,"最大只能输入$totalNum")
+                    }
                 }
-                R.id.rb_1->{
-                    list.clear()
-                    for (i in 50..99){
-                        list.add(ItemList(i,i.toString()))
-                    }
-                    mAdapter.setNewData(list)
-                }
-                R.id.rb_2->{
-                    list.clear()
-                    for (i in 100..150){
-                        list.add(ItemList(i,i.toString()))
-                    }
-                    mAdapter.setNewData(list)
+                else{
+                    dialog.dismiss()
+                    listener?.onClick(score)
                 }
             }
         }
-
-        val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
-        ivClose.setOnClickListener {
-            dialog.dismiss()
+        dialog.setOnDismissListener {
+            KeyboardUtils.hideSoftKeyboard(context)
         }
-
         return this
-    }
-
-
-    class MyAdapter(layoutResId: Int, data: List<ItemList>?) : BaseQuickAdapter<ItemList, BaseViewHolder>(layoutResId, data) {
-        override fun convert(helper: BaseViewHolder, item: ItemList) {
-            helper.setText(R.id.tv_name,item.name)
-        }
     }
 
     var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(num:Int)
+        fun onClick(num:Double)
     }
 
     fun setDialogClickListener(onDialogClickListener: OnDialogClickListener) {

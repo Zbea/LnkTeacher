@@ -68,7 +68,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     val map= HashMap<String, Any>()
                     map["id"]=userItems[posUser].id
                     map["schoolExamJobId"]=userItems[posUser].schoolExamJobId
-                    map["score"]=tv_total_score.text.toString().toInt()
+                    map["score"]=tv_total_score.text.toString().toDouble()
                     map["teacherUrl"]=url
                     map["classId"]=userItems[posUser].classId
                     map["status"]=2
@@ -106,7 +106,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].studentName+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=tv_total_score.text.toString().toInt()
+        userItems[posUser].score=tv_total_score.text.toString().toDouble()
         userItems[posUser].teacherUrl=url
         userItems[posUser].status=2
         userItems[posUser].question=toJson(currentScores)
@@ -147,8 +147,8 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         tv_total_score.setOnClickListener {
             val item=userItems[posUser]
             if (item.status==1){
-                NumberDialog(this).builder().setDialogClickListener{
-                    tv_total_score.text=it.toString()
+                NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
+                    tv_total_score.text= it.toString()
                 }
             }
         }

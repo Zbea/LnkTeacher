@@ -11,8 +11,7 @@ class ClassGroupUserSelectorAdapter(layoutResId: Int ,data: List<ClassGroupUser>
         helper.apply {
             setText(R.id.tv_name,item.nickname)
             helper.setText(R.id.tv_name,item.nickname)
-            helper.setImageResource(R.id.cb_check,if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
-            helper.addOnClickListener(R.id.cb_check)
+            helper.setImageResource(R.id.cb_check,if (item.isDisable) R.mipmap.icon_check_focuse else if (item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
         }
     }
 }

@@ -20,11 +20,13 @@ class LearningHomeworkAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
         helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
-        var classStr=""
-        for(ite in item.examList){
-            classStr+=ite.name+"   "
+        if (!item.examList.isNullOrEmpty()){
+            var classStr=""
+            for(ite in item.examList){
+                classStr+=ite.name+"   "
+            }
+            helper.setText(tv_exam_class, "布置班级：$classStr")
         }
-        helper.setText(tv_exam_class, "布置班级：$classStr")
     }
 
 

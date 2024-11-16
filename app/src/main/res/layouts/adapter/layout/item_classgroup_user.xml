@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_24"
         android:lines="1"
         android:ellipsize="end"
         android:text=""
@@ -39,7 +39,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_24"
         android:lines="1"
         android:ellipsize="end"
         />
@@ -51,7 +51,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_24"
         android:lines="1"
         android:ellipsize="end"
         />
@@ -75,7 +75,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_24"
         android:hint="职务"
         android:lines="1"
         android:ellipsize="end"
@@ -88,7 +88,8 @@
         android:text="踢出"
         android:gravity="center"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_25"
+        android:textSize="@dimen/sp_24"
+        android:background="@drawable/click_btn_transparent_line_black"
         />
 
 

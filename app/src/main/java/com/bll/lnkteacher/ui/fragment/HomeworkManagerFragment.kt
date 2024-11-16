@@ -118,10 +118,10 @@ class HomeworkManagerFragment : BaseMainFragment(){
                         homeworkAssignFragment?.showAssignDetails()
                     }
                     1->{
-                        showCreateHomeworkName(item.name, item.id)
+                        showCreateHomeworkName("输入作业本名称", item.id)
                     }
                     else->{
-                        showCreateHomeworkName(item.name, item.id)
+                        showCreateHomeworkName("输入作业卷名称", item.id)
                     }
                 }
             }
@@ -134,13 +134,13 @@ class HomeworkManagerFragment : BaseMainFragment(){
         HomeworkCreateDialog(requireContext(),grade, hint).builder()
             .setOnDialogClickListener { str,ids ->
                 var subtype=2
-                var typeName=getString(R.string.teaching_book)
+                var typeName="作业本"
                 if (typeId==2){
                     subtype=1
-                    typeName=getString(R.string.teaching_reel)
+                    typeName="作业卷"
                 }
                 val homeworkType = TypeBean()
-                homeworkType.name = str+ typeName
+                homeworkType.name = str+typeName
                 homeworkType.subType = typeId
                 homeworkAssignFragment?.addHomeworkType(homeworkType,subtype,ids)
             }

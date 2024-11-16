@@ -31,7 +31,7 @@ class LongClickManageDialog(val context: Context,val screenPos:Int, val name:Str
         else{
             layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
         }
-        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,460F))/2
+        layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
         dialog.show()
 
 
@@ -46,7 +46,7 @@ class LongClickManageDialog(val context: Context,val screenPos:Int, val name:Str
         rv_list?.layoutManager = GridLayoutManager(context,2)
         val mAdapter = MyAdapter(R.layout.item_long_click, lists)
         rv_list?.adapter = mAdapter
-        rv_list?.addItemDecoration(SpaceGridItemDeco2(25, 20))
+        rv_list?.addItemDecoration(SpaceGridItemDeco2(20, 30))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
             onClickListener?.onClick(position)

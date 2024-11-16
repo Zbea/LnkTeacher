@@ -39,7 +39,12 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         showToast("短信发送成功")
     }
 
+    override fun onCheckSuccess() {
+        editPhone()
+    }
+
     override fun onEditPhone() {
+        showToast("修改手机号码成功")
         mUser?.telNumber=phone
         tv_phone.text=phone
     }
@@ -101,7 +106,9 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
         btn_edit_phone.setOnClickListener {
             presenter.sms(mUser?.telNumber!!)
-            editPhone()
+            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
+                presenter.checkPhone(it)
+            }
         }
 
         btn_logout.setOnClickListener {
@@ -119,11 +126,15 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
 
 
     private fun editPhone(){
-        EditPhoneDialog(this).builder().setOnDialogClickListener{
-            code,phone->
-            this.phone=phone
-            presenter.editPhone(code, phone)
-        }
+        EditPhoneDialog(this).builder().setOnDialogClickListener(object : EditPhoneDialog.OnDialogClickListener {
+            override fun onClick(code: String, phone: String) {
+                this@AccountInfoActivity.phone=phone
+                presenter.editPhone(code, phone)
+            }
+            override fun onPhone(phone: String) {
+                presenter.sms(phone)
+            }
+        })
     }
 
     /**

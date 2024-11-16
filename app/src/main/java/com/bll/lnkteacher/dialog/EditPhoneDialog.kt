@@ -1,7 +1,9 @@
 package com.bll.lnkteacher.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.os.CountDownTimer
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.R
@@ -18,6 +20,7 @@ class EditPhoneDialog(val context: Context) {
         val ed_phone = dialog.findViewById<EditText>(R.id.ed_phone)
         val ed_code = dialog.findViewById<EditText>(R.id.ed_code)
         val btn_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        val btn_code = dialog.findViewById<TextView>(R.id.btn_code)
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
 
         btn_cancel.setOnClickListener {
@@ -34,6 +37,25 @@ class EditPhoneDialog(val context: Context) {
                 }
             }
         }
+        btn_code.setOnClickListener {
+            val phone=ed_phone.text.toString()
+            if (phone.isNotEmpty()){
+                listener?.onPhone(phone)
+                btn_code.isEnabled = false
+                btn_code.isClickable = false
+                object : CountDownTimer(60 * 1000, 1000) {
+                    override fun onFinish() {
+                        btn_code.isEnabled = true
+                        btn_code.isClickable = true
+                        btn_code.text = "获取验证码"
+                    }
+                    @SuppressLint("SetTextI18n")
+                    override fun onTick(millisUntilFinished: Long) {
+                        btn_code.text = "${millisUntilFinished / 1000}s"
+                    }
+                }.start()
+            }
+        }
 
         dialog.setOnDismissListener {
             KeyboardUtils.hideSoftKeyboard(context)
@@ -43,8 +65,9 @@ class EditPhoneDialog(val context: Context) {
 
     private var listener: OnDialogClickListener? = null
 
-    fun interface OnDialogClickListener {
+    interface OnDialogClickListener {
         fun onClick(code: String,phone:String)
+        fun onPhone(phone: String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener) {

@@ -43,7 +43,7 @@
                 android:padding="@dimen/click_line_width"
                 android:text="截图"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_24" />
 
 
             <TextView
@@ -57,7 +57,7 @@
                 android:padding="@dimen/click_line_width"
                 android:text="规划"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_22" />
+                android:textSize="@dimen/sp_24" />
         </LinearLayout>
 
     </RelativeLayout>

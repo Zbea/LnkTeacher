@@ -18,11 +18,9 @@ import com.bll.lnkteacher.dialog.DiaryUploadListDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
-import com.bll.lnkteacher.manager.FreeNoteDaoManager
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.CloudListBean
-import com.bll.lnkteacher.mvp.model.FreeNoteBean
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
@@ -263,7 +261,8 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                 setCallBack{
                     cloudList.add(CloudListBean().apply {
                         type=4
-                        subTypeStr=diaryUploadTitleStr
+                        title=diaryUploadTitleStr
+                        subTypeStr="我的日记"
                         year=DateUtils.getYear()
                         date=time
                         listJson= Gson().toJson(diarys)
@@ -272,43 +271,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                     mCloudUploadPresenter.upload(cloudList)
                     uploadType=1
                 }
-            }
-        }
-    }
-
-    /**
-     * 每年上传随笔
-     */
-    fun uploadFreeNote(token:String){
-        cloudList.clear()
-        val beans=FreeNoteDaoManager.getInstance().queryListByType()
-        val nullItems= mutableListOf<FreeNoteBean>()
-        for (item in beans){
-            val fileName=DateUtils.longToString(item.date)
-            val path=FileAddress().getPathFreeNote(fileName)
-            if (FileUtils.isExistContent(path)){
-                FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=5
-                            subTypeStr="随笔"
-                            year=DateUtils.getYear()
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(item)
-                            downloadUrl=it
-                        })
-                        //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== beans.size-nullItems.size){
-                            mCloudUploadPresenter.upload(cloudList)
-                            uploadType=2
-                        }
-                    }
-                }
-            }
-            else{
-                //没有内容不上传
-                nullItems.add(item)
             }
         }
     }
@@ -344,7 +306,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                         //当加入上传的内容等于全部需要上传时候，则上传
                         if (cloudList.size== screenTypes.size-nullItems.size){
                             mCloudUploadPresenter.upload(cloudList)
-                            uploadType=3
+                            uploadType=2
                         }
                     }
                 }
@@ -369,11 +331,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                 showToast("日记上传成功")
             }
             2->{
-                val path=FileAddress().getPathFreeNote(DateUtils.longToString(System.currentTimeMillis()))
-                FileUtils.deleteFile(File(path).parentFile)
-                FreeNoteDaoManager.getInstance().clear()
-            }
-            3->{
                 val path=FileAddress().getPathScreen("未分类")
                 FileUtils.deleteFile(File(path).parentFile)
                 ItemTypeDaoManager.getInstance().clear(3)

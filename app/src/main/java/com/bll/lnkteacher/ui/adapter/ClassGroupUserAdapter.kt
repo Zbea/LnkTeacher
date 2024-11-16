@@ -11,7 +11,7 @@ class ClassGroupUserAdapter(layoutResId: Int, private var isHeadTeacher:Boolean,
     override fun convert(helper: BaseViewHolder, item: ClassGroupUser) {
         helper.apply {
             setText(R.id.tv_name,item.nickname)
-            setText(R.id.tv_birthday,DateUtils.longToStringDataNoHour(item.birthdayTime*1000))
+            setText(R.id.tv_birthday,DateUtils.longToStringDataNoHour(item.birthdayTime))
             setText(R.id.tv_parent,item.parentName)
             setText(R.id.tv_parent_name,item.parentNickname)
             setText(R.id.tv_phone,item.parentTel)

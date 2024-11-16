@@ -15,7 +15,7 @@ public class ExamClassUserList implements Serializable {
         public String teacherUrl;
         public String studentUrl;
         public int status;//3学生未提交1已提交未批改2已批改
-        public int score;
+        public double score;
         public String studentName;
         public boolean isCheck;
         public String question;//题目数据

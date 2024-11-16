@@ -4,7 +4,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -15,10 +14,8 @@ import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class NotebookManagerActivity : BaseActivity() {
 
@@ -88,22 +85,16 @@ class NotebookManagerActivity : BaseActivity() {
                 }
                 override fun ok() {
                     val noteType=noteBooks[position]
-                    noteBooks.removeAt(position)
-                    //删除笔记本
-                    ItemTypeDaoManager.getInstance().deleteBean(noteType)
-
-                    val notebooks= NoteDaoManager.getInstance().queryAll(noteType.title)
-                    //删除该笔记分类中的所有笔记本及其内容
-                    for (note in notebooks){
-                        NoteDaoManager.getInstance().deleteBean(note)
-                        NoteContentDaoManager.getInstance().deleteType(note.typeStr,note.title)
-                        val path= FileAddress().getPathNote(note.typeStr,note.title)
-                        FileUtils.deleteFile(File(path))
+                    val notes= NoteDaoManager.getInstance().queryAll(noteType.title)
+                    if (notes.isNotEmpty()){
+                        showToast("笔记本还有主题,无法删除")
                     }
-
-                    setNotify()
+                    else{
+                        noteBooks.removeAt(position)
+                        ItemTypeDaoManager.getInstance().deleteBean(noteType)
+                        setNotify()
+                    }
                 }
-
             })
     }
 

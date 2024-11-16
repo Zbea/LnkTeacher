@@ -41,8 +41,7 @@ import kotlinx.android.synthetic.main.common_title.tv_type
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextBookStoreActivity : BaseActivity(),
-    IContractView.IBookStoreView {
+class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private var tabId = 0
     private var tabStr = ""

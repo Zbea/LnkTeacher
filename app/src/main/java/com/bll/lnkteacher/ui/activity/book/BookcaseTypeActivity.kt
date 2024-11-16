@@ -36,7 +36,6 @@ class BookcaseTypeActivity : BaseActivity() {
     private var typeStr = ""//当前分类
     private var pos = 0 //当前书籍位置
     private val mBookDaoManager=BookGreenDaoManager.getInstance()
-    private var bookTypes= mutableListOf<ItemTypeBean>()
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
 
@@ -64,18 +63,18 @@ class BookcaseTypeActivity : BaseActivity() {
     }
 
     private fun initTab() {
-        bookTypes = ItemTypeDaoManager.getInstance().queryAll(2)
-        bookTypes.add(0,ItemTypeBean().apply {
+        itemTabTypes = ItemTypeDaoManager.getInstance().queryAll(2)
+        itemTabTypes.add(0,ItemTypeBean().apply {
             title = "全部"
         })
-        bookTypes[pos].isCheck=true
-        mTabTypeAdapter?.setNewData(bookTypes)
+        itemTabTypes[pos].isCheck=true
+        mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
         pageIndex = 1
-        typeStr = bookTypes[position].title
+        typeStr = itemTabTypes[position].title
         if (position == 0)
             typeStr = ""
         fetchData()
@@ -123,7 +122,7 @@ class BookcaseTypeActivity : BaseActivity() {
                         bookTypeBean.date=System.currentTimeMillis()
                         bookTypeBean.title=it
                         ItemTypeDaoManager.getInstance().insertOrReplace(bookTypeBean)
-                        mTabTypeAdapter?.addData(bookTypes.size,bookTypeBean)
+                        mTabTypeAdapter?.addData(bookTypeBean)
                     }
                 }
                 1 -> {
@@ -135,20 +134,20 @@ class BookcaseTypeActivity : BaseActivity() {
                     ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
                         val typeNameStr=types[it].title
                         val books = mBookDaoManager.queryAllBook(typeNameStr)
-                        if (books.size>0){
+                        if (books.isNotEmpty()){
                             showToast("分类存在书籍，无法删除")
                             return@setOnDialogClickListener
                         }
                         ItemTypeDaoManager.getInstance().deleteBean(types[it])
                         var index = 0
-                        for (i in bookTypes.indices) {
-                            if (typeNameStr == bookTypes[i].title) {
+                        for (i in itemTabTypes.indices) {
+                            if (typeNameStr == itemTabTypes[i].title) {
                                 index = i
                             }
                         }
                         mTabTypeAdapter?.remove(index)
                         if (typeStr==typeNameStr){
-                            bookTypes[0].isCheck=true
+                            itemTabTypes[0].isCheck=true
                             typeStr=""
                             mTabTypeAdapter?.notifyItemChanged(0)
                             fetchData()

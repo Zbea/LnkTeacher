@@ -29,6 +29,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
@@ -343,14 +344,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             rv_tab.adapter = this
             bindToRecyclerView(rv_tab)
             setOnItemClickListener { adapter, view, position ->
-                for (item in itemTabTypes){
+                for (item in data){
                     item.isCheck=false
                 }
-                if (position<itemTabTypes.size){
-                    val item=itemTabTypes[position]
+                if (position<data.size){
+                    val item=data[position]
                     item.isCheck=true
                     mTabTypeAdapter?.notifyDataSetChanged()
-
                     onTabClickListener(view,position)
                 }
             }
@@ -389,7 +389,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         when(view.id){
                             R.id.tv_score->{
                                 if (scoreMode==1){
-                                    NumberDialog(this@BaseActivity,item.label).builder().setDialogClickListener{
+                                    NumberDialog(this@BaseActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
                                         if (item.label!=it){
                                             item.result=0
                                         }
@@ -433,17 +433,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         when(view.id){
                             R.id.tv_score->{
                                 if (scoreMode==1){
-                                    NumberDialog(this@BaseActivity,childItem.label).builder().setDialogClickListener{
+                                    NumberDialog(this@BaseActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
                                         if (childItem.label!=it){
                                             childItem.result=0
                                         }
                                         childItem.score= it.toString()
                                         //获取小题总分
-                                        var scoreTotal=0
+                                        var scoreTotal=0.0
                                         for (item in scoreItem.childScores){
                                             scoreTotal+=MethodManager.getScore(item.score)
                                         }
-                                        scoreItem.score=scoreTotal.toString()
+                                        scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
                                         notifyItemChanged(position)
                                         setTotalScore()
                                     }
@@ -459,11 +459,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                 if (scoreMode==1){
                                     childItem.score= (childItem.result*childItem.label).toString()
                                     //获取小题总分
-                                    var scoreTotal=0
+                                    var scoreTotal=0.0
                                     for (item in scoreItem.childScores){
                                         scoreTotal+=MethodManager.getScore(item.score)
                                     }
-                                    scoreItem.score=scoreTotal.toString()
+                                    scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
                                 }
                                 else{
                                     var totalRight=0
@@ -489,11 +489,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
      */
     private fun setTotalScore(){
         if (tv_total_score!=null){
-            var total=0
+            var total=0.0
             for (item in currentScores){
                 total+=MethodManager.getScore(item.score)
             }
-            tv_total_score.text=total.toString()
+            tv_total_score.text=ToolUtils.getFormatNum(total,"0.0")
         }
     }
 
@@ -700,17 +700,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                     sort=i
                     if (scoreMode==1){
                         //统计小题标准分
-                        var totalLabel=0
+                        var totalLabel=0.0
                         for (item in scores[i]){
                             totalLabel+=item.label
                         }
                         label=totalLabel
                         //统计小题得分
-                        var totalItem=0
+                        var totalItem=0.0
                         for (item in scores[i]){
                             totalItem+= MethodManager.getScore(item.score)
                         }
-                        score=totalItem.toString()
+                        score=ToolUtils.getFormatNum(totalItem,"0.0")
                         result=if (totalLabel==totalItem) 1 else 0
                     }
                     else{
@@ -722,7 +722,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                 totalRight+= 1
                             }
                         }
-                        label=scores.size
+                        label=scores.size.toDouble()
                         score=totalRight.toString()
                         result=if (scores.size==totalRight) 1 else 0
                     }

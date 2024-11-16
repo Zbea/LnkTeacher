@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -79,7 +81,7 @@ public class MethodManager {
     /**
      * 跳转阅读器
      * @param type 1书籍 2课本
-     *             key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
+     *        key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      * @param context
      * @param bookBean
      */
@@ -90,7 +92,6 @@ public class MethodManager {
         bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
-        EventBus.getDefault().post(Constants.BOOK_EVENT);
 
         List<AppBean> toolApps= getAppTools(context,1);
         JSONArray result = getJsonArray(toolApps);
@@ -118,6 +119,9 @@ public class MethodManager {
         intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
+
+        Handler handler=new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> EventBus.getDefault().post(type==1?Constants.BOOK_EVENT : Constants.TEXT_BOOK_EVENT ),5000);
     }
 
     /**
@@ -353,12 +357,12 @@ public class MethodManager {
      * @param scoreStr
      * @return
      */
-    public static int getScore(String scoreStr){
-        if (scoreStr==null||scoreStr.isEmpty()||!TextUtils.isDigitsOnly(scoreStr)){
+    public static double getScore(String scoreStr){
+        if (scoreStr==null||scoreStr.isEmpty()){
             return 0;
         }
         else {
-            return Integer.parseInt(scoreStr);
+            return Double.parseDouble(scoreStr);
         }
     }
 

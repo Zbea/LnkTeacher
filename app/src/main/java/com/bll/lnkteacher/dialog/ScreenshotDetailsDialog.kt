@@ -6,7 +6,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.FileAddress
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.mvp.model.ItemDetailsBean
@@ -52,7 +51,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
         tv_title.text="截图明细"
 
-        val tv_total=dialog.findViewById<TextView>(R.id.tv_book_total)
+        val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
         tv_total.text="总计：${total}条"
 
         val rv_list=dialog.findViewById<MaxRecyclerView>(R.id.rv_list)
@@ -62,10 +61,10 @@ class ScreenshotDetailsDialog(val context: Context) {
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
         mAdapter.setOnChildClickListener{ parentPos,pos->
-            dialog.dismiss()
-            val path=screenTypes[parentPos].path
-            val files=FileUtils.getDescFiles(path)
-            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
+//            dialog.dismiss()
+//            val path=screenTypes[parentPos].path
+//            val files=FileUtils.getDescFiles(path)
+//            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
         }
 
         return this

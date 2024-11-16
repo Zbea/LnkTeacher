@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/sp_25"
         android:textColor="@color/black"
-        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_20"
         android:lines="1"
         />
 

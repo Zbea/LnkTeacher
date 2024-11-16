@@ -9,9 +9,11 @@ import com.bll.lnkteacher.mvp.presenter.ClassGroupChildPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ClassGroupUserSelectorAdapter
 import kotlinx.android.synthetic.main.ac_classgroup_child_manage.rv_list_all
+import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_add
+import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_class_child_name
+import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_class_name
+import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_out
 import kotlinx.android.synthetic.main.ac_list.rv_list
-import kotlinx.android.synthetic.main.common_title.tv_btn_1
-import kotlinx.android.synthetic.main.common_title.tv_btn_2
 
 class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupChildView {
 
@@ -19,7 +21,6 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
     private var mClassGroup: ClassGroup? = null
     private var allUsers = mutableListOf<ClassGroupUser>()
     private var currentUsers = mutableListOf<ClassGroupUser>()
-    private val surplusUsers=mutableListOf<ClassGroupUser>()
     private var mCurrentAdapter: ClassGroupUserSelectorAdapter? = null
     private var mAllAdapter: ClassGroupUserSelectorAdapter? = null
 
@@ -32,20 +33,18 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
         currentUsers=users
         mCurrentAdapter?.setNewData(currentUsers)
 
-        surplusUsers.clear()
-        surplusUsers.addAll(allUsers)
-        val repetitionUsers=mutableListOf<ClassGroupUser>()
-        for (item in surplusUsers){
+        for (item in allUsers){
+            item.isDisable=false
+            item.isCheck=false
+        }
+        for (item in allUsers){
             for (ite in currentUsers){
                 if (ite.studentId==item.studentId){
-                    repetitionUsers.add(item)
+                    item.isDisable=true
                 }
             }
         }
-        for (item in repetitionUsers){
-            surplusUsers.remove(item)
-        }
-        mAllAdapter?.setNewData(surplusUsers)
+        mAllAdapter?.setNewData(allUsers)
     }
 
     override fun onClassGroupChildList(classItems: MutableList<ClassGroup>) {
@@ -71,12 +70,12 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
 
     override fun initView() {
         setPageTitle(mClassGroup?.name+"    管理")
-        showView(tv_btn_2,tv_btn_1)
+        tv_class_name.text=intent.getStringExtra("className")+"  学生名单"
+        tv_class_child_name.text=mClassGroup?.name+"  学生名单"
 
-        tv_btn_2.text="添加"
-        tv_btn_2.setOnClickListener {
+        tv_add.setOnClickListener {
             val selectIds= mutableListOf<Int>()
-            for (item in surplusUsers){
+            for (item in allUsers){
                 if (item.isCheck)
                     selectIds.add(item.studentId)
             }
@@ -85,8 +84,7 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
             }
         }
 
-        tv_btn_1.text="踢出"
-        tv_btn_1.setOnClickListener {
+        tv_out.setOnClickListener {
             val selectIds= mutableListOf<Int>()
             for (item in currentUsers){
                 if (item.isCheck)
@@ -102,27 +100,25 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
     }
 
     private fun initRecycleView(){
-        rv_list.layoutManager = GridLayoutManager(this,3)
+        rv_list.layoutManager = GridLayoutManager(this,6)
         mCurrentAdapter = ClassGroupUserSelectorAdapter(R.layout.item_classgroup_user_selector, null)
         rv_list.adapter = mCurrentAdapter
         mCurrentAdapter?.bindToRecyclerView(rv_list)
-        mCurrentAdapter?.setOnItemChildClickListener  { adapter, view, position ->
+        mCurrentAdapter?.setOnItemClickListener { adapter, view, position ->
             val item= currentUsers[position]
-            if (view.id==R.id.cb_check){
-                item.isCheck=!item.isCheck
-                mCurrentAdapter?.notifyItemChanged(position)
-            }
+            item.isCheck=!item.isCheck
+            mCurrentAdapter?.notifyItemChanged(position)
         }
     }
 
     private fun initRecycleViewAll(){
-        rv_list_all.layoutManager = GridLayoutManager(this,3)
+        rv_list_all.layoutManager = GridLayoutManager(this,6)
         mAllAdapter = ClassGroupUserSelectorAdapter(R.layout.item_classgroup_user_selector, null)
         rv_list_all.adapter = mAllAdapter
         mAllAdapter?.bindToRecyclerView(rv_list_all)
-        mAllAdapter?.setOnItemChildClickListener  { adapter, view, position ->
-            val item= surplusUsers[position]
-            if (view.id==R.id.cb_check){
+        mAllAdapter?.setOnItemClickListener  { adapter, view, position ->
+            val item= allUsers[position]
+            if (!item.isDisable){
                 item.isCheck=!item.isCheck
                 mAllAdapter?.notifyItemChanged(position)
             }

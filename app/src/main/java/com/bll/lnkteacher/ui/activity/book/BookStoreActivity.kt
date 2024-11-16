@@ -13,12 +13,12 @@ import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.book.Book
-import com.bll.lnkteacher.mvp.model.book.BookStore
-import com.bll.lnkteacher.mvp.model.book.BookStoreType
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.book.Book
+import com.bll.lnkteacher.mvp.model.book.BookStore
+import com.bll.lnkteacher.mvp.model.book.BookStoreType
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
@@ -39,7 +39,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private var tabStr=""
     private var type=0
-    private val mDownMapPool = HashMap<Int, BaseDownloadTask>()//下载管理
     private val presenter = BookStorePresenter(this)
     private var books = mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter? = null
@@ -60,13 +59,13 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     override fun onType(bookStoreType: BookStoreType) {
         //子分类
         val types = bookStoreType.subType[tabStr]
-        if (types?.size!! >0){
+        if (types?.isNotEmpty() == true){
             subTypeList=types
             subTypeStr=types[0].desc
             subType=types[0].type
             initTab()
+            fetchData()
         }
-        fetchData()
     }
 
     override fun buyBookSuccess() {
@@ -111,19 +110,13 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             .setOnSelectListener { item ->
                 grade = item.id
                 tv_subgrade.text = item.name
-                typeFindData()
+                pageIndex = 1
+                fetchData()
             }
         }
 
     }
 
-    /**
-     * 分类查找上
-     */
-    private fun typeFindData(){
-        pageIndex = 1
-        fetchData()
-    }
 
     private fun initTab() {
         for (i in subTypeList.indices) {
@@ -138,7 +131,8 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     override fun onTabClickListener(view: View, position: Int) {
         subTypeStr = subTypeList[position].desc
         subType=subTypeList[position].type
-        typeFindData()
+        pageIndex = 1
+        fetchData()
     }
 
     private fun initRecyclerView() {
@@ -170,8 +164,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             if (book.buyStatus==1){
                 val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookPlusId)
                 if (localBook == null) {
-                    val downloadTask = downLoadStart(book.downloadUrl,book)
-                    mDownMapPool[book.bookId] = downloadTask!!
+                    downLoadStart(book.downloadUrl,book)
                 } else {
                     book.loadSate =2
                     showToast(R.string.toast_downloaded)
@@ -198,7 +191,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 FileDownManager.SingleTaskCallBack {
 
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    if (task != null && task.isRunning && task == mDownMapPool[book.bookId]) {
+                    if (task != null && task.isRunning ) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
                                     "/"+
@@ -210,8 +203,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
-                    //删除缓存 poolmap
-                    deleteDoneTask(task)
                     book.apply {
                         loadSate = 2
                         category=1
@@ -235,32 +226,11 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()
-                    deleteDoneTask(task)
                     showToast(book.bookName+getString(R.string.book_download_fail))
                     downloadBookDialog?.setChangeStatus()
                 }
             })
         return download
-    }
-
-    /**
-     * 下载完成 需要删除列表
-     */
-    private fun deleteDoneTask(task: BaseDownloadTask?) {
-
-        if (mDownMapPool.isNotEmpty()) {
-            //拿出map中的键值对
-            val entries = mDownMapPool.entries
-            val iterator = entries.iterator()
-            while (iterator.hasNext()) {
-                val entry = iterator.next() as Map.Entry<*, *>
-                val entity = entry.value
-                if (task == entity) {
-                    iterator.remove()
-                }
-            }
-
-        }
     }
 
     override fun onDestroy() {
@@ -269,7 +239,6 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun fetchData() {
-        hideKeyboard()
         books.clear()
         mAdapter?.notifyDataSetChanged()
 
