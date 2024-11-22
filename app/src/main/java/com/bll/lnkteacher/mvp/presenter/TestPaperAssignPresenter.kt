@@ -3,7 +3,11 @@ package com.bll.lnkteacher.mvp.presenter
 import android.util.Pair
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 /**
  * 考卷布置
@@ -21,7 +25,7 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
                 return false
             }
             override fun success(tBaseResult: BaseResult<TypeList>) {
-                if (tBaseResult.data!=null){
+                if (!tBaseResult.data?.list.isNullOrEmpty()){
                     view.onType(tBaseResult.data)
                 }
             }
@@ -57,6 +61,32 @@ class TestPaperAssignPresenter(view: IContractView.ITestPaperAssignView) : BaseP
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onDeleteSuccess()
+            }
+        }, true)
+    }
+
+    fun editHomeworkType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.editType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditSuccess()
+            }
+        }, true)
+    }
+
+    fun topType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.topType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onTopSuccess()
             }
         }, true)
     }

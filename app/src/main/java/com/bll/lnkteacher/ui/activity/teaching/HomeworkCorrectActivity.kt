@@ -25,6 +25,7 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.google.gson.Gson
 import com.liulishuo.filedownloader.BaseDownloadTask
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_file
@@ -83,7 +84,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
                     map["score"]=tv_total_score.text.toString().toDouble()
                     map["submitUrl"]=url
                     map["status"]=2
-                    map["question"]=toJson(currentScores)
+                    map["question"]=Gson().toJson(currentScores)
                     mPresenter.commitPaperStudent(map)
                 }
                 override fun onUploadFail() {
@@ -107,7 +108,7 @@ class HomeworkCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorr
         userItems[posUser].score=tv_total_score.text.toString().toDouble()
         userItems[posUser].submitUrl=url
         userItems[posUser].status=2
-        userItems[posUser].question=toJson(currentScores)
+        userItems[posUser].question= Gson().toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         //批改完成之后删除文件夹

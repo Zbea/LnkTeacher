@@ -385,37 +385,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 bindToRecyclerView(rv_list_score)
                 setOnItemChildClickListener { adapter, view, position ->
                     if (correctStatus==1){
-                        val item=currentScores[position]
-                        when(view.id){
-                            R.id.tv_score->{
-                                if (scoreMode==1){
-                                    NumberDialog(this@BaseActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
-                                        if (item.label!=it){
-                                            item.result=0
-                                        }
-                                        item.score= it.toString()
-                                        notifyItemChanged(position)
-                                        setTotalScore()
-                                    }
-                                }
-                            }
-                            R.id.iv_result->{
-                                if (item.result==0){
-                                    item.result=1
-                                }
-                                else{
-                                    item.result=0
-                                }
-                                if (scoreMode==1){
-                                    item.score= (item.result*item.label).toString()
-                                }
-                                else{
-                                    item.score=item.result.toString()
-                                }
-                                notifyItemChanged(position)
-                                setTotalScore()
-                            }
-                        }
+                        setChangeItemScore(view,position)
+                        notifyItemChanged(position)
                     }
                 }
                 rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseActivity,15f)))
@@ -426,6 +397,14 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,null).apply {
                 rv_list_score.adapter = this
                 bindToRecyclerView(rv_list_score)
+                setOnItemChildClickListener { adapter, view, position ->
+                    val item=currentScores[position]
+                    //批改状态为已提交未批改 且 没有子题目才能执行
+                    if (correctStatus==1&&item.childScores.isNullOrEmpty()){
+                        setChangeItemScore(view,position)
+                        notifyItemChanged(position)
+                    }
+                }
                 setCustomItemChildClickListener{ position, view, childPos ->
                     if (correctStatus==1){
                         val scoreItem=currentScores[position]
@@ -437,13 +416,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                         if (childItem.label!=it){
                                             childItem.result=0
                                         }
-                                        childItem.score= it.toString()
+                                        childItem.score= it
                                         //获取小题总分
                                         var scoreTotal=0.0
                                         for (item in scoreItem.childScores){
-                                            scoreTotal+=MethodManager.getScore(item.score)
+                                            scoreTotal+=item.score
                                         }
-                                        scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
+                                        scoreItem.score=scoreTotal
                                         notifyItemChanged(position)
                                         setTotalScore()
                                     }
@@ -457,13 +436,13 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                     childItem.result=0
                                 }
                                 if (scoreMode==1){
-                                    childItem.score= (childItem.result*childItem.label).toString()
+                                    childItem.score= childItem.result*childItem.label
                                     //获取小题总分
                                     var scoreTotal=0.0
                                     for (item in scoreItem.childScores){
-                                        scoreTotal+=MethodManager.getScore(item.score)
+                                        scoreTotal+=item.score
                                     }
-                                    scoreItem.score=ToolUtils.getFormatNum(scoreTotal,"0.0")
+                                    scoreItem.score=scoreTotal
                                 }
                                 else{
                                     var totalRight=0
@@ -471,7 +450,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                                         if (item.result==1)
                                             totalRight+= 1
                                     }
-                                    scoreItem.score=totalRight.toString()
+                                    scoreItem.score= totalRight.toDouble()
                                 }
                                 notifyItemChanged(position)
                                 setTotalScore()
@@ -485,15 +464,51 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
+     * 大题数据变化
+     */
+    private fun setChangeItemScore(view:View,position: Int){
+        val item=currentScores[position]
+        when(view.id){
+            R.id.tv_score->{
+                if (scoreMode==1){
+                    NumberDialog(this@BaseActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
+                        if (item.label!=it){
+                            item.result=0
+                        }
+                        item.score= it
+                        setTotalScore()
+                    }
+                }
+            }
+            R.id.iv_result->{
+                if (item.result==0){
+                    item.result=1
+                }
+                else{
+                    item.result=0
+                }
+
+                if (scoreMode==1){
+                    item.score= item.result*item.label
+                }
+                else{
+                    item.score= item.result.toDouble()
+                }
+                setTotalScore()
+            }
+        }
+    }
+
+    /**
      * 总分变化
      */
     private fun setTotalScore(){
         if (tv_total_score!=null){
             var total=0.0
             for (item in currentScores){
-                total+=MethodManager.getScore(item.score)
+                total+=item.score
             }
-            tv_total_score.text=ToolUtils.getFormatNum(total,"0.0")
+            tv_total_score.text=total.toString()
         }
     }
 
@@ -564,6 +579,17 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
             mAnalyseMultiAdapter = ExamAnalyseMultiAdapter(R.layout.item_exam_analyse_multi_score, null).apply {
                 rv_list.adapter = this
                 bindToRecyclerView(rv_list)
+                setOnItemChildClickListener { adapter, view, position ->
+                    val item=totalAnalyseItems[position]
+                    if (item.childAnalyses.isNullOrEmpty()){
+                        if (view.id == R.id.tv_wrong_num) {
+                            val students = item.wrongStudents
+                            val titleStr="第${ToolUtils.numbers[item.sort+1]}题 错误学生"
+                            if (students.size>0)
+                                AnalyseUserDetailsDialog(this@BaseActivity,titleStr, students).builder()
+                        }
+                    }
+                }
                 setCustomItemChildClickListener { position, view, childPosition ->
                     val item=totalAnalyseItems[position]
                     if (view.id == R.id.tv_wrong_num) {
@@ -635,11 +661,19 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 var count=0
                 for (item in totalAnalyseItems){
                     val childItems=item.childAnalyses
-                    for (i in 0 until childItems.size){
-                        topicStrs.add("${count+i+1}")
-                        barEntries.add(BarEntry((count+i).toFloat(), childItems[i].scoreRate.toFloat()))
+                    //当没有小题时候加入大题
+                    if (!childItems.isNullOrEmpty()){
+                        for (i in 0 until childItems.size){
+                            topicStrs.add("${count+i+1}")
+                            barEntries.add(BarEntry((count+i).toFloat(), childItems[i].scoreRate.toFloat()))
+                        }
+                        count+=childItems.size
                     }
-                    count+=childItems.size
+                    else{
+                        topicStrs.add("${count+1}")
+                        barEntries.add(BarEntry(count.toFloat(), item.scoreRate.toFloat()))
+                        count+=1
+                    }
                 }
             }
 
@@ -667,84 +701,11 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     /**
-     * 格式序列化 题目分数集合转成字符串
-     */
-    fun toJson(list:List<ScoreItem>):String{
-        return if (correctModule<3){
-            Gson().toJson(list)
-        } else{
-            val items= arrayListOf <List<ScoreItem>>()
-            for (item in list){
-                items.add(item.childScores)
-            }
-            Gson().toJson(items)
-        }
-    }
-
-    /**
      * 格式序列化  题目分数转行list集合
      */
     fun jsonToList(json:String):List<ScoreItem>{
-        var items= mutableListOf<ScoreItem>()
-        if (correctModule<3){
-            items= Gson().fromJson(json, object : TypeToken<List<ScoreItem>>() {}.type) as MutableList<ScoreItem>
-            for (item in items){
-                item.sort=items.indexOf(item)
-            }
-        }
-        else{
-            var totalChildSort=0//小题累加
-            val scores= Gson().fromJson(json, object : TypeToken<List<List<ScoreItem>>>() {}.type) as MutableList<List<ScoreItem>>
-            for (i in scores.indices){
-                items.add(ScoreItem().apply {
-                    sort=i
-                    if (scoreMode==1){
-                        //统计小题标准分
-                        var totalLabel=0.0
-                        for (item in scores[i]){
-                            totalLabel+=item.label
-                        }
-                        label=totalLabel
-                        //统计小题得分
-                        var totalItem=0.0
-                        for (item in scores[i]){
-                            totalItem+= MethodManager.getScore(item.score)
-                        }
-                        score=ToolUtils.getFormatNum(totalItem,"0.0")
-                        result=if (totalLabel==totalItem) 1 else 0
-                    }
-                    else{
-                        //统计小题对数
-                        var totalRight=0
-                        for (item in scores[i]){
-                            item.score=item.result.toString()
-                            if (item.result==1) {
-                                totalRight+= 1
-                            }
-                        }
-                        label=scores.size.toDouble()
-                        score=totalRight.toString()
-                        result=if (scores.size==totalRight) 1 else 0
-                    }
-                    //小题重新排序
-                    for (item in scores[i]){
-                        //重置
-                        if (correctModule==3){
-                            item.sort=scores[i].indexOf(item)
-                        }
-                        else{
-                            //小题累加
-                            item.sort=totalChildSort+scores[i].indexOf(item)
-                        }
-                    }
-                    childScores=scores[i]
-                    totalChildSort+=scores[i].size
-                })
-            }
-        }
-        return items
+        return Gson().fromJson(json, object : TypeToken<List<ScoreItem>>() {}.type) as MutableList<ScoreItem>
     }
-
 
     /**
      * 设置翻页

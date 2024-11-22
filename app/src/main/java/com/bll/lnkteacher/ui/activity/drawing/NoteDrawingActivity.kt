@@ -41,7 +41,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
         noteContents = NoteContentDaoManager.getInstance().queryAll(typeStr, note?.title)
 
-        if (!noteContents.isNullOrEmpty()) {
+        if (noteContents.isNotEmpty()) {
             note_Content_b = noteContents[noteContents.size - 1]
             page = note?.page!!
         } else {

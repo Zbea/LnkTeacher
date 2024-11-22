@@ -131,9 +131,8 @@ class CloudNoteFragment: BaseCloudFragment() {
      */
     private fun downloadNote(item: Note){
         showLoading()
-        val titleStr=item.title+"副本"
         val zipPath = FileAddress().getPathZip(File(item.downloadUrl).name)
-        val fileTargetPath=FileAddress().getPathNote(item.typeStr,titleStr)
+        val fileTargetPath=FileAddress().getPathNote(item.typeStr,item.title)
         FileDownManager.with(activity).create(item.downloadUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object :
                 FileDownManager.SingleTaskCallBack {
@@ -155,15 +154,12 @@ class CloudNoteFragment: BaseCloudFragment() {
 
                             //添加笔记
                             item.id=null//设置数据库id为null用于重新加入
-                            item.title=titleStr
                             NoteDaoManager.getInstance().insertOrReplace(item)
 
                             val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
                             for (json in jsonArray){
                                 val contentBean= Gson().fromJson(json, NoteContent::class.java)
                                 contentBean.id=null
-                                contentBean.filePath=contentBean.filePath.replace(contentBean.noteTitle,titleStr)
-                                contentBean.noteTitle=titleStr
                                 NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
                             }
 

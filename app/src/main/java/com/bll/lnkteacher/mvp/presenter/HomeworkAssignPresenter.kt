@@ -24,7 +24,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
                 return false
             }
             override fun success(tBaseResult: BaseResult<TypeList>) {
-                if(tBaseResult.data!=null){
+                if(!tBaseResult.data?.list.isNullOrEmpty()){
                     view.onTypeList(tBaseResult.data)
                 }
             }
@@ -75,6 +75,32 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onDeleteSuccess()
+            }
+        }, true)
+    }
+
+    fun editHomeworkType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.editType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEditSuccess()
+            }
+        }, true)
+    }
+
+    fun topType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.topType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onTopSuccess()
             }
         }, true)
     }

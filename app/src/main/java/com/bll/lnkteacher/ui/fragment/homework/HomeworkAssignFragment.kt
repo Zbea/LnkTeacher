@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -30,6 +32,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
 
     private val mPresenter=HomeworkAssignPresenter(this)
     private var mAdapter:HomeworkAssignAdapter?=null
+    private var editTypeStr=""
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
@@ -57,6 +60,17 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         }
         mAdapter?.remove(position)
     }
+
+    override fun onEditSuccess() {
+        types[position].name=editTypeStr
+        mAdapter?.notifyItemChanged(position)
+    }
+
+    override fun onTopSuccess() {
+        pageIndex=1
+        fetchData()
+    }
+
     override fun onCommitSuccess() {
         MethodManager.saveCommitClass(types[position].id,classSelectBean)
         showToast(R.string.teaching_assign_success)
@@ -131,36 +145,64 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@HomeworkAssignFragment.position=position
-                deleteHomework(types[position])
+                if (types[position].addType==0){
+                    onLongClick()
+                }
                 true
             }
         }
     }
 
+    private fun onLongClick(){
+        val item=types[position]
+        val beans = mutableListOf<ItemList>()
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        beans.add(ItemList().apply {
+            name = "置顶"
+            resId = R.mipmap.icon_setting_top
+        })
+        beans.add(ItemList().apply {
+            name = "重命名"
+            resId = R.mipmap.icon_setting_edit
+        })
 
-    /**
-     * 删除题卷本
-     */
-    private fun deleteHomework(item: TypeBean){
-        CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()
-            .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    if (item.subType==4){
+        LongClickManageDialog(requireActivity(),2, item.name, beans).builder()
+            .setOnDialogClickListener { position->
+                when(position){
+                    0->{
+                        if (item.subType==4){
+                            val map=HashMap<String,Any>()
+                            map["id"]=item.id
+                            map["bookId"]=item.bookId
+                            mPresenter.deleteHomeworkBookType(map)
+                        }
+                        else{
+                            val map=HashMap<String,Any>()
+                            map["ids"]= arrayOf(item.id)
+                            mPresenter.deleteHomeworkType(map)
+                        }
+                    }
+                    1->{
                         val map=HashMap<String,Any>()
                         map["id"]=item.id
-                        map["bookId"]=item.bookId
-                        mPresenter.deleteHomeworkBookType(map)
+                        mPresenter.topType(map)
                     }
-                    else{
-                        val map=HashMap<String,Any>()
-                        map["ids"]= arrayOf(item.id)
-                        mPresenter.deleteHomeworkType(map)
+                    2->{
+                        InputContentDialog(requireActivity(),2,item.name).builder().setOnDialogClickListener{
+                            editTypeStr=it
+                            val map=HashMap<String,Any>()
+                            map["id"]= item.id
+                            map["name"]= it
+                            mPresenter.editHomeworkType(map)
+                        }
                     }
                 }
-            })
+            }
     }
+
 
     /**
      * 发送作业本消息

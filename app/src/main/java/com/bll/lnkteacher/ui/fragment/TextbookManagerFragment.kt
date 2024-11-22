@@ -54,7 +54,11 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     }
     override fun onList(list: HandoutList?) {
     }
-    override fun onSuccess() {
+    override fun onDelete() {
+    }
+    override fun onEdit() {
+    }
+    override fun onTop() {
     }
 
 

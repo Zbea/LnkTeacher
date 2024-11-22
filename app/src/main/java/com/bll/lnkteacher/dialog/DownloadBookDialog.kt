@@ -31,7 +31,7 @@ class DownloadBookDialog(private val context: Context, private val book: Book) {
             val tv_info = findViewById<TextView>(R.id.tv_info)
             val tv_book_name = findViewById<TextView>(R.id.tv_book_name)
 
-            GlideUtils.setImageUrl(context,book.imageUrl,iv_book)
+            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,10)
 
             tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
             tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price

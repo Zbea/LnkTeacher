@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.activity.exam
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
@@ -133,7 +132,7 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
         tv_left_score.setOnClickListener {
             NumberDialog(this,getCurrentScreenPos(),startScore.toString()).builder().setDialogClickListener{
                 tv_left_score.text=it.toString()
-                startScore=MethodManager.getScore(it.toString())
+                startScore=it
                 setChangeScoreUser()
             }
         }
@@ -141,7 +140,7 @@ class ExamAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IExamAnaly
         tv_right_score.setOnClickListener {
             NumberDialog(this,getCurrentScreenPos(),endScore.toString()).builder().setDialogClickListener{
                 tv_right_score.text=it.toString()
-                endScore=MethodManager.getScore(it.toString())
+                endScore=it
                 setChangeScoreUser()
             }
         }

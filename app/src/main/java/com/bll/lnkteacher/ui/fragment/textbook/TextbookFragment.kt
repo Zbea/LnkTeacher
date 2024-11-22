@@ -76,13 +76,13 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             if (typeId==6) {
                 MethodManager.gotoTextBookDetails(requireActivity(),book)
             } else {
-                MethodManager.gotoBookDetails(requireActivity(),2, book)
+                MethodManager.gotoBookDetails(requireActivity(),0, book)
             }
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this.position = position
-                onLongClick(books[position])
+                onLongClick()
                 true
             }
         rv_list?.addItemDecoration(SpaceGridItemDeco(3,  38))
@@ -90,40 +90,67 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
 
     //长按显示课本管理
-    private fun onLongClick(book: Book) {
+    private fun onLongClick() {
+        val book=books[position]
         //题卷本可以设置为作业
         val beans = mutableListOf<ItemList>()
-        if (typeId==6) {
-            beans.add(ItemList().apply {
-                name = "删除"
-                resId = R.mipmap.icon_setting_delete
-            })
-            beans.add(ItemList().apply {
-                name = "设置作业"
-                resId = R.mipmap.icon_setting_set
-            })
-        } else {
-            beans.add(ItemList().apply {
-                name = "删除"
-                resId = R.mipmap.icon_setting_delete
-            })
+        when(typeId){
+            0->{
+                beans.add(ItemList().apply {
+                    name = "删除"
+                    resId = R.mipmap.icon_setting_delete
+                })
+            }
+            6->{
+                beans.add(ItemList().apply {
+                    name = "删除"
+                    resId = R.mipmap.icon_setting_delete
+                })
+                beans.add(ItemList().apply {
+                    name = "置顶"
+                    resId = R.mipmap.icon_setting_top
+                })
+                beans.add(ItemList().apply {
+                    name = "设为作业"
+                    resId = R.mipmap.icon_setting_set
+                })
+            }
+            else->{
+                beans.add(ItemList().apply {
+                    name = "删除"
+                    resId = R.mipmap.icon_setting_delete
+                })
+                beans.add(ItemList().apply {
+                    name = "置顶"
+                    resId = R.mipmap.icon_setting_top
+                })
+            }
         }
         LongClickManageDialog(requireActivity(),1, book.bookName, beans).builder()
             .setOnDialogClickListener {
-                if (it == 0) {
-                    MethodManager.deleteBook(book,0)
-                } else {
-                    if (!book.isHomework) {
-                        val map = HashMap<String, Any>()
-                        map["name"] = book.bookName
-                        map["type"] = 2
-                        map["subType"] = 4//题卷本
-                        map["grade"] = book.grade
-                        map["bookId"] = book.bookId
-                        map["bgResId"] = book.imageUrl
-                        mPresenter.addType(map)
-                    } else {
-                        showToast(1,"已设置")
+                when(it){
+                    0->{
+                        MethodManager.deleteBook(book,0)
+                    }
+                    1->{
+                        book.time=System.currentTimeMillis()
+                        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                        pageIndex=1
+                        fetchData()
+                    }
+                    2->{
+                        if (!book.isHomework) {
+                            val map = HashMap<String, Any>()
+                            map["name"] = book.bookName
+                            map["type"] = 2
+                            map["subType"] = 4//题卷本
+                            map["grade"] = book.grade
+                            map["bookId"] = book.bookId
+                            map["bgResId"] = book.imageUrl
+                            mPresenter.addType(map)
+                        } else {
+                            showToast(1,"已设置")
+                        }
                     }
                 }
             }

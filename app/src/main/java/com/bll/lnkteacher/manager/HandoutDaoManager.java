@@ -52,6 +52,11 @@ public class HandoutDaoManager {
         dao.insertOrReplace(bean);
     }
 
+    public HandoutBean queryBean(long id){
+        WhereCondition whereCondition1= HandoutBeanDao.Properties.Id.eq(id);
+        return dao.queryBuilder().where(whereUser,whereCondition1).unique();
+    }
+
     public boolean isExist(long id){
         WhereCondition whereCondition1= HandoutBeanDao.Properties.Id.eq(id);
         return dao.queryBuilder().where(whereUser,whereCondition1).unique()!=null;

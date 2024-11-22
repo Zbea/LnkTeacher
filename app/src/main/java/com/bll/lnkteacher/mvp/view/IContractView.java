@@ -126,6 +126,8 @@ public interface IContractView {
          * 删除考卷内容成功
          */
         void onDeleteSuccess();
+        void onEditSuccess();
+        void onTopSuccess();
     }
 
     //考卷布置
@@ -221,6 +223,8 @@ public interface IContractView {
          * 删除分类
          */
         void onDeleteSuccess();
+        void onEditSuccess();
+        void onTopSuccess();
         /**
          * 发送成功
          */
@@ -277,7 +281,9 @@ public interface IContractView {
     interface IHandoutView extends IBaseView {
         void onType(List<String> list);
         void onList(HandoutList list);
-        void onSuccess();
+        void onDelete();
+        void onEdit();
+        void onTop();
     }
 
     interface IWallpaperView extends IBaseView {

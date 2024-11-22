@@ -13,7 +13,10 @@ class TopicMultiScoreAdapter(layoutResId: Int, private val scoreMode:Int, data: 
 
     override fun convert(helper: BaseViewHolder, item: ScoreItem) {
         helper.setText(R.id.tv_sort,ToolUtils.numbers[item.sort+1])
-        helper.setText(R.id.tv_score,item.score)
+        helper.setText(R.id.tv_score,if (scoreMode==1) item.score.toString() else if (item.result==1)"对" else "错")
+        helper.setImageResource(R.id.iv_result,if (item.result==1) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)
+        helper.setGone(R.id.rv_list,!item.childScores.isNullOrEmpty())
+        helper.setGone(R.id.iv_result,item.childScores.isNullOrEmpty())
 
         val recyclerView=helper.getView<RecyclerView>(R.id.rv_list)
         recyclerView?.layoutManager = GridLayoutManager(mContext,2)
@@ -22,6 +25,8 @@ class TopicMultiScoreAdapter(layoutResId: Int, private val scoreMode:Int, data: 
         mAdapter.setOnItemChildClickListener { adapter, view, position ->
             listener?.onClick(helper.adapterPosition,view,position)
         }
+
+        helper.addOnClickListener(R.id.tv_score,R.id.iv_result)
     }
 
 
@@ -40,8 +45,8 @@ class TopicMultiScoreAdapter(layoutResId: Int, private val scoreMode:Int, data: 
         override fun convert(helper: BaseViewHolder, item: ScoreItem) {
             helper.apply {
                 helper.setText(R.id.tv_sort,"${item.sort+1}")
-                helper.setText(R.id.tv_score,item.score)
-                helper.setText(R.id.tv_score,if (scoreMode==1) item.score else if (item.result==1)"对" else "错")
+                helper.setText(R.id.tv_score,item.score.toString())
+                helper.setText(R.id.tv_score,if (scoreMode==1) item.score.toString() else if (item.result==1)"对" else "错")
                 helper.setImageResource(R.id.iv_result,if (item.result==1) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)
                 addOnClickListener(R.id.tv_score,R.id.iv_result)
             }

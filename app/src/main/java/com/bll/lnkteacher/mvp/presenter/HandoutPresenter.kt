@@ -38,7 +38,7 @@ class HandoutPresenter(view: IContractView.IHandoutView, val screen:Int) : BaseP
             }
 
             override fun success(tBaseResult: BaseResult<HandoutList>) {
-                if (tBaseResult.data!=null)
+                if (!tBaseResult.data?.list.isNullOrEmpty())
                     view.onList(tBaseResult.data)
             }
 
@@ -57,7 +57,43 @@ class HandoutPresenter(view: IContractView.IHandoutView, val screen:Int) : BaseP
             }
 
             override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSuccess()
+                view.onDelete()
+            }
+
+        }, true)
+
+    }
+
+    fun edit(map: HashMap<String, Any> ) {
+
+        val requestBody= RequestUtils.getBody(map)
+        val download = RetrofitManager.service.onEditHandout(requestBody)
+
+        doRequest(download, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onEdit()
+            }
+
+        }, true)
+
+    }
+
+    fun top(map: HashMap<String, Any> ) {
+
+        val requestBody= RequestUtils.getBody(map)
+        val download = RetrofitManager.service.onTopHandout(requestBody)
+
+        doRequest(download, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onTop()
             }
 
         }, true)

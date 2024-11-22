@@ -80,16 +80,14 @@ public class MethodManager {
 
     /**
      * 跳转阅读器
-     * @param type 1书籍 2课本
+     * @param type 1书籍 0课本
      *        key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      * @param context
      * @param bookBean
      */
     public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
-        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
-        bookBean.isLook=true;
         bookBean.time=System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
 
@@ -120,8 +118,9 @@ public class MethodManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
-        Handler handler=new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> EventBus.getDefault().post(type==1?Constants.BOOK_EVENT : Constants.TEXT_BOOK_EVENT ),5000);
+        if (type==1){
+            new Handler(Looper.getMainLooper()).postDelayed(() -> EventBus.getDefault().post(Constants.BOOK_EVENT),5000);
+        }
     }
 
     /**
@@ -130,7 +129,6 @@ public class MethodManager {
      */
     public static void gotoHandouts(Context context, HandoutBean bean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
-        User user=SPUtil.INSTANCE.getObj("user", User.class);
 
         List<AppBean> toolApps= getAppTools(context,1);
         JSONArray result = getJsonArray(toolApps);
@@ -200,14 +198,14 @@ public class MethodManager {
      * 跳转笔记写作
      */
     public static void gotoNote(Context context,Note note) {
-        note.date=System.currentTimeMillis();
-        NoteDaoManager.getInstance().insertOrReplace(note);
-        EventBus.getDefault().post(Constants.NOTE_EVENT);
-
         Intent intent = new Intent(context, NoteDrawingActivity.class);
         intent.putExtra("noteId",note.id);
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
+
+        note.date=System.currentTimeMillis();
+        NoteDaoManager.getInstance().insertOrReplace(note);
+        EventBus.getDefault().post(Constants.NOTE_EVENT);
     }
 
     /**
@@ -350,20 +348,6 @@ public class MethodManager {
      */
     public static String getUrlFormat(String url){
         return url.substring(url.lastIndexOf("."));
-    }
-
-    /**
-     * 获取分数
-     * @param scoreStr
-     * @return
-     */
-    public static double getScore(String scoreStr){
-        if (scoreStr==null||scoreStr.isEmpty()){
-            return 0;
-        }
-        else {
-            return Double.parseDouble(scoreStr);
-        }
     }
 
     /**

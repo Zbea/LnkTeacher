@@ -362,6 +362,16 @@ interface APIService{
     @POST("common/type/delete")
     fun deleteHomeworkBookType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改作业本名称
+     */
+    @POST("common/type/updateName")
+    fun editType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 置顶作业本
+     */
+    @POST("common/type/updateTop")
+    fun topType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 删除作业分类
      */
     @POST("common/type/deleteHomework")
@@ -569,5 +579,14 @@ interface APIService{
      */
     @POST("teaching/delete")
     fun onDeleteHandout(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 修改讲义
+     */
+    @POST("teaching/updateTitle")
+    fun onEditHandout(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 定置讲义
+     */
+    @POST("teaching/updateTop")
+    fun onTopHandout(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 }

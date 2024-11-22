@@ -15,6 +15,7 @@ public class TypeBean implements Serializable {
     public int grade;
     public int type;//1考卷2作业本
     public int bookId;
+    public int addType;//1生成作业本 0创建作业本
     public String bgResId;
 
     public String classIds;

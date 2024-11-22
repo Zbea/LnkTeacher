@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -74,7 +73,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 for (item in currentScores) {
-                    val currentScore = MethodManager.getScore(item.score)
                     if (correctModule < 3) {
                         if (totalAnalyseItems.size < currentScores.size) {
                             val analyseItem = AnalyseItem()
@@ -87,10 +85,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                     } else {
                         if (totalAnalyseItems.size < currentScores.size) {
                             val analyseItem = AnalyseItem()
-                            analyseItem.sort = item.sort
-                            analyseItem.totalScore += currentScore
-                            analyseItem.num += 1
-                            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
+                            setAnalyseData(userItem,item,analyseItem)
+
                             val childAnalyseItems = mutableListOf<AnalyseItem>()
                             for (childItem in item.childScores) {
                                 val childAnalyseItem = AnalyseItem()
@@ -98,17 +94,16 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
                                 childAnalyseItems.add(childAnalyseItem)
                             }
                             analyseItem.childAnalyses = childAnalyseItems
+
                             totalAnalyseItems.add(analyseItem)
                         } else {
                             val analyseItem = totalAnalyseItems[item.sort]
-                            analyseItem.totalScore += currentScore
-                            analyseItem.num += 1
-                            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
                             for (childItem in item.childScores) {
                                 val index = item.childScores.indexOf(childItem)
                                 val childExamAnalyseItem = analyseItem.childAnalyses[index]
                                 setAnalyseData(userItem, childItem, childExamAnalyseItem)
                             }
+                            setAnalyseData(userItem,item,analyseItem)
                         }
                     }
                 }
@@ -427,7 +422,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
      */
     private fun setAnalyseData(classUserBean: TestPaperClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem) {
         analyseItem.sort = scoreItem.sort
-        analyseItem.totalScore += MethodManager.getScore(scoreItem.score)
+        analyseItem.totalScore += scoreItem.score
         analyseItem.totalLabel+=scoreItem.label
         analyseItem.num += 1
         if (scoreItem.result == 0) {

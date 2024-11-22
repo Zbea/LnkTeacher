@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/iv_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_35"
+            android:layout_height="@dimen/dp_35"
             android:layout_marginStart="@dimen/dp_10"
             android:src="@mipmap/icon_setting_delete"
             />
@@ -26,8 +26,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_20"
             android:textColor="@color/black"
+            android:text="删除"
+            android:gravity="right"
             android:textSize="@dimen/sp_22" />
     </LinearLayout>
 </LinearLayout>

@@ -207,7 +207,6 @@ class CloudBookcaseFragment:BaseCloudFragment() {
                 override fun completed(task: BaseDownloadTask?) {
                     book.id=null
                     book.time=System.currentTimeMillis()
-                    book.isLook=false
                     book.subtypeStr=""
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     countDownTasks?.countDown()

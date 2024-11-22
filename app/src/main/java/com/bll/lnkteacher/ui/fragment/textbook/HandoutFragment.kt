@@ -8,10 +8,12 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.MyApplication
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
-import com.bll.lnkteacher.dialog.CommonDialog
+import com.bll.lnkteacher.dialog.InputContentDialog
+import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.HandoutDaoManager
 import com.bll.lnkteacher.mvp.model.HandoutBean
 import com.bll.lnkteacher.mvp.model.HandoutList
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.HandoutPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
@@ -25,36 +27,52 @@ import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_list.rv_list
 import java.io.File
 
-class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
-    private val presenter=HandoutPresenter(this,1)
+class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
+    private val presenter = HandoutPresenter(this, 1)
     private var mAdapter: HandoutsAdapter? = null
     private var items = mutableListOf<HandoutBean>()
     private var position = 0
-    private var type=""
-    private var isNet=true
+    private var type = ""
+    private var editTitleStr = ""
+    private var isNet = true
 
     override fun onType(list: MutableList<String>) {
     }
 
     override fun onList(list: HandoutList) {
         setPageNumber(list.total)
-        for (item in list.list){
-            val fileName=item.id.toString()
-            item.bookPath=FileAddress().getPathHandout(fileName+MethodManager.getUrlFormat(item.bodyUrl))
-            item.bookDrawPath=FileAddress().getPathHandoutDraw(fileName)
+        for (item in list.list) {
+            val fileName = item.id.toString()
+            item.bookPath = FileAddress().getPathHandout(fileName + MethodManager.getUrlFormat(item.bodyUrl))
+            item.bookDrawPath = FileAddress().getPathHandoutDraw(fileName)
         }
-        items=list.list
+        items = list.list
         mAdapter?.setNewData(items)
     }
 
-    override fun onSuccess() {
-        showToast(1,"删除成功")
-        val item =items[position]
-        if (FileUtils.isExist(item.bookPath)){
+    override fun onDelete() {
+        showToast(1, "删除成功")
+        val item = items[position]
+        if (FileUtils.isExist(item.bookPath)) {
             FileUtils.deleteFile(File(item.bookPath))
             FileUtils.deleteFile(File(item.bookDrawPath))
             HandoutDaoManager.getInstance().deleteBean(item)
         }
+        fetchData()
+    }
+
+    override fun onEdit() {
+        items[position].title = editTitleStr
+        mAdapter?.notifyItemChanged(position)
+        if (HandoutDaoManager.getInstance().isExist(items[position].id)){
+            val item=HandoutDaoManager.getInstance().queryBean(items[position].id)
+            item.title=editTitleStr
+            HandoutDaoManager.getInstance().insertOrReplace(item)
+        }
+    }
+
+    override fun onTop() {
+        pageIndex = 1
         fetchData()
     }
 
@@ -73,10 +91,10 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
     }
 
     private fun initRecyclerView() {
-        val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(),20f), DP2PX.dip2px(requireActivity(),40f), DP2PX.dip2px(requireActivity(),20f),0)
-        layoutParams.weight=1f
-        rv_list.layoutParams= layoutParams
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(), 20f), DP2PX.dip2px(requireActivity(), 40f), DP2PX.dip2px(requireActivity(), 20f), 0)
+        layoutParams.weight = 1f
+        rv_list.layoutParams = layoutParams
 
         rv_list.layoutManager = GridLayoutManager(activity, 5)//创建布局管理
         mAdapter = HandoutsAdapter(R.layout.item_handout, null)
@@ -86,19 +104,57 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
         rv_list?.addItemDecoration(SpaceGridItemDeco(5, 50))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position = position
-            val item=items[position]
-            if (HandoutDaoManager.getInstance().isExist(item.id)){
-                MethodManager.gotoHandouts(requireActivity(),item)
-            }
-            else{
+            val item = items[position]
+            if (HandoutDaoManager.getInstance().isExist(item.id)) {
+                MethodManager.gotoHandouts(requireActivity(), item)
+            } else {
                 downLoadStart()
             }
         }
         mAdapter?.onItemLongClickListener =
             BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this.position = position
-                delete()
+                onLongClick()
                 true
+            }
+    }
+
+    private fun onLongClick() {
+        val item=items[position]
+
+        val beans = mutableListOf<ItemList>()
+        beans.add(ItemList().apply {
+            name = "删除"
+            resId = R.mipmap.icon_setting_delete
+        })
+        beans.add(ItemList().apply {
+            name = "置顶"
+            resId = R.mipmap.icon_setting_top
+        })
+        beans.add(ItemList().apply {
+            name = "重命名"
+            resId = R.mipmap.icon_setting_edit
+        })
+
+        LongClickManageDialog(requireActivity(),1, item.title, beans).builder()
+            .setOnDialogClickListener { position->
+                val map = HashMap<String, Any>()
+                map["id"] = item.id
+                when(position){
+                    0->{
+                        presenter.delete(map)
+                    }
+                    1->{
+                        presenter.top(map)
+                    }
+                    2->{
+                        InputContentDialog(requireActivity(),1,item.title).builder().setOnDialogClickListener{
+                            editTitleStr=it
+                            map["title"]=it
+                            presenter.edit(map)
+                        }
+                    }
+                }
             }
     }
 
@@ -107,66 +163,55 @@ class HandoutFragment : BaseMainFragment() ,IContractView.IHandoutView{
      */
     private fun downLoadStart() {
         showLoading()
-        val item=items[position]
+        val item = items[position]
         FileDownManager.with(requireActivity()).create(item.bodyUrl).setPath(item.bookPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
+
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
+
                 override fun completed(task: BaseDownloadTask?) {
-                    item.date=System.currentTimeMillis()
+                    item.date = System.currentTimeMillis()
                     HandoutDaoManager.getInstance().insertOrReplace(item)
                     mAdapter?.notifyItemChanged(position)
-                    showToast(1,item.title+getString(R.string.book_download_success))
+                    showToast(1, item.title + getString(R.string.book_download_success))
                     hideLoading()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()
-                    showToast(1,"${item.title}下载失败")
+                    showToast(1, "${item.title}下载失败")
                 }
             })
     }
 
-    private fun delete(){
-        CommonDialog(requireActivity(),1).setContent("确定删除文件？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
-            override fun ok() {
-                val map=HashMap<String,Any>()
-                map["id"]=items[position].id
-                presenter.delete(map)
-            }
-        })
-    }
 
-
-    fun changeType(type:String){
-        this.type=type
-        pageIndex=1
+    fun changeType(type: String) {
+        this.type = type
+        pageIndex = 1
         fetchData()
     }
 
     override fun fetchData() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()){
+        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
             if (!isNet)
-                pageIndex=1
-            isNet=true
-            val map=HashMap<String,Any>()
-            map["page"]=pageIndex
-            map["size"]=pageSize
-            map["grade"]=type
+                pageIndex = 1
+            isNet = true
+            val map = HashMap<String, Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["grade"] = type
             presenter.getList(map)
-        }
-        else{
+        } else {
             if (isNet)
-                pageIndex=1
-            isNet=false
-            val total=HandoutDaoManager.getInstance().queryAll(type).size
+                pageIndex = 1
+            isNet = false
+            val total = HandoutDaoManager.getInstance().queryAll(type).size
             setPageNumber(total)
-            items=HandoutDaoManager.getInstance().queryAll(type,pageIndex,pageSize)
+            items = HandoutDaoManager.getInstance().queryAll(type, pageIndex, pageSize)
             mAdapter?.setNewData(items)
         }
     }
