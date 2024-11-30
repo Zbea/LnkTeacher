@@ -10,9 +10,6 @@ import java.util.List;
  * 考卷学生试卷提交列表
  */
 public class TestPaperClassUserList implements Serializable {
-
-    public int total;
-    public List<ClassUserBean> list;
     public List<ClassUserBean> taskList;
 
     public static class ClassUserBean {

@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.fragment.cloud
 
 import android.os.Handler
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,56 +24,34 @@ import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.google.gson.Gson
-import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 import com.liulishuo.filedownloader.BaseDownloadTask
-import kotlinx.android.synthetic.main.fragment_cloud_list_tab.rv_list
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class CloudNoteFragment: BaseCloudFragment() {
 
-    var noteType=0
-    private var noteTypeStr=""
     private var mAdapter:CloudNoteAdapter?=null
     private var notes= mutableListOf<Note>()
     private var position=0
 
     override fun getLayoutId(): Int {
-        return R.layout.fragment_cloud_list_tab
+        return R.layout.fragment_list_content
     }
 
     override fun initView() {
-        pageSize=13
+        pageSize=14
         initRecyclerView()
     }
 
     override fun lazyLoad() {
-        mCloudPresenter.getType(3)
-    }
-
-    //设置头部索引
-    private fun initTab() {
-        noteTypeStr=types[0]
-        for (i in types.indices) {
-            itemTabTypes.add(ItemTypeBean().apply {
-                title= types[i]
-                isCheck=i==0
-            })
-        }
-        mTabTypeAdapter?.setNewData(itemTabTypes)
-        fetchData()
-    }
-
-    override fun onTabClickListener(view: View, position: Int) {
-        noteType=position
-        noteTypeStr=types[position]
-        pageIndex=1
         fetchData()
     }
 
     private fun initRecyclerView() {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,30f),0)
+        layoutParams.setMargins(DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,20f), DP2PX.dip2px(activity,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -154,11 +131,11 @@ class CloudNoteFragment: BaseCloudFragment() {
 
                             //添加笔记
                             item.id=null//设置数据库id为null用于重新加入
+                            item.date=System.currentTimeMillis()
                             NoteDaoManager.getInstance().insertOrReplace(item)
 
-                            val jsonArray= JsonParser().parse(item.contentJson).asJsonArray
-                            for (json in jsonArray){
-                                val contentBean= Gson().fromJson(json, NoteContent::class.java)
+                            val noteContents=Gson().fromJson(item.contentJson, object : TypeToken<List<NoteContent>>() {}.type) as MutableList<NoteContent>
+                            for (contentBean in noteContents){
                                 contentBean.id=null
                                 NoteContentDaoManager.getInstance().insertOrReplaceNote(contentBean)
                             }
@@ -198,9 +175,6 @@ class CloudNoteFragment: BaseCloudFragment() {
     }
 
     override fun onCloudType(types: MutableList<String>) {
-        this.types=types
-        if (types.size>0)
-            initTab()
     }
 
     override fun onCloudList(cloudList: CloudList) {

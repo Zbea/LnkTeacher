@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity.drawing
 import android.view.EinkPWInterface
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CatalogDialog
@@ -12,7 +13,6 @@ import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.NoteContent
 import com.bll.lnkteacher.utils.DateUtils
-import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -52,8 +52,8 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     override fun initView() {
         disMissView(iv_btn)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_a)
-        GlideUtils.setImageUrl(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_b)
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_a)
+        MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_b)
         onChangeContent()
     }
 

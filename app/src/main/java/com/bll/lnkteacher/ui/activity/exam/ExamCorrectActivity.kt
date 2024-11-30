@@ -115,8 +115,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         disMissView(tv_save)
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
-        elik_a?.setPWEnabled(false,false)
-        elik_b?.setPWEnabled(false,false)
+        setPWEnabled(false)
     }
 
     
@@ -137,7 +136,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun initView() {
         setPageTitle("考卷批改  ${examBean?.examName}  ${examBean?.className}")
-        elik_b?.setPWEnabled(false,false)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
         if (answerImages.size>0){
@@ -232,6 +230,8 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 tv_total_score.text = ""
                 showView(ll_score,tv_save)
                 loadPapers()
+                setDisableTouchInput(false)
+                setPWEnabled(true)
             }
             2->{
                 currentScores = jsonToList(userItem.question!!) as MutableList<ScoreItem>
@@ -240,6 +240,8 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 showView(ll_score)
                 disMissView(tv_save)
                 onChangeContent()
+                setDisableTouchInput(true)
+                setPWEnabled(true)
             }
             3->{
                 currentImages= mutableListOf()
@@ -248,6 +250,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 tv_page_total.text=""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
+                setDisableTouchInput(true)
                 setPWEnabled(false)
             }
         }
@@ -280,36 +283,19 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         if (isExpand){
             when(correctStatus){
                 1->{
-                    elik_a?.setPWEnabled(true)
-                    elik_b?.setPWEnabled(true)
-
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_a)
+                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_a)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
-                    if (posImage+1<getImageSize()){
-                        val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
-                        GlideUtils.setImageCacheUrl(this,File(masterImage_b).path,v_content_b)
-                        val drawPath_b = getPathDrawStr(posImage+1+1)
-                        elik_b?.setLoadFilePath(drawPath_b, true)
-                    }
-                    else{
-                        elik_b?.setPWEnabled(false)
-                        v_content_b?.setImageResource(0)
-                    }
+                    val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
+                    GlideUtils.setImageUrl(this,File(masterImage_b).path,v_content_b)
+                    val drawPath_b = getPathDrawStr(posImage+1+1)
+                    elik_b?.setLoadFilePath(drawPath_b, true)
                 }
                 2->{
-                    elik_a?.setPWEnabled(false)
-                    elik_b?.setPWEnabled(false)
-
-                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_a)
-                    if (posImage+1<getImageSize()){
-                        GlideUtils.setImageCacheUrl(this, currentImages[posImage+1],v_content_b)
-                    }
-                    else{
-                        v_content_b?.setImageResource(0)
-                    }
+                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
+                    GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
                 }
             }
             tv_page.text="${posImage+1}"
@@ -318,15 +304,13 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         else{
             when(correctStatus){
                 1->{
-                    elik_b?.setPWEnabled(true)
                     val masterImage="${getPath()}/${posImage+1}.png"//原图
-                    GlideUtils.setImageCacheUrl(this,File(masterImage).path,v_content_b)
+                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
                 }
                 2->{
-                    elik_b?.setPWEnabled(false)
-                    GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_b)
+                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
                 }
             }
             tv_page.text="${posImage+1}"

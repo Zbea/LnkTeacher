@@ -15,8 +15,8 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco

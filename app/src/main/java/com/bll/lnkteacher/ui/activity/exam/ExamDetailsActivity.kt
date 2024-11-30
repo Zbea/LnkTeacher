@@ -86,7 +86,7 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
     override fun initView() {
         setPageTitle("考卷详情  ${examClassBean?.className}")
-        setPWEnabled(false)
+        setDisableTouchInput(true)
         disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
 
         if (answerImages.size>0){
@@ -210,12 +210,7 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
         tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
             GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
-            if (posImage+1<getImageSize()){
-                GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
-            }
-            else{
-                v_content_b?.setImageResource(0)
-            }
+            GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
             tv_page.text="${posImage+1}"
             tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
         }

@@ -40,7 +40,6 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         users.clear()
-
         for (userItem in bean.taskList) {
             if (userItem.status==2){
                 users.add(UserBean(userItem.userId,userItem.name,userItem.score))

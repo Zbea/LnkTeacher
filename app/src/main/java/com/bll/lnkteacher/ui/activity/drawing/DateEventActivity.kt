@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity.drawing
 import android.os.Handler
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
@@ -28,6 +29,8 @@ class DateEventActivity:BaseDrawingActivity() {
     override fun initView() {
         setPageTitle("日程")
         setContentView()
+
+        MethodManager.setImageResource(this,R.mipmap.icon_date_event_bg,v_content_b)
 
         iv_up.setOnClickListener {
             nowLong-=Constants.dayLong

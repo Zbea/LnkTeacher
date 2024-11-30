@@ -4,67 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/statusbar_height"
-    android:gravity="end"
     android:background="@color/bg_page">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/navigation_height"
-        >
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_60"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="52dp"
-            android:paddingEnd="@dimen/dp_15"
-            android:src="@mipmap/icon_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/iv_back"
-            android:textColor="@color/black"
-            android:textSize="@dimen/navigation_text"
-            />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_50"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:orientation="horizontal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center"
-            >
-
-            <TextView
-                android:id="@+id/tv_class_s"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:minWidth="160dp"
-                android:maxWidth="800dp"
-                android:drawableRight="@mipmap/icon_arrow_down"
-                android:drawablePadding="@dimen/dp_10"
-                android:paddingStart="@dimen/dp_10"
-                android:paddingEnd="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_30"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_24"
-                android:gravity="center"
-                android:lines="1"
-                android:ellipsize="end"
-                android:text="班级选择"
-                android:background="@drawable/bg_black_stroke_10dp_corner"
-                />
-
-        </LinearLayout>
-
-
-    </RelativeLayout>
+   <include
+       layout="@layout/common_title"
+       />
 
 
     <LinearLayout

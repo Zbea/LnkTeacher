@@ -54,6 +54,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
     }
 
     override fun initData() {
+        fetchCommonData()
         initDialog(1)
     }
 

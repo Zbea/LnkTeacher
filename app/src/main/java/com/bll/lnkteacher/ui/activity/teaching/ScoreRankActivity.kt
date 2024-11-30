@@ -15,7 +15,7 @@ import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import kotlinx.android.synthetic.main.ac_testpaper_grade.rv_list
-import kotlinx.android.synthetic.main.ac_testpaper_grade.tv_class_s
+import kotlinx.android.synthetic.main.common_title.tv_class
 
 class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
 
@@ -67,19 +67,20 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
 
     override fun initView() {
         setPageTitle("成绩统计")
+        showView(tv_class)
 
-        tv_class_s.text="全部班级"
-        tv_class_s.setOnClickListener {
-            PopupCheckList(this,popClasss,tv_class_s,5).builder().setOnSelectListener{ items->
+        tv_class.text="全部班级"
+        tv_class.setOnClickListener {
+            PopupCheckList(this,popClasss,tv_class,5).builder().setOnSelectListener{ items->
                 if (items.size==popClasss.size){
-                    tv_class_s.text="全部班级"
+                    tv_class.text="全部班级"
                 }
                 else{
                     var className=""
                     for (item in items){
                         className+=item.name+if (items.indexOf(item)==items.size-1) "" else "、"
                     }
-                    tv_class_s.text=className
+                    tv_class.text=className
                 }
                 val ids= mutableListOf<Int>()
                 for (item in items){

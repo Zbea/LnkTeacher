@@ -61,6 +61,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     }
 
     override fun initData() {
+        fetchCommonData()
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){

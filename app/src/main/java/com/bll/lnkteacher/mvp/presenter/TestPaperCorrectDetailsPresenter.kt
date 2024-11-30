@@ -2,27 +2,16 @@ package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 /**
  * 考卷批改详细功能
  */
 class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDetailsView,val screen:Int):BasePresenter<IContractView.ITestPaperCorrectDetailsView>(view) {
-
-    fun getClassPapers(taskId:Int){
-        val map=HashMap<String,Any>()
-        map["examChangeId"]=taskId
-        map["size"]=100
-        val list = RetrofitManager.service.getHomeworkCorrectClassList(map)
-        doRequest(list, object : Callback<TestPaperClassUserList>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<TestPaperClassUserList>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<TestPaperClassUserList>) {
-                view.onClassPapers(tBaseResult.data)
-            }
-        }, true)
-    }
 
     fun getPaperClassPapers(id:Int,classId:Int){
         val map=HashMap<String,Any>()

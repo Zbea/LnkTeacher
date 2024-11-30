@@ -185,7 +185,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         initDialog()
         initData()
         initView()
-        fetchCommonData()
     }
 
     /**
@@ -386,7 +385,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 setOnItemChildClickListener { adapter, view, position ->
                     if (correctStatus==1){
                         setChangeItemScore(view,position)
-                        notifyItemChanged(position)
                     }
                 }
                 rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseActivity,15f)))
@@ -402,7 +400,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                     //批改状态为已提交未批改 且 没有子题目才能执行
                     if (correctStatus==1&&item.childScores.isNullOrEmpty()){
                         setChangeItemScore(view,position)
-                        notifyItemChanged(position)
                     }
                 }
                 setCustomItemChildClickListener{ position, view, childPos ->
@@ -477,6 +474,12 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         }
                         item.score= it
                         setTotalScore()
+                        if (correctModule<3){
+                            mTopicScoreAdapter?.notifyItemChanged(position)
+                        }
+                        else{
+                            mTopicMultiAdapter?.notifyItemChanged(position)
+                        }
                     }
                 }
             }
@@ -487,14 +490,20 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 else{
                     item.result=0
                 }
-
                 if (scoreMode==1){
                     item.score= item.result*item.label
                 }
                 else{
                     item.score= item.result.toDouble()
                 }
+
                 setTotalScore()
+                if (correctModule<3){
+                    mTopicScoreAdapter?.notifyItemChanged(position)
+                }
+                else{
+                    mTopicMultiAdapter?.notifyItemChanged(position)
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity.drawing
 
 import com.bll.lnkteacher.Constants.Companion.weekTime
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
@@ -45,6 +46,8 @@ class PlanOverviewActivity: BaseDrawingActivity() {
     override fun initView() {
         disMissView(iv_catalog,iv_btn,iv_expand)
         setPageTitle("规划")
+
+        MethodManager.setImageResource(this,R.mipmap.icon_freenote_bg_1,v_content_b)
 
         rg_group.setOnCheckedChangeListener { radioGroup, i ->
             type = if (i==R.id.rb_month){

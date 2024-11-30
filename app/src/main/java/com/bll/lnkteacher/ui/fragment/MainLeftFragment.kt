@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.AppSystemUpdateDialog
@@ -37,6 +38,7 @@ import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.htfy.params.ServerParams
 import com.liulishuo.filedownloader.BaseDownloadTask
+import kotlinx.android.synthetic.main.fragment_main_left.iv_bg
 import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
 import kotlinx.android.synthetic.main.fragment_main_left.iv_date
 import kotlinx.android.synthetic.main.fragment_main_left.rv_main_plan
@@ -91,6 +93,8 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
     override fun initView() {
         setTitle(DataBeanManager.getIndexLeftData()[0].name)
         initDialog(1)
+
+        MethodManager.setImageResource(requireActivity(),R.mipmap.icon_date_event_bg,iv_bg)
 
         tv_date_today.setOnClickListener {
             customStartActivity(Intent(activity, DateActivity::class.java))

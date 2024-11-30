@@ -498,7 +498,15 @@ abstract class BaseDrawingActivity : BaseActivity(){
     }
 
     /**
-     * 设置是否可以手写
+     * 设置是否可以手写 (true不可以手写，false可以手写)
+     */
+    fun setDisableTouchInput(boolean: Boolean){
+        elik_a?.disableTouchInput(boolean)
+        elik_b?.disableTouchInput(boolean)
+    }
+
+    /**
+     * 设置是否可以加载手写（true可以手写，false不可以手写）
      */
     fun setPWEnabled(boolean: Boolean){
         elik_a?.setPWEnabled(boolean)

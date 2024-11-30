@@ -73,6 +73,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     }
 
     override fun initData() {
+        fetchCommonData()
         initChangeScreenData()
     }
 

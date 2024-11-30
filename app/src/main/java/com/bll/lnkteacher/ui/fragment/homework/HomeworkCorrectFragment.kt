@@ -15,7 +15,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.ITestPaperCorrectView
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -108,7 +108,7 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
             setOnChildClickListener { view,parentPos, position ->
                 val item=items[parentPos]
                 if (view.id==R.id.ll_content){
-                    val intent= Intent(requireActivity(), HomeworkCorrectActivity::class.java)
+                    val intent= Intent(requireActivity(), TestPaperCorrectActivity::class.java)
                     val bundle= Bundle()
                     bundle.putSerializable("paperCorrect",item)
                     intent.putExtra("bundle",bundle)

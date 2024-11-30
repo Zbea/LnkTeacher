@@ -416,11 +416,6 @@ interface APIService{
     /**
      * 获取班级同学提交考卷列表
      */
-    @GET("exam/change/edit")
-    fun getHomeworkCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperClassUserList>>
-    /**
-     * 获取班级同学提交考卷列表
-     */
     @GET("task/group/info")
     fun getPaperCorrectClassList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TestPaperClassUserList>>
     /**
