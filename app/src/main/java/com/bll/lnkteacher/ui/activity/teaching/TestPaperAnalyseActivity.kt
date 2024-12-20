@@ -147,13 +147,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         }
     }
 
-    override fun onCorrectSuccess() {
-    }
-
-    override fun onCompleteSuccess() {
-    }
-
-
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_analyse
     }

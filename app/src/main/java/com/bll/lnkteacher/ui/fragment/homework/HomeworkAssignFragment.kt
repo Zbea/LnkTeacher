@@ -128,7 +128,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         intent.putExtra("bundle",bundle)
                         customStartActivity(intent)
                     }
-                    3->{
+                    3,6->{
                         HomeworkPublishDialog(requireContext(),grade,item.id).builder().setOnDialogClickListener{ contentStr, classSelectItem->
                             classSelectBean=classSelectItem
                             commitHomework(item,contentStr,classSelectItem)

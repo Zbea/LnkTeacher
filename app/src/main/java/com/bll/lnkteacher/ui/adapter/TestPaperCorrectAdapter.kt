@@ -27,13 +27,21 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
+        val isShow = when(item.subType){
+            3,6->{
+                false
+            }
+            else->{
+                true
+            }
+        }
         helper.setText(tv_title,item.title)
         helper.setText(tv_exam_type,item.subTypeName)
         helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
-        helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&item.subType!=3)
-        helper.setGone(tv_send,item.subType!=3)
+        helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&isShow)
+        helper.setGone(tv_send,isShow)
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         ClassAdapter(R.layout.item_testpaper_correct_class_type,item.examList).apply {

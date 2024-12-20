@@ -157,11 +157,11 @@ public interface IContractView {
         /**
          * 删除考卷批改
          */
-        void onDeleteSuccess();
+        default void onDeleteSuccess(){};
         /**
          * 发送考卷成功
          */
-        void onSendSuccess();
+        default void onSendSuccess(){};
     }
 
     //考卷批改
@@ -174,8 +174,8 @@ public interface IContractView {
         /**
          * 老师提交批改
          */
-        void onCorrectSuccess();
-        void onCompleteSuccess();
+        default void onCorrectSuccess(){};
+        default void onCompleteSuccess(){};
     }
 
     interface IAnalyseTeachingView extends IBaseView{
@@ -321,14 +321,13 @@ public interface IContractView {
 
     interface IExamListView extends IBaseView {
         void onList(ExamList list);
-        void onDeleteSuccess();
-        void onSendSuccess();
-        void onExamClassUser(ExamClassUserList classUserList);
+        default void onDeleteSuccess(){};
+        default void onSendSuccess(){};
     }
 
     interface IExamCorrectView extends IBaseView {
         void onExamClassUser(ExamClassUserList classUserList);
-        void onCorrectSuccess();
+        default void onCorrectSuccess(){};
     }
 
     interface IFreeNoteView extends IBaseView{

@@ -134,10 +134,6 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         }
     }
 
-    override fun onCorrectSuccess() {
-    }
-
-
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_analyse
     }

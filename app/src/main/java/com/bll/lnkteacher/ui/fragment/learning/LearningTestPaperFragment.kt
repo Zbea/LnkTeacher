@@ -26,10 +26,6 @@ class LearningTestPaperFragment:BaseFragment(),ITestPaperCorrectView {
         items= list.list
         mAdapter?.setNewData(items)
     }
-    override fun onDeleteSuccess() {
-    }
-    override fun onSendSuccess() {
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content

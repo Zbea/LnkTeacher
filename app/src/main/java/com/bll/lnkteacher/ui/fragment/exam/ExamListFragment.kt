@@ -12,7 +12,6 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.presenter.ExamListPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IExamListView
@@ -41,9 +40,6 @@ class ExamListFragment:BaseFragment(),IExamListView{
 
     override fun onSendSuccess() {
         showToast("批改考卷发送成功")
-    }
-
-    override fun onExamClassUser(classUserList: ExamClassUserList?) {
     }
 
 

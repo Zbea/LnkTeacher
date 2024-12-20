@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.presenter.ExamListPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.IExamListView
@@ -25,14 +24,6 @@ class LearningExamFragment:BaseFragment(),IExamListView{
         mAdapter?.setNewData(items)
         setPageNumber(list.total)
     }
-
-    override fun onDeleteSuccess() {
-    }
-    override fun onSendSuccess() {
-    }
-    override fun onExamClassUser(classUserList: ExamClassUserList?) {
-    }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list_content
