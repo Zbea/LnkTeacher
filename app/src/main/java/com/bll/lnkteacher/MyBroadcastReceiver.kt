@@ -29,7 +29,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             Constants.ACTION_REFRESH->{
                 Log.d("debug","每天0点刷新页面")
-                MethodManager.wakeUpScreen(context)
                 EventBus.getDefault().postSticky(Constants.AUTO_REFRESH_EVENT)
             }
             //监听网络变化

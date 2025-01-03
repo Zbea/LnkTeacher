@@ -179,7 +179,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
             val pendingIntent=PendingIntent.getBroadcast(this@MainActivity, 0, intent, 0)
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP, selectLong,
+                AlarmManager.SYS_RTC_WAKEUP, selectLong,
                 AlarmManager.INTERVAL_DAY, pendingIntent
             )
         }

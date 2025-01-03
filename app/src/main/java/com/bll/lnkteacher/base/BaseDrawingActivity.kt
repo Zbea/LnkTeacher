@@ -18,8 +18,6 @@ import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.utils.*
 import kotlinx.android.synthetic.main.ac_drawing.*
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.*
-import kotlinx.android.synthetic.main.ac_testpaper_correct.*
 import kotlinx.android.synthetic.main.common_answer.*
 import kotlinx.android.synthetic.main.common_drawing_geometry.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*

@@ -37,7 +37,6 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
@@ -136,7 +135,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
     override fun initView() {
         setPageTitle("考卷批改  ${examBean?.examName}  ${examBean?.className}")
-        disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
+        disMissView(iv_catalog,iv_btn,ll_record)
 
         if (answerImages.size>0){
             showView(tv_answer)

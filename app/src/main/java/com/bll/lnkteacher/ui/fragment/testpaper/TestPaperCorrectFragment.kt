@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment.testpaper
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,8 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
+import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceItemDeco
@@ -84,23 +85,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
                         deleteCorrect()
                     }
                     R.id.tv_send->{
-                        val ids= mutableListOf<Int>()
-                        if (item.examList.size==1){
-                            ids.add(item.examList[0].classId)
-                            mPresenter.sendClass(item.id,ids)
-                        }
-                        else{
-                            val pops= mutableListOf<PopupBean>()
-                            for (classItem in item.examList){
-                                pops.add(PopupBean(classItem.classId,classItem.name))
-                            }
-                            PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
-                                for (bean in it){
-                                    ids.add(bean.id)
-                                }
-                                mPresenter.sendClass(item.id,ids)
-                            }
-                        }
+                        send(view)
                     }
                 }
             }
@@ -118,6 +103,34 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
             }
         }
         rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),15f)))
+    }
+
+    private fun send(view: View){
+        val item=items[pos]
+        CommonDialog(requireActivity()).setContent("确认发送？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val ids= mutableListOf<Int>()
+                if (item.examList.size==1){
+                    ids.add(item.examList[0].classId)
+                    mPresenter.sendClass(item.id,ids)
+                }
+                else{
+                    val pops= mutableListOf<PopupBean>()
+                    for (classItem in item.examList){
+                        pops.add(PopupBean(classItem.classId,classItem.name))
+                    }
+                    PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
+                        for (bean in it){
+                            ids.add(bean.id)
+                        }
+                        mPresenter.sendClass(item.id,ids)
+                    }
+                }
+            }
+        })
     }
 
     /**

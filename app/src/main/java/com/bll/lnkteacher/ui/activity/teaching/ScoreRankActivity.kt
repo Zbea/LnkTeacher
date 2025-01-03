@@ -14,6 +14,8 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperGradeAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import kotlinx.android.synthetic.main.ac_testpaper_grade.iv_arrow_page_down
+import kotlinx.android.synthetic.main.ac_testpaper_grade.iv_arrow_page_up
 import kotlinx.android.synthetic.main.ac_testpaper_grade.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_class
 
@@ -94,6 +96,14 @@ class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
                 }
                 mAdapter?.setNewData(selectRanks)
             }
+        }
+
+        iv_arrow_page_up.setOnClickListener {
+            rv_list.scrollBy(0,-DP2PX.dip2px(this,100f))
+        }
+
+        iv_arrow_page_down.setOnClickListener {
+            rv_list.scrollBy(0, DP2PX.dip2px(this,100f))
         }
 
         initRecyclerView()

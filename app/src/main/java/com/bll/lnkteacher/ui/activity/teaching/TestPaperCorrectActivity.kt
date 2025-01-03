@@ -43,7 +43,6 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_tool
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
@@ -145,7 +144,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
     override fun initView() {
         setPageTitle("${if(correctList?.taskType==1) "作业" else "试卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
-        disMissView(iv_tool,iv_catalog,iv_btn)
+        disMissView(iv_catalog,iv_btn)
         setPageSetting("全部保存")
 
         if (answerImages.size>0){

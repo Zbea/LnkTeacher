@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.fragment.exam
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -84,23 +85,7 @@ class ExamListFragment:BaseFragment(),IExamListView{
                         customStartActivity(intent)
                     }
                     R.id.tv_send->{
-                        val ids= mutableListOf<Int>()
-                        if (item.classList.size==1){
-                            ids.add(item.classList[0].classId)
-                            mPresenter.sendClass(item.id,ids)
-                        }
-                        else{
-                            val pops= mutableListOf<PopupBean>()
-                            for (classItem in item.classList){
-                                pops.add(PopupBean(classItem.classId,classItem.className))
-                            }
-                            PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
-                                for (bean in it){
-                                    ids.add(bean.id)
-                                }
-                                mPresenter.sendClass(item.id,ids)
-                            }
-                        }
+                        send(view)
                     }
                     R.id.iv_delete->{
                         delete()
@@ -125,6 +110,33 @@ class ExamListFragment:BaseFragment(),IExamListView{
         rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(requireActivity(),15f)))
     }
 
+    private fun send(view: View){
+        val item=items[position]
+        CommonDialog(requireActivity()).setContent("确认发送？").builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val ids= mutableListOf<Int>()
+                if (item.classList.size==1){
+                    ids.add(item.classList[0].classId)
+                    mPresenter.sendClass(item.id,ids)
+                }
+                else{
+                    val pops= mutableListOf<PopupBean>()
+                    for (classItem in item.classList){
+                        pops.add(PopupBean(classItem.classId,classItem.className))
+                    }
+                    PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
+                        for (bean in it){
+                            ids.add(bean.id)
+                        }
+                        mPresenter.sendClass(item.id,ids)
+                    }
+                }
+            }
+        })
+    }
 
     private fun delete(){
         CommonDialog(requireActivity()).setContent(R.string.toast_is_delete_tips).builder()

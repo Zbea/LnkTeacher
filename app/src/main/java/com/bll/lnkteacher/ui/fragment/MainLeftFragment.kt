@@ -283,12 +283,10 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
                 nowDate=DateUtils.getStartOfDayInMillis()
                 setDateView()
                 setCalenderView()
+                mTeachingAdapter?.notifyDataSetChanged()
             }
             Constants.DATE_EVENT ->{
                 setDateDrawingView()
-            }
-            Constants.CLASSGROUP_EVENT->{
-                fetchCommonData()
             }
             Constants.CLASSGROUP_TEACHING_PLAN_EVENT->{
                 mTeachingAdapter?.notifyDataSetChanged()
