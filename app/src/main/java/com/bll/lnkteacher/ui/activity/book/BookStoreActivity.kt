@@ -23,7 +23,7 @@ import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
-import com.bll.lnkteacher.utils.FileDownManager
+import com.bll.lnkteacher.utils.FileBigDownManager
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -186,11 +186,11 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         showLoading()
         val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val targetFileStr = FileAddress().getPathBook(fileName+ MethodManager.getUrlFormat(book.downloadUrl))
-        val download = FileDownManager.with(this).create(url).setPath(targetFileStr)
+        val download = FileBigDownManager.with(this).create(url).setPath(targetFileStr)
             .startSingleTaskDownLoad(object :
-                FileDownManager.SingleTaskCallBack {
+                FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                     if (task != null && task.isRunning ) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+
@@ -200,7 +200,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         }
                     }
                 }
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     book.apply {

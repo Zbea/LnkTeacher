@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
-import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
@@ -8,7 +7,6 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.NumberDialog
-import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
@@ -63,35 +61,12 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     private var posImage=0//当前图片下标
     private var posUser=0//当前学生下标
     private var currentImages= mutableListOf<String>()//当前学生作业地址
-    private val commitItems = mutableListOf<ItemList>()
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
-
+    private var tokenStr=""
 
     override fun onToken(token: String) {
-        val commitPaths = mutableListOf<String>()
-        for (item in commitItems) {
-            commitPaths.add(item.url)
-        }
-        FileImageUploadManager(token, commitPaths).apply {
-            startUpload()
-            setCallBack(object : FileImageUploadManager.UploadCallBack {
-                override fun onUploadSuccess(urls: List<String>) {
-                    url=ToolUtils.getImagesStr(urls)
-                    val map= HashMap<String, Any>()
-                    map["studentTaskId"]=userItems[posUser].studentTaskId
-                    map["score"]=tv_total_score.text.toString().toDouble()
-                    map["submitUrl"]=url
-                    map["status"]=2
-                    map["question"]=Gson().toJson(currentScores)
-                    mPresenter.commitPaperStudent(map)
-                }
-                override fun onUploadFail() {
-                    hideLoading()
-                    showToast("上传失败")
-                }
-            })
-        }
+        tokenStr=token
     }
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
@@ -139,6 +114,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             answerImages=ToolUtils.getImages(correctList?.answerUrl)
         }
 
+        mUploadPresenter.getToken(false)
         fetchClassList()
     }
 
@@ -166,11 +142,18 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         }
 
         tv_save.setOnClickListener {
+            hideKeyboard()
             if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
-                commitPapers()
+                //没有手写，直接提交
+                if (!FileUtils.isExistContent(getPathDraw())){
+                    url=userItems[posUser].studentUrl
+                    commit()
+                }
+                else{
+                    commitPaper()
+                }
             }
-            hideKeyboard()
         }
 
         tv_total_score.setOnClickListener {
@@ -343,12 +326,12 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         if (isExpand){
             when(correctStatus){
                 1->{
-                    val masterImage="${getPath()}/${posImage+1}.png"//原图
+                    val masterImage=getPathStr(posImage+1)
                     GlideUtils.setImageUrl(this,File(masterImage).path,v_content_a)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_a?.setLoadFilePath(drawPath, true)
 
-                    val masterImage_b="${getPath()}/${posImage+1+1}.png"//原图
+                    val masterImage_b=getPathStr(posImage+1+1)
                     GlideUtils.setImageUrl(this,File(masterImage_b).path,v_content_b)
                     val drawPath_b = getPathDrawStr(posImage+1+1)
                     elik_b?.setLoadFilePath(drawPath_b, true)
@@ -364,7 +347,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         else{
             when(correctStatus){
                 1->{
-                    val masterImage="${getPath()}/${posImage+1}.png"//原图
+                    val masterImage=getPathStr(posImage+1)
                     GlideUtils.setImageUrl(this,File(masterImage).path,v_content_b)
                     val drawPath = getPathDrawStr(posImage+1)
                     elik_b?.setLoadFilePath(drawPath, true)
@@ -384,7 +367,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         showLoading()
         val savePaths= mutableListOf<String>()
         for (i in currentImages.indices){
-            savePaths.add(getPath()+"/${i+1}.png")
+            savePaths.add(getPathStr(i+1))
         }
         if (!FileUtils.isExistContent(getPath())) {
             FileMultitaskDownManager.with(this).create(currentImages).setPath(savePaths).startMultiTaskDownLoad(
@@ -416,36 +399,70 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         return currentImages.size
     }
 
+    override fun onElikSava_a() {
+        if (isExpand){
+            Thread {
+                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(posImage+1))
+            }.start()
+        }
+    }
+
+    override fun onElikSava_b() {
+        if (isExpand){
+            Thread {
+                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1+1))
+            }.start()
+        }
+        else{
+            Thread {
+                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1))
+            }.start()
+        }
+    }
+
+    /**
+     * 上传图片
+     */
+    private fun commitPaper(){
+        //获取合图的图片，没有手写的页面那原图
+        val paths= mutableListOf<String>()
+        for (i in currentImages.indices){
+            val mergePath=getPathMergeStr(i+1)
+            if (File(mergePath).exists()){
+                paths.add(mergePath)
+            }
+            else{
+                val path=getPathStr(i+1)
+                paths.add(path)
+            }
+        }
+        FileImageUploadManager(tokenStr, paths).apply {
+            startUpload()
+            setCallBack(object : FileImageUploadManager.UploadCallBack {
+                override fun onUploadSuccess(urls: List<String>) {
+                    url=ToolUtils.getImagesStr(urls)
+                    commit()
+                }
+                override fun onUploadFail() {
+                    hideLoading()
+                    showToast("上传失败")
+                    mUploadPresenter.getToken(false)
+                }
+            })
+        }
+    }
+
     /**
      * 提交学生考卷
      */
-    private fun commitPapers(){
-        commitItems.clear()
-        //手写,图片合图
-        for (i in currentImages.indices){
-            val index=i+1
-            val masterImage="${getPath()}/${index}.png"//原图
-            val drawPath = getPathDrawStr(index)
-            Thread {
-                val oldBitmap = BitmapFactory.decodeFile(masterImage)
-                val drawBitmap = BitmapFactory.decodeFile(drawPath)
-                if (drawBitmap!=null){
-                    val mergeBitmap = BitmapUtils.mergeBitmap(oldBitmap, drawBitmap)
-                    BitmapUtils.saveBmpGallery(this, mergeBitmap, masterImage)
-                }
-                commitItems.add(ItemList().apply {
-                    id = i
-                    url = masterImage
-                })
-                if (commitItems.size==currentImages.size){
-                    commitItems.sort()
-                    runOnUiThread {
-                        mUploadPresenter.getToken()
-                    }
-                }
-            }.start()
-
-        }
+    private fun commit(){
+        val map= HashMap<String, Any>()
+        map["studentTaskId"]=userItems[posUser].studentTaskId
+        map["score"]=tv_total_score.text.toString().toDouble()
+        map["submitUrl"]=url
+        map["status"]=2
+        map["question"]=Gson().toJson(currentScores)
+        mPresenter.commitPaperStudent(map)
     }
 
     /**
@@ -468,10 +485,31 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     }
 
     /**
+     * 得到当前原图地址
+     */
+    private fun getPathStr(index: Int):String{
+        return getPath()+"/${index}.png"//手绘地址
+    }
+
+    /**
+     * 得到当前手绘路径
+     */
+    private fun getPathDraw():String{
+        return getPath()+"/draw/"//手绘地址
+    }
+
+    /**
      * 得到当前手绘图片
      */
     private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw${index}.png"//手绘地址
+        return getPath()+"/draw/${index}.png"//手绘地址
+    }
+
+    /**
+     * 得到当前合图地址
+     */
+    private fun getPathMergeStr(index: Int):String{
+        return getPath()+"/merge/${index}.png"//手绘地址
     }
 
     /**

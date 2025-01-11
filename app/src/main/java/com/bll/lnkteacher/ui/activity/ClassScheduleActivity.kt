@@ -21,8 +21,8 @@ import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
+import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
-import com.bll.lnkteacher.utils.SystemSettingUtils
 import kotlinx.android.synthetic.main.ac_class_schedule.grid
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import kotlinx.android.synthetic.main.common_title.tv_btn_2
@@ -138,8 +138,9 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
             if (selectLists.size == 0) return@setOnClickListener
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)
-            SystemSettingUtils.saveScreenShot(this, grid, "course${classGroupId}")
-            mUploadPresenter.getToken()
+            val path=FileAddress().getPathCourse("course")+"/course${classGroupId}.png"
+            BitmapUtils.saveScreenShot(this, grid, path)
+            mUploadPresenter.getToken(true)
         }
 
         val oldCourses= ClassScheduleGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)

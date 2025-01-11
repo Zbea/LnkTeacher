@@ -8,7 +8,7 @@ import com.bll.lnkteacher.net.RetrofitManager
 
 class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):BasePresenter<IContractView.IFileUploadView>(view) {
 
-    fun getToken(){
+    fun getToken(boolean: Boolean){
         val token = RetrofitManager.service.getQiniuToken()
         doRequest(token, object : Callback<String>(view,screen,false,false) {
             override fun failed(tBaseResult: BaseResult<String>): Boolean {
@@ -18,7 +18,7 @@ class FileUploadPresenter(view: IContractView.IFileUploadView,val screen:Int=0):
                 if (tBaseResult.data!=null)
                     view.onToken(tBaseResult.data)
             }
-        }, true)
+        }, boolean)
     }
 
 

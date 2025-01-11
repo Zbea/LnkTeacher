@@ -24,7 +24,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
-import com.bll.lnkteacher.utils.FileDownManager
+import com.bll.lnkteacher.utils.FileBigDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
@@ -309,10 +309,10 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         else{
             FileAddress().getPathTextBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
-        val download = FileDownManager.with(this).create(url).setPath(path)
-            .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
+        val download = FileBigDownManager.with(this).create(url).setPath(path)
+            .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
 
-                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                     if (task != null && task.isRunning) {
                         runOnUiThread {
                             val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M")+ "/"+
@@ -322,7 +322,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                     }
                 }
 
-                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
 
                 override fun completed(task: BaseDownloadTask?) {

@@ -1,16 +1,21 @@
 package com.bll.lnkteacher.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+
+import com.bll.lnkteacher.FileAddress;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -170,17 +175,16 @@ public class BitmapUtils {
             try {
                 if (outStream != null) {
                     outStream.close();
+                    MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(file);
+                    intent.setData(uri);
+                    context.sendBroadcast(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
     }
 
     /**
@@ -190,15 +194,17 @@ public class BitmapUtils {
      * @param path 保存路径
      */
     public static void saveBmpGallery(Context context,Bitmap bmp, String path) {
-        File file = null;
-        File parentFile=new File(path);
+        File file=new File(path);
+        File parentFile=new File(file.getParent());
         if (!parentFile.exists()){
             parentFile.mkdirs();
         }
         // 声明输出流
         FileOutputStream outStream = null;
         try {
-            file = new File(path);
+            if (!file.exists()){
+                file.createNewFile();
+            }
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
             if (null != outStream) {
@@ -210,19 +216,17 @@ public class BitmapUtils {
             try {
                 if (outStream != null) {
                     outStream.close();
+                    MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    Uri uri = Uri.fromFile(file);
+                    intent.setData(uri);
+                    context.sendBroadcast(intent);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        context.sendBroadcast(intent);
-
     }
-
 
 
     public static byte[] drawableToByte(Drawable drawable){
@@ -251,6 +255,26 @@ public class BitmapUtils {
         return drawable;
     }
 
+    /**
+     * 截图
+     * @param context
+     * @param view
+     * @param path
+     */
+    public static void saveScreenShot(Activity context, View view, String path) {
+        Bitmap bitmap = loadBitmapFromViewByCanvas(view);
+        saveBmpGallery(context,bitmap, path);
+    }
 
+    private static Bitmap loadBitmapFromViewByCanvas(View view) {
+        int w = view.getWidth();
+        int h = view.getHeight();
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bitmap);
+        //如果不设置canvas画布为白色，则生成透明
+        c.drawColor(Color.WHITE);
+        view.draw(c);
+        return bitmap;
+    }
 
 }
