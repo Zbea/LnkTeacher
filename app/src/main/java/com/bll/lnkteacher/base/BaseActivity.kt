@@ -88,8 +88,8 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
-    var mUser=SPUtil.getObj("user",User::class.java)
-    var mUserId=SPUtil.getObj("user",User::class.java)?.accountId
+    var mUser:User?=null
+    var mUserId=0L
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
@@ -175,6 +175,10 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                 Manifest.permission.READ_PHONE_STATE
             )
         }
+
+        mUser=MethodManager.getUser()
+        if (mUser!=null)
+            mUserId=mUser?.accountId!!
 
         screenPos=getCurrentScreenPos()
         if (rv_tab!=null){

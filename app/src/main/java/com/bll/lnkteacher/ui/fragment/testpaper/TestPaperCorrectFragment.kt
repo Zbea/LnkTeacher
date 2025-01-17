@@ -171,7 +171,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if(msgFlag== Constants.EXAM_CORRECT_EVENT){
+        if(msgFlag== Constants.TESTPAPER_CORRECT_EVENT){
             fetchData()
         }
     }

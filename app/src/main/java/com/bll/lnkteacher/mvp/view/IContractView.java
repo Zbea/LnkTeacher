@@ -76,10 +76,11 @@ public interface IContractView {
 
     //班群
     interface IClassGroupView extends IBaseView{
-        void onClasss(List<ClassGroup> classGroups);
-        void onSubjects(List<String> subjects);
-        void onSuccess();
-        void onUploadSuccess();
+        default void onClasss(List<ClassGroup> classGroups){};
+        default void onClassInfo(ClassGroup classGroup){}
+        default void onSubjects(List<String> subjects){};
+        default void onSuccess(){};
+        default void onUploadSuccess(){};
     }
 
     interface IClassGroupUserView extends IBaseView{

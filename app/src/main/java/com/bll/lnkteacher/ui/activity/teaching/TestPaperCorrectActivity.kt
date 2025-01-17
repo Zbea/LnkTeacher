@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.media.MediaPlayer
+import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -18,14 +19,11 @@ import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
-import com.bll.lnkteacher.utils.FileMultitaskDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_file
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_play
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_play
@@ -88,7 +86,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         //批改完成之后删除文件夹
         FileUtils.deleteFile(File(getPath()))
         setPWEnabled(false)
-        EventBus.getDefault().post(if (correctList?.taskType==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.EXAM_CORRECT_EVENT)
+        EventBus.getDefault().post(if (correctList?.taskType==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.TESTPAPER_CORRECT_EVENT)
     }
 
     override fun onCompleteSuccess() {
@@ -114,12 +112,11 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             answerImages=ToolUtils.getImages(correctList?.answerUrl)
         }
 
-        mUploadPresenter.getToken(false)
         fetchClassList()
     }
 
     override fun initView() {
-        setPageTitle("${if(correctList?.taskType==1) "作业" else "试卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
+        setPageTitle("${if(correctList?.taskType==1) "作业" else "测卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog,iv_btn)
         setPageSetting("全部保存")
 
@@ -151,7 +148,9 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                     commit()
                 }
                 else{
-                    commitPaper()
+                    Handler().postDelayed({
+                        commitPaper()
+                    },300)
                 }
             }
         }
@@ -226,15 +225,16 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     override fun onPageDown() {
-        if (posImage<getImageSize()-1){
+        val count=if (isExpand) getImageSize()-2 else getImageSize()-1
+        if (posImage<count){
             posImage+=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     /**
@@ -260,15 +260,15 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
         when(correctStatus){
             1->{
+                currentImages=ToolUtils.getImages(userItem.studentUrl)
                 currentScores = if (userItem.question?.isNotEmpty() == true&&correctModule>0){
                     jsonToList(userItem.question) as MutableList<ScoreItem>
                 } else{
                     jsonToList(correctList?.question!!) as MutableList<ScoreItem>
                 }
                 tv_total_score.text = userItem.score.toString()
-                currentImages=ToolUtils.getImages(userItem.studentUrl)
                 showView(ll_score,tv_save)
-                loadPapers()
+                onChangeContent()
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
@@ -324,69 +324,25 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         tv_page_total.text="${getImageSize()}"
         tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
-            when(correctStatus){
-                1->{
-                    val masterImage=getPathStr(posImage+1)
-                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_a)
-                    val drawPath = getPathDrawStr(posImage+1)
-                    elik_a?.setLoadFilePath(drawPath, true)
+            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
+            GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
+            if (correctStatus==1){
+                val drawPath = getPathDrawStr(posImage+1)
+                elik_a?.setLoadFilePath(drawPath, true)
 
-                    val masterImage_b=getPathStr(posImage+1+1)
-                    GlideUtils.setImageUrl(this,File(masterImage_b).path,v_content_b)
-                    val drawPath_b = getPathDrawStr(posImage+1+1)
-                    elik_b?.setLoadFilePath(drawPath_b, true)
-                }
-                2->{
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
-                    GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
-                }
+                val drawPath_b = getPathDrawStr(posImage+1+1)
+                elik_b?.setLoadFilePath(drawPath_b, true)
             }
             tv_page.text="${posImage+1}"
-            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
+            tv_page_a.text="${posImage+1+1}"
         }
         else{
-            when(correctStatus){
-                1->{
-                    val masterImage=getPathStr(posImage+1)
-                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_b)
-                    val drawPath = getPathDrawStr(posImage+1)
-                    elik_b?.setLoadFilePath(drawPath, true)
-                }
-                2->{
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
-                }
+            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
+            if (correctStatus==1){
+                val drawPath = getPathDrawStr(posImage+1)
+                elik_b?.setLoadFilePath(drawPath, true)
             }
             tv_page.text="${posImage+1}"
-        }
-    }
-
-    /**
-     * 下载学生提交试卷
-     */
-    private fun loadPapers(){
-        showLoading()
-        val savePaths= mutableListOf<String>()
-        for (i in currentImages.indices){
-            savePaths.add(getPathStr(i+1))
-        }
-        if (!FileUtils.isExistContent(getPath())) {
-            FileMultitaskDownManager.with(this).create(currentImages).setPath(savePaths).startMultiTaskDownLoad(
-                object : FileMultitaskDownManager.MultiTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-                    override fun completed(task: BaseDownloadTask?) {
-                        hideLoading()
-                        onChangeContent()
-                    }
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        hideLoading()
-                    }
-                })
-        } else {
-            hideLoading()
-            onChangeContent()
         }
     }
 
@@ -431,16 +387,25 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             if (File(mergePath).exists()){
                 paths.add(mergePath)
             }
-            else{
-                val path=getPathStr(i+1)
-                paths.add(path)
-            }
         }
         FileImageUploadManager(tokenStr, paths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    url=ToolUtils.getImagesStr(urls)
+                    //校验正确图片，没有手写图片拿原图
+                    val uploadPaths= mutableListOf<String>()
+                    var index=0
+                    for (i in currentImages.indices){
+                        val mergePath=getPathMergeStr(i+1)
+                        if (File(mergePath).exists()){
+                            uploadPaths.add(urls[index])
+                            index+=1
+                        }
+                        else{
+                            uploadPaths.add(currentImages[i])
+                        }
+                    }
+                    url=ToolUtils.getImagesStr(uploadPaths)
                     commit()
                 }
                 override fun onUploadFail() {
@@ -469,6 +434,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
      * 获取班级学生列表
      */
     private fun fetchClassList(){
+        mUploadPresenter.getToken(false)
         mPresenter.getPaperClassPapers(mId,mClassBean?.classId!!)
     }
 
@@ -482,13 +448,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             FileAddress().getPathTestPaperDrawing(mId,mClassBean?.classId, userItems[posUser].userId)
         }
         return path
-    }
-
-    /**
-     * 得到当前原图地址
-     */
-    private fun getPathStr(index: Int):String{
-        return getPath()+"/${index}.png"//手绘地址
     }
 
     /**
@@ -537,7 +496,6 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
 
     override fun onDestroy() {
         super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
         release()
     }
 

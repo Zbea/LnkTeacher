@@ -146,47 +146,6 @@ public class BitmapUtils {
         return bitmap;
     }
 
-
-    /**
-     * 保存图片
-     * @param context
-     * @param bmp
-     * @param path 保存路径
-     * @param pcName 图片名称
-     */
-    public static void saveBmpGallery(Context context,Bitmap bmp, String path, String pcName) {
-        File file = null;
-        File parentFile=new File(path);
-        if (!parentFile.exists()){
-            parentFile.mkdirs();
-        }
-        // 声明输出流
-        FileOutputStream outStream = null;
-        try {
-            file = new File(path,pcName+".png");
-            // 获得输出流，如果文件中有内容，追加内容
-            outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            }
-        } catch (Exception e) {
-            e.getStackTrace();
-        } finally {
-            try {
-                if (outStream != null) {
-                    outStream.close();
-                    MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "", "");
-                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    Uri uri = Uri.fromFile(file);
-                    intent.setData(uri);
-                    context.sendBroadcast(intent);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     /**
      * 保存图片
      * @param context
@@ -195,9 +154,8 @@ public class BitmapUtils {
      */
     public static void saveBmpGallery(Context context,Bitmap bmp, String path) {
         File file=new File(path);
-        File parentFile=new File(file.getParent());
-        if (!parentFile.exists()){
-            parentFile.mkdirs();
+        if (!file.exists()){
+            file.getParentFile().mkdirs();
         }
         // 声明输出流
         FileOutputStream outStream = null;
@@ -207,9 +165,7 @@ public class BitmapUtils {
             }
             // 获得输出流，如果文件中有内容，追加内容
             outStream = new FileOutputStream(file);
-            if (null != outStream) {
-                bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-            }
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
         } catch (Exception e) {
             e.getStackTrace();
         } finally {

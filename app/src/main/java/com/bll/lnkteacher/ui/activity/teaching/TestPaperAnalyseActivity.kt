@@ -3,7 +3,6 @@ package com.bll.lnkteacher.ui.activity.teaching
 import android.content.Intent
 import android.os.Bundle
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -187,6 +186,9 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         setPageTitle(R.string.teaching_testpaper_analyse)
         disMissView(iv_tool, iv_catalog, iv_btn)
         showView(tv_class)
+
+        setPWEnabled(false)
+
         if (flag==0){
             setPageCustom("层群创建")
             setPageSetting("成绩统计")
@@ -319,72 +321,51 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     override fun onChangeExpandContent() {
+        if (imageCount==1)
+            return
         changeErasure()
         isExpand = !isExpand
         onChangeExpandView()
         onChangeContent()
     }
 
+
     override fun onPageUp() {
-        if (isExpand) {
-            if (posImage > 1) {
-                posImage -= 2
-            } else if (posImage == 1) {
-                posImage = 0
-            }
-        } else {
-            if (posImage > 0) {
-                posImage -= 1
-            }
+        if (posImage>0){
+            posImage-=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     override fun onPageDown() {
-        if (isExpand) {
-            if (posImage < imageCount - 2) {
-                posImage += 2
-            } else if (posImage == imageCount - 2) {
-                posImage = imageCount - 1
-            }
-        } else {
-            if (posImage < imageCount - 1) {
-                posImage += 1
-            }
+        val count=if (isExpand) imageCount-2 else imageCount-1
+        if (posImage<count){
+            posImage+=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     /**
      * 设置学生提交图片展示
      */
     override fun onChangeContent() {
+        if (isExpand&&posImage>imageCount-2)
+            posImage=imageCount-2
+        if (isExpand&&posImage<0)
+            posImage=0
+
         tv_page_total_a.text = "$imageCount"
         tv_page_total.text = "$imageCount"
 
-        if (isExpand) {
-            elik_a?.setPWEnabled(true, true)
-            GlideUtils.setImageUrl(this, images[posImage], v_content_a)
-            val drawPath = getPathDrawStr(posImage + 1)
-            elik_a?.setLoadFilePath(drawPath, true)
-
-            if (posImage + 1 < imageCount) {
-                elik_b?.setPWEnabled(true, true)
-                GlideUtils.setImageUrl(this, images[posImage + 1], v_content_b)
-                val drawPath_b = getPathDrawStr(posImage + 1 + 1)
-                elik_b?.setLoadFilePath(drawPath_b, true)
-            } else {
-                elik_b?.setPWEnabled(false, false)
-                v_content_b?.setImageResource(0)
-            }
-            tv_page.text = "${posImage + 1}"
-            tv_page_a.text = if (posImage + 1 < imageCount) "${posImage + 1 + 1}" else ""
-        } else {
-            elik_b?.setPWEnabled(true, true)
-            GlideUtils.setImageUrl(this, images[posImage], v_content_b)
-            val drawPath = getPathDrawStr(posImage + 1)
-            elik_b?.setLoadFilePath(drawPath, true)
-            tv_page.text = "${posImage + 1}"
+        if (isExpand){
+            GlideUtils.setImageUrl(this, images[posImage],v_content_a)
+            GlideUtils.setImageUrl(this, images[posImage+1],v_content_b)
+            tv_page.text="${posImage+1}"
+            tv_page_a.text="${posImage+1+1}"
+        }
+        else{
+            GlideUtils.setImageUrl(this, images[posImage],v_content_b)
+            tv_page.text="${posImage+1}"
         }
     }
 
@@ -393,21 +374,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
      */
     private fun fetchClassUser(){
         mPresenter.getPaperClassPapers(correctList?.id!!, classList[classPos].classId)
-    }
-
-    /**
-     * 文件路径
-     */
-    private fun getPath(): String {
-        return FileAddress().getPathTestPaperDrawing(correctList!!.id)
-    }
-
-
-    /**
-     * 得到当前手绘图片
-     */
-    private fun getPathDrawStr(index: Int): String {
-        return getPath() + "/draw${index}.tch"//手绘地址
     }
 
     /**

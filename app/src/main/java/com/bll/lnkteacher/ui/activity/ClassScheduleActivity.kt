@@ -16,7 +16,6 @@ import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.manager.ClassScheduleGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ClassScheduleBean
 import com.bll.lnkteacher.mvp.model.ItemList
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -74,17 +73,12 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
         }
     }
 
-    override fun onClasss(classGroups: MutableList<ClassGroup>) {
-    }
-
     override fun onSubjects(subjects: MutableList<String>) {
         for (subject in subjects){
             lists.add(ItemList(DataBeanManager.getCourseId(subject),subject))
         }
     }
 
-    override fun onSuccess() {
-    }
     override fun onUploadSuccess() {
         if (type==1){
             EventBus.getDefault().post(Constants.COURSE_EVENT)

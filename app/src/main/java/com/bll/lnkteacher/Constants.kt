@@ -76,7 +76,7 @@ class Constants {
         const val CLASSGROUP_CHANGE_EVENT = "ClassGroupChangeEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val HOMEWORK_CORRECT_EVENT = "HomeworkCorrectEvent"
-        const val EXAM_CORRECT_EVENT = "ExamCorrectEvent"
+        const val TESTPAPER_CORRECT_EVENT = "TestPaperCorrectEvent"
         const val APP_INSTALL_EVENT = "AppInstallEvent"
         const val APP_INSTALL_INSERT_EVENT = "AppInstallInsertEvent"
         const val APP_UNINSTALL_EVENT = "AppUnInstallEvent"

@@ -49,15 +49,13 @@ import java.util.Objects;
 
 public class MethodManager {
 
-    private static User user=SPUtil.INSTANCE.getObj("user", User.class);
-
-    public static void getUser(){
-        user=SPUtil.INSTANCE.getObj("user", User.class);
+    public static User getUser(){
+        return SPUtil.INSTANCE.getObj("user", User.class);
     }
 
     public static boolean isLogin(){
         String tokenStr=SPUtil.INSTANCE.getString("token");
-        return !TextUtils.isEmpty(tokenStr) && user!=null;
+        return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
     }
 
     /**
@@ -91,7 +89,9 @@ public class MethodManager {
     public static void gotoBookDetails(Context context,int type, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
 
-        bookBean.time=System.currentTimeMillis();
+        bookBean.isLook=true;
+        if (type==1)
+            bookBean.time=System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
 
         List<AppBean> toolApps= getAppTools(context,1);
@@ -114,7 +114,7 @@ public class MethodManager {
         intent.putExtra("key_book_id",bookBean.bookId+"");
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
-        intent.putExtra("userId",user.accountId);
+        intent.putExtra("userId",getUser().accountId);
         intent.putExtra("type", type);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);
@@ -143,7 +143,7 @@ public class MethodManager {
         intent.putExtra("key_book_id",bean.id+"");
         intent.putExtra("bookName", bean.title);
         intent.putExtra("tool",result.toString());
-        intent.putExtra("userId",user.accountId);
+        intent.putExtra("userId",getUser().accountId);
         intent.putExtra("type", 3);
         intent.putExtra("drawPath", bean.bookDrawPath);
         intent.putExtra("key_book_type", 3);

@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
@@ -10,7 +11,7 @@ import com.bll.lnkteacher.net.RequestUtils
 import com.bll.lnkteacher.net.RetrofitManager
 
 
-class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : BasePresenter<IContractView.IClassGroupView>(view) {
+class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int=0) : BasePresenter<IContractView.IClassGroupView>(view) {
 
     fun getClassGroups() {
         val list = RetrofitManager.service.getListClassGroup()
@@ -21,6 +22,21 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int) : 
             override fun success(tBaseResult: BaseResult<ClassGroupList>) {
                 if (tBaseResult.data!=null)
                     view.onClasss(tBaseResult.data?.list)
+            }
+        }, false)
+    }
+
+    //班群信息
+    fun onClassGroupInfo(id:Int) {
+        val map=HashMap<String,Any>()
+        map["id"]=id
+        val quit= RetrofitManager.service.getGroupInfo(map)
+        doRequest(quit, object : Callback<ClassGroup>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<ClassGroup>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<ClassGroup>) {
+                view.onClassInfo(tBaseResult.data)
             }
         }, false)
     }

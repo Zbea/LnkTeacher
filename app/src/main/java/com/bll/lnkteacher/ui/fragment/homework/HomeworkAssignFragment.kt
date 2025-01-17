@@ -161,12 +161,12 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             resId = R.mipmap.icon_setting_delete
         })
         beans.add(ItemList().apply {
-            name = "置顶"
-            resId = R.mipmap.icon_setting_top
-        })
-        beans.add(ItemList().apply {
             name = "重命名"
             resId = R.mipmap.icon_setting_edit
+        })
+        beans.add(ItemList().apply {
+            name = "置顶"
+            resId = R.mipmap.icon_setting_top
         })
 
         LongClickManageDialog(requireActivity(),2, item.name, beans).builder()
@@ -186,11 +186,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         }
                     }
                     1->{
-                        val map=HashMap<String,Any>()
-                        map["id"]=item.id
-                        mPresenter.topType(map)
-                    }
-                    2->{
                         InputContentDialog(requireActivity(),2,item.name).builder().setOnDialogClickListener{
                             editTypeStr=it
                             val map=HashMap<String,Any>()
@@ -198,6 +193,11 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                             map["name"]= it
                             mPresenter.editHomeworkType(map)
                         }
+                    }
+                    2->{
+                        val map=HashMap<String,Any>()
+                        map["id"]=item.id
+                        mPresenter.topType(map)
                     }
                 }
             }

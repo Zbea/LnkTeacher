@@ -248,7 +248,7 @@ interface APIService{
     @POST("class/group/editName")
     fun editClassGroupChild(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 创建班群
+     * 加入班群
      */
     @POST("class/group/join")
     fun addClassGroup(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
@@ -257,6 +257,11 @@ interface APIService{
      */
     @GET("class/page")
     fun getListClassGroup(): Observable<BaseResult<ClassGroupList>>
+    /**
+     * 班群信息
+     */
+    @GET("class/group/infoV2")
+    fun getGroupInfo(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ClassGroup>>
     /**
      * 班群科目
      */

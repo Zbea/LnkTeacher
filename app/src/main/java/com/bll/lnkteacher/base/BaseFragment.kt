@@ -31,7 +31,6 @@ import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.NetworkUtil
-import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.SToast
 import com.bll.lnkteacher.widget.FlowLayoutManager
 import io.reactivex.disposables.Disposable
@@ -66,7 +65,7 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
      */
     var mView:View?=null
     var mDialog: ProgressDialog? = null
-    var mUser=SPUtil.getObj("user",User::class.java)
+    var mUser:User?=null
 
     var pageIndex=1 //当前页码
     var pageCount=1 //全部数据
@@ -115,6 +114,8 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         super.onViewCreated(view, savedInstanceState)
         EventBus.getDefault().register(this)
         isViewPrepare = true
+
+        mUser=MethodManager.getUser()
 
         initCommonTitle()
         if (rv_tab!=null){

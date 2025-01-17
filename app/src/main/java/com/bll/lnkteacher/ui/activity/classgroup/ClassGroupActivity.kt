@@ -27,25 +27,28 @@ import kotlinx.android.synthetic.main.common_title.tv_btn_2
 
 class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
 
-    private lateinit var mGroupPresenter: ClassGroupPresenter
+    private var mGroupPresenter = ClassGroupPresenter(this)
     private var classGroups = mutableListOf<ClassGroup>()
     private var mAdapter: ClassGroupAdapter? = null
     private var position = 0
+    private var classGroupAddDialog:ClassGroupAddDialog?=null
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups = groups
         classGroups = groups
         mAdapter?.setNewData(classGroups)
     }
-
-    override fun onSubjects(subjects: MutableList<String>?) {
+    override fun onClassInfo(classGroup: ClassGroup) {
+        if (classGroup.name==null){
+            classGroupAddDialog?.setTextInfo("")
+        }
+        else{
+            val info="班级信息：${classGroup.name} ${classGroup.teacher}"
+            classGroupAddDialog?.setTextInfo(info)
+        }
     }
-
     override fun onSuccess() {
         mGroupPresenter.getClassGroups()
-    }
-
-    override fun onUploadSuccess() {
     }
 
     override fun layoutId(): Int {
@@ -53,12 +56,7 @@ class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
     }
 
     override fun initData() {
-        initChangeScreenData()
         mGroupPresenter.getClassGroups()
-    }
-
-    override fun initChangeScreenData() {
-        mGroupPresenter = ClassGroupPresenter(this, getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -182,9 +180,15 @@ class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
      * 加入班群
      */
     private fun addClassGroup() {
-        ClassGroupAddDialog(this).builder().setOnDialogClickListener {
-            mGroupPresenter.addClassGroup(it)
-        }
+        classGroupAddDialog=ClassGroupAddDialog(this).builder()
+        classGroupAddDialog?.setOnDialogClickListener (object : ClassGroupAddDialog.OnDialogClickListener {
+            override fun onClick(code: Int) {
+                mGroupPresenter.addClassGroup(code)
+            }
+            override fun onEditTextCode(code: Int) {
+                mGroupPresenter.onClassGroupInfo(code)
+            }
+        })
     }
 
 

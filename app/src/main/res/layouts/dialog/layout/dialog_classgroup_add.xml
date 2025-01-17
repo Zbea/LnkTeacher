@@ -1,34 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="500dp"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_bg"
-    android:gravity="center_horizontal"
-    android:padding="@dimen/dp_40">
+    android:padding="@dimen/dp_40"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
+        android:gravity="center"
         android:text="加入班群"
+        android:textSize="26sp"
         android:textStyle="bold"
-        android:textSize="@dimen/sp_26"/>
+        android:textColor="@color/black" />
+
 
     <EditText
-        android:id="@+id/et_name"
+        android:id="@+id/et_number"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="@dimen/dp_30"
-        android:layout_weight="1"
-        android:textSize="@dimen/sp_22"
-        android:textColor="@color/black"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:paddingStart="@dimen/dp_20"
         android:hint="输入班群号"
-        android:paddingStart="@dimen/dp_10"
-        android:inputType="number"
         android:textColorHint="@color/color_text_hint"
         android:background="@drawable/bg_gray_stroke_5dp_corner"
-        android:layout_marginBottom="@dimen/dp_35"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:inputType="number"
+        android:textColor="@color/black"
+        android:layout_marginTop="30dp"
+        android:padding="5dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginRight="@dimen/dp_20"
+        android:lines="1"
+        android:textSize="@dimen/sp_20"
+        android:textColor="@color/black"
         />
 
 

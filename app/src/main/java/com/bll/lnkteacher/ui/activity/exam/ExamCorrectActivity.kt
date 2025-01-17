@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.ui.activity.exam
 
+import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -16,14 +17,11 @@ import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.ExamCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
-import com.bll.lnkteacher.utils.FileMultitaskDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
-import com.liulishuo.filedownloader.BaseDownloadTask
-import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_record
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
@@ -104,7 +102,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         if (!examBean?.answerUrl.isNullOrEmpty())
             answerImages= examBean?.answerUrl?.split(",") as MutableList<String>
 
-        mUploadPresenter.getToken(false)
         fetchData()
     }
 
@@ -127,6 +124,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         }
 
         tv_save.setOnClickListener {
+            hideKeyboard()
             val item=userItems[posUser]
             if (item.status==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
@@ -136,7 +134,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                     commit()
                 }
                 else{
-                    commitPaper()
+                    Handler().postDelayed({
+                        commitPaper()
+                    },300)
                 }
             }
         }
@@ -181,15 +181,16 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     override fun onPageDown() {
-        if (posImage<getImageSize()-1){
+        val count=if (isExpand) getImageSize()-2 else getImageSize()-1
+        if (posImage<count){
             posImage+=if (isExpand)2 else 1
+            onChangeContent()
         }
-        onChangeContent()
     }
 
     /**
@@ -210,7 +211,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = ""
                 showView(ll_score,tv_save)
-                loadPapers()
+                onChangeContent()
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
@@ -262,37 +263,23 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         tv_page_total.text="${getImageSize()}"
         tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
-            when(correctStatus){
-                1->{
-                    val masterImage=getPathStr(posImage+1)//原图
-                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_a)
-                    val drawPath = getPathDrawStr(posImage+1)
-                    elik_a?.setLoadFilePath(drawPath, true)
+            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
+            GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
+            if (correctStatus==1){
+                val drawPath = getPathDrawStr(posImage+1)
+                elik_a?.setLoadFilePath(drawPath, true)
 
-                    val masterImage_b=getPathStr(posImage+1+1)//原图
-                    GlideUtils.setImageUrl(this,File(masterImage_b).path,v_content_b)
-                    val drawPath_b = getPathDrawStr(posImage+1+1)
-                    elik_b?.setLoadFilePath(drawPath_b, true)
-                }
-                2->{
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
-                    GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
-                }
+                val drawPath_b = getPathDrawStr(posImage+1+1)
+                elik_b?.setLoadFilePath(drawPath_b, true)
             }
             tv_page.text="${posImage+1}"
-            tv_page_a.text=if (posImage+1<getImageSize()) "${posImage+1+1}" else ""
+            tv_page_a.text="${posImage+1+1}"
         }
         else{
-            when(correctStatus){
-                1->{
-                    val masterImage=getPathStr(posImage+1)//原图
-                    GlideUtils.setImageUrl(this,File(masterImage).path,v_content_b)
-                    val drawPath = getPathDrawStr(posImage+1)
-                    elik_b?.setLoadFilePath(drawPath, true)
-                }
-                2->{
-                    GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
-                }
+            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
+            if (correctStatus==1){
+                val drawPath = getPathDrawStr(posImage+1)
+                elik_b?.setLoadFilePath(drawPath, true)
             }
             tv_page.text="${posImage+1}"
         }
@@ -320,36 +307,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     }
 
     /**
-     * 下载学生提交试卷
-     */
-    private fun loadPapers(){
-        showLoading()
-        val savePaths= mutableListOf<String>()
-        for (i in currentImages.indices){
-            savePaths.add(getPathStr(i+1))
-        }
-        if (!FileUtils.isExistContent(getPath())) {
-            FileMultitaskDownManager.with(this).create(currentImages).setPath(savePaths).startMultiTaskDownLoad(
-                object : FileMultitaskDownManager.MultiTaskCallBack {
-                    override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-                    override fun completed(task: BaseDownloadTask?) {
-                        hideLoading()
-                        onChangeContent()
-                    }
-                    override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                    }
-                    override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                        hideLoading()
-                    }
-                })
-        } else {
-            hideLoading()
-            onChangeContent()
-        }
-    }
-
-    /**
      * 每份多少张考卷
      */
     private fun getImageSize():Int{
@@ -362,23 +319,31 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
      * 上传图片
      */
     private fun commitPaper(){
-        //获取合图的图片，没有手写的页面那原图
         val paths= mutableListOf<String>()
         for (i in currentImages.indices){
             val mergePath=getPathMergeStr(i+1)
             if (File(mergePath).exists()){
                 paths.add(mergePath)
             }
-            else{
-                val path=getPathStr(i+1)
-                paths.add(path)
-            }
         }
         FileImageUploadManager(tokenStr, paths).apply {
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-                    url=ToolUtils.getImagesStr(urls)
+                    //校验正确图片，没有手写图片拿原图
+                    val uploadPaths= mutableListOf<String>()
+                    var index=0
+                    for (i in currentImages.indices){
+                        val mergePath=getPathMergeStr(i+1)
+                        if (File(mergePath).exists()){
+                            uploadPaths.add(urls[index])
+                            index+=1
+                        }
+                        else{
+                            uploadPaths.add(currentImages[i])
+                        }
+                    }
+                    url=ToolUtils.getImagesStr(uploadPaths)
                     commit()
                 }
                 override fun onUploadFail() {
@@ -411,12 +376,6 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     private fun getPath():String{
         return FileAddress().getPathExam(examBean?.id, examBean?.classId, userItems[posUser].userId)
     }
-    /**
-     * 得到当前原图地址
-     */
-    private fun getPathStr(index: Int):String{
-        return getPath()+"/${index}.png"//手绘地址
-    }
 
     /**
      * 得到当前手绘路径
@@ -439,12 +398,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         return getPath()+"/merge/${index}.png"//手绘地址
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        FileDownloader.getImpl().pauseAll()
-    }
-
     override fun fetchData() {
+        mUploadPresenter.getToken(false)
+
         val map=HashMap<String,Any>()
         map["schoolExamJobId"]= examBean?.schoolExamJobId!!
         map["classId"]= examBean?.classId!!
