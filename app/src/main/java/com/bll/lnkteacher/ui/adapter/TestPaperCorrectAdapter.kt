@@ -42,6 +42,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
         helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&isShow)
         helper.setGone(tv_send,isShow)
+
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理
         ClassAdapter(R.layout.item_testpaper_correct_class_type,item.examList).apply {

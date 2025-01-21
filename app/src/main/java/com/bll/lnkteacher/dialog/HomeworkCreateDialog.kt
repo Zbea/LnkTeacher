@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
@@ -15,7 +14,7 @@ import com.bll.lnkteacher.utils.SToast
 
 class HomeworkCreateDialog(val context: Context, val grade:Int,val string: String) {
 
-    val classGroupIds= mutableListOf<Int>()
+    var classGroupIds= mutableListOf<Int>()
 
     fun builder(): HomeworkCreateDialog{
         val dialog = Dialog(context)
@@ -32,14 +31,9 @@ class HomeworkCreateDialog(val context: Context, val grade:Int,val string: Strin
         val tvName = dialog.findViewById<EditText>(R.id.ed_name)
         tvName?.hint=string
 
-        val gradePops=DataBeanManager.getClassGroupPopsByGrade(grade)
-
         tvClass.setOnClickListener {
-            PopupCheckList(context,gradePops,tvClass,0).builder().setOnSelectListener{
-                classGroupIds.clear()
-                for (pop in it){
-                    classGroupIds.add(pop.id)
-                }
+            ClassGroupSelectorDialog(context, grade,mutableListOf()).builder().setOnDialogSelectListener{
+                classGroupIds= it.toMutableList()
             }
         }
 

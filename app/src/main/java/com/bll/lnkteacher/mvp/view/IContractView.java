@@ -226,6 +226,7 @@ public interface IContractView {
         void onDeleteSuccess();
         void onEditSuccess();
         void onTopSuccess();
+        void onBingSuccess();
         /**
          * 发送成功
          */

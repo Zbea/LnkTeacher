@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.dialog.ClassGroupSelectorDialog
 import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
@@ -37,6 +38,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
     private var classSelectBean: HomeworkClassSelectItem?=null //提交作业信息
+    private var ids=""
 
     override fun onTypeList(list:  TypeList) {
         setPageNumber(list.total)
@@ -69,6 +71,11 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     override fun onTopSuccess() {
         pageIndex=1
         fetchData()
+    }
+
+    override fun onBingSuccess() {
+        showToast("修改绑定班群成功")
+        types[position].classIds=ids
     }
 
     override fun onCommitSuccess() {
@@ -168,6 +175,10 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             name = "置顶"
             resId = R.mipmap.icon_setting_top
         })
+        beans.add(ItemList().apply {
+            name = "绑定管理"
+            resId = R.mipmap.icon_setting_top
+        })
 
         LongClickManageDialog(requireActivity(),2, item.name, beans).builder()
             .setOnDialogClickListener { position->
@@ -199,6 +210,16 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         map["id"]=item.id
                         mPresenter.topType(map)
                     }
+                    3->{
+                        val classIds=item.classIds.split(",")
+                        ClassGroupSelectorDialog(requireActivity(),grade,classIds).builder().setOnDialogSelectListener{
+                            ids=ToolUtils.getImagesStr(it)
+                            val map=HashMap<String,Any>()
+                            map["id"]=item.id
+                            map["classIds"]=ids
+                            mPresenter.bingType(map)
+                        }
+                    }
                 }
             }
     }
@@ -229,7 +250,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         map["classIds"]=ToolUtils.getImagesStr(ids)
         mPresenter.addType(map,true)
     }
-
 
     /**
      * 刷新年级

@@ -25,10 +25,10 @@
             android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_5"
             android:layout_marginEnd="@dimen/dp_20"
             android:textColor="@color/black"
-            android:text="删除"
+            android:text="管理"
             android:gravity="right"
             android:textSize="@dimen/sp_22" />
     </LinearLayout>

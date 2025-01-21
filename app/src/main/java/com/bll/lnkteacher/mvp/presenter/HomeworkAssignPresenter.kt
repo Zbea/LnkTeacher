@@ -105,6 +105,19 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
         }, true)
     }
 
+    fun bingType(map: HashMap<String,Any>) {
+        val body=RequestUtils.getBody(map)
+        val type = RetrofitManager.service.bingType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onBingSuccess()
+            }
+        }, true)
+    }
+
     fun commitHomework(map:HashMap<String,Any>){
         val boay=RequestUtils.getBody(map)
         val list = RetrofitManager.service.commitHomework(boay)

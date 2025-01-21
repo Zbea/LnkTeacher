@@ -377,6 +377,11 @@ interface APIService{
     @POST("common/type/updateTop")
     fun topType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 绑定作业本
+     */
+    @POST("common/type/updateBind")
+    fun bingType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 删除作业分类
      */
     @POST("common/type/deleteHomework")
