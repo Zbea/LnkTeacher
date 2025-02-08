@@ -87,10 +87,10 @@ public interface IContractView {
         //学生列表
         void onUserList(List<ClassGroupUser> users);
         //踢出学生成功
-        void onOutSuccess();
+        default void onOutSuccess(){};
         //修改学生职位成功
-        void onEditSuccess();
-        void onAllowSuccess();
+        default void onEditSuccess(){};
+        default void onAllowSuccess(){};
     }
 
     interface IClassGroupChildView extends IBaseView{
@@ -109,8 +109,8 @@ public interface IContractView {
 
     //主页
     interface ICommonView extends IBaseView{
-        void onCommon(CommonData commonData);
-        void onListSchools(List<SchoolBean> list);
+        default void onCommon(CommonData commonData){};
+        default void onListSchools(List<SchoolBean> list){};
     }
 
     //考卷布置
@@ -259,8 +259,6 @@ public interface IContractView {
     }
 
     interface IMainLeftView extends IBaseView{
-        void onUpdateInfo(SystemUpdateInfo item);
-        void onAppUpdate(AppUpdateBean item);
         void onClassList(List<ClassGroup> classGroups);
     }
 
@@ -281,11 +279,11 @@ public interface IContractView {
     }
 
     interface IHandoutView extends IBaseView {
-        void onType(List<String> list);
-        void onList(HandoutList list);
-        void onDelete();
-        void onEdit();
-        void onTop();
+        default void onType(List<String> list){};
+        default void onList(HandoutList list){};
+        default void onDelete(){};
+        default void onEdit(){};
+        default void onTop(){};
     }
 
     interface IWallpaperView extends IBaseView {

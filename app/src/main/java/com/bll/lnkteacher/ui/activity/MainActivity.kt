@@ -73,9 +73,6 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
     }
 
     override fun initData() {
-        val areaJson = FileUtils.readFileContent(resources.assets.open("city.json"))
-        val type= object : TypeToken<List<AreaBean>>() {}.type
-        DataBeanManager.provinces = Gson().fromJson(areaJson, type)
     }
 
     override fun initView() {

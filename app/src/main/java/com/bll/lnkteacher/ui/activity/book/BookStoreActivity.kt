@@ -25,6 +25,7 @@ import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileBigDownManager
 import com.bll.lnkteacher.utils.MD5Utils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.liulishuo.filedownloader.BaseDownloadTask
@@ -39,7 +40,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
 
     private var tabStr=""
     private var type=0
-    private val presenter = BookStorePresenter(this)
+    private lateinit var presenter:BookStorePresenter
     private var books = mutableListOf<Book>()
     private var mAdapter: BookStoreAdapter? = null
     private var grade = 0
@@ -80,31 +81,37 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun initData() {
+        initChangeScreenData()
         pageSize=12
         type = intent.flags
         tabStr=DataBeanManager.bookStoreTypes[type-1].name
         gradeList=DataBeanManager.popupTypeGrades
         if (gradeList.size>0){
-            grade = gradeList[0].id
+            grade = gradeList[DataBeanManager.popupTypeGradePos()].id
             initSelectorView()
         }
-        presenter.getBookType()
+
+        if (NetworkUtil(this).isNetworkConnected()){
+            presenter.getBookType()
+        }
     }
 
+    override fun initChangeScreenData() {
+        presenter = BookStorePresenter(this)
+    }
 
     override fun initView() {
         setPageTitle(tabStr)
         showView(tv_subgrade)
 
         initRecyclerView()
-
     }
 
     /**
      * 设置分类选择
      */
     private fun initSelectorView() {
-        tv_subgrade.text = gradeList[0].name
+        tv_subgrade.text = gradeList[DataBeanManager.popupTypeGradePos()].name
         tv_subgrade.setOnClickListener {
             PopupRadioList(this, gradeList, tv_subgrade,tv_subgrade.width, 5).builder()
             .setOnSelectListener { item ->

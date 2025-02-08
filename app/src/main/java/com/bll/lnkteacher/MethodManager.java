@@ -19,6 +19,7 @@ import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
+import com.bll.lnkteacher.mvp.model.AreaBean;
 import com.bll.lnkteacher.mvp.model.HandoutBean;
 import com.bll.lnkteacher.mvp.model.book.Book;
 import com.bll.lnkteacher.mvp.model.HandoutList;
@@ -35,6 +36,8 @@ import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;
 import com.bll.lnkteacher.utils.SPUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -42,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -240,37 +244,6 @@ public class MethodManager {
         return SPUtil.INSTANCE.getObj(typeId+"CommitClass", HomeworkClassSelectItem.class);
     }
 
-    /**
-     * 获取当前年级所有班群（已经断片之前是否发送过）
-     * @param grade
-     * @param typeId
-     * @return
-     */
-    public static List<PopupBean> getCommitClassGroupPops(int grade,int typeId,String classIdStrs){
-        HomeworkClassSelectItem classSelectItem=getCommitClass(typeId);
-        List<PopupBean> classGroupPops;
-        if (TextUtils.isEmpty(classIdStrs)){
-            classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByGrade(grade);
-        }
-        else {
-            List<Integer> classIds=new ArrayList<>();
-            String[] classs=classIdStrs.split(",");
-            for (String classId :classs){
-                classIds.add(Integer.valueOf(classId));
-            }
-            classGroupPops=DataBeanManager.INSTANCE.getClassGroupPopsByClassIds(classIds);
-        }
-        if (classSelectItem!=null){
-            for (int classId: classSelectItem.classIds) {
-                for (PopupBean popupBean:classGroupPops) {
-                    if (classId==popupBean.id){
-                        popupBean.isCheck=true;
-                    }
-                }
-            }
-        }
-        return classGroupPops;
-    }
 
     /**
      * 获取工具app
@@ -388,5 +361,16 @@ public class MethodManager {
         options.inScaled = false; // 防止自动缩放
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId, options);
         imageView.setImageBitmap(bitmap);
+    }
+
+    /**
+     * 获取省
+     * @param context
+     * @return
+     * @throws IOException
+     */
+    public static List<AreaBean> getProvinces(Context context) throws IOException {
+        String areaJson = FileUtils.readFileContent(context.getResources().getAssets().open("city.json"));
+        return new Gson().fromJson(areaJson, new TypeToken<List<AreaBean>>(){}.getType());
     }
 }

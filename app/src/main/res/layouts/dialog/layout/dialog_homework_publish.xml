@@ -61,13 +61,11 @@
 
     </LinearLayout>
 
-
-
-    <androidx.recyclerview.widget.RecyclerView
+    <com.bll.lnkteacher.widget.MaxRecyclerView
         android:id="@+id/rv_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_35"
+        android:layout_marginBottom="@dimen/dp_30"
         />
 
     <include

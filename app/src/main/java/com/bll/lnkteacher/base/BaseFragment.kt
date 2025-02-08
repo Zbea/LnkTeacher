@@ -13,12 +13,10 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
-import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -71,7 +69,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     var pageCount=1 //全部数据
     var pageSize=0 //一页数据
     var cloudList= mutableListOf<CloudListBean>()
-    var updateDialog: AppUpdateDialog?=null
     var mTabTypeAdapter: TabTypeAdapter?=null
     var itemTabTypes= mutableListOf<ItemTypeBean>()
     var grade=0
@@ -85,10 +82,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
             DataBeanManager.typeGrades=commonData.typeGrade
         if (!commonData.version.isNullOrEmpty())
             DataBeanManager.versions=commonData.version
-    }
-
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        DataBeanManager.schools=list
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -374,11 +367,10 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         }
     }
 
-    fun fetchCommonData(){
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mCommonPresenter.getCommon()
-            mCommonPresenter.getSchool()
-        }
+    /**
+     * 每次翻页，刷新数据
+     */
+    open fun onRefreshData(){
     }
 
     //更新数据
@@ -400,11 +392,6 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
     open fun onEventBusMessage(msgFlag: String){
     }
 
-    /**
-     * 每次翻页，刷新数据
-     */
-    open fun onRefreshData(){
-    }
     /**
      * 网络请求数据
      */

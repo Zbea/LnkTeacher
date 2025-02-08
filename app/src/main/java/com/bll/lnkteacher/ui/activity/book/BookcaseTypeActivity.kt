@@ -191,6 +191,10 @@ class BookcaseTypeActivity : BaseActivity() {
                 else{
                     if (typeStr==""){
                         val types= ItemTypeDaoManager.getInstance().queryAll(2)
+                        if (types.size==0){
+                            showToast("请先创建分类")
+                            return@setOnDialogClickListener
+                        }
                         val lists= mutableListOf<ItemList>()
                         for (i in types.indices){
                             lists.add(ItemList(i,types[i].title))

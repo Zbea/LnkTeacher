@@ -136,6 +136,26 @@ class DiaryActivity:BaseDrawingActivity() {
         diaryBean?.paths= mutableListOf(getPath(posImage))
     }
 
+    /**
+     * 切换日记
+     */
+    private fun changeContent(){
+        nowLong = diaryBean?.date!!
+        if (nowLong==DateUtils.getStartOfDayInMillis()&&uploadId==0){
+            showView(iv_btn)
+        }
+        else {
+            disMissView(iv_btn)
+        }
+        bgRes=diaryBean?.bgRes.toString()
+        images= diaryBean?.paths as MutableList<String>
+        posImage=diaryBean?.page!!
+        tv_date.text=DateUtils.longToStringWeek(nowLong)
+        setBg()
+        setDisableTouchInput(diaryBean?.isUpload!!)
+        onChangeContent()
+    }
+
     override fun onCatalog() {
         val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
         CatalogDiaryDialog(this,screenPos,getCurrentScreenPos(),diaryBeans).builder().setOnDialogClickListener { position ->
@@ -148,13 +168,12 @@ class DiaryActivity:BaseDrawingActivity() {
     }
 
     override fun onChangeExpandContent() {
-        changeErasure()
         //云书库下载日记，如果只存在一页不能全屏
         if (uploadId>0&&images.size==1){
             return
         }
+        //本地日记:如果在一页时全屏，已写则默认创建新页，否则无法全屏
         if (images.size==1){
-            //如果最后一张已写,则可以在全屏时创建新的
             if (File(images[posImage]).exists()){
                 images.add(getPath(posImage+1))
             }
@@ -162,9 +181,8 @@ class DiaryActivity:BaseDrawingActivity() {
                 return
             }
         }
-        if (posImage==0){
-            posImage=1
-        }
+
+        changeErasure()
         isExpand = !isExpand
         moveToScreen(isExpand)
         onChangeExpandView()
@@ -173,33 +191,36 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun onPageDown() {
         val total=images.size-1
-        if(isExpand){
-            if (posImage<total-1){
-                posImage+=2
-                onChangeContent()
-            }
-            else if (posImage==total-1){
-                if (isDrawLastContent()){
-                    images.add(getPath(images.size))
-                    posImage=images.size-1
+        if (posImage>total){
+            posImage=total
+            onChangeContent()
+        }
+        else{
+            if(isExpand){
+                if (posImage<total-1){
+                    posImage+=2
                     onChangeContent()
                 }
                 else{
-                    posImage=total
+                    if (isDrawLastContent()){
+                        images.add(getPath(images.size))
+                    }
+                    posImage=images.size-1
                     onChangeContent()
                 }
             }
-        }
-        else{
-            if (posImage ==total) {
-                if (isDrawLastContent()){
-                    images.add(getPath(images.size))
-                    posImage+=1
+            else{
+                if (posImage<total){
+                    posImage += 1
                     onChangeContent()
                 }
-            } else {
-                posImage += 1
-                onChangeContent()
+                else{
+                    if (isDrawLastContent()){
+                        images.add(getPath(images.size))
+                        posImage+=1
+                        onChangeContent()
+                    }
+                }
             }
         }
     }
@@ -222,30 +243,16 @@ class DiaryActivity:BaseDrawingActivity() {
         }
     }
 
-    /**
-     * 切换日记
-     */
-    private fun changeContent(){
-        nowLong = diaryBean?.date!!
-        if (nowLong==DateUtils.getStartOfDayInMillis()&&uploadId==0){
-            showView(iv_btn)
-        }
-        else {
-            disMissView(iv_btn)
-        }
-        bgRes=diaryBean?.bgRes.toString()
-        images= diaryBean?.paths as MutableList<String>
-        posImage=diaryBean?.page!!
-        tv_date.text=DateUtils.longToStringWeek(nowLong)
-        setBg()
-        setDisableTouchInput(diaryBean?.isUpload!!)
-        onChangeContent()
-    }
+
 
     /**
      * 显示内容
      */
     override fun onChangeContent() {
+        if (isExpand&&posImage==0){
+            posImage=1
+        }
+
         val path = getPath(posImage)
 
         setEinkImage(elik_b!!,path)

@@ -12,6 +12,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
+import com.bll.lnkteacher.dialog.PopupCityList
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
@@ -58,9 +59,9 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     private var mBook: Book? = null
     private var isZip=false
 
+    private var cityPopWindow:PopupCityList?=null
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
-    private var provinceList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var tabList = mutableListOf<String>()
     private var subTypeList = mutableListOf<PopupBean>()
@@ -121,10 +122,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         getSemester()
         semesterList=DataBeanManager.popupSemesters(semester)
 
-        provinceStr= mUser?.schoolProvince.toString()
-        for (i in DataBeanManager.provinces.indices){
-            provinceList.add(PopupBean(i,DataBeanManager.provinces[i].value,DataBeanManager.provinces[i].value==provinceStr))
-        }
+        provinceStr= mUser?.schoolCity.toString()
 
         courseId=DataBeanManager.getCourseId(mUser?.subjectName!!)
         subjectList=DataBeanManager.popupCourses(courseId)
@@ -170,12 +168,17 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         }
 
         tv_province.setOnClickListener {
-            PopupRadioList(this, provinceList, tv_province,tv_province.width, 5).builder()
-             .setOnSelectListener { item ->
-                provinceStr = item.name
-                tv_province.text = item.name
-                pageIndex = 1
-                fetchData()
+            if (cityPopWindow==null){
+                cityPopWindow=PopupCityList(this,tv_province,tv_province.width).builder()
+                cityPopWindow?.setOnSelectListener { item ->
+                    provinceStr = item.name
+                    tv_province.text = item.name
+                    pageIndex = 1
+                    fetchData()
+                }
+            }
+            else{
+                cityPopWindow?.show()
             }
         }
 

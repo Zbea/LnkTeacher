@@ -1,9 +1,7 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.SchoolBean
-import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
 import com.bll.lnkteacher.net.BaseResult
@@ -41,7 +39,7 @@ class CommonPresenter(view: IContractView.ICommonView) : BasePresenter<IContract
                 if (!tBaseResult.data.isNullOrEmpty())
                     view.onListSchools(tBaseResult.data)
             }
-        }, false)
+        }, true)
     }
 
 

@@ -10,7 +10,6 @@ import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CloudListBean
-import com.bll.lnkteacher.mvp.model.HandoutList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.HandoutPresenter
@@ -52,15 +51,6 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
             disMissView(tv_grade)
         }
     }
-    override fun onList(list: HandoutList?) {
-    }
-    override fun onDelete() {
-    }
-    override fun onEdit() {
-    }
-    override fun onTop() {
-    }
-
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_textbook_manager

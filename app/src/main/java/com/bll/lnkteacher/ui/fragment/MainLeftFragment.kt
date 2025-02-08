@@ -9,15 +9,10 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
-import com.bll.lnkteacher.dialog.AppSystemUpdateDialog
-import com.bll.lnkteacher.dialog.AppUpdateDialog
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.manager.CalenderDaoManager
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
-import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.MainLeftPresenter
-import com.bll.lnkteacher.mvp.presenter.SystemUpdateManagerPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
 import com.bll.lnkteacher.ui.activity.DateActivity
@@ -26,18 +21,12 @@ import com.bll.lnkteacher.ui.activity.TeachingPlanActivity
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
 import com.bll.lnkteacher.ui.activity.drawing.PlanOverviewActivity
 import com.bll.lnkteacher.ui.adapter.MainTeachingAdapter
-import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.CalenderUtils
 import com.bll.lnkteacher.utils.DateUtils
-import com.bll.lnkteacher.utils.DeviceUtil
-import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.NetworkUtil
-import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceItemDeco
-import com.htfy.params.ServerParams
-import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.fragment_main_left.iv_bg
 import kotlinx.android.synthetic.main.fragment_main_left.iv_calender
 import kotlinx.android.synthetic.main.fragment_main_left.iv_date
@@ -53,26 +42,15 @@ import kotlinx.android.synthetic.main.fragment_main_left.v_date_up
 import java.io.File
 import java.util.Random
 
-class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
+class MainLeftFragment: BaseMainFragment(),IContractView.IMainLeftView{
 
     private var mMainLeftPresenter=MainLeftPresenter(this,1)
-    private var mSystemUpdateManagerPresenter=SystemUpdateManagerPresenter(this,1)
     private var nowDayPos=1
     private var nowDate=0L
     private var calenderPath=""
     private var mTeachingAdapter: MainTeachingAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
 
-    override fun onUpdateInfo(item: SystemUpdateInfo) {
-        AppSystemUpdateDialog(requireActivity(),item).builder()
-    }
-
-    override fun onAppUpdate(item: AppUpdateBean) {
-        if (item.versionCode> AppUtils.getVersionCode(requireActivity())){
-            updateDialog= AppUpdateDialog(requireActivity(),item).builder()
-            downLoadStart(item)
-        }
-    }
 
     override fun onClassList(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
@@ -146,46 +124,36 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mMainLeftPresenter.getAppUpdate()
-            mMainLeftPresenter.getClassGroups()
-
-            val systemUpdateMap = HashMap<String, String>()
-            systemUpdateMap[Constants.SN] = DeviceUtil.getOtaSerialNumber()
-            systemUpdateMap[Constants.KEY] = ServerParams.getInstance().GetHtMd5Key(DeviceUtil.getOtaSerialNumber())
-            systemUpdateMap[Constants.VERSION_NO] = DeviceUtil.getOtaProductVersion() //getProductVersion();
-            mSystemUpdateManagerPresenter.checkSystemUpdate(systemUpdateMap)
-        }
         nowDate=DateUtils.getStartOfDayInMillis()
         setDateView()
         setCalenderView()
+
+        onCheckUpdate()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            mMainLeftPresenter.getClassGroups()
+        }
+    }
+
+    private fun initTeachingView() {
+        rv_main_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
+        mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
+        rv_main_plan.adapter = mTeachingAdapter
+        mTeachingAdapter?.bindToRecyclerView(rv_main_plan)
+        rv_main_plan.addItemDecoration(SpaceItemDeco(25))
+        mTeachingAdapter?.setOnItemClickListener { _, _, position ->
+            val intent = Intent(activity, TeachingPlanActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("classGroup", classGroups[position])
+            intent.putExtra("bundle", bundle)
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
+            customStartActivity(intent)
+        }
     }
 
     /**
      * 设置当天时间日历
      */
     private fun setDateView(){
-//        val solar= Solar()
-//        solar.solarYear= DateUtils.getYear()
-//        solar.solarMonth=DateUtils.getMonth()
-//        solar.solarDay=DateUtils.getDay()
-//        val lunar= LunarSolarConverter.SolarToLunar(solar)
-//
-//        val str = if (!solar.solar24Term.isNullOrEmpty()) {
-//            "24节气   "+solar.solar24Term
-//        } else {
-//            if (!solar.solarFestivalName.isNullOrEmpty()) {
-//                "节日  "+solar.solarFestivalName
-//            } else {
-//                if (!lunar.lunarFestivalName.isNullOrEmpty()) {
-//                    "节日   "+lunar.lunarFestivalName
-//                }
-//                else{
-//                    lunar.getChinaMonthString(lunar.lunarMonth)+"月"+lunar.getChinaDayString(lunar.lunarDay)
-//                }
-//            }
-//        }
         tv_date_today.text=DateUtils.longToStringWeek(nowDate)
         setDateDrawingView()
     }
@@ -193,7 +161,6 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
     private fun setDateDrawingView(){
         val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-//            GlideUtils.setImageNoCacheRoundUrl(activity,path,iv_date,20)
             val myBitmap= BitmapFactory.decodeFile(path)
             iv_date.setImageBitmap(myBitmap)
         }
@@ -230,48 +197,6 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
         }
     }
 
-    private fun initTeachingView() {
-        rv_main_plan.layoutManager = LinearLayoutManager(activity)//创建布局管理
-        mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
-        rv_main_plan.adapter = mTeachingAdapter
-        mTeachingAdapter?.bindToRecyclerView(rv_main_plan)
-        rv_main_plan.addItemDecoration(SpaceItemDeco(25))
-        mTeachingAdapter?.setOnItemClickListener { _, _, position ->
-            val intent = Intent(activity, TeachingPlanActivity::class.java)
-            val bundle = Bundle()
-            bundle.putSerializable("classGroup", classGroups[position])
-            intent.putExtra("bundle", bundle)
-            intent.putExtra(Constants.INTENT_SCREEN_LABEL,Constants.SCREEN_FULL)
-            customStartActivity(intent)
-        }
-    }
-
-    //下载应用
-    private fun downLoadStart(bean: AppUpdateBean){
-        val targetFileStr= FileAddress().getPathApk("lnktecher")
-        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog?.setUpdateBtn(s)
-                    }
-                }
-            }
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-            override fun completed(task: BaseDownloadTask?) {
-                updateDialog?.dismiss()
-                AppUtils.installApp(requireActivity(), targetFileStr)
-            }
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog?.dismiss()
-            }
-        })
-    }
-
 
     override fun onRefreshData() {
         lazyLoad()
@@ -296,7 +221,5 @@ class MainLeftFragment:BaseFragment(),IContractView.IMainLeftView{
             }
         }
     }
-
-
 
 }

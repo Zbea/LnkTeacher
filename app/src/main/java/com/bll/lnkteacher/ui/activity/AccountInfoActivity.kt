@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
@@ -34,6 +33,10 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     private var schoolBean: SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
+
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
 
     override fun onSms() {
         showToast("短信发送成功")
@@ -102,7 +105,7 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
         }
 
         btn_edit_school.setOnClickListener {
-            editSchool()
+            mCommonPresenter.getSchool()
         }
 
         btn_edit_phone.setOnClickListener {
@@ -152,13 +155,13 @@ class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
     /**
      * 修改学校
      */
-    private fun editSchool() {
+    private fun selectorSchool(schools:MutableList<SchoolBean>) {
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,DataBeanManager.schools).builder()
-            schoolSelectDialog?.setOnDialogClickListener {
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
+            schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
-                presenter.editSchool(it.id)
-                for (item in DataBeanManager.schools){
+                presenter?.editSchool(it.id)
+                for (item in schools){
                     if (item.id==school)
                         schoolBean=item
                 }

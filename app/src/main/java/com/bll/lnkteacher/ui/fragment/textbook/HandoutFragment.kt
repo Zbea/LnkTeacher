@@ -36,9 +36,6 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
     private var editTitleStr = ""
     private var isNet = true
 
-    override fun onType(list: MutableList<String>) {
-    }
-
     override fun onList(list: HandoutList) {
         setPageNumber(list.total)
         for (item in list.list) {

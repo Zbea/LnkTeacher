@@ -3,7 +3,6 @@ package com.bll.lnkteacher
 import com.bll.lnkteacher.mvp.model.AccountOrder
 import com.bll.lnkteacher.mvp.model.AccountQdBean
 import com.bll.lnkteacher.mvp.model.AppList
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CalenderList
 import com.bll.lnkteacher.mvp.model.CloudList
 import com.bll.lnkteacher.mvp.model.CommonData
@@ -12,7 +11,6 @@ import com.bll.lnkteacher.mvp.model.HandoutList
 import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.ShareNoteList
-import com.bll.lnkteacher.mvp.model.SystemUpdateInfo
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.WallpaperList
 import com.bll.lnkteacher.mvp.model.book.BookStore
@@ -31,7 +29,6 @@ import com.bll.lnkteacher.mvp.model.testpaper.RankBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.net.BaseResult
-import com.bll.lnkteacher.net.system.BaseResult1
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -45,11 +42,6 @@ import retrofit2.http.QueryMap
 
 interface APIService{
 
-    /**
-     * 检查系统更新
-     */
-    @POST("Device/CheckUpdate")
-    fun RELEASE_CHECK_UPDATE(@Body requestBody: RequestBody): Observable<BaseResult1<SystemUpdateInfo>>
 
     /**
      * 获取下载token
@@ -58,11 +50,7 @@ interface APIService{
     fun getQiniuToken(): Observable<BaseResult<String>>
     @POST("cloud/data/insert")
     fun cloudUpload(@Body requestBody: RequestBody): Observable<BaseResult<MutableList<Int>>>
-    /**
-     * 获取更新
-     */
-    @GET("app/info/one?type=2")
-    fun onAppUpdate(): Observable<BaseResult<AppUpdateBean>>
+
     /**
      * 获取云列表
      */

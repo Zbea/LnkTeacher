@@ -10,14 +10,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.KeyboardUtils
-import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
@@ -25,7 +25,6 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
 
     private var endTime=0L
     private var isCommit=false
-    private var classPops= mutableListOf<PopupBean>()
 
     @SuppressLint("SuspiciousIndentation")
     fun builder(): HomeworkPublishDialog {
@@ -50,12 +49,20 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
         val classSelectBean=MethodManager.getCommitClass(typeId)
         endTime=System.currentTimeMillis()+Constants.dayLong
         tv_date.text=DateUtils.longToStringWeek(endTime)
-        classPops=MethodManager.getCommitClassGroupPops(grade, typeId,"")
+        isCommit=classSelectBean.isCommit
+        cb_commit.isChecked=isCommit
 
-        if (classSelectBean!=null){
-            if (classSelectBean.isCommit){
-                isCommit=classSelectBean.isCommit
-                cb_commit.isChecked=isCommit
+        val items= mutableListOf<ClassGroup>()
+        for (item in DataBeanManager.classGroups){
+            if (item.grade==grade){
+                if (classSelectBean.classIds.isNotEmpty()&&classSelectBean.classIds.contains(item.classId)){
+                    item.isCheck=true
+                    items.add(item)
+                }
+                else{
+                    item.isCheck=false
+                    items.add(item)
+                }
             }
         }
 
@@ -72,19 +79,14 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
             }
         }
 
-        val mAdapter= MyAdapter(R.layout.item_publish_classgroup_selector, classPops)
-        rvList.layoutManager = LinearLayoutManager(context)//创建布局管理
-        rvList.adapter = mAdapter
+        rvList?.layoutManager = LinearLayoutManager(context)
+        val mAdapter = MyAdapter(R.layout.item_classgroup_selector, items)
+        rvList?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rvList)
-        rvList.addItemDecoration(SpaceItemDeco(20))
-        mAdapter.setOnItemChildClickListener { adapter, view, position ->
-            val item=classPops[position]
-            when (view.id){
-                R.id.cb_class->{
-                    item.isCheck=!item.isCheck
-                    mAdapter.notifyItemChanged(position)
-                }
-            }
+        mAdapter.setOnItemClickListener { adapter, view, position ->
+            val item=mAdapter.getItem(position)
+            item!!.isCheck=!item.isCheck
+            mAdapter.notifyItemChanged(position)
         }
 
         tv_cancel.setOnClickListener {
@@ -95,9 +97,9 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
             val contentStr = etContent.text.toString()
             if (contentStr.isNotEmpty()) {
                 val classIds= mutableListOf<Int>()
-                for (item in classPops){
+                for (item in items){
                     if (item.isCheck){
-                        classIds.add(item.id)
+                        classIds.add(item.classId)
                     }
                 }
                 if (classIds.isNotEmpty())
@@ -129,12 +131,11 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
         this.listener = listener
     }
 
-    class MyAdapter(layoutResId: Int, data: List<PopupBean>?) : BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
-
-        override fun convert(helper: BaseViewHolder, item: PopupBean) {
-            helper.setText(R.id.cb_class,"  "+item.name)
-            helper.setChecked(R.id.cb_class,item.isCheck)
-            helper.addOnClickListener(R.id.cb_class)
+    class MyAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAdapter<ClassGroup, BaseViewHolder>(layoutResId, data) {
+        override fun convert(helper: BaseViewHolder, item: ClassGroup) {
+            helper.setGone(R.id.iv_space,item.state!=1)
+            helper.setText(R.id.tv_name,item.name)
+            helper.setImageResource(R.id.cb_check,if(item.isCheck) R.mipmap.icon_check_select else R.mipmap.icon_check_nor)
         }
     }
 

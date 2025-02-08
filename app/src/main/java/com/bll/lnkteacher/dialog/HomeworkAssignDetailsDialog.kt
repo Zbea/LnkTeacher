@@ -28,7 +28,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(mContext,720f))/2
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(mContext,800f))/2
         dialog?.show()
 
         val rvList= dialog?.findViewById<RecyclerView>(R.id.rv_list)
@@ -42,7 +42,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
                 onDialogClickListener?.onDelete(items[position].id)
             }
         }
-        rvList?.addItemDecoration(SpaceItemDeco(20))
+        rvList?.addItemDecoration(SpaceItemDeco(15))
         return this
     }
 
@@ -82,7 +82,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
             rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
             rvList.adapter = mAdapter
             mAdapter.bindToRecyclerView(rvList)
-            rvList.addItemDecoration(SpaceItemDeco(10))
+            rvList.addItemDecoration(SpaceItemDeco(15))
 
             helper.addOnClickListener(R.id.iv_delete)
 

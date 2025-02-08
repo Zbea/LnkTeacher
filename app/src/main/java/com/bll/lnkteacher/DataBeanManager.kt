@@ -12,9 +12,7 @@ object DataBeanManager {
     var grades = mutableListOf<Grade>()
     var typeGrades = mutableListOf<Grade>()
     var courses = mutableListOf<ItemList>()
-    var provinces = mutableListOf<AreaBean>()
     var versions = mutableListOf<ItemList>()
-    var schools= mutableListOf<SchoolBean>()
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
@@ -135,10 +133,31 @@ object DataBeanManager {
         get() {
             val list = mutableListOf<PopupBean>()
             for (i in typeGrades.indices) {
-                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == 0))
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == popupTypeGradePos()))
             }
             return list
         }
+
+    /**
+     * 获取位置
+     */
+    fun popupTypeGradePos(): Int
+    {
+        val grade=getClassGroupsGrade()
+        val type=if (grade<4){
+            0
+        }
+        else if (grade in 4..6){
+            1
+        }
+        else if (grade in 7..9){
+            2
+        }
+        else{
+            3
+        }
+        return type
+    }
 
     val popupCourses: MutableList<PopupBean>
         get() {

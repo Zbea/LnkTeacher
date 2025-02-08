@@ -9,6 +9,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
+import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.MD5Utils
@@ -36,6 +37,10 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     private var flags = 0
     private var school=0
     private var schoolSelectDialog:SchoolSelectDialog?=null
+
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
 
     override fun onSms() {
         showToast("发送验证码成功")
@@ -110,7 +115,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         }
 
         tv_school.setOnClickListener {
-            selectorSchool()
+            mCommonPresenter.getSchool()
         }
 
         btn_register.setOnClickListener {
@@ -232,9 +237,9 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
     /**
      * 选择学校
      */
-    private fun selectorSchool(){
+    private fun selectorSchool(schools:MutableList<SchoolBean>){
         if (schoolSelectDialog==null){
-            schoolSelectDialog=SchoolSelectDialog(this,DataBeanManager.schools).builder()
+            schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
                 tv_school.text=it.name

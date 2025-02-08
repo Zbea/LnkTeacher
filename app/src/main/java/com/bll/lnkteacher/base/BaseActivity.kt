@@ -84,7 +84,7 @@ import kotlin.math.ceil
 
 abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView, IContractView.ICommonView {
 
-    private var mCommonPresenter= CommonPresenter(this)
+    var mCommonPresenter= CommonPresenter(this)
     var screenPos=0
     var mDialog: ProgressDialog? = null
     var mSaveState:Bundle?=null
@@ -143,9 +143,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         onCommonData()
     }
 
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        DataBeanManager.schools=list
-    }
 
     override fun moveTaskToBack(nonRoot: Boolean): Boolean {
         return super.moveTaskToBack(true)
@@ -243,7 +240,6 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     protected fun fetchCommonData(){
         if (NetworkUtil(this).isNetworkConnected()){
             mCommonPresenter.getCommon()
-            mCommonPresenter.getSchool()
         }
     }
 

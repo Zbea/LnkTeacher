@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="130dp"
-    android:layout_height="38dp"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_45"
     android:gravity="center_vertical"
     android:background="@drawable/bg_gray_stroke_5dp_corner"
     android:orientation="horizontal"
@@ -11,19 +11,40 @@
         android:id="@+id/cb_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="10dp"
         android:button="@drawable/bg_check_selector"
         android:clickable="false"
         />
 
     <TextView
         android:id="@+id/tv_class_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:lines="1"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_22"
+        />
+
+    <TextView
+        android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="20dp"
+        android:maxWidth="@dimen/dp_140"
+        android:layout_marginEnd="@dimen/dp_10"
         android:lines="1"
-        android:textColor="@color/black_20"
-        android:textSize="@dimen/sp_18"
+        android:ellipsize="end"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/icon_arrow_right"
+        android:layout_marginEnd="@dimen/dp_10"
         />
 
 </LinearLayout>

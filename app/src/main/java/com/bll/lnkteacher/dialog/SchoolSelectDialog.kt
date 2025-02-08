@@ -3,14 +3,12 @@ package com.bll.lnkteacher.dialog
 import android.app.Dialog
 import android.content.Context
 import android.widget.TextView
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.AreaBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.SchoolBean
-import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SToast
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 /**
  * 学校选择
@@ -34,11 +32,10 @@ class SchoolSelectDialog(val context: Context, private val beans:MutableList<Sch
         dialog = Dialog(context)
         dialog?.setContentView(R.layout.dialog_school)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog?.setCanceledOnTouchOutside(false)
         dialog?.show()
 
-        val areaJson = FileUtils.readFileContent(context.resources.assets.open("city.json"))
-        val type= object : TypeToken<List<AreaBean>>() {}.type
-        provinces= Gson().fromJson(areaJson, type)
+        provinces = MethodManager.getProvinces(context)
 
         for (i in provinces.indices){
             provincePops.add(PopupBean(i,provinces[i].value,i==0))

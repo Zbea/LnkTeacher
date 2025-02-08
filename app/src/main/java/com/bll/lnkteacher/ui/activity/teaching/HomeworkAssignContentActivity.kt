@@ -8,10 +8,9 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
+import com.bll.lnkteacher.dialog.ClassGroupSelectorDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
-import com.bll.lnkteacher.dialog.PopupCheckList
-import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -41,7 +40,6 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
     private var isCommit=false
     private var isCorrect=false
     private var classIds= mutableListOf<Int>()
-    private var classPops= mutableListOf<PopupBean>()
     private var taskId=0
 
     override fun onList(contentList: AssignPaperContentList) {
@@ -78,7 +76,6 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         }
         commitTime=System.currentTimeMillis()+Constants.dayLong
 
-        classPops=MethodManager.getCommitClassGroupPops(grade,typeBean?.id!!,typeBean?.classIds!!)
         fetchData()
     }
 
@@ -91,11 +88,12 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         setPageOk("发送")
 
         tv_group.setOnClickListener {
-            PopupCheckList(this,classPops,tv_group,5).builder().setOnSelectListener{
-                classIds.clear()
-                for (item in it){
-                    classIds.add(item.id)
-                }
+            val classIdStrs= mutableListOf<String>()
+            for (id in classIds){
+                classIdStrs.add(id.toString())
+            }
+            ClassGroupSelectorDialog(this,grade,classIdStrs).builder().setOnDialogSelectListener{
+                classIds= it.toMutableList()
             }
         }
 

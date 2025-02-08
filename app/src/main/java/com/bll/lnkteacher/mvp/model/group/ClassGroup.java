@@ -3,6 +3,7 @@ package com.bll.lnkteacher.mvp.model.group;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +20,7 @@ public class ClassGroup implements Serializable {
     public String imageUrl;//课程表
     public String teacher;
     public boolean isCheck;
+    public List<ClassGroupUser> classUsers=new ArrayList<>();
 
     @Override
     public boolean equals(@Nullable Object obj) {

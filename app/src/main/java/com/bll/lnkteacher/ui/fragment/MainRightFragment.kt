@@ -107,15 +107,18 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
         initMessageView()
         initNoteView()
         initDialog(2)
-        mPresenter.getClassSchedule()
+
+
+        onCheckUpdate()
     }
 
     override fun lazyLoad() {
-        fetchCommonData()
+        findNotes()
+
         if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            mPresenter.getClassSchedule()
             findMessages()
         }
-        findNotes()
     }
 
     private fun initNoteView(){
@@ -240,6 +243,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
     }
 
     override fun onRefreshData() {
+        onCheckUpdate()
         lazyLoad()
     }
 
