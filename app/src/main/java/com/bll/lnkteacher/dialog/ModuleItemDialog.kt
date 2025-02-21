@@ -14,11 +14,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 
-class NoteModuleAddDialog(private val context: Context, val screenPos:Int,val list:MutableList<ModuleBean>) {
+class ModuleItemDialog(private val context: Context, val screenPos:Int, val list:MutableList<ModuleBean>) {
 
     private var dialog:Dialog?=null
 
-    fun builder(): NoteModuleAddDialog {
+    fun builder(): ModuleItemDialog {
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_note_add_module)
         val width=if (list.size>4) DP2PX.dip2px(context,700f) else DP2PX.dip2px(context,500f)

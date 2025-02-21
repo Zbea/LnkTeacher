@@ -8,7 +8,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
@@ -65,7 +65,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
         }
 
         for (item in DataBeanManager.getTextbookFragment()){
-            textFragments.add(TextbookFragment().newInstance(item.type))
+            textFragments.add(TextbookFragment().newInstance(item.id))
         }
         handoutFragment = HandoutFragment()
         switchFragment(lastFragment, textFragments[0])
@@ -145,7 +145,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val books = BookGreenDaoManager.getInstance().queryAllByHalfYear(0)
+        val books = TextbookGreenDaoManager.getInstance().queryTextBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
@@ -156,11 +156,11 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
                             type = 2
                             zipUrl = book.downloadUrl
                             downloadUrl = it
-                            subTypeStr = book.subtypeStr
+                            subTypeStr = DataBeanManager.textbookType[book.category]
                             date = System.currentTimeMillis()
                             listJson = Gson().toJson(book)
                             bookId = book.bookId
-                            bookTypeId = book.typeId
+                            bookTypeId = book.category
                         })
                         if (cloudList.size == books.size)
                             mCloudUploadPresenter.upload(cloudList)
@@ -170,11 +170,11 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
                 cloudList.add(CloudListBean().apply {
                     type = 2
                     zipUrl = book.downloadUrl
-                    subTypeStr = book.subtypeStr
+                    subTypeStr = DataBeanManager.textbookType[book.category]
                     date = System.currentTimeMillis()
                     listJson = Gson().toJson(book)
                     bookId = book.bookId
-                    bookTypeId = book.typeId
+                    bookTypeId = book.category
                 })
                 if (cloudList.size == books.size)
                     mCloudUploadPresenter.upload(cloudList)
@@ -186,8 +186,8 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
-            val bookBean = BookGreenDaoManager.getInstance().queryTextBookByBookID(item.bookTypeId, item.bookId)
-            MethodManager.deleteBook(bookBean,0)
+            val bookBean = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(item.bookTypeId, item.bookId)
+            MethodManager.deleteTextbook(bookBean)
         }
     }
 

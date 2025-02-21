@@ -121,7 +121,7 @@
         <activity android:name=".ui.activity.book.TextBookStoreActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.BookDetailsActivity"
+        <activity android:name=".ui.activity.drawing.TextbookDetailsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />
@@ -190,6 +190,10 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.OperatingGuideActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.WallpaperMyActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -241,6 +245,9 @@
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.exam.ExamAnalyseTeachingActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.teaching.HomeworkAssignSearchActivity"
             android:windowSoftInputMode="adjustPan"
             />
 

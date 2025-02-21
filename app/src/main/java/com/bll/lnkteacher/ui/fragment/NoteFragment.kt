@@ -15,7 +15,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.ModuleItemDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
@@ -201,7 +201,7 @@ class NoteFragment : BaseMainFragment() {
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            NoteModuleAddDialog(requireContext(), 3,DataBeanManager.noteModuleBook).builder()
+            ModuleItemDialog(requireContext(), 3,DataBeanManager.noteModuleBook).builder()
                 .setOnDialogClickListener { moduleBean ->
                     createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                 }

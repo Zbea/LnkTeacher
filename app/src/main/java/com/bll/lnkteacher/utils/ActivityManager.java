@@ -2,7 +2,7 @@ package com.bll.lnkteacher.utils;
 
 import android.app.Activity;
 
-import com.bll.lnkteacher.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.drawing.TextbookDetailsActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
@@ -122,7 +122,7 @@ public class ActivityManager {
         while (it.hasNext()) {
             WeakReference<Activity> weak = it.next();
             Activity activity=weak.get();
-            if (activity.getClass().getName().equals(BookDetailsActivity.class.getName())) {
+            if (activity.getClass().getName().equals(TextbookDetailsActivity.class.getName())) {
                 int bookId=activity.getIntent().getIntExtra("book_id",0);
                 if (bookId==id){
                     activity.finish();

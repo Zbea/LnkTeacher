@@ -18,20 +18,19 @@ import androidx.annotation.NonNull;
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
+import com.bll.lnkteacher.manager.TextbookGreenDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.AreaBean;
 import com.bll.lnkteacher.mvp.model.HandoutBean;
 import com.bll.lnkteacher.mvp.model.book.Book;
-import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Note;
-import com.bll.lnkteacher.mvp.model.PopupBean;
 import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem;
+import com.bll.lnkteacher.mvp.model.book.TextbookBean;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
-import com.bll.lnkteacher.ui.activity.drawing.BookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.drawing.TextbookDetailsActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;
@@ -46,7 +45,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -85,17 +83,15 @@ public class MethodManager {
 
     /**
      * 跳转阅读器
-     * @param type 1书籍 0课本
-     *        key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
+     * key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
      * @param context
      * @param bookBean
      */
-    public static void gotoBookDetails(Context context,int type, Book bookBean)  {
+    public static void gotoBookDetails(Context context, Book bookBean)  {
         AppUtils.stopApp(context,Constants.PACKAGE_READER);
 
         bookBean.isLook=true;
-        if (type==1)
-            bookBean.time=System.currentTimeMillis();
+        bookBean.time=System.currentTimeMillis();
         BookGreenDaoManager.getInstance().insertOrReplaceBook(bookBean);
 
         List<AppBean> toolApps= getAppTools(context,1);
@@ -103,13 +99,8 @@ public class MethodManager {
 
         String format = MethodManager.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
-        if (type==1){
-            if (format.contains("pdf")) {
-                key_type = 1;
-            }
-        }
-        else {
-            key_type=2;
+        if (format.contains("pdf")) {
+            key_type = 1;
         }
         Intent intent = new Intent();
         intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
@@ -119,15 +110,42 @@ public class MethodManager {
         intent.putExtra("bookName", bookBean.bookName);
         intent.putExtra("tool",result.toString());
         intent.putExtra("userId",getUser().accountId);
-        intent.putExtra("type", type);
+        intent.putExtra("type", 1);
         intent.putExtra("drawPath", bookBean.bookDrawPath);
         intent.putExtra("key_book_type", key_type);
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
-        if (type==1){
-            new Handler(Looper.getMainLooper()).postDelayed(() -> EventBus.getDefault().post(Constants.BOOK_EVENT),3000);
-        }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> EventBus.getDefault().post(Constants.BOOK_EVENT),3000);
+    }
+
+    /**
+     * 跳转阅读器
+     *  key_book_type 0普通书籍 1pdf书籍 2pdf课本 3文档
+     * @param context
+     * @param bookBean
+     */
+    public static void gotoTeachingDetails(Context context, TextbookBean bookBean)  {
+        AppUtils.stopApp(context,Constants.PACKAGE_READER);
+
+        List<AppBean> toolApps= getAppTools(context,1);
+        JSONArray result = getJsonArray(toolApps);
+
+        int key_type = 2;
+        Intent intent = new Intent();
+        intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
+        intent.setPackage(Constants.PACKAGE_READER);
+        intent.putExtra("path", bookBean.bookPath);
+        intent.putExtra("key_book_id",bookBean.bookId+"");
+        intent.putExtra("bookName", bookBean.bookName);
+        intent.putExtra("tool",result.toString());
+        intent.putExtra("userId",getUser().accountId);
+        intent.putExtra("type", 0);
+        intent.putExtra("drawPath", bookBean.bookDrawPath);
+        intent.putExtra("key_book_type", key_type);
+        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+
     }
 
     /**
@@ -173,30 +191,29 @@ public class MethodManager {
         return result;
     }
 
-    /**
-     * @param book
-     * @param type 1书籍 0课本
-     */
-    public static void deleteBook(Book book,int type){
+
+    public static void deleteBook(Book book){
         BookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         FileUtils.deleteFile(new File(book.bookDrawPath));
-        if (type==1){
-            EventBus.getDefault().post(Constants.BOOK_EVENT) ;
-        }
-        else {
-            EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
-        }
+        EventBus.getDefault().post(Constants.BOOK_EVENT) ;
+    }
+
+    public static void deleteTextbook(TextbookBean book){
+        TextbookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
+        FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
+        FileUtils.deleteFile(new File(book.bookDrawPath));
+        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
     }
 
     /**
      * 跳转课本详情
      */
-    public static void gotoTextBookDetails(Context context,Book book){
+    public static void gotoTextBookDetails(Context context,TextbookBean book){
         ActivityManager.getInstance().checkBookIDisExist(book.bookId);
-        Intent intent=new Intent(context, BookDetailsActivity.class);
+        Intent intent=new Intent(context, TextbookDetailsActivity.class);
         intent.putExtra("book_id", book.bookId);
-        intent.putExtra("book_type", book.typeId);
+        intent.putExtra("book_type", book.category);
         intent.putExtra("android.intent.extra.KEEP_FOCUS",true);
         context.startActivity(intent);
     }
@@ -228,22 +245,6 @@ public class MethodManager {
         ActivityManager.getInstance().finishActivity(intent.getClass().getName());
         context.startActivity(intent);
     }
-
-    /**
-     * 根据作业本id保存当前作业的最后一次提交
-     */
-    public static void saveCommitClass(int typeId, HomeworkClassSelectItem item){
-        SPUtil.INSTANCE.putObj(typeId+"CommitClass",item);
-    }
-
-    /**
-     * 得到作业最后一次提交所选班级信息
-     * @return
-     */
-    public static HomeworkClassSelectItem getCommitClass(int typeId){
-        return SPUtil.INSTANCE.getObj(typeId+"CommitClass", HomeworkClassSelectItem.class);
-    }
-
 
     /**
      * 获取工具app

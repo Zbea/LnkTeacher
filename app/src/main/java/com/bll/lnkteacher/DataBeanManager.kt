@@ -25,7 +25,7 @@ object DataBeanManager {
     )
 
     val textbookType = arrayOf(
-        "我的教材","参考教材","教学教育","专业期刊","我的文档"
+        "课本教材","课辅教材","教学教育","专业期刊","我的文档"
     )
 
     var teachingStrs = arrayOf(
@@ -39,6 +39,31 @@ object DataBeanManager {
     )
 
     var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","实用工具","锁屏壁纸","跳页日历")
+
+    fun getClassGroups(grade: Int):MutableList<ClassGroup>{
+        val items= mutableListOf<ClassGroup>()
+        for (classGroup in classGroups){
+            if (classGroup.grade==grade){
+                classGroup.isCheck=false
+                items.add(classGroup)
+            }
+        }
+        return items
+    }
+
+    /**
+     * 获取当年级主群
+     */
+    fun getClassGroupByMains(grade: Int):MutableList<ClassGroup>{
+        val items= mutableListOf<ClassGroup>()
+        for (classGroup in classGroups){
+            if (classGroup.grade==grade&&classGroup.state==1){
+                classGroup.isCheck=false
+                items.add(classGroup)
+            }
+        }
+        return items
+    }
 
     fun getClassGroupPopsByGrade(grade: Int): MutableList<PopupBean> {
         val popClasss = mutableListOf<PopupBean>()
@@ -133,7 +158,7 @@ object DataBeanManager {
         get() {
             val list = mutableListOf<PopupBean>()
             for (i in typeGrades.indices) {
-                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == popupTypeGradePos()))
+                list.add(PopupBean(typeGrades[i].type, typeGrades[i].desc, i == getTypeGradePos()))
             }
             return list
         }
@@ -141,7 +166,7 @@ object DataBeanManager {
     /**
      * 获取位置
      */
-    fun popupTypeGradePos(): Int
+    fun getTypeGradePos(): Int
     {
         val grade=getClassGroupsGrade()
         val type=if (grade<4){
@@ -181,19 +206,19 @@ object DataBeanManager {
     fun getTextbookFragment(): MutableList<ItemList> {
         val list = mutableListOf<ItemList>()
         list.add(ItemList().apply {
-            type=0
+            id=0
             desc= textbookType[0]
         })
         list.add(ItemList().apply {
-            type=6
+            id=1
             desc= textbookType[1]
         })
         list.add(ItemList().apply {
-            type=7
+            id=2
             desc= textbookType[2]
         })
         list.add(ItemList().apply {
-            type=8
+            id=3
             desc= textbookType[3]
         })
         return list
@@ -419,4 +444,13 @@ object DataBeanManager {
             list.add(ItemList(6, mContext.getString(R.string.book_tab_ydjk)))
             return list
         }
+
+    fun getBookVersionStr(version:String):String{
+        var versionStr=""
+        for (item in versions){
+            if (item.type.toString()==version)
+                versionStr=item.desc
+        }
+        return versionStr
+    }
 }

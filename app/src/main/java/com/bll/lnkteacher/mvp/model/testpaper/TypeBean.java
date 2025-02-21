@@ -1,9 +1,6 @@
 package com.bll.lnkteacher.mvp.model.testpaper;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 作业 、考卷分类内容
@@ -17,6 +14,6 @@ public class TypeBean implements Serializable {
     public int bookId;
     public int addType;//1生成作业本 0创建作业本
     public String bgResId;
-
+    public String lastConfig;
     public String classIds;
 }

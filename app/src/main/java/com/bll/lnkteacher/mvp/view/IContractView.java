@@ -16,6 +16,7 @@ import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.ShareNoteList;
 import com.bll.lnkteacher.mvp.model.SystemUpdateInfo;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
+import com.bll.lnkteacher.mvp.model.book.TextbookStore;
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList;
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList;
 import com.bll.lnkteacher.mvp.model.exam.ExamList;
@@ -24,6 +25,7 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList;
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignSearchBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList;
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList;
@@ -47,7 +49,6 @@ public interface IContractView {
         void onSms();
         void onRegister();
         void onFindPsd();
-        void onEditPsd();
     }
 
     //账户页面回调
@@ -69,9 +70,10 @@ public interface IContractView {
 
     //书城
     interface IBookStoreView extends IBaseView {
-        void onBook(BookStore bookStore);
-        void onType(BookStoreType bookStoreType);
-        void buyBookSuccess();
+        default void onBook(BookStore bookStore){};
+        default void onTextBook(TextbookStore bookStore){};
+        default void onType(BookStoreType bookStoreType){};
+        default void buyBookSuccess(){};
     }
 
     //班群
@@ -95,10 +97,10 @@ public interface IContractView {
 
     interface IClassGroupChildView extends IBaseView{
         //学生列表
-        void onUserList(List<ClassGroupUser> users);
-        void onChildUserList(List<ClassGroupUser> users);
-        void onClassGroupChildList(List<ClassGroup> classItems);
-        void onSuccess();
+        default void onUserList(List<ClassGroupUser> users){};
+        default void onChildUserList(List<ClassGroupUser> users){};
+        default void onClassGroupChildList(List<ClassGroup> classItems){};
+        default void onSuccess(){};
     }
 
     interface IClassGroupTeacherView extends IBaseView{
@@ -240,17 +242,10 @@ public interface IContractView {
     }
 
     interface IHomeworkPaperAssignView extends IBaseView{
-
-        /**
-         * 获取作业卷内容列表
-         * @param contentList
-         */
-        void onList(AssignPaperContentList contentList);
-        /**
-         * 发送成功
-         */
-        void onCommitSuccess();
-        void onDeleteSuccess();
+        default void onList(AssignPaperContentList contentList){};
+        default void onSearchAssignList(List<HomeworkAssignSearchBean> list){};
+        default void onCommitSuccess(){};
+        default void onDeleteSuccess(){};
     }
 
     interface IMainRightView extends IBaseView{

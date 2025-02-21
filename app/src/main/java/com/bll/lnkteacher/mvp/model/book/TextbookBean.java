@@ -1,34 +1,37 @@
 package com.bll.lnkteacher.mvp.model.book;
+
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 import java.util.Objects;
 
 /**
- * 书籍
+ * 教材
  */
 @Entity
-public class Book {
+public class TextbookBean {
 
     @Id(autoincrement = true)
     @Unique
     public Long id;
     public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
-    @Unique
     public int bookId;
-    public int type;//1古籍2自然科学3社会科学4思维科学5运动才艺
-    public String subtypeStr;//书架所有分类
+    public int category;//主分类 0教材1教辅2教育3期刊
+    public int type;
     public String imageUrl;
     public String bookName;//书名
+    public int semester;//学期
+    public String area;//地区
     public int grade; //年级
-    public int supply ;  //官方
+    @SerializedName("subjectName")
+    public int subject;//课目
     @SerializedName("bodyUrl")
     public String downloadUrl;//书籍下载url
     public String bookPath;  //book书的路径
@@ -36,46 +39,48 @@ public class Book {
     public long time;//观看时间
     public int pageIndex;//当前页
     public String pageUrl;//当前页路径
-    public boolean isLook;//是否已经打开
+    public boolean isHomework;//是否已经设置为题卷本
 
     @Transient
     public int price;//书的价格
     @Transient
     public String bookDesc;//描述
     @Transient
-    public String version;//版本
+    public String version;  //版本
+    @Transient
+    public String drawUrl;//云存储的手写下载地址
     @Transient
     public int loadSate;//0未下载 1正下载 2已下载
     @Transient
-    public int buyStatus;//购买状态1
+    public int buyStatus;//1已购买
     @Transient
     public int cloudId;
-    @Transient
-    public String drawUrl;
-
-    @Generated(hash = 24855883)
-    public Book(Long id, long userId, int bookId, int type, String subtypeStr, String imageUrl,
-            String bookName, int grade, int supply, String downloadUrl, String bookPath,
-            String bookDrawPath, long time, int pageIndex, String pageUrl, boolean isLook) {
+    @Generated(hash = 1056205901)
+    public TextbookBean(Long id, long userId, int bookId, int category, int type, String imageUrl,
+            String bookName, int semester, String area, int grade, int subject, String downloadUrl,
+            String bookPath, String bookDrawPath, long time, int pageIndex, String pageUrl,
+            boolean isHomework) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
+        this.category = category;
         this.type = type;
-        this.subtypeStr = subtypeStr;
         this.imageUrl = imageUrl;
         this.bookName = bookName;
+        this.semester = semester;
+        this.area = area;
         this.grade = grade;
-        this.supply = supply;
+        this.subject = subject;
         this.downloadUrl = downloadUrl;
         this.bookPath = bookPath;
         this.bookDrawPath = bookDrawPath;
         this.time = time;
         this.pageIndex = pageIndex;
         this.pageUrl = pageUrl;
-        this.isLook = isLook;
+        this.isHomework = isHomework;
     }
-    @Generated(hash = 1839243756)
-    public Book() {
+    @Generated(hash = 952130907)
+    public TextbookBean() {
     }
     public Long getId() {
         return this.id;
@@ -95,17 +100,17 @@ public class Book {
     public void setBookId(int bookId) {
         this.bookId = bookId;
     }
+    public int getCategory() {
+        return this.category;
+    }
+    public void setCategory(int category) {
+        this.category = category;
+    }
     public int getType() {
         return this.type;
     }
     public void setType(int type) {
         this.type = type;
-    }
-    public String getSubtypeStr() {
-        return this.subtypeStr;
-    }
-    public void setSubtypeStr(String subtypeStr) {
-        this.subtypeStr = subtypeStr;
     }
     public String getImageUrl() {
         return this.imageUrl;
@@ -125,17 +130,29 @@ public class Book {
     public void setPrice(int price) {
         this.price = price;
     }
+    public int getSemester() {
+        return this.semester;
+    }
+    public void setSemester(int semester) {
+        this.semester = semester;
+    }
+    public String getArea() {
+        return this.area;
+    }
+    public void setArea(String area) {
+        this.area = area;
+    }
     public int getGrade() {
         return this.grade;
     }
     public void setGrade(int grade) {
         this.grade = grade;
     }
-    public int getSupply() {
-        return this.supply;
+    public int getSubject() {
+        return this.subject;
     }
-    public void setSupply(int supply) {
-        this.supply = supply;
+    public void setSubject(int subject) {
+        this.subject = subject;
     }
     public String getDownloadUrl() {
         return this.downloadUrl;
@@ -173,11 +190,13 @@ public class Book {
     public void setPageUrl(String pageUrl) {
         this.pageUrl = pageUrl;
     }
-    public boolean getIsLook() {
-        return this.isLook;
+    public boolean getIsHomework() {
+        return this.isHomework;
     }
-    public void setIsLook(boolean isLook) {
-        this.isLook = isLook;
+    public void setIsHomework(boolean isHomework) {
+        this.isHomework = isHomework;
     }
+
+ 
 
 }

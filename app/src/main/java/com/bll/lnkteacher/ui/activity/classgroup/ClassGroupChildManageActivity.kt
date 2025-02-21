@@ -47,9 +47,6 @@ class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupC
         mAllAdapter?.setNewData(allUsers)
     }
 
-    override fun onClassGroupChildList(classItems: MutableList<ClassGroup>) {
-    }
-
     override fun onSuccess() {
         mPresenter.getClassChildUser(mClassGroup!!.classId)
     }

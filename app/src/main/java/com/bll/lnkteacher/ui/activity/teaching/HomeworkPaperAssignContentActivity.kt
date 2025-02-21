@@ -2,13 +2,15 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.MethodManager
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
-import com.bll.lnkteacher.dialog.ClassGroupSelectorDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
+import com.bll.lnkteacher.dialog.PopupCheckList
+import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -17,6 +19,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_correct
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.rv_list
@@ -33,8 +36,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
     private var typeBean: TypeBean?=null//作业卷分类
     private var position=-1
     private var commitTime=0L
-    private var classSelectItem:HomeworkClassSelectItem?=null
-    private var isCommit=false
+    private var isCommit=true
     private var isCorrect=false
     private var classIds= mutableListOf<Int>()
     private var taskId=0
@@ -46,7 +48,6 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
     }
 
     override fun onCommitSuccess() {
-        MethodManager.saveCommitClass(typeBean!!.id,classSelectItem)
         showToast(R.string.teaching_assign_success)
         finish()
     }
@@ -65,11 +66,10 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
         pageSize=12
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
         grade=typeBean?.grade!!
-        val classSelectItem=MethodManager.getCommitClass(typeBean?.id!!)
+        val classSelectItem= Gson().fromJson(typeBean?.lastConfig,HomeworkClassSelectItem::class.java)
         if (classSelectItem!=null){
-            isCorrect=classSelectItem.isCorrect
-            isCommit=classSelectItem.isCommit
-            classIds=classSelectItem.classIds
+            isCorrect= classSelectItem.selfBatchStatus==1
+            classIds= classSelectItem.classIds
         }
         commitTime=System.currentTimeMillis()+Constants.dayLong
 
@@ -85,18 +85,36 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
         setPageOk("发送")
 
         tv_group.setOnClickListener {
-            val classIdStrs= mutableListOf<String>()
-            for (id in classIds){
-                classIdStrs.add(id.toString())
+            val totalClassGroups=if (typeBean?.addType==1) DataBeanManager.getClassGroupByMains(grade) else DataBeanManager.getClassGroups(grade)
+            var classGroups= mutableListOf<ClassGroup>()
+            if (typeBean?.classIds.isNullOrEmpty()){
+                classGroups=totalClassGroups
             }
-            ClassGroupSelectorDialog(this,grade,classIdStrs).builder().setOnDialogSelectListener{
-                classIds= it.toMutableList()
+            else{
+                val bindClassIds=typeBean?.classIds!!.split(",")
+                for (classGroup in totalClassGroups){
+                    if (bindClassIds.contains(classGroup.classId.toString())){
+                        classGroups.add(classGroup)
+                    }
+                }
+            }
+
+            val popGroups= mutableListOf<PopupBean>()
+            for (classGroup in classGroups){
+                popGroups.add(PopupBean(classGroup.classId,classGroup.name,classIds.contains(classGroup.classId)))
+            }
+
+            PopupCheckList(this, popGroups, tv_group,  5).builder().setOnSelectListener{
+                classIds.clear()
+                for (item in it){
+                    classIds.add(item.id)
+                }
             }
         }
 
         tv_commit_time.text=DateUtils.longToStringWeek(commitTime)
         tv_commit_time.setOnClickListener {
-            CalendarSingleDialog(this,300f,180f).builder().setOnDateListener{
+            CalendarSingleDialog(this,160f,200f).builder().setOnDateListener{
                 if (it>System.currentTimeMillis()){
                     tv_commit_time.text= DateUtils.longToStringWeek(it)
                     commitTime=it
@@ -122,13 +140,6 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
                 showToast("请选择班级")
                 return@setOnClickListener
             }
-
-            classSelectItem=HomeworkClassSelectItem()
-            classSelectItem?.isCorrect=isCorrect
-            classSelectItem?.isCommit=isCommit
-            classSelectItem?.commitDate=commitTime
-            classSelectItem?.classIds=classIds
-
             if (taskId>0)
                 commit()
         }

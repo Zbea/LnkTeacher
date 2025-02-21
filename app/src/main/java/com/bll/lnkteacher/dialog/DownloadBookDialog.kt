@@ -6,7 +6,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.utils.GlideUtils
@@ -30,19 +29,14 @@ class DownloadBookDialog(private val context: Context, private val book: Book) {
             val tv_version = findViewById<TextView>(R.id.tv_version)
             val tv_info = findViewById<TextView>(R.id.tv_info)
             val tv_book_name = findViewById<TextView>(R.id.tv_book_name)
+            tv_course.visibility=View.GONE
 
-            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,10)
+            GlideUtils.setImageRoundUrl(context,book.imageUrl,iv_book,5)
 
-            tv_book_name?.text = book.bookName+if (book.semester==0) "" else "-"+DataBeanManager.popupSemesters[book.semester-1].name
+            tv_book_name?.text = book.bookName
             tv_price?.text = "价格： " + if (book.price==0) "免费" else book.price
             tv_version?.text = "出版社： " + book.version
             tv_info?.text = "简介： " + book.bookDesc
-
-            if (book.subjectName==0){
-                tv_course.visibility=View.GONE
-            }else{
-                tv_course?.text = "课目： " + DataBeanManager.courses[book.subjectName-1].desc
-            }
 
             if (book.buyStatus == 1) {
                 btn_ok?.text = "点击下载"

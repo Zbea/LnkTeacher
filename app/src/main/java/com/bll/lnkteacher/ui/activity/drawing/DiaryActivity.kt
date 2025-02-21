@@ -10,7 +10,7 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CalendarDiaryDialog
 import com.bll.lnkteacher.dialog.CatalogDiaryDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.ModuleItemDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
 import com.bll.lnkteacher.mvp.model.DiaryBean
 import com.bll.lnkteacher.utils.DateUtils
@@ -97,15 +97,20 @@ class DiaryActivity:BaseDrawingActivity() {
 
         tv_date.setOnClickListener {
             CalendarDiaryDialog(this,getCurrentScreenPos(),uploadId).builder().setOnDateListener{
-                saveDiary()
-                nowLong=it
-                diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
-                changeContent()
+                if (nowLong!=it){
+                    saveDiary()
+                    nowLong=it
+                    diaryBean=DiaryDaoManager.getInstance().queryBean(nowLong,uploadId)
+                    if (nowLong==DateUtils.getStartOfDayInMillis()&&diaryBean == null) {
+                        initCurrentDiaryBean()
+                    }
+                    changeContent()
+                }
             }
         }
 
         iv_btn.setOnClickListener {
-            NoteModuleAddDialog(this, getCurrentScreenPos(),DataBeanManager.noteModuleDiary).builder()
+            ModuleItemDialog(this, getCurrentScreenPos(),DataBeanManager.noteModuleDiary).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes
@@ -127,6 +132,7 @@ class DiaryActivity:BaseDrawingActivity() {
      * 初始化
      */
     private fun initCurrentDiaryBean(){
+        posImage=0
         bgRes= SPUtil.getString(Constants.SP_DIARY_BG_SET).ifEmpty { ToolUtils.getImageResStr(this,R.mipmap.icon_diary_details_bg_1) }
         diaryBean= DiaryBean()
         diaryBean?.date=nowLong
@@ -159,9 +165,9 @@ class DiaryActivity:BaseDrawingActivity() {
     override fun onCatalog() {
         val diaryBeans=DiaryDaoManager.getInstance().queryListByTitle(uploadId)
         CatalogDiaryDialog(this,screenPos,getCurrentScreenPos(),diaryBeans).builder().setOnDialogClickListener { position ->
-            diaryBean = diaryBeans[position]
-            if (nowLong != diaryBean?.date) {
+            if (nowLong != diaryBeans[position]?.date) {
                 saveDiary()
+                diaryBean = diaryBeans[position]
                 changeContent()
             }
         }

@@ -37,12 +37,6 @@ class ClassGroupChildUserActivity : BaseActivity(), IContractView.IClassGroupUse
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
-    override fun onEditSuccess() {
-    }
-
-    override fun onAllowSuccess() {
-    }
-
     override fun layoutId(): Int {
         return R.layout.ac_list
     }

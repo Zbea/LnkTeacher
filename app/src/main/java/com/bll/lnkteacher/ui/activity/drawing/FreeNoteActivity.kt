@@ -9,7 +9,7 @@ import com.bll.lnkteacher.dialog.CatalogFreeNoteDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.FreeNoteFriendManageDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.NoteModuleAddDialog
+import com.bll.lnkteacher.dialog.ModuleItemDialog
 import com.bll.lnkteacher.dialog.PopupFreeNoteReceiveList
 import com.bll.lnkteacher.dialog.PopupFreeNoteShareList
 import com.bll.lnkteacher.greendao.StringConverter
@@ -159,7 +159,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
         }
 
         iv_expand.setOnClickListener {
-            NoteModuleAddDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
+            ModuleItemDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     MethodManager.setImageResource(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage]=ToolUtils.getImageResStr(this, moduleBean.resContentId)

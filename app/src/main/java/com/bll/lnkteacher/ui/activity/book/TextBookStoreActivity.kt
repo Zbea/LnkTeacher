@@ -11,22 +11,23 @@ import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
-import com.bll.lnkteacher.dialog.DownloadBookDialog
+import com.bll.lnkteacher.dialog.DownloadTextbookDialog
 import com.bll.lnkteacher.dialog.PopupCityList
 import com.bll.lnkteacher.dialog.PopupRadioList
-import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.book.Book
-import com.bll.lnkteacher.mvp.model.book.BookStore
 import com.bll.lnkteacher.mvp.model.book.BookStoreType
+import com.bll.lnkteacher.mvp.model.book.TextbookBean
+import com.bll.lnkteacher.mvp.model.book.TextbookStore
 import com.bll.lnkteacher.mvp.presenter.BookStorePresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.BookStoreAdapter
+import com.bll.lnkteacher.ui.adapter.TextbookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileBigDownManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
@@ -43,69 +44,48 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
-
     private var tabId = 0
     private var tabStr = ""
-    private val presenter = BookStorePresenter(this)
-    private var books = mutableListOf<Book>()
-    private var mAdapter: BookStoreAdapter? = null
-
+    private lateinit var presenter :BookStorePresenter
+    private var textBooks = mutableListOf<TextbookBean>()
+    private var mAdapter: TextbookAdapter? = null
     private var provinceStr = ""
     private var gradeId=0
     private var semester=0
     private var courseId=0//科目
     private var subType=0//教库分类
-    private var downloadBookDialog: DownloadBookDialog? = null
-    private var mBook: Book? = null
-    private var isZip=false
-
+    private var downloadBookDialog: DownloadTextbookDialog? = null
     private var cityPopWindow:PopupCityList?=null
     private var subjectList = mutableListOf<PopupBean>()
     private var semesterList = mutableListOf<PopupBean>()
     private var gradeList = mutableListOf<PopupBean>()
     private var tabList = mutableListOf<String>()
     private var subTypeList = mutableListOf<PopupBean>()
+    private var position=0
 
-    override fun onBook(bookStore: BookStore) {
+    override fun onTextBook(bookStore: TextbookStore) {
         setPageNumber(bookStore.total)
-        books = bookStore.list
-        //修正数据
-        for (book in books){
-            when(tabId){
-                4->{
-                    book.id=null
-                    book.bookName=book.title
-                    book.subjectName=book.subject
-                    book.bookDesc=book.desc
-                }
-                else->{
-                    book.version=DataBeanManager.versions[book.version.toInt()-1].desc
-                }
-            }
-        }
-        mAdapter?.setNewData(books)
+        textBooks = bookStore.list
+        mAdapter?.setNewData(textBooks)
     }
 
     override fun onType(bookStoreType: BookStoreType) {
         if (!bookStoreType.bookLibType.isNullOrEmpty()){
-            subTypeList.clear()
             val types=bookStoreType.bookLibType
             for (item in types){
                 subTypeList.add(PopupBean(item.type,item.desc,types.indexOf(item)==0))
             }
             subType=subTypeList[0].id
 
-            if (subjectList.size>0){
-                initSelectorView()
-                fetchData()
-            }
+            initSelectorView()
+            fetchData()
         }
     }
 
     override fun buyBookSuccess() {
-        mBook?.buyStatus = 1
+        textBooks[position].buyStatus = 1
+        mAdapter?.notifyItemChanged(position)
         downloadBookDialog?.setChangeStatus()
-        mAdapter?.notifyDataSetChanged()
     }
 
 
@@ -114,6 +94,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun initData() {
+        initChangeScreenData()
         pageSize=12
 
         tabList = DataBeanManager.textbookStoreType.toMutableList()
@@ -135,7 +116,14 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             gradeId=DataBeanManager.getClassGroupsGrade()
             gradeList=DataBeanManager.popupGrades(gradeId)
         }
-        presenter.getBookType()
+
+        if (NetworkUtil(this).isNetworkConnected()){
+            presenter.getBookType()
+        }
+    }
+
+    override fun initChangeScreenData() {
+        presenter = BookStorePresenter(this)
     }
 
     override fun initView() {
@@ -240,8 +228,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             }
         }
         tabId = position
-        isZip = !(tabId==0||tabId==1||tabId==4)
-        tabStr =  if (subType==1&&tabId==4) "教学期刊" else tabList[position]
+        tabStr =  if (subType==1&&tabId==4) "专业期刊" else tabList[position]
         pageIndex = 1
         fetchData()
     }
@@ -253,26 +240,26 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = BookStoreAdapter(R.layout.item_bookstore, books)
+        mAdapter = TextbookAdapter(R.layout.item_bookstore, textBooks)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         rv_list?.addItemDecoration(SpaceGridItemDeco(4, 60))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            mBook = books[position]
-            showBookDetails(mBook!!)
+            this.position=position
+            showBookDetails(textBooks[position])
         }
     }
 
     /**
      * 展示书籍详情
      */
-    private fun showBookDetails(book: Book) {
-        downloadBookDialog = DownloadBookDialog(this, book)
+    private fun showBookDetails(book: TextbookBean) {
+        downloadBookDialog = DownloadTextbookDialog(this, book ,if (tabId==4) 2 else 1)
         downloadBookDialog?.builder()
         downloadBookDialog?.setOnClickListener {
             if (book.buyStatus == 1) {
-                val localBook = BookGreenDaoManager.getInstance().queryTextBookByBookID(getHostType(book.type),book.bookId)
+                val localBook = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(getCategory(),book.bookId)
                 if (localBook == null) {
                     showLoading()
                     downLoadStart(book.downloadUrl, book)
@@ -304,13 +291,13 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     /**
      * 下载解压书籍
      */
-    private fun downLoadStart(url: String, book: Book): BaseDownloadTask? {
+    private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
         val fileName = book.bookId.toString()//文件名
-        val path=if (isZip){
+        val path=if (tabId<4){
             FileAddress().getPathZip(fileName)
         }
         else{
-            FileAddress().getPathTextBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
+            FileAddress().getPathTeachingBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
         }
         val download = FileBigDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {
@@ -324,24 +311,28 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
                         }
                     }
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Long, totalBytes: Long) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
-                    if (!isZip){
-                        book.bookPath = path
-                        book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
-                        complete(book)
-                    }
-                    else{
-                        val fileTargetPath = FileAddress().getPathHomeworkBook(fileName)
-                        unzip(book, path, fileTargetPath)
+                    when(tabId){
+                        0,1->{
+                            book.bookPath =  FileAddress().getPathTextBook(fileName)
+                            book.bookDrawPath=FileAddress().getPathTextBookDraw(fileName)
+                            unzip(book, path, book.bookPath)
+                        }
+                        2,3->{
+                            book.bookPath =  FileAddress().getPathHomeworkBook(fileName)
+                            book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(fileName)
+                            unzip(book, path, book.bookPath)
+                        }
+                        4->{
+                            book.bookPath = path
+                            book.bookDrawPath=FileAddress().getPathTeachingBookDraw(fileName)
+                            complete(book)
+                        }
                     }
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
                     hideLoading()
                     showToast("${book.bookName}下载失败")
                     downloadBookDialog?.setChangeStatus()
@@ -353,11 +344,9 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     /**
      * 下载完成书籍解压
      */
-    private fun unzip(book: Book, targetFileStr: String, fileTargetPath: String) {
+    private fun unzip(book: TextbookBean, targetFileStr: String, fileTargetPath: String) {
         ZipUtils.unzip(targetFileStr, fileTargetPath, object : IZipCallback {
             override fun onFinish() {
-                book.bookDrawPath=FileAddress().getPathHomeworkBookDraw(File(fileTargetPath).name)
-                book.bookPath = fileTargetPath
                 //下载解压完成后更新存储的book
                 complete(book)
                 FileUtils.deleteFile(File(targetFileStr))
@@ -374,16 +363,14 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         })
     }
 
-    private fun complete(book: Book){
+    private fun complete(book: TextbookBean){
         book.apply {
             id=null
             loadSate = 2
-            category = 0
-            typeId=getHostType(book.type)
-            subtypeStr=tabStr
+            category = this@TextBookStoreActivity.getCategory()
             time = System.currentTimeMillis()
         }
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
         EventBus.getDefault().post(TEXT_BOOK_EVENT)
         //更新列表
         mAdapter?.notifyDataSetChanged()
@@ -396,11 +383,21 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     /**
-     * 得到课本主类型
-     * type 1 教学期刊 2教学教育
+     * 获取主类型
      */
-    private fun getHostType(type:Int):Int{
-        return when(tabId){0,1->0 2,3->6 else->if(type==2)7 else 8}
+    private fun getCategory():Int{
+        return when(tabId){
+            0,1->{
+                0
+            }
+            2,3->{
+                1
+            }
+            else->{
+                //教学教育2 专业期刊3
+                if (textBooks[position].type==2) 2 else 3
+            }
+        }
     }
 
     /**
@@ -411,7 +408,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
     }
 
     override fun fetchData() {
-        books.clear()
+        textBooks.clear()
         mAdapter?.notifyDataSetChanged()
 
         val map = HashMap<String, Any>()
@@ -453,9 +450,6 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         }
     }
 
-    override fun onRefreshData() {
-        presenter.getBookType()
-    }
 
     override fun onDestroy() {
         super.onDestroy()

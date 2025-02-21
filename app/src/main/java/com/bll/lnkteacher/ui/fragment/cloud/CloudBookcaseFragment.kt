@@ -109,7 +109,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
 
     private fun downloadItem(){
         val book=books[position]
-        val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookPlusId)
+        val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
         if (localBook == null) {
             showLoading()
             //判断书籍是否有手写内容，没有手写内容直接下载书籍zip
@@ -142,7 +142,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
             countDownTasks?.await()
             requireActivity().runOnUiThread {
                 hideLoading()
-                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookPlusId)
+                val localBook = BookGreenDaoManager.getInstance().queryBookByBookID(book.bookId)
                 if (localBook!=null){
                     deleteItem()
                     showToast(book.bookName+getString(R.string.book_download_success))

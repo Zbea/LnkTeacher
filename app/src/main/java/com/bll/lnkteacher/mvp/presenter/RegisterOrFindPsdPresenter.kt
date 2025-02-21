@@ -2,7 +2,11 @@ package com.bll.lnkteacher.mvp.presenter
 
 import android.util.Pair
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 
 class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView,val screen:Int=0) : BasePresenter<IContractView.IRegisterOrFindPsdView>(view) {
@@ -46,30 +50,6 @@ class RegisterOrFindPsdPresenter(view: IContractView.IRegisterOrFindPsdView,val 
             }
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onFindPsd()
-            }
-
-        }, true)
-
-    }
-
-
-    fun editPsd(role: Int,psd: String,code: String) {
-
-
-        val body = RequestUtils.getBody(
-            Pair.create("role", role),
-            Pair.create("password", psd),
-            Pair.create("smsCode", code),
-        )
-
-        val findpsd = RetrofitManager.service.editPassword(body)
-
-        doRequest(findpsd, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onEditPsd()
             }
 
         }, true)

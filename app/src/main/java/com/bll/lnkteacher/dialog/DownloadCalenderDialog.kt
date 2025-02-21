@@ -30,13 +30,12 @@ class DownloadCalenderDialog(private val context: Context, private val item: Cal
             val tv_title = findViewById<TextView>(R.id.tv_title)
             val tv_year = findViewById<TextView>(R.id.tv_year)
 
-            GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,10)
+            GlideUtils.setImageRoundUrl(context,item.imageUrl,iv_image,5)
 
             tv_title?.text = item.title
             tv_year?.text="年份： "+item.year
             tv_price?.text ="价格： " + if (item.price==0) "免费" else item.price
             tv_info?.text = "简介： ${item.introduction}"
-
 
             if (item.buyStatus == 1) {
                 btn_ok?.text = "点击下载"

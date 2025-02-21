@@ -15,6 +15,7 @@ import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.WallpaperList
 import com.bll.lnkteacher.mvp.model.book.BookStore
 import com.bll.lnkteacher.mvp.model.book.BookStoreType
+import com.bll.lnkteacher.mvp.model.book.TextbookStore
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
@@ -23,6 +24,7 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignSearchBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.model.testpaper.RankBean
@@ -197,17 +199,17 @@ interface APIService{
      * 教材列表
      */
     @GET("textbook/list")
-    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getTextBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 教材参考列表
      */
     @GET("book/list")
-    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getHomeworkBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
-     * 教材参考列表
+     * 教学教育
      */
     @GET("book/lib/list")
-    fun getTeachingBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<BookStore>>
+    fun getTeachingBooks(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 书城列表
      */
@@ -437,10 +439,10 @@ interface APIService{
     @POST("student/task/allCompleted")
     fun completeCorrectPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
-     * 上传模板
+     * 作业搜索
      */
-    @POST("task/group/setTemplate")
-    fun setPaperCorrectModule(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    @GET("task/listTimeRange")
+    fun getHomeworkAssignContent(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<HomeworkAssignSearchBean>>>
     /**
      * 获取作业卷内容列表
      */

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bll.lnkteacher.MethodManager
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFragment
 import com.bll.lnkteacher.dialog.ClassGroupSelectorDialog
@@ -13,8 +13,9 @@ import com.bll.lnkteacher.dialog.HomeworkAssignDetailsDialog
 import com.bll.lnkteacher.dialog.HomeworkPublishDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
-import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
@@ -54,11 +55,11 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     override fun onDeleteSuccess() {
         showToast(R.string.delete_success)
         val typeBean=types[position]
-        val homeworkBook=BookGreenDaoManager.getInstance().queryTextBookByBookID(6,typeBean.bookId)
+        val homeworkBook=TextbookGreenDaoManager.getInstance().queryTextBookByBookId(1,typeBean.bookId)
         if (homeworkBook!=null)
         {
             homeworkBook.isHomework=false
-            BookGreenDaoManager.getInstance().insertOrReplaceBook(homeworkBook)
+            TextbookGreenDaoManager.getInstance().insertOrReplaceBook(homeworkBook)
         }
         mAdapter?.remove(position)
     }
@@ -79,9 +80,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     }
 
     override fun onCommitSuccess() {
-        MethodManager.saveCommitClass(types[position].id,classSelectBean)
         showToast(R.string.teaching_assign_success)
     }
+
     override fun onDetails(details: HomeworkAssignDetailsList) {
         detailsDialog=HomeworkAssignDetailsDialog(requireContext(), details.list).builder()
         detailsDialog?.setDialogClickListener {
@@ -136,7 +137,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         customStartActivity(intent)
                     }
                     3,6->{
-                        HomeworkPublishDialog(requireContext(),grade,item.id).builder().setOnDialogClickListener{ contentStr, classSelectItem->
+                        HomeworkPublishDialog(requireContext(),item).builder().setOnDialogClickListener{ contentStr, classSelectItem->
                             classSelectBean=classSelectItem
                             commitHomework(item,contentStr,classSelectItem)
                         }
@@ -212,7 +213,13 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                     }
                     3->{
                         val classIds=item.classIds.split(",")
-                        ClassGroupSelectorDialog(requireActivity(),grade,classIds).builder().setOnDialogSelectListener{
+                        val items= mutableListOf<ClassGroup>()
+                        for (classGroup in DataBeanManager.getClassGroups(grade)){
+                            if (classIds.isNotEmpty() &&classIds.contains(classGroup.classId.toString()))
+                                classGroup.isCheck=true
+                            items.add(classGroup)
+                        }
+                        ClassGroupSelectorDialog(requireActivity(),items).builder().setOnDialogSelectListener{
                             ids=ToolUtils.getImagesStr(it)
                             val map=HashMap<String,Any>()
                             map["id"]=item.id

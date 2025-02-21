@@ -74,6 +74,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     }
 
     override fun onSubjects(subjects: MutableList<String>) {
+        lists.add(ItemList(0,"清空"))
         for (subject in subjects){
             lists.add(ItemList(DataBeanManager.getCourseId(subject),subject))
         }
@@ -96,6 +97,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
         classGroupId=intent.getIntExtra("classGroupId",0)
 
         if (type==1){
+            lists.add(ItemList(0,"清空"))
             val classGroups=DataBeanManager.classGroups
             for (item in classGroups){
                 if (item.state==1)
@@ -659,7 +661,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
     private fun inputContent(v: TextView) {
         val titleStr=if (type==1) "班级选择" else "科目选择"
         ItemSelectorDialog(this,titleStr,lists).builder().setOnDialogClickListener{
-            val contentStr=lists[it].name
+            val contentStr=if (it==0)"" else lists[it].name
             v.text = contentStr
 
             val course = ClassScheduleBean().apply {
@@ -669,16 +671,12 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
                 name = contentStr
                 mode = this@ClassScheduleActivity.mode
             }
+
             //删除已经存在了的
-            if (selectLists.size > 0) {
-                val it = selectLists.iterator()
-                while (it.hasNext()) {
-                    if (it.next().viewId == v.id) {
-                        it.remove()
-                    }
-                }
-            }
-            selectLists.add(course)
+            selectLists.removeIf { item->item.viewId==v.id }
+
+            if(it!=0)
+                selectLists.add(course)
         }
     }
 

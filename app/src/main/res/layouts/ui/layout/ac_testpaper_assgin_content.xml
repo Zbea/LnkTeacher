@@ -14,15 +14,29 @@
         android:layout_height="@dimen/navigation_type_height"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_50"
         android:orientation="horizontal"
-        android:gravity="center|right"
+        android:gravity="center"
         >
+
+        <include
+            android:id="@+id/ll_date"
+            layout="@layout/common_date_arrow"
+            android:visibility="gone"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+
 
         <TextView
             android:id="@+id/tv_group"
             android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
             android:lines="1"
             android:ellipsize="end"
             android:drawableRight="@mipmap/icon_arrow_down"
@@ -40,7 +54,7 @@
             android:id="@+id/ll_commit"
             android:layout_width="@dimen/dp_300"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
             android:gravity="center_vertical"
             android:background="@drawable/bg_black_stroke_5dp_corner"
             >
@@ -93,6 +107,8 @@
         </LinearLayout>
 
     </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list"

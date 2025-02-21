@@ -61,7 +61,7 @@ class BookcaseDetailsDialog(val context: Context) {
         rv_list?.addItemDecoration(SpaceItemDeco(30))
         mAdapter.setOnChildClickListener{
             dialog.dismiss()
-            MethodManager.gotoBookDetails(context,1,it)
+            MethodManager.gotoBookDetails(context,it)
         }
 
         return this

@@ -1,5 +1,6 @@
 package com.bll.lnkteacher
 
+import com.bll.lnkteacher.Constants.Companion.APK_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
 import com.bll.lnkteacher.Constants.Companion.DIARY_PATH
 import com.bll.lnkteacher.Constants.Companion.EXAM_PATH
@@ -9,13 +10,10 @@ import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.SCREEN_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
-import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_CATALOG_TXT
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PATH
-import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PICTURE_FILES
 import com.bll.lnkteacher.Constants.Companion.ZIP_PATH
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.utils.SPUtil
-import java.io.File
 
 class FileAddress {
 
@@ -28,19 +26,19 @@ class FileAddress {
     fun getPathBook(fileName: String):String{
         return "$BOOK_PATH/$mUserId/$fileName"
     }
-    /**
-     * 书籍手写地址
-     * /storage/emulated/0/books/draw
-     */
+
     fun getPathBookDraw(fileName: String):String{
         return "$BOOK_PATH/$mUserId/${fileName}draw"
     }
 
-    fun getPathTextBook(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/textbook/$fileName"
+    /**
+     * 教学教育地址
+     */
+    fun getPathTeachingBook(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/teaching/$fileName"
     }
-    fun getPathTextBookDraw(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/textbook/${fileName}draw"
+    fun getPathTeachingBookDraw(fileName: String):String{
+        return "$BOOK_PATH/$mUserId/teaching/${fileName}draw"
     }
 
     fun getPathHandout(fileName: String):String{
@@ -50,6 +48,12 @@ class FileAddress {
         return "$BOOK_PATH/$mUserId/handout/${fileName}draw"
     }
 
+    fun getPathTextBook(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/textbook/$fileName"
+    }
+    fun getPathTextBookDraw(fileName: String):String{
+        return "$TEXTBOOK_PATH/$mUserId/textbook/${fileName}draw"
+    }
 
     fun getPathHomeworkBook(fileName: String):String{
         return "$TEXTBOOK_PATH/$mUserId/$fileName"
@@ -61,27 +65,27 @@ class FileAddress {
      * 书籍目录地址
      */
     fun getPathTextBookCatalog(path:String):String{
-        return path + File.separator + TEXTBOOK_CATALOG_TXT
+        return "$path/catalog.txt"
     }
     /**
      * 书籍图片地址
      */
     fun getPathTextBookPicture(path:String):String{
-        return path + File.separator + TEXTBOOK_PICTURE_FILES
+        return "$path/contents"
     }
     /**
      * zip保存地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip
      */
     fun getPathZip(fileName:String):String{
-        return ZIP_PATH+File.separator + fileName + ".zip"
+        return "$ZIP_PATH/$fileName.zip"
     }
 
     /**
      * apk下载地址
      */
     fun getPathApk(fileName: String):String{
-        return Constants.APK_PATH+ File.separator + fileName + ".apk"
+        return "$APK_PATH/$fileName.apk"
     }
 
     /**

@@ -9,12 +9,12 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.LongClickManageDialog
-import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
-import com.bll.lnkteacher.mvp.model.book.Book
+import com.bll.lnkteacher.mvp.model.book.TextbookBean
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.BookAdapter
+import com.bll.lnkteacher.ui.adapter.TextbookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.fragment_list.rv_list
 class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
 
     private val mPresenter = TextbookPresenter(this,1)
-    private var mAdapter: BookAdapter? = null
-    private var books = mutableListOf<Book>()
+    private var mAdapter: TextbookAdapter? = null
+    private var books = mutableListOf<TextbookBean>()
     private var typeId = 0//用来区分课本类型
     private var position = 0
 
@@ -32,7 +32,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         showToast(1,"设置教辅书成功")
         books[position].isHomework = true
         mAdapter?.notifyItemChanged(position)
-        BookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
+        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
     }
 
     /**
@@ -67,16 +67,16 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(activity, 3)//创建布局管理
-        mAdapter = BookAdapter(R.layout.item_textbook, null)
+        mAdapter = TextbookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
-            if (typeId==6) {
+            if (typeId<2) {
                 MethodManager.gotoTextBookDetails(requireActivity(),book)
             } else {
-                MethodManager.gotoBookDetails(requireActivity(),0, book)
+                MethodManager.gotoTeachingDetails(requireActivity(),book)
             }
         }
         mAdapter?.onItemLongClickListener =
@@ -101,7 +101,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                     resId = R.mipmap.icon_setting_delete
                 })
             }
-            6->{
+            1->{
                 beans.add(ItemList().apply {
                     name = "删除"
                     resId = R.mipmap.icon_setting_delete
@@ -130,11 +130,11 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             .setOnDialogClickListener {
                 when(it){
                     0->{
-                        MethodManager.deleteBook(book,0)
+                        MethodManager.deleteTextbook(book)
                     }
                     1->{
                         book.time=System.currentTimeMillis()
-                        BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
+                        TextbookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                         pageIndex=1
                         fetchData()
                     }
@@ -163,8 +163,8 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
     }
 
     override fun fetchData() {
-        books = BookGreenDaoManager.getInstance().queryAllTextBook(typeId, pageIndex, pageSize)
-        val total = BookGreenDaoManager.getInstance().queryAllTextBook(typeId)
+        books = TextbookGreenDaoManager.getInstance().queryAllTextBook(typeId, pageIndex, pageSize)
+        val total = TextbookGreenDaoManager.getInstance().queryAllTextBook(typeId)
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }

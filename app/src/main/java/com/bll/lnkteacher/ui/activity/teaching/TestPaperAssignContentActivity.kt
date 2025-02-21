@@ -2,7 +2,6 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -19,6 +18,7 @@ import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_commit
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_correct
@@ -51,9 +51,6 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
     }
     override fun onSendSuccess() {
         showToast(R.string.teaching_assign_success)
-        val commitItem= HomeworkClassSelectItem()
-        commitItem.classIds=classIds
-        MethodManager.saveCommitClass(typeBean!!.id,commitItem)
         finish()
     }
 
@@ -67,25 +64,13 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("type") as TypeBean
         grade=typeBean?.grade!!
 
-        val classSelectItem=MethodManager.getCommitClass(typeBean?.id!!)
+        val classSelectItem= Gson().fromJson(typeBean?.lastConfig,HomeworkClassSelectItem::class.java)
         if (classSelectItem!=null){
             classIds=classSelectItem.classIds
-            for (item in DataBeanManager.classGroups){
-                if (item.state==1&&item.grade==grade){
-                    for (classId in classSelectItem.classIds){
-                        popGroups.add(PopupBean(item.classId,item.name,item.classId==classId))
-                    }
-                }
-            }
         }
-        else{
-            for (item in DataBeanManager.classGroups){
-                if (item.state==1&&item.grade==grade){
-                    popGroups.add(PopupBean(item.classId,item.name,false))
-                }
-            }
+        for (item in DataBeanManager.getClassGroupByMains(grade)){
+            popGroups.add(PopupBean(item.classId,item.name,classIds.contains(item.classId)))
         }
-
         fetchData()
     }
 
@@ -100,7 +85,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
         ll_commit.layoutParams.width=DP2PX.dip2px(this,200f)
 
         tv_group.setOnClickListener {
-            PopupCheckList(this, popGroups, tv_group,tv_group.width,  2).builder().setOnSelectListener{
+            PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder().setOnSelectListener{
                 classIds.clear()
                 for (item in it){
                     classIds.add(item.id)

@@ -11,20 +11,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
+import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.google.gson.Gson
 
-class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) {
+class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
 
     private var endTime=0L
-    private var isCommit=false
+    private var isCommit=true
 
     @SuppressLint("SuspiciousIndentation")
     fun builder(): HomeworkPublishDialog {
@@ -46,24 +47,22 @@ class HomeworkPublishDialog(val context: Context,val grade: Int,val typeId:Int) 
         val etContent = dialog.findViewById<EditText>(R.id.et_content)
         val rvList=dialog.findViewById<RecyclerView>(R.id.rv_list)
 
-        val classSelectBean=MethodManager.getCommitClass(typeId)
+        val classSelectItem= Gson().fromJson(typeBean.lastConfig,HomeworkClassSelectItem::class.java)
+        var classIds:MutableList<Int>?=null
+        if (classSelectItem!=null){
+            classIds= classSelectItem.classIds
+        }
+
         endTime=System.currentTimeMillis()+Constants.dayLong
         tv_date.text=DateUtils.longToStringWeek(endTime)
-        isCommit=classSelectBean.isCommit
         cb_commit.isChecked=isCommit
 
         val items= mutableListOf<ClassGroup>()
-        for (item in DataBeanManager.classGroups){
-            if (item.grade==grade){
-                if (classSelectBean.classIds.isNotEmpty()&&classSelectBean.classIds.contains(item.classId)){
-                    item.isCheck=true
-                    items.add(item)
-                }
-                else{
-                    item.isCheck=false
-                    items.add(item)
-                }
+        for (item in DataBeanManager.getClassGroupByMains(typeBean.grade)){
+            if (!classIds.isNullOrEmpty()&&classIds.contains(item.classId)){
+                item.isCheck=true
             }
+            items.add(item)
         }
 
         cb_commit.setOnCheckedChangeListener { compoundButton, b ->

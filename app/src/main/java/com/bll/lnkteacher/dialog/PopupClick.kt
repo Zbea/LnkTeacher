@@ -1,9 +1,11 @@
+
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.R
@@ -77,6 +79,8 @@ class PopupClick(var context: Context, var list: MutableList<PopupBean>, var vie
         BaseQuickAdapter<PopupBean, BaseViewHolder>(layoutResId, data) {
 
         override fun convert(helper: BaseViewHolder, item: PopupBean) {
+            if (item.resId == 0)
+                helper.getView<LinearLayout>(R.id.ll_content).gravity=Gravity.CENTER
             helper.setText(R.id.tv_name, item.name)
             helper.setImageResource(R.id.iv_check, item.resId)
             helper.setGone(R.id.iv_check, item.resId != 0)

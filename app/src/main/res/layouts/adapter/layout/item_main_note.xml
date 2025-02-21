@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="49dp"
     android:paddingStart="@dimen/dp_10"
     android:paddingEnd="@dimen/dp_10"
     android:background="@drawable/bg_line_bottom"
@@ -14,6 +14,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:lines="1"
+        android:ellipsize="end"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_22" />
 

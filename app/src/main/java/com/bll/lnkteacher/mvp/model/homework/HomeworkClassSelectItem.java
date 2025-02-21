@@ -8,8 +8,8 @@ import java.util.List;
  * 选择班级信息
  */
 public class HomeworkClassSelectItem implements Serializable {
-    public boolean isCorrect;//是否批改
-    public boolean isCommit;//是否提交
+    public int selfBatchStatus;//1自批
+    public boolean isCommit;
     public long commitDate;
     public List<Integer> classIds=new ArrayList<>();
 }

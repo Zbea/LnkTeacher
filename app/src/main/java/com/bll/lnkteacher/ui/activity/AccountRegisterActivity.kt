@@ -25,8 +25,8 @@ import kotlinx.android.synthetic.main.ac_account_register.ed_phone
 import kotlinx.android.synthetic.main.ac_account_register.ed_user
 import kotlinx.android.synthetic.main.ac_account_register.ll_name
 import kotlinx.android.synthetic.main.ac_account_register.ll_school
-import kotlinx.android.synthetic.main.ac_account_register.ll_user
 import kotlinx.android.synthetic.main.ac_account_register.tv_course_btn
+import kotlinx.android.synthetic.main.ac_account_register.tv_password
 import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
@@ -52,11 +52,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         setIntent()
     }
     override fun onFindPsd() {
-        showToast("设置密码成功")
-        setIntent()
-    }
-
-    override fun onEditPsd() {
         showToast("修改密码成功")
         setIntent()
     }
@@ -82,15 +77,11 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
 
     override fun initView() {
         when (flags) {
-            2 -> {
-                setPageTitle("修改密码")
-                disMissView(ll_name,ll_user,ll_school)
-                btn_register.text="提交"
-            }
             1 -> {
-                setPageTitle("找回密码")
+                setPageTitle("修改密码")
                 disMissView(ll_name,ll_school)
                 ed_user.setText(SPUtil.getString("account"))
+                tv_password.text="修改密码"
                 btn_register.text="提交"
             }
             else -> {
@@ -191,9 +182,6 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
                         return@setOnClickListener
                     }
                     presenter.findPsd(role,account,MD5Utils.digest(psd),phone, code)
-                }
-                else -> {
-                    presenter.editPsd(role,MD5Utils.digest(psd),code)
                 }
             }
 

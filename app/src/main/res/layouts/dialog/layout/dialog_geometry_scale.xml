@@ -16,7 +16,7 @@
         android:background="@drawable/bg_line_bottom"
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/sp_22"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:textColor="@color/black"
         android:padding="5dp"/>
 
@@ -30,7 +30,7 @@
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/sp_22"
         android:textColor="@color/black"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:padding="5dp"/>
 
     <include

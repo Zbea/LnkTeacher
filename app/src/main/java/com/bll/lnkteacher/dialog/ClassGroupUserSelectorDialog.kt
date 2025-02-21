@@ -24,11 +24,11 @@ class ClassGroupUserSelectorDialog(val context: Context, private val users: List
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
 
 
-        rv_list?.layoutManager = GridLayoutManager(context,3)
+        rv_list?.layoutManager = GridLayoutManager(context,5)
         val mAdapter = MyAdapter(R.layout.item_classgroup_user_selector, users)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  30))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(5,  30))
         mAdapter.setOnItemClickListener { adapter, view, position ->
             val item=mAdapter.getItem(position)
             item!!.isCheck=!item.isCheck

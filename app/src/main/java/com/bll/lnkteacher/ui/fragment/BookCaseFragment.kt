@@ -50,7 +50,7 @@ class BookCaseFragment : BaseMainFragment() {
         }
 
         ll_book_top.setOnClickListener {
-            bookTopBean?.let { MethodManager.gotoBookDetails(requireActivity(),1, it) }
+            bookTopBean?.let { MethodManager.gotoBookDetails(requireActivity(), it) }
         }
     }
 
@@ -66,7 +66,7 @@ class BookCaseFragment : BaseMainFragment() {
             rv_list.addItemDecoration(SpaceGridItemDeco1(4, DP2PX.dip2px(activity, 22f), 30))
             setOnItemClickListener { adapter, view, position ->
                 val bookBean = books[position]
-                MethodManager.gotoBookDetails(requireActivity(),1, bookBean)
+                MethodManager.gotoBookDetails(requireActivity(), bookBean)
             }
         }
     }
@@ -111,7 +111,7 @@ class BookCaseFragment : BaseMainFragment() {
      */
     fun upload(tokenStr: String) {
         cloudList.clear()
-        val books = BookGreenDaoManager.getInstance().queryAllByHalfYear(1)
+        val books = BookGreenDaoManager.getInstance().queryBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
@@ -151,7 +151,7 @@ class BookCaseFragment : BaseMainFragment() {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookGreenDaoManager.getInstance().queryBookByBookID(item.bookId)
-            MethodManager.deleteBook(bookBean,1)
+            MethodManager.deleteBook(bookBean)
         }
     }
 

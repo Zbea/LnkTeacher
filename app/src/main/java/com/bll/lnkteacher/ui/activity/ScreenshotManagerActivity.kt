@@ -14,7 +14,7 @@ import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.adapter.ItemTypeManagerAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
-import kotlinx.android.synthetic.main.ac_list.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
@@ -55,7 +55,6 @@ class ScreenshotManagerActivity : BaseActivity() {
                     R.id.iv_edit->{
                         InputContentDialog(this@ScreenshotManagerActivity,item.title).builder().setOnDialogClickListener{
                             if (ItemTypeDaoManager.getInstance().isExist(it,1)){
-                                //创建文件夹
                                 showToast("已存在")
                                 return@setOnDialogClickListener
                             }
@@ -68,6 +67,10 @@ class ScreenshotManagerActivity : BaseActivity() {
                         }
                     }
                     R.id.iv_delete->{
+                        if (FileUtils.isExist(item.path)){
+                            showToast("分类存在截图，无法删除")
+                            return@setOnItemChildClickListener
+                        }
                         CommonDialog(this@ScreenshotManagerActivity).setContent("确定删除？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun cancel() {
                             }

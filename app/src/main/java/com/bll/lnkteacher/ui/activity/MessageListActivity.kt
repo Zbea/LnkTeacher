@@ -102,7 +102,7 @@ class MessageListActivity : BaseActivity(), IContractView.IMessageView, IContrac
     private fun initRecyclerView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this, 50f), DP2PX.dip2px(this, 50f),
+            DP2PX.dip2px(this, 50f), DP2PX.dip2px(this, 40f),
             DP2PX.dip2px(this, 50f), 0
         )
         layoutParams.weight = 1f

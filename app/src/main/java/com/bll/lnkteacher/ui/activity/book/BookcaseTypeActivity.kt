@@ -96,7 +96,7 @@ class BookcaseTypeActivity : BaseActivity() {
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
-                MethodManager.gotoBookDetails(this@BookcaseTypeActivity,1,bookBean)
+                MethodManager.gotoBookDetails(this@BookcaseTypeActivity,bookBean)
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 pos = position
@@ -186,7 +186,7 @@ class BookcaseTypeActivity : BaseActivity() {
             .setOnDialogClickListener {
                 if (it==0){
                     mAdapter?.remove(pos)
-                    MethodManager.deleteBook(book,1)
+                    MethodManager.deleteBook(book)
                 }
                 else{
                     if (typeStr==""){

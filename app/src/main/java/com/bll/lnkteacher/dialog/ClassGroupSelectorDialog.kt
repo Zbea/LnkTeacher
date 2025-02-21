@@ -7,14 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.Constants
-import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ClassGroupSelectorDialog(val context: Context,private val grade:Int,private val ids: List<String>) {
+class ClassGroupSelectorDialog(val context: Context,private val classGroups: List<ClassGroup>) {
 
     fun builder(): ClassGroupSelectorDialog {
         val dialog = Dialog(context)
@@ -30,22 +29,8 @@ class ClassGroupSelectorDialog(val context: Context,private val grade:Int,privat
         val btn_cancel = dialog.findViewById<TextView>(R.id.tv_cancel)
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
 
-        val items= mutableListOf<ClassGroup>()
-        for (item in DataBeanManager.classGroups){
-            if (item.grade==grade){
-                if (ids.isNotEmpty()&&ids.contains(item.classId.toString())){
-                    item.isCheck=true
-                    items.add(item)
-                }
-                else{
-                    item.isCheck=false
-                    items.add(item)
-                }
-            }
-        }
-
         rv_list?.layoutManager = LinearLayoutManager(context)
-        val mAdapter = MyAdapter(R.layout.item_classgroup_selector, items)
+        val mAdapter = MyAdapter(R.layout.item_classgroup_selector, classGroups)
         rv_list?.adapter = mAdapter
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
@@ -59,7 +44,7 @@ class ClassGroupSelectorDialog(val context: Context,private val grade:Int,privat
         }
         btn_ok.setOnClickListener {
             val ids= mutableListOf<Int>()
-            for (item in items){
+            for (item in classGroups){
                 if (item.isCheck)
                     ids.add(item.classId)
             }

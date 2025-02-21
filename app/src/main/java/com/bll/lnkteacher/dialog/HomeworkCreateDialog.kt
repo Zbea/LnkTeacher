@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
@@ -32,7 +33,7 @@ class HomeworkCreateDialog(val context: Context, val grade:Int,val string: Strin
         tvName?.hint=string
 
         tvClass.setOnClickListener {
-            ClassGroupSelectorDialog(context, grade,mutableListOf()).builder().setOnDialogSelectListener{
+            ClassGroupSelectorDialog(context, DataBeanManager.getClassGroups(grade)).builder().setOnDialogSelectListener{
                 classGroupIds= it.toMutableList()
             }
         }
