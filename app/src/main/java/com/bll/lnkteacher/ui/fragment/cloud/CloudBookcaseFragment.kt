@@ -16,7 +16,6 @@ import com.bll.lnkteacher.ui.adapter.BookAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -165,8 +164,7 @@ class CloudBookcaseFragment:BaseCloudFragment() {
      * 下载书籍手写内容
      */
     private fun downloadBookDrawing(book: Book){
-        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
-        val zipPath = FileAddress().getPathZip(fileName)
+        val zipPath = FileAddress().getPathZip(FileUtils.getUrlName(book.drawUrl))
         FileDownManager.with(activity).create(book.drawUrl).setPath(zipPath)
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {

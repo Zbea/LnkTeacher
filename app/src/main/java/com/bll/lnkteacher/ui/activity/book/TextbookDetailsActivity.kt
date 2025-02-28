@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity.drawing
+package com.bll.lnkteacher.ui.activity.book
 
 import android.view.EinkPWInterface
 import android.widget.ImageView
@@ -8,7 +8,7 @@ import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
-import com.bll.lnkteacher.dialog.CatalogDialog
+import com.bll.lnkteacher.dialog.CatalogBookDialog
 import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.CatalogChildBean
 import com.bll.lnkteacher.mvp.model.CatalogMsg
@@ -50,10 +50,7 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
         if (FileUtils.isExist(cataLogFilePath))
         {
             val cataMsgStr = FileUtils.readFileContent(FileUtils.file2InputStream(File(cataLogFilePath)))
-            try {
-                catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
-            } catch (e: Exception) {
-            }
+            catalogMsg = Gson().fromJson(cataMsgStr, CatalogMsg::class.java)
             if (catalogMsg!=null){
                 for (item in catalogMsg?.contents!!) {
                     val catalogParent = CatalogParentBean()
@@ -72,7 +69,7 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
                     catalogs.add(catalogParent)
                 }
                 pageCount =catalogMsg?.totalCount!!
-                startCount =catalogMsg?.startCount!!-1
+                startCount = if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
             }
         }
     }
@@ -83,16 +80,12 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun onCatalog() {
-        CatalogDialog(this,screenPos, getCurrentScreenPos(),catalogs, 1, startCount).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
-            override fun onClick(position: Int) {
-                if (page!=position-1){
-                    page = position - 1
-                    onChangeContent()
-                }
+        CatalogBookDialog(this,screenPos, getCurrentScreenPos(),catalogs, startCount).builder().setOnDialogClickListener { pageNumber ->
+            if (page != pageNumber - 1) {
+                page = pageNumber - 1
+                onChangeContent()
             }
-            override fun onEdit(position: Int, title: String) {
-            }
-        })
+        }
     }
 
     override fun onPageDown() {

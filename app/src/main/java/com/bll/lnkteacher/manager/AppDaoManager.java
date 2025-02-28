@@ -55,12 +55,12 @@ public class AppDaoManager {
 
 
     public List<AppBean> queryList() {
-        return dao.queryBuilder().where(whereUser).build().list();
+        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser).build().list();
     }
 
     public List<AppBean> queryTool() {
         WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
-        return dao.queryBuilder().where(whereUser,whereCondition1).build().list();
+        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition1).build().list();
     }
 
     /**

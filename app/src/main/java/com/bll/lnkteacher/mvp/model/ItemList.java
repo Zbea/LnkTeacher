@@ -20,6 +20,7 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
     public boolean isCheck;
     public String url;
     public int resId;
+    public boolean isAdd;
 
     public ItemList() {
     }

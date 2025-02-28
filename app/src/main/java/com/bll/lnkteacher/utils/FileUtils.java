@@ -452,6 +452,17 @@ public class FileUtils {
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
     }
 
+    /**
+     * url   -> name1
+     * @param url
+     * @return
+     */
+    public static String getUrlName(String url){
+        File file=new File(url);
+        String fileNameStr=file.getName();
+        return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
+    }
+
     public static boolean isExist(String path){
         return new File(path).exists();
     }

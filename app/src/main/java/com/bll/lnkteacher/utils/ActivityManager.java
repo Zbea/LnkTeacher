@@ -2,7 +2,7 @@ package com.bll.lnkteacher.utils;
 
 import android.app.Activity;
 
-import com.bll.lnkteacher.ui.activity.drawing.TextbookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.book.TextbookDetailsActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Iterator;

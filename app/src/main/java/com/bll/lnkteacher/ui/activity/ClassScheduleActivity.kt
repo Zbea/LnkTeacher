@@ -639,16 +639,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
                 viewId = id
                 mode = this@ClassScheduleActivity.mode
             }
-
-            //删除已经存在了的
-            if (selectLists.size > 0) {
-                val it = selectLists.iterator()
-                while (it.hasNext()) {
-                    if (it.next().viewId == id) {
-                        it.remove()
-                    }
-                }
-            }
+            selectLists.removeIf { item->item.viewId==id}
             selectLists.add(course)
 
         }
@@ -672,9 +663,7 @@ class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,ICla
                 mode = this@ClassScheduleActivity.mode
             }
 
-            //删除已经存在了的
             selectLists.removeIf { item->item.viewId==v.id }
-
             if(it!=0)
                 selectLists.add(course)
         }

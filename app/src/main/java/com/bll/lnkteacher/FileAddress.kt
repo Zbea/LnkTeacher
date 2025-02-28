@@ -20,6 +20,19 @@ class FileAddress {
     val mUserId=SPUtil.getObj("user", User::class.java)?.accountId.toString()
 
     /**
+     * 书籍目录地址
+     */
+    fun getPathTextBookCatalog(path:String):String{
+        return "$path/catalog.txt"
+    }
+    /**
+     * 书籍图片地址
+     */
+    fun getPathTextBookPicture(path:String):String{
+        return "$path/contents"
+    }
+
+    /**
      * 书籍地址
      * /storage/emulated/0/Books
      */
@@ -30,15 +43,14 @@ class FileAddress {
     fun getPathBookDraw(fileName: String):String{
         return "$BOOK_PATH/$mUserId/${fileName}draw"
     }
-
     /**
      * 教学教育地址
      */
     fun getPathTeachingBook(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/teaching/$fileName"
+        return "$BOOK_PATH/$mUserId/teachingBook/$fileName"
     }
     fun getPathTeachingBookDraw(fileName: String):String{
-        return "$BOOK_PATH/$mUserId/teaching/${fileName}draw"
+        return "$BOOK_PATH/$mUserId/teachingBook/${fileName}draw"
     }
 
     fun getPathHandout(fileName: String):String{
@@ -56,23 +68,12 @@ class FileAddress {
     }
 
     fun getPathHomeworkBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/$fileName"
+        return "$TEXTBOOK_PATH/$mUserId/homeworkBook/$fileName"
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/$mUserId/${fileName}/draw"
+        return "$TEXTBOOK_PATH/$mUserId/homeworkBook/${fileName}/draw"
     }
-    /**
-     * 书籍目录地址
-     */
-    fun getPathTextBookCatalog(path:String):String{
-        return "$path/catalog.txt"
-    }
-    /**
-     * 书籍图片地址
-     */
-    fun getPathTextBookPicture(path:String):String{
-        return "$path/contents"
-    }
+
     /**
      * zip保存地址
      * ///storage/emulated/0/Android/data/yourPackageName/files/Zip/fileName.zip

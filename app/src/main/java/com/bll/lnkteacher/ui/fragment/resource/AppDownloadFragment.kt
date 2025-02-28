@@ -194,6 +194,7 @@ class AppDownloadFragment : BaseFragment(), IContractView.IAPPView{
                 val item= AppBean()
                 item.appName=bean.nickname
                 item.packageName=bean.packageName
+                item.time=System.currentTimeMillis()
                 item.imageByte= AppUtils.scanLocalInstallAppDrawable(requireActivity(),bean.packageName)
                 AppDaoManager.getInstance().insertOrReplace(item)
                 EventBus.getDefault().post(Constants.APP_INSTALL_INSERT_EVENT)

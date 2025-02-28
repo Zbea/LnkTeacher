@@ -30,7 +30,7 @@ import com.bll.lnkteacher.mvp.model.book.TextbookBean;
 import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
-import com.bll.lnkteacher.ui.activity.drawing.TextbookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.book.TextbookDetailsActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;

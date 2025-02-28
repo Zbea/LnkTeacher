@@ -6,11 +6,12 @@ import android.widget.ImageView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseFileDrawingActivity
+import com.bll.lnkteacher.dialog.CatalogDialog
+import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.utils.FileUtils
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_catalog
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
@@ -30,9 +31,28 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     }
 
     override fun initView() {
-        disMissView(iv_btn,iv_catalog)
+        disMissView(iv_btn)
 
         onChangeContent()
+    }
+
+    override fun onCatalog() {
+        val files = FileUtils.getAscFiles(path)
+        val list= mutableListOf<ItemList>()
+        for (file in files){
+            val itemList= ItemList()
+            itemList.name=file.name.replace(".png","")
+            itemList.page=files.indexOf(file)
+            list.add(itemList)
+        }
+        CatalogDialog(this, screenPos,getCurrentScreenPos(),list,false).builder().setOnDialogClickListener(object : CatalogDialog.OnDialogClickListener {
+            override fun onClick(pageNumber: Int) {
+                if (pageIndex!=pageNumber){
+                    pageIndex = pageNumber
+                    onChangeContent()
+                }
+            }
+        })
     }
 
     override fun onPageUp() {
@@ -102,13 +122,12 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
         loadPicture(pageIndex, elik_b!!, v_content_b!!)
         if (isExpand) {
             loadPicture(pageIndex-1, elik_a!!, v_content_a!!)
-            if (screenPos== Constants.SCREEN_LEFT){
-                tv_page.text = "$pageIndex"
-                tv_page_a.text = "${pageIndex+1}"
-            }
             if (screenPos==Constants.SCREEN_RIGHT){
                 tv_page_a.text = "$pageIndex"
-                tv_page.text = "${pageIndex+1}"
+            }
+            else{
+                tv_page.text = "$pageIndex"
+                tv_page_a.text = "${pageIndex+1}"
             }
         }
     }
