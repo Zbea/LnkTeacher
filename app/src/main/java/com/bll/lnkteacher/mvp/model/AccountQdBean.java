@@ -1,7 +1,5 @@
 package com.bll.lnkteacher.mvp.model;
 
-import java.util.List;
-
 //学豆
 public class AccountQdBean {
     public int id;

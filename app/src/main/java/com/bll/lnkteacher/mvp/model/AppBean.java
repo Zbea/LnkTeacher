@@ -2,6 +2,7 @@ package com.bll.lnkteacher.mvp.model;
 
 import android.graphics.drawable.Drawable;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -18,7 +19,7 @@ public class AppBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;;
+    public long userId= MethodManager.getAccountId();
     public String appName;
     public String packageName;
     public byte[] imageByte;

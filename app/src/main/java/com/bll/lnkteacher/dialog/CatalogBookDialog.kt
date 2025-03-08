@@ -15,7 +15,7 @@ class CatalogBookDialog(val context: Context, private val oldScreen:Int, private
 
     fun builder(): CatalogBookDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_drawing_catalog)
+        dialog.setContentView(R.layout.dialog_catalog)
         val window = dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes

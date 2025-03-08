@@ -20,6 +20,7 @@ import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
@@ -162,12 +163,14 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     override fun fetchData() {
         if (grade==0)
             return
-        val map=HashMap<String,Any>()
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["taskType"]=2
-        map["grade"]=grade
-        mPresenter.getPaperCorrectList(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            val map=HashMap<String,Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["taskType"]=2
+            map["grade"]=grade
+            mPresenter.getPaperCorrectList(map)
+        }
     }
 
     override fun onEventBusMessage(msgFlag: String) {

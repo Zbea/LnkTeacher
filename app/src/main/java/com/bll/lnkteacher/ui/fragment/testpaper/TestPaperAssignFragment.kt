@@ -17,6 +17,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
@@ -166,12 +167,14 @@ class TestPaperAssignFragment : BaseFragment(), IContractView.ITestPaperAssignVi
     override fun fetchData() {
         if (grade == 0)
             return
-        val map = HashMap<String, Any>()
-        map["type"] = 1
-        map["page"] = pageIndex
-        map["size"] = pageSize
-        map["grade"] = grade
-        presenter.getType(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            val map = HashMap<String, Any>()
+            map["type"] = 1
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["grade"] = grade
+            presenter.getType(map)
+        }
     }
 
 }

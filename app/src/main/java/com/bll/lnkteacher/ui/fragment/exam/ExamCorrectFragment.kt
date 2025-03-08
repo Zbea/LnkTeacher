@@ -15,8 +15,9 @@ import com.bll.lnkteacher.mvp.view.IContractView.IExamCorrectListView
 import com.bll.lnkteacher.ui.activity.exam.ExamCorrectActivity
 import com.bll.lnkteacher.ui.adapter.ExamCorrectAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.fragment_list_content.*
+import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
 class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
 
@@ -44,15 +45,17 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
     }
 
     override fun lazyLoad() {
-        mPresenter.getExamCorrectList()
+        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+            mPresenter.getExamCorrectList()
+        }
     }
 
     private fun initRecyclerView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(requireActivity(),40f),
-            DP2PX.dip2px(requireActivity(),40f),
-            DP2PX.dip2px(requireActivity(),40f),0)
+            DP2PX.dip2px(activity, 30f), DP2PX.dip2px(activity, 50f),
+            DP2PX.dip2px(activity, 30f), 0
+        )
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
@@ -62,7 +65,7 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
                 rv_list.adapter = mAdapter
                 bindToRecyclerView(rv_list)
                 setEmptyView(R.layout.common_empty)
-                rv_list.addItemDecoration(SpaceGridItemDeco(2,80))
+                rv_list.addItemDecoration(SpaceGridItemDeco(2, DP2PX.dip2px(activity, 45f)))
                 setOnItemChildClickListener { adapter, view, position ->
                     this@ExamCorrectFragment.position=position
                     if (view.id==R.id.tv_save){

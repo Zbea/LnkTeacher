@@ -9,8 +9,8 @@ object DataBeanManager {
 
     var classGroups = mutableListOf<ClassGroup>()
 
-    var grades = mutableListOf<Grade>()
-    var typeGrades = mutableListOf<Grade>()
+    var grades = mutableListOf<ItemList>()
+    var typeGrades = mutableListOf<ItemList>()
     var courses = mutableListOf<ItemList>()
     var versions = mutableListOf<ItemList>()
 

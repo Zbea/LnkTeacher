@@ -18,6 +18,7 @@ import com.bll.lnkteacher.ui.fragment.textbook.HandoutFragment
 import com.bll.lnkteacher.ui.fragment.textbook.TextbookFragment
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
@@ -85,7 +86,8 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     }
 
     override fun lazyLoad() {
-        presenter.getTypeList()
+        if (NetworkUtil(requireActivity()).isNetworkConnected())
+            presenter.getTypeList()
     }
 
     private fun initTab() {

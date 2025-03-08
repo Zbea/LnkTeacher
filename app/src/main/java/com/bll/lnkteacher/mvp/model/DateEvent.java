@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -21,7 +22,7 @@ public class DateEvent implements Serializable {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String content;
     public long date;//当天日期
     public int week;//当天星期 2星期一 8星期日

@@ -74,7 +74,7 @@ class CalenderMyActivity:BaseActivity(){
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 60f)))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 90f)))
     }
 
     private fun onLongClick() {

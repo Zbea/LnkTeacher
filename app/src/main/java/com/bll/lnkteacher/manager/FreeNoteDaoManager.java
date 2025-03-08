@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.manager;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.FreeNoteBeanDao;
@@ -40,8 +41,8 @@ public class FreeNoteDaoManager {
                 }
             }
         }
-        User mUser=SPUtil.INSTANCE.getObj("user", User.class);
-        whereUser= FreeNoteBeanDao.Properties.UserId.eq(mUser.accountId);
+        long userId=MethodManager.getAccountId();
+        whereUser= FreeNoteBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }
 

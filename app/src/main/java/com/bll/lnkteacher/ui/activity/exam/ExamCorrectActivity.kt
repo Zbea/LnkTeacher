@@ -125,8 +125,7 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
 
         tv_save.setOnClickListener {
             hideKeyboard()
-            val item=userItems[posUser]
-            if (item.status==1&& tv_total_score.text.toString().isNotEmpty()){
+            if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
                 showLoading()
                 //没有手写，直接提交
                 if (!FileUtils.isExistContent(getPathDraw())){
@@ -181,7 +180,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
-            onChangeContent()
+            Handler().postDelayed({
+                onChangeContent()
+            },if (correctStatus==1)300 else 0)
         }
     }
 
@@ -189,7 +190,9 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         val count=if (isExpand) getImageSize()-2 else getImageSize()-1
         if (posImage<count){
             posImage+=if (isExpand)2 else 1
-            onChangeContent()
+            Handler().postDelayed({
+                onChangeContent()
+            },if (correctStatus==1)300 else 0)
         }
     }
 

@@ -20,6 +20,7 @@ import com.bll.lnkteacher.ui.activity.exam.ExamAnalyseActivity
 import com.bll.lnkteacher.ui.activity.exam.ExamDetailsActivity
 import com.bll.lnkteacher.ui.adapter.ExamListAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
 
@@ -163,11 +164,13 @@ class ExamListFragment:BaseFragment(),IExamListView{
     override fun fetchData() {
         if (grade==0)
             return
-        val map=HashMap<String,Any>()
-        map["page"]=pageIndex
-        map["size"]=pageSize
-        map["grade"]=grade
-        mPresenter.getExamList(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+            val map = HashMap<String, Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["grade"] = grade
+            mPresenter.getExamList(map)
+        }
     }
 
 }

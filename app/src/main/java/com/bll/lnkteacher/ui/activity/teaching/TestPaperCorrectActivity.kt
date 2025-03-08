@@ -225,7 +225,10 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
-            onChangeContent()
+            //批改翻页是延迟已支持手写绘图保存
+            Handler().postDelayed({
+                onChangeContent()
+            },if (correctStatus==1)300 else 0)
         }
     }
 
@@ -233,7 +236,9 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         val count=if (isExpand) getImageSize()-2 else getImageSize()-1
         if (posImage<count){
             posImage+=if (isExpand)2 else 1
-            onChangeContent()
+            Handler().postDelayed({
+                onChangeContent()
+            },if (correctStatus==1)300 else 0)
         }
     }
 

@@ -60,6 +60,16 @@ public class MethodManager {
         return !TextUtils.isEmpty(tokenStr) && getUser()!=null;
     }
 
+    public static long getAccountId(){
+        User user=SPUtil.INSTANCE.getObj("user", User.class);
+        if (user==null){
+            return 0L;
+        }
+        else {
+            return user.accountId;
+        }
+    }
+
     /**
      * 退出登录
      * @param context

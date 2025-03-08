@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,7 +18,7 @@ public class CalenderItemBean {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int pid;
     public String imageUrl;
     public String downloadUrl;

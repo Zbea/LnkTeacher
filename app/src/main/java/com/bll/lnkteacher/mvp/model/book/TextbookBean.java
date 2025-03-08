@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model.book;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
@@ -21,7 +22,7 @@ public class TextbookBean {
     @Id(autoincrement = true)
     @Unique
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public int bookId;
     public int category;//主分类 0教材1教辅2教育3期刊
     public int type;

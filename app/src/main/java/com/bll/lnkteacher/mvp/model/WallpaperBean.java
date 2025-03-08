@@ -1,12 +1,17 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.MethodManager;
+import com.bll.lnkteacher.greendao.StringConverter;
 import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.annotations.SerializedName;
 
+import org.greenrobot.greendao.annotation.Convert;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Unique;
+
+import java.util.List;
 import java.util.Objects;
 import org.greenrobot.greendao.annotation.Generated;
 
@@ -16,7 +21,7 @@ public class WallpaperBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     @SerializedName("fontDrawId")
     public int contentId;//内容id
     @SerializedName("drawName")
@@ -28,18 +33,17 @@ public class WallpaperBean {
     public String bodyUrl;
     public int supply;//1官方2第三方
     public String author;//作者
-    public String path;//图片保存地址
+    @Convert(columnType = String.class,converter = StringConverter.class)
+    public List<String> paths;//图片保存地址
     public long date;//下载时间
     @Transient
     public int buyStatus;
     @Transient
-    public boolean isLeft;
-    @Transient
-    public boolean isRight;
-
-    @Generated(hash = 74599634)
-    public WallpaperBean(Long id, long userId, int contentId, String title, String info, int price,
-            String imageUrl, String bodyUrl, int supply, String author, String path, long date) {
+    public boolean isCheck;
+    @Generated(hash = 1049456781)
+    public WallpaperBean(Long id, long userId, int contentId, String title,
+            String info, int price, String imageUrl, String bodyUrl, int supply,
+            String author, List<String> paths, long date) {
         this.id = id;
         this.userId = userId;
         this.contentId = contentId;
@@ -50,7 +54,7 @@ public class WallpaperBean {
         this.bodyUrl = bodyUrl;
         this.supply = supply;
         this.author = author;
-        this.path = path;
+        this.paths = paths;
         this.date = date;
     }
     @Generated(hash = 915358704)
@@ -116,11 +120,11 @@ public class WallpaperBean {
     public void setAuthor(String author) {
         this.author = author;
     }
-    public String getPath() {
-        return this.path;
+    public List<String> getPaths() {
+        return this.paths;
     }
-    public void setPath(String path) {
-        this.path = path;
+    public void setPaths(List<String> paths) {
+        this.paths = paths;
     }
     public long getDate() {
         return this.date;
@@ -128,5 +132,6 @@ public class WallpaperBean {
     public void setDate(long date) {
         this.date = date;
     }
-    
+
+
 }

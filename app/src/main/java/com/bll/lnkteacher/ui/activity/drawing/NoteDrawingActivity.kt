@@ -65,6 +65,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
             val itemList = ItemList()
             itemList.name = item.title
             itemList.page = item.page
+            itemList.isEdit=true
             if (titleStr != item.title) {
                 titleStr = item.title
                 list.add(itemList)

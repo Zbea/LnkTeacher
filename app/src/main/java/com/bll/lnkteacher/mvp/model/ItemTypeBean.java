@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -16,7 +17,7 @@ public class ItemTypeBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     public int type;//1笔记2书籍分类3截图分类4日记分类
     public long date;

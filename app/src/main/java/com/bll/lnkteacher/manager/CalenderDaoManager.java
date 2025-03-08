@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.manager;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.CalenderItemBeanDao;
 import com.bll.lnkteacher.greendao.DaoSession;
@@ -40,11 +41,7 @@ public class CalenderDaoManager {
                 }
             }
         }
-        User mUser=SPUtil.INSTANCE.getObj("user", User.class);
-        long userId =0;
-        if (mUser!=null) {
-            userId=mUser.accountId;
-        }
+        long userId = MethodManager.getAccountId();
         whereUser= CalenderItemBeanDao.Properties.UserId.eq(userId);
         return mDbController;
     }

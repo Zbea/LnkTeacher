@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.mvp.model;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.greendao.StringConverter;
 import com.bll.lnkteacher.utils.SPUtil;
 
@@ -19,7 +20,7 @@ public class FreeNoteBean {
     @Unique
     @Id(autoincrement = true)
     public Long id;
-    public long userId= Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+    public long userId= MethodManager.getAccountId();
     public String title;
     @Unique
     public long date;

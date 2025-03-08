@@ -20,6 +20,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
@@ -56,7 +57,12 @@ class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
     }
 
     override fun initData() {
-        mGroupPresenter.getClassGroups()
+        if (NetworkUtil(this).isNetworkConnected()){
+            mGroupPresenter.getClassGroups()
+        }
+        else{
+            classGroups=DataBeanManager.classGroups
+        }
     }
 
     override fun initView() {

@@ -46,7 +46,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
 
     override fun initView() {
         initChangeScreenData()
-        pageSize=12
+        pageSize=6
         initRecyclerView()
     }
 
@@ -65,14 +65,14 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(requireActivity(),4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(requireActivity(),2)//创建布局管理
         mAdapter = WallpaperAdapter(R.layout.item_wallpaper, items)
         rv_list.adapter = mAdapter
-        rv_list.addItemDecoration(SpaceGridItemDeco(4,30))
+        rv_list.addItemDecoration(SpaceGridItemDeco(2,30))
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
-            ImageDialog(requireActivity(), arrayListOf(items[position].bodyUrl) ).builder()
+            ImageDialog(requireActivity(), items[position].bodyUrl.split(",")).builder()
         }
         mAdapter?.setOnItemChildClickListener{ adapter, view, position ->
             this.position=position
@@ -106,14 +106,14 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         showLoading()
         val pathStr= FileAddress().getPathImage("wallpaper",item.contentId.toString())
         val images = mutableListOf(item.bodyUrl)
-        val savePaths= arrayListOf("$pathStr/1.png")
+        val savePaths= arrayListOf("$pathStr/1.png","$pathStr/2.png")
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int, ) {
                 }
                 override fun completed(task: BaseDownloadTask?) {
                     hideLoading()
-                    item.path=savePaths[0]
+                    item.paths=savePaths
                     item.date=System.currentTimeMillis()
                     WallpaperDaoManager.getInstance().insertOrReplace(item)
                     showToast("下载完成")
@@ -135,7 +135,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         fetchData()
     }
 
-    open override fun initChangeScreenData() {
+    override fun initChangeScreenData() {
         super.initChangeScreenData()
         presenter= WallpaperPresenter(this,getScreenPosition())
     }
@@ -146,6 +146,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         map["size"] = pageSize
         map["supply"]=supply
         map["type"]=1
+        map["imageType"]=2
         presenter.getList(map)
     }
 

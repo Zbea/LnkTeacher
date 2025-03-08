@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -12,10 +13,10 @@ import com.bll.lnkteacher.mvp.model.WallpaperBean
 import com.bll.lnkteacher.ui.adapter.MyWallpaperAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
-import com.bll.lnkteacher.widget.SpaceGridItemDeco1
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
-import kotlinx.android.synthetic.main.ac_list.*
-import kotlinx.android.synthetic.main.common_title.*
+import kotlinx.android.synthetic.main.ac_list.rv_list
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import java.io.File
 
 class WallpaperMyActivity:BaseActivity(){
@@ -31,11 +32,10 @@ class WallpaperMyActivity:BaseActivity(){
     }
 
     override fun initData() {
-        pageSize=12
+        pageSize=6
     }
     override fun initView() {
         setPageTitle("我的壁纸")
-
         setPageSetting("设为壁纸")
 
         tv_custom_1.setOnClickListener {
@@ -50,59 +50,38 @@ class WallpaperMyActivity:BaseActivity(){
 //                android.os.SystemProperties.set("xsys.eink.poweroff1",rightPath)
             }
         }
-
         initRecycleView()
         fetchData()
     }
 
     private fun initRecycleView(){
-
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,20f), DP2PX.dip2px(this,50f),
-            DP2PX.dip2px(this,20f),0)
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,50f),
+            DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
-        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        rv_list.layoutManager = GridLayoutManager(this, 2)//创建布局管理
         mAdapter = MyWallpaperAdapter(R.layout.item_wallpaper_my, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list?.addItemDecoration(SpaceGridItemDeco1(4,DP2PX.dip2px(this@WallpaperMyActivity,19f),0))
+            rv_list?.addItemDecoration(SpaceGridItemDeco(2,90))
             setOnItemClickListener { adapter, view, position ->
-                ImageDialog(this@WallpaperMyActivity,items[position].bodyUrl.split(",")).builder()
+                ImageDialog(this@WallpaperMyActivity,items[position].paths).builder()
             }
             setOnItemChildClickListener { adapter, view, position ->
-                //用来确定翻页后选中的位置
-                val wallpaperItem=items[position]
-                if (view.id==R.id.cb_left){
-                    if(wallpaperItem.isLeft){
-                        wallpaperItem.isLeft=false
-                        leftPath=""
+                if (view.id == R.id.cb_check) {
+                    for (item in items) {
+                        item.isCheck = false
                     }
-                    else{
-                        for (item in items){
-                            item.isLeft=false
-                        }
-                        wallpaperItem.isLeft=true
-                        leftPath=wallpaperItem.path
-                    }
+                    val item = items[position]
+                    item.isCheck = true
+                    leftPath = item.paths[0]
+                    rightPath = item.paths[1]
+                    mAdapter?.notifyDataSetChanged()
                 }
-                if (view.id==R.id.cb_right){
-                    if (wallpaperItem.isRight){
-                        wallpaperItem.isRight=false
-                        rightPath=""
-                    }
-                    else{
-                        for (item in items){
-                            item.isRight=false
-                        }
-                        wallpaperItem.isRight=true
-                        rightPath=wallpaperItem.path
-                    }
-                }
-                notifyDataSetChanged()
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
                 this@WallpaperMyActivity.position = position
@@ -119,7 +98,8 @@ class WallpaperMyActivity:BaseActivity(){
             }
             override fun ok() {
                 val item=items[position]
-                FileUtils.deleteFile(File(item.path))
+                val path= FileAddress().getPathImage("wallpaper" ,item.contentId.toString())
+                FileUtils.deleteFile(File(path))
                 WallpaperDaoManager.getInstance().deleteBean(item)
                 mAdapter?.remove(position)
             }

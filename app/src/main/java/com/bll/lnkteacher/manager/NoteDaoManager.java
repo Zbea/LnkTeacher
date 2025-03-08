@@ -1,5 +1,6 @@
 package com.bll.lnkteacher.manager;
 
+import com.bll.lnkteacher.MethodManager;
 import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.greendao.NoteDao;
@@ -41,7 +42,7 @@ public class NoteDaoManager {
                 }
             }
         }
-        long userId = Objects.requireNonNull(SPUtil.INSTANCE.getObj("user", User.class)).accountId;
+        long userId = MethodManager.getAccountId();
         whereUser= NoteDao.Properties.UserId.eq(userId);
         return mDbController;
     }

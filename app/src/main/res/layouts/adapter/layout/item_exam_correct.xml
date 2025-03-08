@@ -6,75 +6,73 @@
     android:gravity="center_horizontal"
     >
 
-    <LinearLayout
-        android:layout_width="360dp"
-        android:layout_height="240dp"
-        android:orientation="horizontal"
-        android:background="@mipmap/icon_exam_correct_bg"
-        >
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="364dp"
+        android:layout_height="306dp"
+        android:background="@mipmap/icon_exam_correct_bg">
 
         <TextView
             android:id="@+id/tv_exam"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_70"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_20"
-            android:paddingEnd="@dimen/dp_20"
+            android:lines="1"
+            android:ellipsize="end"
             android:textColor="@color/black"
-            android:textSize="30sp"
-            />
-        
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/black"
-            />
-        
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
+            android:textSize="@dimen/sp_25"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_exam"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_10"
             >
-
-            <TextView
-                android:id="@+id/tv_save"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:gravity="center"
-                android:text="批改完成"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_20"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:background="@drawable/click_btn_line_black_5dp"
-                />
-
 
             <TextView
                 android:id="@+id/tv_class_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="80dp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_24"
-                 />
+                android:lines="1"
+                android:textSize="@dimen/sp_22"
+                />
 
             <TextView
                 android:id="@+id/tv_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_class_name"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/dp_20"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/sp_22"
+                />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="批改完成"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_20"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/click_btn_line_black_solid_wihte_5dp"
+            />
+
+    </RelativeLayout>
+
+
 
 </LinearLayout>

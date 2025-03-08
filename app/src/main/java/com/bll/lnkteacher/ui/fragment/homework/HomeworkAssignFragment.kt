@@ -26,6 +26,7 @@ import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_list_content.rv_list
@@ -280,12 +281,14 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     override fun fetchData() {
         if (grade==0)
             return
-        val map=HashMap<String,Any>()
-        map["page"]=pageIndex
-        map["size"]=pageSize
-        map["grade"]=grade
-        map["type"]=2
-        mPresenter.getTypeList(map)
+        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+            val map = HashMap<String, Any>()
+            map["page"] = pageIndex
+            map["size"] = pageSize
+            map["grade"] = grade
+            map["type"] = 2
+            mPresenter.getTypeList(map)
+        }
     }
 
 }
