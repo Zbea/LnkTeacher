@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import kotlinx.android.synthetic.main.common_title.tv_btn_2
 
-class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
+class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
     private var mGroupPresenter = ClassGroupPresenter(this)
     private var classGroups = mutableListOf<ClassGroup>()
@@ -57,7 +57,7 @@ class ClassGroupActivity : BaseActivity(), IContractView.IClassGroupView {
     }
 
     override fun initData() {
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mGroupPresenter.getClassGroups()
         }
         else{

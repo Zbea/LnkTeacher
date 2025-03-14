@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
@@ -16,7 +16,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.HomeworkPaperAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
+import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
@@ -27,11 +27,11 @@ import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
-class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
+class HomeworkPaperAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomeworkPaperAssignView {
 
     private var grade=0
     private lateinit var mPresenter:HomeworkPaperAssignPresenter
-    private var mAdapter:TestPaperAssignContentAdapter?=null
+    private var mAdapter:HomeworkAssignContentAdapter?=null
     private var items= mutableListOf<AssignPaperContentList.AssignPaperContentBean>()//列表数据
     private var typeBean: TypeBean?=null//作业卷分类
     private var position=-1
@@ -149,7 +149,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this,4)//创建布局管理
-        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
+        mAdapter = HomeworkAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
@@ -209,7 +209,7 @@ class HomeworkPaperAssignContentActivity:BaseActivity(),IContractView.IHomeworkP
         map["classIds"]=classIds
         map["showStatus"]=if (isCommit) 0 else 1
         map["endTime"]=if (isCommit)commitTime/1000 else 0
-        map["selfBatchStatus"]=if (isCorrect) 1 else 0
+        map["selfBatchStatus"]=if (isCommit&&isCorrect) 1 else 0
         map["taskId"]=taskId
         mPresenter.commitHomeworkReel(map)
     }

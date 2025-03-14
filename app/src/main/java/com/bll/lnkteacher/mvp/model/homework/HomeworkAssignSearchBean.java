@@ -11,9 +11,10 @@ public class HomeworkAssignSearchBean {
     public String title;
     @SerializedName("layoutTime")
     public long time;//预设时间
+    @SerializedName("minute")
+    public int standardTime;//标准时间
     public String answerUrl;
     public String examUrl;
-
     public int commonTypeId;
     public String name;
     public int subType;

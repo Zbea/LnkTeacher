@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.common_title.*
 import java.util.regex.Pattern
 
 
-abstract class BaseDrawingActivity : BaseActivity(){
+abstract class BaseDrawingActivity : BaseAppCompatActivity(){
 
     var isExpand=false
     var elik_a: EinkPWInterface? = null

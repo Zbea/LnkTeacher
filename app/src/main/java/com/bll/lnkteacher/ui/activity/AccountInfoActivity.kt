@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.activity
 import android.annotation.SuppressLint
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.EditPhoneDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_province_str
 import kotlinx.android.synthetic.main.ac_account_info.tv_school
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
 
-class AccountInfoActivity:BaseActivity(), IContractView.IAccountInfoView {
+class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoView {
 
     private lateinit var presenter:AccountInfoPresenter
     private var nickname=""

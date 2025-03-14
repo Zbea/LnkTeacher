@@ -9,7 +9,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CourseModuleDialog
 import com.bll.lnkteacher.dialog.CourseTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
@@ -28,7 +28,7 @@ import kotlinx.android.synthetic.main.common_title.tv_btn_2
 import org.greenrobot.eventbus.EventBus
 
 //课程表
-class ClassScheduleActivity : BaseActivity(), IContractView.IFileUploadView,IClassGroupView {
+class ClassScheduleActivity : BaseAppCompatActivity(), IContractView.IFileUploadView,IClassGroupView {
     private lateinit var mUploadPresenter :FileUploadPresenter
     private lateinit var mPresenter:ClassGroupPresenter
     private var type=1

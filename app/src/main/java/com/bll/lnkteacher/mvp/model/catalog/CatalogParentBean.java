@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.catalog;
 
 import com.chad.library.adapter.base.entity.AbstractExpandableItem;
 import com.chad.library.adapter.base.entity.MultiItemEntity;

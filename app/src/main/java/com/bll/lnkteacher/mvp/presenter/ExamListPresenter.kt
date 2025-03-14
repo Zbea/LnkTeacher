@@ -2,7 +2,11 @@ package com.bll.lnkteacher.mvp.presenter
 
 import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.net.*
+import com.bll.lnkteacher.net.BasePresenter
+import com.bll.lnkteacher.net.BaseResult
+import com.bll.lnkteacher.net.Callback
+import com.bll.lnkteacher.net.RequestUtils
+import com.bll.lnkteacher.net.RetrofitManager
 
 
 class ExamListPresenter(view: IContractView.IExamListView, val screen:Int) : BasePresenter<IContractView.IExamListView>(view) {
@@ -17,7 +21,7 @@ class ExamListPresenter(view: IContractView.IExamListView, val screen:Int) : Bas
                 if (tBaseResult.data!=null)
                     view.onList(tBaseResult.data)
             }
-        }, true)
+        }, false)
     }
 
     fun deleteExamList(map:HashMap<String,Any>) {

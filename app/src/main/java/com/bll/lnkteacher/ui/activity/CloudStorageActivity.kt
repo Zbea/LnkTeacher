@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.cloud.CloudBookcaseFragment
 import com.bll.lnkteacher.ui.fragment.cloud.CloudDiaryFragment
@@ -14,7 +14,7 @@ import com.bll.lnkteacher.ui.fragment.cloud.CloudTextbookFragment
 import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_cloud_storage.rv_list
 
-class CloudStorageActivity:BaseActivity() {
+class CloudStorageActivity:BaseAppCompatActivity() {
     private var lastPosition = 0
     private var mHomeAdapter: MainListAdapter? = null
     private var lastFragment: Fragment? = null

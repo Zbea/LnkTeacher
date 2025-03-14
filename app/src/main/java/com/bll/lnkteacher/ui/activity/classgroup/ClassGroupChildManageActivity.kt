@@ -2,7 +2,7 @@ package com.bll.lnkteacher.ui.activity.classgroup
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.presenter.ClassGroupChildPresenter
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_class_name
 import kotlinx.android.synthetic.main.ac_classgroup_child_manage.tv_out
 import kotlinx.android.synthetic.main.ac_list.rv_list
 
-class ClassGroupChildManageActivity : BaseActivity(), IContractView.IClassGroupChildView {
+class ClassGroupChildManageActivity : BaseAppCompatActivity(), IContractView.IClassGroupChildView {
 
     private lateinit var mPresenter :ClassGroupChildPresenter
     private var mClassGroup: ClassGroup? = null

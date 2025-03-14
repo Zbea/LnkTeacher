@@ -165,9 +165,7 @@ class TestPaperAssignFragment : BaseFragment(), IContractView.ITestPaperAssignVi
     }
 
     override fun fetchData() {
-        if (grade == 0)
-            return
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()&&grade>0){
             val map = HashMap<String, Any>()
             map["type"] = 1
             map["page"] = pageIndex

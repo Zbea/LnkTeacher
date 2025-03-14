@@ -56,6 +56,9 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
         }
     }
 
+    /**
+     * 初始化时，刷新年级（根据班群年级）
+     */
     fun setGradeStr(){
         if (grade==0){
             grade=DataBeanManager.getClassGroupsGrade()
@@ -79,7 +82,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
      * 常用更新数据
      */
     fun onCheckUpdate() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             mCommonPresenter.getCommon()
             checkAppUpdate()
             checkSystemUpdate()

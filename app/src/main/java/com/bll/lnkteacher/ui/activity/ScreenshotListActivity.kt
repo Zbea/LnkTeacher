@@ -10,7 +10,7 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
@@ -27,7 +27,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
 import kotlinx.android.synthetic.main.common_title.iv_manager
 
-class ScreenshotListActivity:BaseActivity() {
+class ScreenshotListActivity:BaseAppCompatActivity() {
     private var popupBeans = mutableListOf<PopupBean>()
     private var longBeans = mutableListOf<ItemList>()
     private var tabPos=0

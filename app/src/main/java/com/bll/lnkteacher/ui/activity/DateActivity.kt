@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.PopupDateSelector
 import com.bll.lnkteacher.mvp.model.Date
 import com.bll.lnkteacher.ui.activity.drawing.DateEventActivity
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.common_title.ll_year
 import kotlinx.android.synthetic.main.common_title.tv_month
 import kotlinx.android.synthetic.main.common_title.tv_year
 
-open class DateActivity: BaseActivity() {
+open class DateActivity: BaseAppCompatActivity() {
 
     private var yearPop:PopupDateSelector?=null
     private var monthPop:PopupDateSelector?=null

@@ -17,6 +17,7 @@ import com.bll.lnkteacher.R.id.tv_number
 import com.bll.lnkteacher.R.id.tv_receive_number
 import com.bll.lnkteacher.R.id.tv_self_correct
 import com.bll.lnkteacher.R.id.tv_send
+import com.bll.lnkteacher.R.id.tv_standard_time
 import com.bll.lnkteacher.R.id.tv_title
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
@@ -38,6 +39,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
         helper.setText(tv_title,item.title)
         helper.setText(tv_exam_type,item.subTypeName)
         helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")
+        helper.setText(tv_standard_time,if(item.standardTime>0) "${item.standardTime}分钟" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
         helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&isShow)

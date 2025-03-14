@@ -17,6 +17,8 @@ public class AssignPaperContentList {
         public String title;
         @SerializedName("layoutTime")
         public long time;//预设时间
+        @SerializedName("minute")
+        public int standardTime;//标准时间
         public String url;
         public String answerUrl;
         public String examUrl;

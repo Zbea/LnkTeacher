@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.WallpaperDaoManager
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import java.io.File
 
-class WallpaperMyActivity:BaseActivity(){
+class WallpaperMyActivity:BaseAppCompatActivity(){
 
     private var items= mutableListOf<WallpaperBean>()
     private var mAdapter: MyWallpaperAdapter?=null

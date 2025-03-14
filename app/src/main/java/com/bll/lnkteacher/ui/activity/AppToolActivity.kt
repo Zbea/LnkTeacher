@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.manager.AppDaoManager
 import com.bll.lnkteacher.mvp.model.AppBean
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.ac_app_tool.rv_list_tool
 import kotlinx.android.synthetic.main.ac_app_tool.tv_out
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
-class AppToolActivity:BaseActivity() {
+class AppToolActivity:BaseAppCompatActivity() {
 
     private var apps= mutableListOf<AppBean>()
     private var menuApps= mutableListOf<AppBean>()

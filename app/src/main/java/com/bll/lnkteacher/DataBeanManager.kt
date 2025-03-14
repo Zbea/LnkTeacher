@@ -2,7 +2,10 @@ package com.bll.lnkteacher
 
 import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
+import com.bll.lnkteacher.mvp.model.catalog.CatalogChildBean
+import com.bll.lnkteacher.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.chad.library.adapter.base.entity.MultiItemEntity
 import java.util.*
 
 object DataBeanManager {
@@ -452,5 +455,29 @@ object DataBeanManager {
                 versionStr=item.desc
         }
         return versionStr
+    }
+
+    fun operatingGuideInfo():List<MultiItemEntity>{
+        val list= mutableListOf<MultiItemEntity>()
+        val types= mutableListOf("一、主页面","二、管理中心","三、作业书籍","四、教学工具")
+        val mainStrs= mutableListOf("注册账号","按键/接口","状态栏按钮","账户/班群","窗口功能","书架/作业","教学/测卷","教情/考卷","应用/笔记")
+        val managerStrs= mutableListOf("管理中心","云书库","书城","资源")
+        val bookStrs= mutableListOf("课本/文档","书籍/规划","日记本/随笔","作业布置","批改界面","作业统计数据","试卷统计数据","层群创建/成绩排序")
+        val toolStrs= mutableListOf("排课表","教学计划","我的日历","我的工具","截屏","几何绘图")
+        val childTypes= mutableListOf(mainStrs,managerStrs,bookStrs,toolStrs)
+        for (type in types){
+            val index=types.indexOf(type)
+            val catalogParent = CatalogParentBean()
+            catalogParent.title=type
+            for (childType in childTypes[index]){
+                val catalogChild = CatalogChildBean()
+                catalogChild.title = childType
+                catalogChild.parentPosition=index
+                catalogChild.pageNumber = childTypes[index].indexOf(childType)+1
+                catalogParent.addSubItem(catalogChild)
+            }
+            list.add(catalogParent)
+        }
+        return list
     }
 }

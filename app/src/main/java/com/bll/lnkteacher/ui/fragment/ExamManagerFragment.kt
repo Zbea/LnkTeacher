@@ -28,7 +28,6 @@ class ExamManagerFragment:BaseMainFragment() {
 
         examCorrectFragment = ExamCorrectFragment()
         examListFragment = ExamListFragment()
-
         switchFragment(lastFragment, examCorrectFragment)
 
         initTab()

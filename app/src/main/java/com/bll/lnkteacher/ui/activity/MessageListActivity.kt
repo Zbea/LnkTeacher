@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.MessageSendDialog
 import com.bll.lnkteacher.mvp.model.Message
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.common_title.iv_manager
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import org.greenrobot.eventbus.EventBus
 
-class MessageListActivity : BaseActivity(), IContractView.IMessageView, IContractView.IClassGroupUserView {
+class MessageListActivity : BaseAppCompatActivity(), IContractView.IMessageView, IContractView.IClassGroupUserView {
 
     private lateinit var mPresenter: MessagePresenter
     private lateinit var mClassGroupUserPresenter: ClassGroupUserPresenter

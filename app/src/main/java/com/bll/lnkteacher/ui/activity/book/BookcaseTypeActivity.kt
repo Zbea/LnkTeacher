@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.BOOK_EVENT
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.BookcaseDetailsDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.common_title.iv_manager
 /**
  * 书架分类
  */
-class BookcaseTypeActivity : BaseActivity() {
+class BookcaseTypeActivity : BaseAppCompatActivity() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()

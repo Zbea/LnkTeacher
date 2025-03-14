@@ -18,6 +18,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
+import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
@@ -34,6 +35,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_answer
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_play
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_save
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_take_time
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
@@ -150,7 +152,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 else{
                     Handler().postDelayed({
                         commitPaper()
-                    },300)
+                    },500)
                 }
             }
         }
@@ -225,10 +227,9 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     override fun onPageUp() {
         if (posImage>0){
             posImage-=if (isExpand)2 else 1
-            //批改翻页是延迟已支持手写绘图保存
             Handler().postDelayed({
                 onChangeContent()
-            },if (correctStatus==1)300 else 0)
+            },if (correctStatus==1)500 else 0)
         }
     }
 
@@ -238,7 +239,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             posImage+=if (isExpand)2 else 1
             Handler().postDelayed({
                 onChangeContent()
-            },if (correctStatus==1)300 else 0)
+            },if (correctStatus==1)500 else 0)
         }
     }
 
@@ -252,6 +253,8 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         }
         val userItem=userItems[posUser]
         correctStatus=userItems[posUser].status
+
+        tv_take_time.text=if (userItem.takeTime>0) "${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
 
         if (correctList?.subType==3){
             if (!userItem.studentUrl.isNullOrEmpty()) {
@@ -329,8 +332,8 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         tv_page_total.text="${getImageSize()}"
         tv_page_total_a.text="${getImageSize()}"
         if (isExpand){
-            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
-            GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_a)
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage+1],v_content_b)
             if (correctStatus==1){
                 val drawPath = getPathDrawStr(posImage+1)
                 elik_a?.setLoadFilePath(drawPath, true)
@@ -342,7 +345,7 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             tv_page_a.text="${posImage+1+1}"
         }
         else{
-            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_b)
             if (correctStatus==1){
                 val drawPath = getPathDrawStr(posImage+1)
                 elik_b?.setLoadFilePath(drawPath, true)

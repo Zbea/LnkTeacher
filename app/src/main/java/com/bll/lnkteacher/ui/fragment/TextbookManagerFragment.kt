@@ -86,7 +86,7 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected())
+        if (NetworkUtil.isNetworkConnected())
             presenter.getTypeList()
     }
 

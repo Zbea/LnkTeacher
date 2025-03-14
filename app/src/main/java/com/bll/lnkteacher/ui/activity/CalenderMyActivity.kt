@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.CalenderDaoManager
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class CalenderMyActivity:BaseActivity(){
+class CalenderMyActivity:BaseAppCompatActivity(){
 
     private var items= mutableListOf<CalenderItemBean>()
     private var mAdapter:CalenderListAdapter?=null

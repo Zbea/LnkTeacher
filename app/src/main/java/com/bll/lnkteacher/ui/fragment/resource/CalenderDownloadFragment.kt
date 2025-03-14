@@ -64,7 +64,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             fetchData()
         }
     }

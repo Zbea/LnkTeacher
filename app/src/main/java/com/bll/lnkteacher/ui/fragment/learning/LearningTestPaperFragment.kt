@@ -65,7 +65,7 @@ class LearningTestPaperFragment:BaseFragment(),ITestPaperCorrectView {
     }
 
     override fun fetchData() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             val map = HashMap<String, Any>()
             map["page"] = pageIndex
             map["size"] = pageSize

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.common_title.tv_custom
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 
-class ClassGroupUserActivity : BaseActivity(), IContractView.IClassGroupUserView {
+class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupUserView {
 
     private lateinit var mPresenter :ClassGroupUserPresenter
     private var mClassGroup: ClassGroup? = null

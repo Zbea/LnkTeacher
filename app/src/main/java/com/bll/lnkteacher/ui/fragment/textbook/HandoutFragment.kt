@@ -5,7 +5,6 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
-import com.bll.lnkteacher.MyApplication
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.InputContentDialog
@@ -193,7 +192,7 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
     }
 
     override fun fetchData() {
-        if (NetworkUtil(MyApplication.mContext).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             if (!isNet)
                 pageIndex = 1
             isNet = true

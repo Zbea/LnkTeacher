@@ -56,7 +56,6 @@ class ExamListFragment:BaseFragment(),IExamListView{
     }
 
     override fun lazyLoad() {
-        fetchData()
     }
 
     private fun initRecyclerView(){
@@ -162,9 +161,7 @@ class ExamListFragment:BaseFragment(),IExamListView{
     }
 
     override fun fetchData() {
-        if (grade==0)
-            return
-        if (NetworkUtil(requireActivity()).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()&&grade>0) {
             val map = HashMap<String, Any>()
             map["page"] = pageIndex
             map["size"] = pageSize

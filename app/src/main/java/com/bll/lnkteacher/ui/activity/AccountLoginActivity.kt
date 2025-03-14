@@ -7,7 +7,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.presenter.LoginPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.ac_account_login_user.ll_tips
 import kotlinx.android.synthetic.main.ac_account_login_user.tv_find_psd
 import kotlinx.android.synthetic.main.ac_account_login_user.tv_register
 
-class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
+class AccountLoginActivity:BaseAppCompatActivity(), IContractView.ILoginView {
 
     private val presenter=LoginPresenter(this,1)
     private var token=""
@@ -109,7 +109,7 @@ class AccountLoginActivity:BaseActivity(), IContractView.ILoginView {
 
     override fun onResume() {
         super.onResume()
-        if (NetworkUtil(this).isNetworkConnected()) {
+        if (NetworkUtil.isNetworkConnected()) {
             disMissView(ll_tips)
         } else {
             showView(ll_tips)

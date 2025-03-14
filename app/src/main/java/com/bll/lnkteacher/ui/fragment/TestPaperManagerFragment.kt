@@ -30,11 +30,6 @@ class TestPaperManagerFragment : BaseMainFragment(){
         showView(tv_grade)
         setImageManager(R.mipmap.icon_add)
 
-        testPaperAssignFragment = TestPaperAssignFragment()
-        testPaperCorrectFragment = TestPaperCorrectFragment()
-
-        switchFragment(lastFragment, testPaperAssignFragment)
-
         iv_manager?.setOnClickListener {
             if (grade==0)
             {
@@ -43,6 +38,10 @@ class TestPaperManagerFragment : BaseMainFragment(){
             }
             showCreateTestPaperName()
         }
+
+        testPaperAssignFragment = TestPaperAssignFragment()
+        testPaperCorrectFragment = TestPaperCorrectFragment()
+        switchFragment(lastFragment, testPaperAssignFragment)
 
         initTab()
     }

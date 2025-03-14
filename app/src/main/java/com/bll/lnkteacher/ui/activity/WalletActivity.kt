@@ -5,7 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.WalletBuyXdDialog
 import com.bll.lnkteacher.mvp.model.AccountOrder
 import com.bll.lnkteacher.mvp.model.AccountQdBean
@@ -17,7 +17,7 @@ import com.king.zxing.util.CodeUtils
 import kotlinx.android.synthetic.main.ac_wallet.tv_buy
 import kotlinx.android.synthetic.main.ac_wallet.tv_xdmoney
 
-class WalletActivity:BaseActivity(),IContractView.IWalletView{
+class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
 
     private lateinit var walletPresenter:WalletPresenter
     private var xdDialog:WalletBuyXdDialog?=null

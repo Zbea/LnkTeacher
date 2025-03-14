@@ -4,7 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
@@ -13,7 +13,7 @@ import com.bll.lnkteacher.ui.fragment.resource.CalenderDownloadFragment
 import com.bll.lnkteacher.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.tv_type
 
-class ResourceCenterActivity:BaseActivity(){
+class ResourceCenterActivity:BaseAppCompatActivity(){
     private var lastFragment: Fragment? = null
     private var appFragment: AppDownloadFragment? = null
     private var bookFragment: AppDownloadFragment? = null

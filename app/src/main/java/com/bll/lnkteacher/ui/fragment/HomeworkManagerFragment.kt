@@ -38,6 +38,10 @@ class HomeworkManagerFragment : BaseMainFragment(){
         setTitle(DataBeanManager.getIndexRightData()[1].name)
         showView(iv_manager,tv_grade)
 
+        iv_manager?.setOnClickListener {
+            showPopView()
+        }
+
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details)))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_assign_search)))
         homeworkPopBeans.add(PopupBean(2, getString(R.string.teaching_pop_create_book)))
@@ -45,12 +49,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
-
         switchFragment(lastFragment, homeworkAssignFragment)
-
-        iv_manager?.setOnClickListener {
-            showPopView()
-        }
 
         initTab()
     }
@@ -85,7 +84,6 @@ class HomeworkManagerFragment : BaseMainFragment(){
         lastPosition = position
     }
 
-
     //页码跳转
     private fun switchFragment(from: Fragment?, to: Fragment?) {
         if (from != to) {
@@ -109,13 +107,13 @@ class HomeworkManagerFragment : BaseMainFragment(){
 
     //顶部弹出pop选择框
     private fun showPopView() {
+        if (grade==0)
+        {
+            showToast("请选择年级")
+            return
+        }
         PopupClick(requireActivity(), homeworkPopBeans, iv_manager,  10).builder()
             .setOnSelectListener { item ->
-                if (grade==0)
-                {
-                    showToast("请选择年级")
-                    return@setOnSelectListener
-                }
                 when(item.id){
                     0->{
                         homeworkAssignFragment?.showAssignDetails()

@@ -9,7 +9,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.common_title.tv_supply
 /**
  * 书城
  */
-class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
+class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView {
 
     private var tabStr=""
     private var type=0
@@ -92,7 +92,7 @@ class BookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
         popSupplys=DataBeanManager.popupSupplys
         supply=popSupplys[0].id
 
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             presenter.getBookType()
         }
     }

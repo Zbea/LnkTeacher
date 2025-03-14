@@ -115,7 +115,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
     override fun lazyLoad() {
         findNotes()
 
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mPresenter.getClassSchedule()
             findMessages()
         }

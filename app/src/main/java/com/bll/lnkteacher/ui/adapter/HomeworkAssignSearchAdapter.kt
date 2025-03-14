@@ -13,6 +13,7 @@ class HomeworkAssignSearchAdapter(layoutResId: Int, data: List<HomeworkAssignSea
             setText(R.id.tv_type,item.name)
             setText(R.id.tv_name,item.title)
             setText(R.id.tv_date_preset,DateUtils.longToHour(item.time))
+            setText(R.id.tv_standard_time,if (item.standardTime>0) "${item.standardTime}分钟" else "")
             setGone(R.id.tv_answer,!item.answerUrl.isNullOrEmpty())
             setChecked(R.id.cb_check,item.isCheck)
             addOnClickListener(R.id.tv_name,R.id.tv_answer,R.id.cb_check)

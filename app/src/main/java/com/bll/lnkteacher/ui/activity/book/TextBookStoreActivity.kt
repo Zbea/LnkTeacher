@@ -10,7 +10,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.DownloadTextbookDialog
 import com.bll.lnkteacher.dialog.PopupCityList
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -43,7 +43,7 @@ import kotlinx.android.synthetic.main.common_title.tv_type
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
+class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView {
     private var tabId = 0
     private var tabStr = ""
     private lateinit var presenter :BookStorePresenter
@@ -117,7 +117,7 @@ class TextBookStoreActivity : BaseActivity(), IContractView.IBookStoreView {
             gradeList=DataBeanManager.popupGrades(gradeId)
         }
 
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             presenter.getBookType()
         }
     }

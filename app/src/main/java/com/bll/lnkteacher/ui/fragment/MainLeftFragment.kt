@@ -12,7 +12,7 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.manager.CalenderDaoManager
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
-import com.bll.lnkteacher.mvp.presenter.MainLeftPresenter
+import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.CalenderMyActivity
 import com.bll.lnkteacher.ui.activity.DateActivity
@@ -42,17 +42,16 @@ import kotlinx.android.synthetic.main.fragment_main_left.v_date_up
 import java.io.File
 import java.util.Random
 
-class MainLeftFragment: BaseMainFragment(),IContractView.IMainLeftView{
+class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
 
-    private var mMainLeftPresenter=MainLeftPresenter(this,1)
+    private var mGroupPresenter = ClassGroupPresenter(this,1)
     private var nowDayPos=1
     private var nowDate=0L
     private var calenderPath=""
     private var mTeachingAdapter: MainTeachingAdapter? = null
     private var classGroups= mutableListOf<ClassGroup>()
 
-
-    override fun onClassList(groups: MutableList<ClassGroup>) {
+    override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups=groups
         classGroups.clear()
         grade=DataBeanManager.getClassGroupsGrade()
@@ -129,8 +128,8 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IMainLeftView{
         setCalenderView()
 
         onCheckUpdate()
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
-            mMainLeftPresenter.getClassGroups()
+        if (NetworkUtil.isNetworkConnected()){
+            mGroupPresenter.getClassGroups()
         }
     }
 

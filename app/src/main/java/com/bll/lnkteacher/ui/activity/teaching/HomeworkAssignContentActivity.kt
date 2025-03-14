@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
-class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperAssignView {
+class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomeworkPaperAssignView {
 
     private var grade=0
     private lateinit var mPresenter:HomeworkPaperAssignPresenter
@@ -187,18 +187,21 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
                     val item=items[position]
                     ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
                 }
-                else if (view.id==R.id.iv_delete){
-                    CommonDialog(this@HomeworkAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
-                        CommonDialog.OnDialogClickListener {
-                        override fun cancel() {
-                        }
-                        override fun ok() {
-                            val item=items[position]
-                            val ids= arrayListOf(item.taskId)
-                            mPresenter.deletePapers(ids)
-                        }
-                    })
-                }
+            }
+            setOnItemChildLongClickListener { adapter, view, position ->
+                this@HomeworkAssignContentActivity.position=position
+                CommonDialog(this@HomeworkAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+                    CommonDialog.OnDialogClickListener {
+                    override fun cancel() {
+                    }
+                    override fun ok() {
+                        val item=items[position]
+                        val ids= arrayListOf(item.taskId)
+                        mPresenter.deletePapers(ids)
+                    }
+                })
+                true
+
             }
         }
         rv_list?.addItemDecoration(SpaceItemDeco(40))
@@ -212,7 +215,7 @@ class HomeworkAssignContentActivity:BaseActivity(),IContractView.IHomeworkPaperA
         map["classIds"]=classIds
         map["showStatus"]=if (isCommit) 0 else 1
         map["endTime"]=if (isCommit)commitTime/1000 else 0
-        map["selfBatchStatus"]=if (isCorrect) 1 else 0
+        map["selfBatchStatus"]=if (isCommit&&isCorrect) 1 else 0
         map["taskId"]=taskId
         mPresenter.commitHomeworkReel(map)
     }

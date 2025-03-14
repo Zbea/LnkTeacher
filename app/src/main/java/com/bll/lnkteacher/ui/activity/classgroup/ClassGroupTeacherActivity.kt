@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.activity.classgroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher
@@ -13,7 +13,7 @@ import com.bll.lnkteacher.ui.adapter.ClassGroupTeacherAdapter
 import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
 import org.greenrobot.eventbus.EventBus
 
-class ClassGroupTeacherActivity:BaseActivity(),IContractView.IClassGroupTeacherView {
+class ClassGroupTeacherActivity:BaseAppCompatActivity(),IContractView.IClassGroupTeacherView {
 
     private lateinit var mPresenter:ClassGroupTeacherPresenter
     private var mClassGroup: ClassGroup? = null

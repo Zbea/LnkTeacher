@@ -29,13 +29,10 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.dialog.AnalyseUserDetailsDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.dialog.ProgressDialog
-import com.bll.lnkteacher.mvp.model.AppUpdateBean
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
-import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.model.User
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
@@ -82,7 +79,7 @@ import pub.devrel.easypermissions.EasyPermissions
 import kotlin.math.ceil
 
 
-abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView, IContractView.ICommonView {
+abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks, IBaseView, IContractView.ICommonView {
 
     var mCommonPresenter= CommonPresenter(this)
     var screenPos=0
@@ -238,7 +235,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
     }
 
     protected fun fetchCommonData(){
-        if (NetworkUtil(this).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mCommonPresenter.getCommon()
         }
     }
@@ -387,7 +384,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         setChangeItemScore(view,position)
                     }
                 }
-                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseActivity,15f)))
+                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
             }
         }
         else{
@@ -409,7 +406,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         when(view.id){
                             R.id.tv_score->{
                                 if (scoreMode==1){
-                                    NumberDialog(this@BaseActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
+                                    NumberDialog(this@BaseAppCompatActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
                                         if (childItem.label!=it){
                                             childItem.result=0
                                         }
@@ -455,7 +452,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         }
                     }
                 }
-                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseActivity,15f)))
+                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
             }
         }
     }
@@ -468,7 +465,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         when(view.id){
             R.id.tv_score->{
                 if (scoreMode==1){
-                    NumberDialog(this@BaseActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
+                    NumberDialog(this@BaseAppCompatActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
                         if (item.label!=it){
                             item.result=0
                         }
@@ -578,7 +575,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         val students = item.wrongStudents
                         val titleStr="第${if (correctModule==1) ToolUtils.numbers[item.sort+1] else item.sort+1}题 错误学生"
                         if (students.size>0)
-                            AnalyseUserDetailsDialog(this@BaseActivity, titleStr,students).builder()
+                            AnalyseUserDetailsDialog(this@BaseAppCompatActivity, titleStr,students).builder()
                     }
                 }
             }
@@ -595,7 +592,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                             val students = item.wrongStudents
                             val titleStr="第${ToolUtils.numbers[item.sort+1]}题 错误学生"
                             if (students.size>0)
-                                AnalyseUserDetailsDialog(this@BaseActivity,titleStr, students).builder()
+                                AnalyseUserDetailsDialog(this@BaseAppCompatActivity,titleStr, students).builder()
                         }
                     }
                 }
@@ -605,7 +602,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
                         val students = item.childAnalyses[childPosition].wrongStudents
                         val titleStr="第${ToolUtils.numbers[item.sort+1]}大题 第${item.childAnalyses[childPosition].sort+1}小题 错误学生"
                         if (students.size>0)
-                            AnalyseUserDetailsDialog(this@BaseActivity,titleStr, students).builder()
+                            AnalyseUserDetailsDialog(this@BaseAppCompatActivity,titleStr, students).builder()
                     }
                 }
             }
@@ -723,7 +720,7 @@ abstract class BaseActivity : AppCompatActivity(), EasyPermissions.PermissionCal
         if (ll_page_number!=null){
             pageCount = ceil(total.toDouble() / pageSize).toInt()
             if (total == 0) {
-                disMissView(ll_page_number)
+                ll_page_number.visibility=View.INVISIBLE
             } else {
                 tv_page_current.text = pageIndex.toString()
                 tv_page_total_bottom.text = pageCount.toString()

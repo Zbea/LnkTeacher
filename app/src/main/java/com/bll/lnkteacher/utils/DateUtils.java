@@ -37,6 +37,18 @@ public class DateUtils {
         return day;
     }
 
+    public static long longToMinute(long date) {
+        int minuteTime=60*1000;
+        if (date>0){
+            long minute=date/minuteTime;
+            if (date%minuteTime>0){
+                minute+=1;
+            }
+            return minute;
+        }
+        return 0L;
+    }
+
     /**
      * 时间戳转换为字符串类型
      *

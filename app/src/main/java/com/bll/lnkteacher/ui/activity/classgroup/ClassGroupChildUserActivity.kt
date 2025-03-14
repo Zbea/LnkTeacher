@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
@@ -17,7 +17,7 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco2
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 
-class ClassGroupChildUserActivity : BaseActivity(), IContractView.IClassGroupUserView {
+class ClassGroupChildUserActivity : BaseAppCompatActivity(), IContractView.IClassGroupUserView {
 
     private lateinit var mPresenter :ClassGroupUserPresenter
     private var mClassGroup: ClassGroup? = null

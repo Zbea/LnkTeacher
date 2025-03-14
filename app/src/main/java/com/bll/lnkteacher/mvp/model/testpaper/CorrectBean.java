@@ -14,6 +14,8 @@ public class CorrectBean implements Serializable {
     public int taskType;//1作业 2测试卷
     public String examUrl;//原图
     public String answerUrl;//答案
+    @SerializedName("minute")
+    public int standardTime;//标准时间
     public int subType;//作业分类
     @SerializedName("taskName")
     public String subTypeName;//作业分类名称

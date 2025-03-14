@@ -10,9 +10,9 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CatalogBookDialog
 import com.bll.lnkteacher.manager.TextbookGreenDaoManager
-import com.bll.lnkteacher.mvp.model.CatalogChildBean
-import com.bll.lnkteacher.mvp.model.CatalogMsg
-import com.bll.lnkteacher.mvp.model.CatalogParentBean
+import com.bll.lnkteacher.mvp.model.catalog.CatalogChildBean
+import com.bll.lnkteacher.mvp.model.catalog.CatalogMsg
+import com.bll.lnkteacher.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkteacher.mvp.model.book.TextbookBean
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils

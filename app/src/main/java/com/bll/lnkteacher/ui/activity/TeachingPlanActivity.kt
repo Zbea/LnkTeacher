@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.PopupDateSelector
 import com.bll.lnkteacher.dialog.PopupRadioList
@@ -44,7 +44,7 @@ import org.greenrobot.eventbus.EventBus
 /**
  * 教学计划
  */
-class TeachingPlanActivity:BaseActivity() {
+class TeachingPlanActivity:BaseAppCompatActivity() {
 
     private var classGroup: ClassGroup?=null
     private var classId=0

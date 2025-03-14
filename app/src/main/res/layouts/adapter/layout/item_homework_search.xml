@@ -21,7 +21,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_20"
         android:lines="1"
-        android:text="课堂作业本"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_24"
         android:textStyle="bold" />
@@ -33,9 +32,16 @@
         android:layout_weight="1"
         android:ellipsize="end"
         android:lines="1"
-        android:text="课堂作业本"
         android:textColor="@color/black"
         android:textSize="@dimen/sp_24" />
+
+    <TextView
+        android:id="@+id/tv_standard_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_25" />
 
     <TextView
         android:id="@+id/tv_answer"

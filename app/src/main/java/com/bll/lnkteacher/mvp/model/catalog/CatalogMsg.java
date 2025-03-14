@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.catalog;
 
 import java.util.List;
 

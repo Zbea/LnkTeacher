@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.CountDownTimer
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
 import com.bll.lnkteacher.mvp.model.SchoolBean
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.ac_account_register.tv_password
 import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
-class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsdView{
+class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView{
 
     private lateinit var presenter:RegisterOrFindPsdPresenter
     private var countDownTimer: CountDownTimer? = null
@@ -65,7 +65,7 @@ class AccountRegisterActivity : BaseActivity(), IContractView.IRegisterOrFindPsd
         initChangeScreenData()
         flags=intent.flags
         if (flags==0){
-            if (!NetworkUtil(this).isNetworkConnected()){
+            if (!NetworkUtil.isNetworkConnected()){
                 showToast("网络连接失败")
             }
         }

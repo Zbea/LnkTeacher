@@ -45,7 +45,7 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()){
             mPresenter.getExamCorrectList()
         }
     }

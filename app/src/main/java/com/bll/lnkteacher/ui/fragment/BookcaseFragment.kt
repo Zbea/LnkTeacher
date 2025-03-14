@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
 /**
  * 书架
  */
-class BookCaseFragment : BaseMainFragment() {
+class BookcaseFragment : BaseMainFragment() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()//所有数据

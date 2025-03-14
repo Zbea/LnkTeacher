@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CalendarSingleDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
-class HomeworkAssignSearchActivity:BaseActivity() , IContractView.IHomeworkPaperAssignView{
+class HomeworkAssignSearchActivity:BaseAppCompatActivity() , IContractView.IHomeworkPaperAssignView{
 
     private lateinit var mPresenter: HomeworkPaperAssignPresenter
     private var nowLong=0L

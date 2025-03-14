@@ -5,7 +5,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
@@ -17,7 +17,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 
-class NotebookManagerActivity : BaseActivity() {
+class NotebookManagerActivity : BaseAppCompatActivity() {
 
     private var noteBooks= mutableListOf<ItemTypeBean>()
     private var mAdapter: ItemTypeManagerAdapter? = null

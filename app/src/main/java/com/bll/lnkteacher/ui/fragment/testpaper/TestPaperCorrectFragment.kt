@@ -161,9 +161,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     }
 
     override fun fetchData() {
-        if (grade==0)
-            return
-        if (NetworkUtil(requireActivity()).isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()&&grade>0){
             val map=HashMap<String,Any>()
             map["page"] = pageIndex
             map["size"] = pageSize

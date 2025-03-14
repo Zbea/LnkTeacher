@@ -3,7 +3,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
@@ -14,7 +14,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignContentPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
+import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -27,10 +27,10 @@ import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 
-class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAssignContentView {
+class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITestPaperAssignContentView {
 
     private lateinit var presenter:TestPaperAssignContentPresenter
-    private var mAdapter: TestPaperAssignContentAdapter? = null
+    private var mAdapter: HomeworkAssignContentAdapter? = null
     private var typeBean:TypeBean?=null
     private var items = mutableListOf<AssignPaperContentList.AssignPaperContentBean>()
     private var popGroups= mutableListOf<PopupBean>()
@@ -123,7 +123,7 @@ class TestPaperAssignContentActivity : BaseActivity(),IContractView.ITestPaperAs
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
+        mAdapter = HomeworkAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)

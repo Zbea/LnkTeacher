@@ -11,9 +11,8 @@ import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.*
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.manager.*
-import com.bll.lnkteacher.mvp.model.AreaBean
 import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.classgroup.ClassGroupActivity
@@ -21,19 +20,17 @@ import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_main.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
-class MainActivity : BaseActivity(),IContractView.IQiniuView {
+class MainActivity : BaseAppCompatActivity(),IContractView.IQiniuView {
 
     private val mQiniuPresenter=QiniuPresenter(this)
     private var mainLeftFragment: MainLeftFragment? = null
     private var mainRightFragment: MainRightFragment? = null
-    private var bookcaseFragment: BookCaseFragment? = null
+    private var bookcaseFragment: BookcaseFragment? = null
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
     private var noteFragment: NoteFragment? = null
     private var appFragment: AppFragment? = null
@@ -90,7 +87,7 @@ class MainActivity : BaseActivity(),IContractView.IQiniuView {
         mainLeftFragment=MainLeftFragment()
         mainRightFragment = MainRightFragment()
         textbookFragment= TextbookManagerFragment()
-        bookcaseFragment = BookCaseFragment()
+        bookcaseFragment = BookcaseFragment()
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()
         appFragment = AppFragment()

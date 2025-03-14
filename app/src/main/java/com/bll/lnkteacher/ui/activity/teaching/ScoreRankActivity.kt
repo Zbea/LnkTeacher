@@ -2,7 +2,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.exam.ExamList.ExamBean
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_grade.iv_arrow_page_up
 import kotlinx.android.synthetic.main.ac_testpaper_grade.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_class
 
-class ScoreRankActivity:BaseActivity(),IContractView.ITestPaperRankView{
+class ScoreRankActivity:BaseAppCompatActivity(),IContractView.ITestPaperRankView{
 
     private var type=0
     private var mPresenter= TestPaperRankPresenter(this,3)

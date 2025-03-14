@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseActivity
+import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.manager.ItemTypeDaoManager
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class ScreenshotManagerActivity : BaseActivity() {
+class ScreenshotManagerActivity : BaseAppCompatActivity() {
 
     private var items= mutableListOf<ItemTypeBean>()
     private var mAdapter: ItemTypeManagerAdapter? = null
