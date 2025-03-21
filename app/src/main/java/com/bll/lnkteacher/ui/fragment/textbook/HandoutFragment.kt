@@ -19,6 +19,7 @@ import com.bll.lnkteacher.ui.adapter.HandoutsAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -38,8 +39,8 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
     override fun onList(list: HandoutList) {
         setPageNumber(list.total)
         for (item in list.list) {
-            val fileName = item.id.toString()
-            item.bookPath = FileAddress().getPathHandout(fileName + MethodManager.getUrlFormat(item.bodyUrl))
+            val fileName = MD5Utils.digest(item.id.toString())
+            item.bookPath = FileAddress().getPathHandout(fileName + FileUtils.getUrlFormat(item.bodyUrl))
             item.bookDrawPath = FileAddress().getPathHandoutDraw(fileName)
         }
         items = list.list

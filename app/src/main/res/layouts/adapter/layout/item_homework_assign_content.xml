@@ -11,12 +11,13 @@
     <CheckBox
         android:id="@+id/cb_check"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:textColor="@color/black"
         android:ellipsize="end"
         android:button="@drawable/bg_check_selector"
         android:textSize="@dimen/sp_25"
+        android:gravity="center_vertical"
         android:clickable="false"
         android:lines="1"/>
 
@@ -42,7 +43,7 @@
         android:id="@+id/ll_date_preset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_20"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

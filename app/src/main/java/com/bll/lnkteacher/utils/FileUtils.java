@@ -463,6 +463,15 @@ public class FileUtils {
         return fileNameStr.substring(0,fileNameStr.lastIndexOf("."));
     }
 
+    /**
+     * 获取url的格式后缀
+     * @param url
+     * @return
+     */
+    public static String getUrlFormat(String url){
+        return url.substring(url.lastIndexOf("."));
+    }
+
     public static boolean isExist(String path){
         return new File(path).exists();
     }

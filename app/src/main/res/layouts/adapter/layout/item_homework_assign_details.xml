@@ -26,10 +26,16 @@
         android:gravity="center"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list"
-        android:layout_width="@dimen/dp_140"
-        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/tv_class_name"
+        android:layout_width="140dp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"
+        android:gravity="center"
+        />
 
     <TextView
         android:id="@+id/tv_date"

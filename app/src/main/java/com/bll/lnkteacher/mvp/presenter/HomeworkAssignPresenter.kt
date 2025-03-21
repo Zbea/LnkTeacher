@@ -151,9 +151,8 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     }
 
     fun deleteDetail(id:Int) {
-        val ids= arrayOf(id)
         val map=HashMap<String,Any>()
-        map["ids"]=ids
+        map["id"]=id
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.deleteAssignDetails(body)
         doRequest(type, object : Callback<Any>(view) {

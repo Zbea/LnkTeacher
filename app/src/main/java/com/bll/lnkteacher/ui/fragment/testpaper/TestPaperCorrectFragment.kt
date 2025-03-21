@@ -39,6 +39,7 @@ class TestPaperCorrectFragment: BaseFragment(),IContractView.ITestPaperCorrectVi
     override fun onDeleteSuccess() {
         showToast(R.string.delete_success)
         mAdapter?.remove(pos)
+        fetchData()
     }
 
     override fun onSendSuccess() {

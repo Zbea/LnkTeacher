@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.media.MediaPlayer
-import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -47,48 +46,49 @@ import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 import java.io.File
 
-class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCorrectDetailsView,IFileUploadView{
+class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
 
-    private var mId=0
-    private var correctList:CorrectBean?=null
-    private val mUploadPresenter=FileUploadPresenter(this,3)
-    private val mPresenter=TestPaperCorrectDetailsPresenter(this,3)
-    private var mClassBean: TestPaperClassBean?=null
-    private var userItems= mutableListOf<TestPaperClassUserList.ClassUserBean>()
+    private var mId = 0
+    private var correctList: CorrectBean? = null
+    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
+    private var mClassBean: TestPaperClassBean? = null
+    private var userItems = mutableListOf<TestPaperClassUserList.ClassUserBean>()
 
-    private var mAdapter:TestPaperCorrectUserAdapter?=null
-    private var url=""//上个学生提交地址
-    private var posImage=0//当前图片下标
-    private var posUser=0//当前学生下标
-    private var currentImages= mutableListOf<String>()//当前学生作业地址
+    private var mAdapter: TestPaperCorrectUserAdapter? = null
+    private var url = ""//上个学生提交地址
+    private var posImage = 0//当前图片下标
+    private var posUser = 0//当前学生下标
+    private var currentImages = mutableListOf<String>()//当前学生作业地址
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
-    private var tokenStr=""
+    private var tokenStr = ""
 
     override fun onToken(token: String) {
-        tokenStr=token
+        tokenStr = token
     }
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
-        userItems=bean.taskList
-        if (userItems.size>0){
-            userItems[posUser].isCheck=true
+        userItems = bean.taskList
+        if (userItems.size > 0) {
+            userItems[posUser].isCheck = true
             setContentView()
         }
         mAdapter?.setNewData(userItems)
     }
+
     override fun onCorrectSuccess() {
-        showToast(userItems[posUser].name+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=tv_total_score.text.toString().toDouble()
-        userItems[posUser].submitUrl=url
-        userItems[posUser].status=2
-        userItems[posUser].question= Gson().toJson(currentScores)
+        showToast(userItems[posUser].name + getString(R.string.teaching_correct_success))
+        correctStatus = 2
+        userItems[posUser].score = tv_total_score.text.toString().toDouble()
+        userItems[posUser].submitUrl = url
+        userItems[posUser].status = 2
+        userItems[posUser].question = Gson().toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
-        //批改完成之后删除文件夹
+        setDisableTouchInput(true)
         FileUtils.deleteFile(File(getPath()))
-        setPWEnabled(false)
-        EventBus.getDefault().post(if (correctList?.taskType==1)Constants.HOMEWORK_CORRECT_EVENT else Constants.TESTPAPER_CORRECT_EVENT)
+        EventBus.getDefault().post(if (correctList?.taskType == 1) Constants.HOMEWORK_CORRECT_EVENT else Constants.TESTPAPER_CORRECT_EVENT)
     }
 
     override fun onCompleteSuccess() {
@@ -102,65 +102,62 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     }
 
     override fun initData() {
-        screenPos=Constants.SCREEN_LEFT
-        val classPos=intent.getIntExtra("classPos",-1)
-        correctList= intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
-        mClassBean= correctList?.examList?.get(classPos)!!
-        scoreMode=correctList?.questionMode!!
-        correctModule=correctList?.questionType!!
-        mId=correctList?.id!!
+        screenPos = Constants.SCREEN_LEFT
+        val classPos = intent.getIntExtra("classPos", -1)
+        correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
+        mClassBean = correctList?.examList?.get(classPos)!!
+        scoreMode = correctList?.questionMode!!
+        correctModule = correctList?.questionType!!
+        mId = correctList?.id!!
 
-        if (!correctList?.answerUrl.isNullOrEmpty()){
-            answerImages=ToolUtils.getImages(correctList?.answerUrl)
+        if (!correctList?.answerUrl.isNullOrEmpty()) {
+            answerImages = ToolUtils.getImages(correctList?.answerUrl)
         }
 
         fetchClassList()
     }
 
     override fun initView() {
-        setPageTitle("${if(correctList?.taskType==1) "作业" else "测卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
-        disMissView(iv_catalog,iv_btn)
+        setPageTitle("${if (correctList?.taskType == 1) "作业" else "测卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
+        disMissView(iv_catalog, iv_btn)
         setPageSetting("全部保存")
 
-        if (answerImages.size>0){
+        if (answerImages.size > 0) {
             showView(tv_answer)
             setAnswerView()
         }
 
         //如果是朗读本
-        if (correctList?.taskType==1&&correctList?.subType== 3) {
+        if (correctList?.taskType == 1 && correctList?.subType == 3) {
             showView(ll_record)
-            disMissView(ll_draw_content,ll_score_topic,ll_score)
+            disMissView(ll_draw_content, ll_score_topic, ll_score)
         } else {
             disMissView(ll_record)
             showView(ll_draw_content)
         }
 
         tv_custom_1.setOnClickListener {
-            mPresenter.complete(correctList?.id!!,mClassBean?.classId!!)
+            mPresenter.complete(correctList?.id!!, mClassBean?.classId!!)
         }
 
         tv_save.setOnClickListener {
             hideKeyboard()
-            if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
+            if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
                 //没有手写，直接提交
-                if (!FileUtils.isExistContent(getPathDraw())){
-                    url=userItems[posUser].studentUrl
+                if (!FileUtils.isExistContent(getPathDraw())) {
+                    url = userItems[posUser].studentUrl
                     commit()
-                }
-                else{
-                    Handler().postDelayed({
-                        commitPaper()
-                    },500)
+                } else {
+                    commitPaper()
                 }
             }
         }
 
         tv_total_score.setOnClickListener {
-            if (correctStatus==1){
-                NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
-                    tv_total_score.text= it.toString()
+            if (correctStatus == 1) {
+                NumberDialog(this, getCurrentScreenPos(), "请输入总分").builder().setDialogClickListener {
+                    tv_total_score.text = it.toString()
                 }
             }
         }
@@ -175,13 +172,11 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 mediaPlayer?.prepare()
                 mediaPlayer?.start()
                 changeMediaView(true)
-            }
-            else{
-                if (mediaPlayer?.isPlaying == true){
+            } else {
+                if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
                     changeMediaView(false)
-                }
-                else{
+                } else {
                     mediaPlayer?.start()
                     changeMediaView(true)
                 }
@@ -194,71 +189,66 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
         onChangeExpandView()
     }
 
-    private fun initRecyclerViewUser(){
-        rv_list.layoutManager = GridLayoutManager(this,7)//创建布局管理
+    private fun initRecyclerViewUser() {
+        rv_list.layoutManager = GridLayoutManager(this, 7)//创建布局管理
         mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(7,  30))
+            rv_list.addItemDecoration(SpaceGridItemDeco(7, 30))
             setOnItemClickListener { adapter, view, position ->
-                if (position==posUser)
+                if (position == posUser)
                     return@setOnItemClickListener
-                userItems[posUser].isCheck=false
-                posUser=position//设置当前学生下标
-                val item=userItems[position]
-                item.isCheck=true
-                notifyDataSetChanged()
-                posImage=0
+                userItems[posUser].isCheck = false
+                mAdapter?.notifyItemChanged(posUser)
+                posUser = position//设置当前学生下标
+                userItems[position].isCheck = true
+                mAdapter?.notifyItemChanged(posUser)
+                posImage = 0
                 setContentView()
             }
         }
     }
 
-
     override fun onChangeExpandContent() {
-        if (getImageSize()==1)
+        if (getImageSize() == 1)
             return
         changeErasure()
-        isExpand=!isExpand
+        isExpand = !isExpand
         onChangeExpandView()
         onChangeContent()
     }
 
     override fun onPageUp() {
-        if (posImage>0){
-            posImage-=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onChangeContent()
-            },if (correctStatus==1)500 else 0)
+        if (posImage > 0) {
+            posImage -= if (isExpand) 2 else 1
+            onChangeContent()
         }
     }
 
     override fun onPageDown() {
-        val count=if (isExpand) getImageSize()-2 else getImageSize()-1
-        if (posImage<count){
-            posImage+=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onChangeContent()
-            },if (correctStatus==1)500 else 0)
+        val count = if (isExpand) getImageSize() - 2 else getImageSize() - 1
+        if (posImage < count) {
+            posImage += if (isExpand) 2 else 1
+            onChangeContent()
         }
     }
 
     /**
      * 设置切换内容展示
      */
-    private fun setContentView(){
-        if (isExpand){
-            isExpand=false
+    private fun setContentView() {
+        if (isExpand) {
+            isExpand = false
             onChangeExpandView()
         }
-        val userItem=userItems[posUser]
-        correctStatus=userItems[posUser].status
+        val userItem = userItems[posUser]
+        correctStatus = userItems[posUser].status
 
-        tv_take_time.text=if (userItem.takeTime>0) "${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+        tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
 
-        if (correctList?.subType==3){
+        if (correctList?.subType == 3) {
             if (!userItem.studentUrl.isNullOrEmpty()) {
-                recordPath = userItem.studentUrl.split(",")[0]
+                recordPath = userItem.studentUrl
                 showView(iv_file, ll_play)
             } else {
                 disMissView(iv_file, ll_play)
@@ -266,24 +256,24 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             return
         }
 
-        when(correctStatus){
-            1->{
-                currentImages=ToolUtils.getImages(userItem.studentUrl)
-                currentScores = if (userItem.question?.isNotEmpty() == true&&correctModule>0){
+        when (correctStatus) {
+            1 -> {
+                currentImages = ToolUtils.getImages(userItem.studentUrl)
+                currentScores = if (userItem.question?.isNotEmpty() == true && correctModule > 0) {
                     jsonToList(userItem.question) as MutableList<ScoreItem>
-                } else{
+                } else {
                     jsonToList(correctList?.question!!) as MutableList<ScoreItem>
                 }
                 tv_total_score.text = userItem.score.toString()
-                showView(ll_score,tv_save)
+                showView(ll_score, tv_save)
                 onChangeContent()
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
-            2->{
-                currentImages=ToolUtils.getImages(userItem.submitUrl)
-                if (userItem.question?.isNotEmpty() == true&&correctModule>0){
-                    currentScores= jsonToList(userItem.question) as MutableList<ScoreItem>
+            2 -> {
+                currentImages = ToolUtils.getImages(userItem.submitUrl)
+                if (userItem.question?.isNotEmpty() == true && correctModule > 0) {
+                    currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
                 }
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
@@ -292,11 +282,11 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
                 setDisableTouchInput(true)
                 setPWEnabled(true)
             }
-            3->{
-                currentImages= mutableListOf()
+            3 -> {
+                currentImages = mutableListOf()
                 disMissView(ll_score)
-                tv_page.text=""
-                tv_page_total.text=""
+                tv_page.text = ""
+                tv_page_total.text = ""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 setDisableTouchInput(true)
@@ -304,18 +294,15 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             }
         }
 
-
-        if (correctModule>0&&correctStatus!=3){
+        if (correctModule > 0 && correctStatus != 3) {
             showView(ll_score_topic)
 
-            if (correctModule<3){
+            if (correctModule < 3) {
                 mTopicScoreAdapter?.setNewData(currentScores)
-            }
-            else{
+            } else {
                 mTopicMultiAdapter?.setNewData(currentScores)
             }
-        }
-        else{
+        } else {
             disMissView(ll_score_topic)
         }
     }
@@ -323,76 +310,68 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     /**
      * 设置学生提交图片展示
      */
-    override fun onChangeContent(){
-        if (isExpand&&posImage>getImageSize()-2)
-            posImage=getImageSize()-2
-        if (isExpand&&posImage<0)
-            posImage=0
+    override fun onChangeContent() {
+        if (isExpand && posImage > getImageSize() - 2)
+            posImage = getImageSize() - 2
+        if (isExpand && posImage < 0)
+            posImage = 0
 
-        tv_page_total.text="${getImageSize()}"
-        tv_page_total_a.text="${getImageSize()}"
-        if (isExpand){
-            GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_a)
-            GlideUtils.setImageCacheUrl(this, currentImages[posImage+1],v_content_b)
-            if (correctStatus==1){
-                val drawPath = getPathDrawStr(posImage+1)
+        tv_page_total.text = "${getImageSize()}"
+        tv_page_total_a.text = "${getImageSize()}"
+        if (isExpand) {
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage + 1], v_content_b)
+            if (correctStatus == 1) {
+                val drawPath = getPathDrawStr(posImage)
                 elik_a?.setLoadFilePath(drawPath, true)
 
-                val drawPath_b = getPathDrawStr(posImage+1+1)
+                val drawPath_b = getPathDrawStr(posImage + 1)
                 elik_b?.setLoadFilePath(drawPath_b, true)
             }
-            tv_page.text="${posImage+1}"
-            tv_page_a.text="${posImage+1+1}"
-        }
-        else{
-            GlideUtils.setImageCacheUrl(this, currentImages[posImage],v_content_b)
-            if (correctStatus==1){
-                val drawPath = getPathDrawStr(posImage+1)
+            tv_page.text = "${posImage + 1}"
+            tv_page_a.text = "${posImage + 1 + 1}"
+        } else {
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_b)
+            if (correctStatus == 1) {
+                val drawPath = getPathDrawStr(posImage)
                 elik_b?.setLoadFilePath(drawPath, true)
             }
-            tv_page.text="${posImage+1}"
+            tv_page.text = "${posImage + 1}"
         }
     }
 
     /**
      * 每份多少张考卷
      */
-    private fun getImageSize():Int{
+    private fun getImageSize(): Int {
         if (currentImages.isEmpty())
             return 0
         return currentImages.size
     }
 
     override fun onElikSava_a() {
-        if (isExpand){
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(posImage+1))
-            }.start()
-        }
+        if (isExpand)
+           BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
     }
 
     override fun onElikSava_b() {
         if (isExpand){
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1+1))
-            }.start()
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage+1))
         }
         else{
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1))
-            }.start()
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
         }
     }
 
     /**
      * 上传图片
      */
-    private fun commitPaper(){
+    private fun commitPaper() {
         //获取合图的图片，没有手写的页面那原图
-        val paths= mutableListOf<String>()
-        for (i in currentImages.indices){
-            val mergePath=getPathMergeStr(i+1)
-            if (File(mergePath).exists()){
+        val paths = mutableListOf<String>()
+        for (i in currentImages.indices) {
+            val mergePath = getPathMergeStr(i)
+            if (File(mergePath).exists()) {
                 paths.add(mergePath)
             }
         }
@@ -401,21 +380,21 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     //校验正确图片，没有手写图片拿原图
-                    val uploadPaths= mutableListOf<String>()
-                    var index=0
-                    for (i in currentImages.indices){
-                        val mergePath=getPathMergeStr(i+1)
-                        if (File(mergePath).exists()){
+                    val uploadPaths = mutableListOf<String>()
+                    var index = 0
+                    for (i in currentImages.indices) {
+                        val mergePath = getPathMergeStr(i)
+                        if (File(mergePath).exists()) {
                             uploadPaths.add(urls[index])
-                            index+=1
-                        }
-                        else{
+                            index += 1
+                        } else {
                             uploadPaths.add(currentImages[i])
                         }
                     }
-                    url=ToolUtils.getImagesStr(uploadPaths)
+                    url = ToolUtils.getImagesStr(uploadPaths)
                     commit()
                 }
+
                 override fun onUploadFail() {
                     hideLoading()
                     showToast("上传失败")
@@ -428,32 +407,32 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     /**
      * 提交学生考卷
      */
-    private fun commit(){
-        val map= HashMap<String, Any>()
-        map["studentTaskId"]=userItems[posUser].studentTaskId
-        map["score"]=tv_total_score.text.toString().toDouble()
-        map["submitUrl"]=url
-        map["status"]=2
-        map["question"]=Gson().toJson(currentScores)
+    private fun commit() {
+        val map = HashMap<String, Any>()
+        map["studentTaskId"] = userItems[posUser].studentTaskId
+        map["score"] = tv_total_score.text.toString().toDouble()
+        map["submitUrl"] = url
+        map["status"] = 2
+        map["question"] = Gson().toJson(currentScores)
         mPresenter.commitPaperStudent(map)
     }
 
     /**
      * 获取班级学生列表
      */
-    private fun fetchClassList(){
+    private fun fetchClassList() {
         mUploadPresenter.getToken(false)
-        mPresenter.getPaperClassPapers(mId,mClassBean?.classId!!)
+        mPresenter.getPaperClassPapers(mId, mClassBean?.classId!!)
     }
 
     /**
      * 文件路径
      */
-    private fun getPath():String{
-        val path=if (correctList?.taskType==1){
-            FileAddress().getPathHomework(mId,mClassBean?.classId, userItems[posUser].userId)
-        }else{
-            FileAddress().getPathTestPaperDrawing(mId,mClassBean?.classId, userItems[posUser].userId)
+    private fun getPath(): String {
+        val path = if (correctList?.taskType == 1) {
+            FileAddress().getPathHomework(mId, mClassBean?.classId, userItems[posUser].userId)
+        } else {
+            FileAddress().getPathTestPaperDrawing(mId, mClassBean?.classId, userItems[posUser].userId)
         }
         return path
     }
@@ -461,41 +440,40 @@ class TestPaperCorrectActivity:BaseDrawingActivity(),IContractView.ITestPaperCor
     /**
      * 得到当前手绘路径
      */
-    private fun getPathDraw():String{
-        return getPath()+"/draw/"//手绘地址
+    private fun getPathDraw(): String {
+        return getPath() + "/draw/"//手绘地址
     }
 
     /**
      * 得到当前手绘图片
      */
-    private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw/${index}.png"//手绘地址
+    private fun getPathDrawStr(index: Int): String {
+        return getPath() + "/draw/${index + 1}.png"//手绘地址
     }
 
     /**
      * 得到当前合图地址
      */
-    private fun getPathMergeStr(index: Int):String{
-        return getPath()+"/merge/${index}.png"//手绘地址
+    private fun getPathMergeStr(index: Int): String {
+        return getPath() + "/merge/${index + 1}.png"//手绘地址
     }
 
     /**
      * 更改播放view状态
      */
-    private fun changeMediaView(boolean: Boolean){
-        if (boolean){
+    private fun changeMediaView(boolean: Boolean) {
+        if (boolean) {
             iv_play.setImageResource(R.mipmap.icon_record_pause)
             tv_play.setText(R.string.pause)
-        }
-        else{
+        } else {
             iv_play.setImageResource(R.mipmap.icon_record_play)
             tv_play.setText(R.string.play)
         }
     }
 
 
-    private fun release(){
-        if (mediaPlayer!=null){
+    private fun release() {
+        if (mediaPlayer != null) {
             mediaPlayer?.stop()
             mediaPlayer?.release()
             mediaPlayer = null

@@ -135,7 +135,7 @@ class ClassScheduleActivity : BaseAppCompatActivity(), IContractView.IFileUpload
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)
             val path=FileAddress().getPathCourse("course")+"/course${classGroupId}.png"
-            BitmapUtils.saveScreenShot(this, grid, path)
+            BitmapUtils.saveScreenShot(grid, path)
             mUploadPresenter.getToken(true)
         }
 

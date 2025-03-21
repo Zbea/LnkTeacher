@@ -75,27 +75,10 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
             helper.setText(R.id.tv_message,item.info)
             helper.setText(R.id.tv_date,DateUtils.longToStringDataNoYear(item.time))
             helper.setText(R.id.tv_end_date,DateUtils.longToStringDataNoYear(item.endTime))
-
-            val classNames=item.classInfo.split(",")
-            val rvList=helper.getView<RecyclerView>(R.id.rv_list)
-            val mAdapter= MyAdapter(R.layout.item_homework_assign_details_classgroup, classNames)
-            rvList.layoutManager = LinearLayoutManager(mContext)//创建布局管理
-            rvList.adapter = mAdapter
-            mAdapter.bindToRecyclerView(rvList)
-            rvList.addItemDecoration(SpaceItemDeco(15))
+            helper.setText(R.id.tv_class_name,item.classInfo)
 
             helper.addOnClickListener(R.id.iv_delete)
-
         }
-
-
-        class MyAdapter(layoutResId: Int, data: List<String>?) : BaseQuickAdapter<String, BaseViewHolder>(layoutResId, data) {
-
-            override fun convert(helper: BaseViewHolder, item: String) {
-                helper.setText(R.id.tv_class_name,item)
-            }
-        }
-
     }
 
 

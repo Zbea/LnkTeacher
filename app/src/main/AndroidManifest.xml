@@ -157,9 +157,6 @@
         <activity android:name=".ui.activity.classgroup.ClassGroupChildManageActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.teaching.HomeworkPaperAssignContentActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
         <activity android:name=".ui.activity.teaching.TestPaperAssignContentActivity"
             android:windowSoftInputMode="adjustPan"
             />

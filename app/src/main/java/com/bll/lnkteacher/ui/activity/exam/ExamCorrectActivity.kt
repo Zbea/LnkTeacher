@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.ui.activity.exam
 
-import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
@@ -37,105 +36,101 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 
-class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,IFileUploadView{
+class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectView, IFileUploadView {
 
-    private var examBean: ExamCorrectList.ExamCorrectBean?=null
-    private val mUploadPresenter=FileUploadPresenter(this,3)
-    private val mPresenter= ExamCorrectPresenter(this,3)
-    private var userItems= mutableListOf<ExamClassUserList.ClassUserBean>()
+    private var examBean: ExamCorrectList.ExamCorrectBean? = null
+    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mPresenter = ExamCorrectPresenter(this, 3)
+    private var userItems = mutableListOf<ExamClassUserList.ClassUserBean>()
 
-    private var mAdapter: ExamCorrectUserAdapter?=null
-    private var url=""//上个学生提交地址
-    private var posImage=0//当前图片下标
-    private var posUser=0//当前学生下标
-    private var currentImages= mutableListOf<String>()
-    private var tokenStr=""
+    private var mAdapter: ExamCorrectUserAdapter? = null
+    private var url = ""//上个学生提交地址
+    private var posImage = 0//当前图片下标
+    private var posUser = 0//当前学生下标
+    private var currentImages = mutableListOf<String>()
+    private var tokenStr = ""
 
     override fun onToken(token: String) {
-        tokenStr=token
+        tokenStr = token
     }
 
     override fun onExamClassUser(classUserList: ExamClassUserList) {
         userItems.clear()
-        for (item in classUserList.list){
-            if (item.studentUrl.isNullOrEmpty()){
-                item.status=3
+        for (item in classUserList.list) {
+            if (item.studentUrl.isNullOrEmpty()) {
+                item.status = 3
+            } else {
+                item.status = 1
             }
-            else{
-                item.status=1
-            }
-            if (item.teacherUrl.isNotEmpty()){
-                item.status=2
+            if (item.teacherUrl.isNotEmpty()) {
+                item.status = 2
             }
             userItems.add(item)
         }
-        if (userItems.size>0){
-            userItems[posUser].isCheck=true
+        if (userItems.size > 0) {
+            userItems[posUser].isCheck = true
             setContentView()
         }
         mAdapter?.setNewData(userItems)
     }
 
     override fun onCorrectSuccess() {
-        showToast(userItems[posUser].studentName+getString(R.string.teaching_correct_success))
-        userItems[posUser].score=tv_total_score.text.toString().toDouble()
-        userItems[posUser].teacherUrl=url
-        userItems[posUser].status=2
-        userItems[posUser].question=Gson().toJson(currentScores)
+        showToast(userItems[posUser].studentName + getString(R.string.teaching_correct_success))
+        correctStatus = 2
+        userItems[posUser].score = tv_total_score.text.toString().toDouble()
+        userItems[posUser].teacherUrl = url
+        userItems[posUser].status = 2
+        userItems[posUser].question = Gson().toJson(currentScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
-        //批改完成之后删除文件夹
+        setDisableTouchInput(true)
         FileUtils.deleteFile(File(getPath()))
-        setPWEnabled(false)
     }
 
-    
+
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
     }
 
     override fun initData() {
-        screenPos=Constants.SCREEN_LEFT
-        examBean= intent.getBundleExtra("bundle")?.get("examBean") as ExamCorrectList.ExamCorrectBean
-        correctModule=examBean?.questionType!!
-        scoreMode=examBean?.questionMode!!
+        screenPos = Constants.SCREEN_LEFT
+        examBean = intent.getBundleExtra("bundle")?.get("examBean") as ExamCorrectList.ExamCorrectBean
+        correctModule = examBean?.questionType!!
+        scoreMode = examBean?.questionMode!!
         if (!examBean?.answerUrl.isNullOrEmpty())
-            answerImages= examBean?.answerUrl?.split(",") as MutableList<String>
+            answerImages = examBean?.answerUrl?.split(",") as MutableList<String>
 
         fetchData()
     }
 
     override fun initView() {
         setPageTitle("考卷批改  ${examBean?.examName}  ${examBean?.className}")
-        disMissView(iv_catalog,iv_btn,ll_record)
+        disMissView(iv_catalog, iv_btn, ll_record)
 
-        if (answerImages.size>0){
+        if (answerImages.size > 0) {
             showView(tv_answer)
             setAnswerView()
         }
 
         tv_total_score.setOnClickListener {
-            val item=userItems[posUser]
-            if (item.status==1){
-                NumberDialog(this,getCurrentScreenPos(),"请输入总分").builder().setDialogClickListener{
-                    tv_total_score.text= it.toString()
+            val item = userItems[posUser]
+            if (item.status == 1) {
+                NumberDialog(this, getCurrentScreenPos(), "请输入总分").builder().setDialogClickListener {
+                    tv_total_score.text = it.toString()
                 }
             }
         }
 
         tv_save.setOnClickListener {
             hideKeyboard()
-            if (correctStatus==1&& tv_total_score.text.toString().isNotEmpty()){
+            if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
                 //没有手写，直接提交
-                if (!FileUtils.isExistContent(getPathDraw())){
-                    url=userItems[posUser].studentUrl
+                if (!FileUtils.isExistContent(getPathDraw())) {
+                    url = userItems[posUser].studentUrl
                     commit()
-                }
-                else{
-                    Handler().postDelayed({
-                        commitPaper()
-                    },300)
+                } else {
+                    commitPaper()
                 }
             }
         }
@@ -146,81 +141,78 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
         onChangeExpandView()
     }
 
-    private fun initRecyclerView(){
-        rv_list.layoutManager = GridLayoutManager(this,7)//创建布局管理
+    private fun initRecyclerView() {
+        rv_list.layoutManager = GridLayoutManager(this, 7)//创建布局管理
         mAdapter = ExamCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(7,  30))
+            rv_list.addItemDecoration(SpaceGridItemDeco(7, 30))
             setOnItemClickListener { adapter, view, position ->
-                if (position==posUser)
+                if (position == posUser)
                     return@setOnItemClickListener
-                userItems[posUser].isCheck=false
-                posUser=position//设置当前学生下标
-                val item=userItems[position]
-                item.isCheck=true
-                notifyDataSetChanged()
-                posImage=0
+                userItems[posUser].isCheck = false
+                mAdapter?.notifyItemChanged(posUser)
+                posUser = position//设置当前学生下标
+                userItems[position].isCheck = true
+                mAdapter?.notifyItemChanged(posUser)
+                posImage = 0
                 setContentView()
             }
         }
     }
 
     override fun onChangeExpandContent() {
-        if (getImageSize()==1)
+        if (getImageSize() == 1)
             return
-        if (posImage>=getImageSize()-1&&getImageSize()>1)
-            posImage=getImageSize()-2
+        if (posImage >= getImageSize() - 1 && getImageSize() > 1)
+            posImage = getImageSize() - 2
         changeErasure()
-        isExpand=!isExpand
+        isExpand = !isExpand
         onChangeExpandView()
         onChangeContent()
     }
 
     override fun onPageUp() {
-        if (posImage>0){
-            posImage-=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onChangeContent()
-            },if (correctStatus==1)300 else 0)
+        if (posImage > 0) {
+            posImage -= if (isExpand) 2 else 1
+            onChangeContent()
         }
     }
 
     override fun onPageDown() {
-        val count=if (isExpand) getImageSize()-2 else getImageSize()-1
-        if (posImage<count){
-            posImage+=if (isExpand)2 else 1
-            Handler().postDelayed({
-                onChangeContent()
-            },if (correctStatus==1)300 else 0)
+        val count = if (isExpand) getImageSize() - 2 else getImageSize() - 1
+        if (posImage < count) {
+            posImage += if (isExpand) 2 else 1
+            onChangeContent()
         }
     }
 
     /**
      * 设置切换内容展示
      */
-    private fun setContentView(){
-        if (isExpand){
-            isExpand=false
+    private fun setContentView() {
+        if (isExpand) {
+            isExpand = false
             onChangeExpandView()
         }
 
-        val userItem=userItems[posUser]
-        correctStatus=userItem.status
+        val userItem = userItems[posUser]
+        correctStatus = userItem.status
 
-        when(correctStatus){
-            1->{
+        when (correctStatus) {
+            1 -> {
                 currentScores = jsonToList(examBean?.question!!) as MutableList<ScoreItem>
-                currentImages=ToolUtils.getImages(userItem.studentUrl)
+                currentImages = ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = ""
-                showView(ll_score,tv_save)
+                showView(ll_score, tv_save)
                 onChangeContent()
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
-            2->{
+
+            2 -> {
                 currentScores = jsonToList(userItem.question!!) as MutableList<ScoreItem>
-                currentImages=ToolUtils.getImages(userItem.teacherUrl)
+                currentImages = ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
                 disMissView(tv_save)
@@ -228,11 +220,12 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
                 setDisableTouchInput(true)
                 setPWEnabled(true)
             }
-            3->{
-                currentImages= mutableListOf()
+
+            3 -> {
+                currentImages = mutableListOf()
                 disMissView(ll_score)
-                tv_page.text=""
-                tv_page_total.text=""
+                tv_page.text = ""
+                tv_page_total.text = ""
                 v_content_a?.setImageResource(0)
                 v_content_b?.setImageResource(0)
                 setDisableTouchInput(true)
@@ -240,16 +233,14 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             }
         }
 
-        if (correctModule>0&&correctStatus!=3){
+        if (correctModule > 0 && correctStatus != 3) {
             showView(ll_score_topic)
-            if (correctModule<3){
+            if (correctModule < 3) {
                 mTopicScoreAdapter?.setNewData(currentScores)
-            }
-            else{
+            } else {
                 mTopicMultiAdapter?.setNewData(currentScores)
             }
-        }
-        else{
+        } else {
             disMissView(ll_score_topic)
         }
     }
@@ -257,62 +248,54 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     /**
      * 设置学生提交图片展示
      */
-    override fun onChangeContent(){
-        if (isExpand&&posImage>getImageSize()-2)
-            posImage=getImageSize()-2
-        if (isExpand&&posImage<0)
-            posImage=0
+    override fun onChangeContent() {
+        if (isExpand && posImage > getImageSize() - 2)
+            posImage = getImageSize() - 2
+        if (isExpand && posImage < 0)
+            posImage = 0
 
-        tv_page_total.text="${getImageSize()}"
-        tv_page_total_a.text="${getImageSize()}"
-        if (isExpand){
-            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_a)
-            GlideUtils.setImageUrl(this, currentImages[posImage+1],v_content_b)
-            if (correctStatus==1){
-                val drawPath = getPathDrawStr(posImage+1)
+        tv_page_total.text = "${getImageSize()}"
+        tv_page_total_a.text = "${getImageSize()}"
+        if (isExpand) {
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage + 1], v_content_b)
+            if (correctStatus == 1) {
+                val drawPath = getPathDrawStr(posImage)
                 elik_a?.setLoadFilePath(drawPath, true)
 
-                val drawPath_b = getPathDrawStr(posImage+1+1)
+                val drawPath_b = getPathDrawStr(posImage + 1)
                 elik_b?.setLoadFilePath(drawPath_b, true)
             }
-            tv_page.text="${posImage+1}"
-            tv_page_a.text="${posImage+1+1}"
-        }
-        else{
-            GlideUtils.setImageUrl(this, currentImages[posImage],v_content_b)
-            if (correctStatus==1){
-                val drawPath = getPathDrawStr(posImage+1)
+            tv_page.text = "${posImage + 1}"
+            tv_page_a.text = "${posImage + 1 + 1}"
+        } else {
+            GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_b)
+            if (correctStatus == 1) {
+                val drawPath = getPathDrawStr(posImage)
                 elik_b?.setLoadFilePath(drawPath, true)
             }
-            tv_page.text="${posImage+1}"
+            tv_page.text = "${posImage + 1}"
         }
     }
 
     override fun onElikSava_a() {
-        if (isExpand){
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_a, getPathMergeStr(posImage+1))
-            }.start()
-        }
+        if (isExpand)
+            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
     }
 
     override fun onElikSava_b() {
         if (isExpand){
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1+1))
-            }.start()
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage+1))
         }
         else{
-            Thread {
-                BitmapUtils.saveScreenShot(this, v_content_b, getPathMergeStr(posImage+1))
-            }.start()
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
         }
     }
 
     /**
      * 每份多少张考卷
      */
-    private fun getImageSize():Int{
+    private fun getImageSize(): Int {
         if (currentImages.isEmpty())
             return 0
         return currentImages.size
@@ -321,11 +304,11 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     /**
      * 上传图片
      */
-    private fun commitPaper(){
-        val paths= mutableListOf<String>()
-        for (i in currentImages.indices){
-            val mergePath=getPathMergeStr(i+1)
-            if (File(mergePath).exists()){
+    private fun commitPaper() {
+        val paths = mutableListOf<String>()
+        for (i in currentImages.indices) {
+            val mergePath = getPathMergeStr(i)
+            if (File(mergePath).exists()) {
                 paths.add(mergePath)
             }
         }
@@ -334,21 +317,21 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     //校验正确图片，没有手写图片拿原图
-                    val uploadPaths= mutableListOf<String>()
-                    var index=0
-                    for (i in currentImages.indices){
-                        val mergePath=getPathMergeStr(i+1)
-                        if (File(mergePath).exists()){
+                    val uploadPaths = mutableListOf<String>()
+                    var index = 0
+                    for (i in currentImages.indices) {
+                        val mergePath = getPathMergeStr(i)
+                        if (File(mergePath).exists()) {
                             uploadPaths.add(urls[index])
-                            index+=1
-                        }
-                        else{
+                            index += 1
+                        } else {
                             uploadPaths.add(currentImages[i])
                         }
                     }
-                    url=ToolUtils.getImagesStr(uploadPaths)
+                    url = ToolUtils.getImagesStr(uploadPaths)
                     commit()
                 }
+
                 override fun onUploadFail() {
                     hideLoading()
                     showToast("上传失败")
@@ -361,52 +344,52 @@ class ExamCorrectActivity:BaseDrawingActivity(),IContractView.IExamCorrectView,I
     /**
      * 提交考卷
      */
-    private fun commit(){
-        val map= HashMap<String, Any>()
-        map["id"]=userItems[posUser].id
-        map["schoolExamJobId"]=userItems[posUser].schoolExamJobId
-        map["score"]=tv_total_score.text.toString().toDouble()
-        map["teacherUrl"]=url
-        map["classId"]=userItems[posUser].classId
-        map["status"]=2
-        map["question"]= Gson().toJson(currentScores)
+    private fun commit() {
+        val map = HashMap<String, Any>()
+        map["id"] = userItems[posUser].id
+        map["schoolExamJobId"] = userItems[posUser].schoolExamJobId
+        map["score"] = tv_total_score.text.toString().toDouble()
+        map["teacherUrl"] = url
+        map["classId"] = userItems[posUser].classId
+        map["status"] = 2
+        map["question"] = Gson().toJson(currentScores)
         mPresenter.onExamCorrectComplete(map)
     }
 
     /**
      * 文件路径
      */
-    private fun getPath():String{
+    private fun getPath(): String {
         return FileAddress().getPathExam(examBean?.id, examBean?.classId, userItems[posUser].userId)
     }
 
     /**
      * 得到当前手绘路径
      */
-    private fun getPathDraw():String{
-        return getPath()+"/draw/"//手绘地址
+    private fun getPathDraw(): String {
+        return getPath() + "/draw/"//手绘地址
     }
 
     /**
      * 得到当前手绘图片
      */
-    private fun getPathDrawStr(index: Int):String{
-        return getPath()+"/draw/${index}.png"//手绘地址
+    private fun getPathDrawStr(index: Int): String {
+        return getPath() + "/draw/${index + 1}.png"//手绘地址
     }
 
     /**
      * 得到当前合图地址
      */
-    private fun getPathMergeStr(index: Int):String{
-        return getPath()+"/merge/${index}.png"//手绘地址
+    private fun getPathMergeStr(index: Int): String {
+        return getPath() + "/merge/${index + 1}.png"//手绘地址
     }
 
     override fun fetchData() {
         mUploadPresenter.getToken(false)
 
-        val map=HashMap<String,Any>()
-        map["schoolExamJobId"]= examBean?.schoolExamJobId!!
-        map["classId"]= examBean?.classId!!
+        val map = HashMap<String, Any>()
+        map["schoolExamJobId"] = examBean?.schoolExamJobId!!
+        map["classId"] = examBean?.classId!!
         mPresenter.getExamClassUser(map)
     }
 

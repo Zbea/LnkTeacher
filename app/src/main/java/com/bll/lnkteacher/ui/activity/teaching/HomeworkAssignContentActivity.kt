@@ -1,7 +1,9 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
@@ -21,6 +23,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
+import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
@@ -66,8 +69,8 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
 
     override fun initData() {
         initChangeScreenData()
-        pageSize=10
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
+        pageSize=if (typeBean?.subType==1) 12 else 10
         grade=typeBean?.grade!!
         val classSelectItem=Gson().fromJson(typeBean?.lastConfig,HomeworkClassSelectItem::class.java)
         if (classSelectItem!=null){
@@ -147,7 +150,12 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
                 commit()
         }
 
-        initRecyclerView()
+        if (typeBean?.subType==1){
+            initRecyclerViewPaper()
+        }
+        else{
+            initRecyclerView()
+        }
     }
 
     private fun initRecyclerView(){
@@ -162,49 +170,77 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
             setOnItemChildClickListener { adapter, view, position ->
-                this@HomeworkAssignContentActivity.position=position
-                if (view.id==R.id.cb_check){
-                    for (item in items){
-                        item.isCheck=false
-                    }
-                    val item =items[position]
-                    item.isCheck=true
-                    notifyDataSetChanged()
-
-                    taskId=item.taskId
-                    if (item.answerUrl.isNullOrEmpty()){
-                        cb_correct.isEnabled=false
-                        if (isCorrect){
-                            isCorrect=false
-                            cb_correct.isChecked=false
-                        }
-                    }
-                    else{
-                        cb_correct.isEnabled=true
-                    }
-                }
-                else if (view.id==R.id.tv_answer){
-                    val item=items[position]
-                    ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
-                }
+                onChildClick(view,position)
             }
             setOnItemChildLongClickListener { adapter, view, position ->
                 this@HomeworkAssignContentActivity.position=position
-                CommonDialog(this@HomeworkAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
-                    CommonDialog.OnDialogClickListener {
-                    override fun cancel() {
-                    }
-                    override fun ok() {
-                        val item=items[position]
-                        val ids= arrayListOf(item.taskId)
-                        mPresenter.deletePapers(ids)
-                    }
-                })
+                delete()
                 true
 
             }
         }
         rv_list?.addItemDecoration(SpaceItemDeco(40))
+    }
+
+    private fun initRecyclerViewPaper(){
+        rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
+        mAdapter = HomeworkAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
+            rv_list.adapter = this
+            bindToRecyclerView(rv_list)
+            setEmptyView(R.layout.common_empty)
+            setOnItemClickListener { adapter, view, position ->
+                val item=items[position]
+                ImageDialog(this@HomeworkAssignContentActivity,item.examUrl.split(",")).builder()
+            }
+            setOnItemChildClickListener { adapter, view, position ->
+                onChildClick(view,position)
+            }
+            setOnItemLongClickListener { adapter, view, position ->
+                this@HomeworkAssignContentActivity.position=position
+                delete()
+                true
+            }
+        }
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,20))
+    }
+
+    private fun onChildClick(view: View,position:Int){
+        val item =items[position]
+        if (view.id==R.id.cb_check){
+            for (ite in items){
+                ite.isCheck=false
+            }
+            item.isCheck=true
+            mAdapter?.notifyDataSetChanged()
+
+            taskId=item.taskId
+            if (item.answerUrl.isNullOrEmpty()){
+                cb_correct.isEnabled=false
+                if (isCorrect){
+                    isCorrect=false
+                    cb_correct.isChecked=false
+                }
+            }
+            else{
+                cb_correct.isEnabled=true
+            }
+        }
+        else if (view.id==R.id.tv_answer){
+            ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
+        }
+    }
+
+    private fun delete(){
+        CommonDialog(this@HomeworkAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
+            CommonDialog.OnDialogClickListener {
+            override fun cancel() {
+            }
+            override fun ok() {
+                val item=items[position]
+                val ids= arrayListOf(item.taskId)
+                mPresenter.deletePapers(ids)
+            }
+        })
     }
 
     /**

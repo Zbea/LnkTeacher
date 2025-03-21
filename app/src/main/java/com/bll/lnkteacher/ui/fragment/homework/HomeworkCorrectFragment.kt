@@ -39,6 +39,7 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
     override fun onDeleteSuccess() {
         showToast(R.string.delete_success)
         mAdapter?.remove(position)
+        fetchData()
     }
 
     override fun onSendSuccess() {

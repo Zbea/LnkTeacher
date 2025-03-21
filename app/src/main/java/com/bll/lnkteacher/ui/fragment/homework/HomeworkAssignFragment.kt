@@ -23,7 +23,6 @@ import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkPaperAssignContentActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.NetworkUtil
@@ -130,13 +129,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]
                 when(item.subType){
-                    1->{
-                        val intent= Intent(activity, HomeworkPaperAssignContentActivity::class.java)
-                        val bundle= Bundle()
-                        bundle.putSerializable("homeworkType",item)
-                        intent.putExtra("bundle",bundle)
-                        customStartActivity(intent)
-                    }
                     3,6->{
                         HomeworkPublishDialog(requireContext(),item).builder().setOnDialogClickListener{ contentStr, classSelectItem->
                             classSelectBean=classSelectItem

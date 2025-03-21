@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.DownloadTextbookDialog
@@ -27,6 +26,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileBigDownManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
@@ -292,12 +292,12 @@ class TextBookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreV
      * 下载解压书籍
      */
     private fun downLoadStart(url: String, book: TextbookBean): BaseDownloadTask? {
-        val fileName = book.bookId.toString()//文件名
+        val fileName = MD5Utils.digest(book.bookId.toString())//文件名
         val path=if (tabId<4){
             FileAddress().getPathZip(fileName)
         }
         else{
-            FileAddress().getPathTeachingBook(fileName+MethodManager.getUrlFormat(book.downloadUrl))
+            FileAddress().getPathTeachingBook(fileName+FileUtils.getUrlFormat(book.downloadUrl))
         }
         val download = FileBigDownManager.with(this).create(url).setPath(path)
             .startSingleTaskDownLoad(object : FileBigDownManager.SingleTaskCallBack {

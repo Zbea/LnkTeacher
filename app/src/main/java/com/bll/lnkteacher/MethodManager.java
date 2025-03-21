@@ -107,7 +107,7 @@ public class MethodManager {
         List<AppBean> toolApps= getAppTools(context,1);
         JSONArray result = getJsonArray(toolApps);
 
-        String format = MethodManager.getUrlFormat(bookBean.bookPath);
+        String format = FileUtils.getUrlFormat(bookBean.bookPath);
         int key_type = 0;
         if (format.contains("pdf")) {
             key_type = 1;
@@ -328,38 +328,6 @@ public class MethodManager {
         Settings.System.putInt(MyApplication.Companion.getMContext().getContentResolver(),"statusbar_hide_time", value);
     }
 
-    /**
-     * 获取url的格式后缀
-     * @param url
-     * @return
-     */
-    public static String getUrlFormat(String url){
-        return url.substring(url.lastIndexOf("."));
-    }
-
-    /**
-     * 打开屏幕
-     *
-     * @param context
-     */
-    @SuppressLint("InvalidWakeLockTag")
-    public static void wakeUpScreen(Context context) {
-        new AsyncTask<Void, Void, Exception>() {
-            @Override
-            protected Exception doInBackground(Void... params) {
-                try {
-                    PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "Loneworker - FULL WAKE LOCK");
-                    fullWakeLock.acquire(5 * 60 * 1000L);
-                    if (fullWakeLock.isHeld())
-                        fullWakeLock.release();
-                } catch (Exception e) {
-                    return e;
-                }
-                return null;
-            }
-        }.execute();
-    }
 
     /**
      * 加载不失真背景
