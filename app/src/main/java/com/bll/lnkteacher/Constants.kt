@@ -39,7 +39,8 @@ class Constants {
 //      const val URL_BASE = "https://api2.qinglanmb.com/v1/"
         const val URL_BASE = "http://192.168.101.100:10800/v1/"
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
-        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
+//        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
+        const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
 
         ///storage/emulated/0/Android/data/yourPackageName/files/Zip
         val ZIP_PATH = MyApplication.mContext.getExternalFilesDir("Zip")?.path
@@ -62,8 +63,7 @@ class Constants {
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
 
         //eventbus通知标志
-        const val DATA_UPLOAD_EVENT = "AutoUploadEvent"//书籍、课本、截图上传
-        const val DIARY_UPLOAD_EVENT = "DiaryUploadEvent"//日记上传
+        const val DATA_UPLOAD_EVENT = "AutoUploadEvent"
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"

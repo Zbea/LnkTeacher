@@ -25,9 +25,8 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
-class MainActivity : BaseAppCompatActivity(),IContractView.IQiniuView {
+class MainActivity : BaseAppCompatActivity() {
 
-    private val mQiniuPresenter=QiniuPresenter(this)
     private var mainLeftFragment: MainLeftFragment? = null
     private var mainRightFragment: MainRightFragment? = null
     private var bookcaseFragment: BookcaseFragment? = null
@@ -48,22 +47,6 @@ class MainActivity : BaseAppCompatActivity(),IContractView.IQiniuView {
     private var rightFragment: Fragment? = null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
-
-    private var eventType = ""
-
-    override fun onToken(token: String) {
-        when(eventType){
-            Constants.DATA_UPLOAD_EVENT->{
-                bookcaseFragment?.upload(token)
-                textbookFragment?.upload(token)
-                mainRightFragment?.uploadScreenShot(token)
-            }
-            Constants.DIARY_UPLOAD_EVENT->{
-                mainRightFragment?.uploadDiary(token)
-            }
-        }
-
-    }
 
     override fun layoutId(): Int {
         return R.layout.ac_main
@@ -204,50 +187,6 @@ class MainActivity : BaseAppCompatActivity(),IContractView.IQiniuView {
                     ft.hide(from)
                 }
                 ft.show(to).commit()
-            }
-        }
-    }
-
-    /**
-     * 清除本地所有数据
-     */
-    private fun clearSqlData(){
-        SPUtil.removeObj("privacyPasswordDiary")
-        SPUtil.removeObj("privacyPasswordNote")
-
-        MyApplication.mDaoSession?.clear()
-        AppDaoManager.getInstance().clear()
-        BookGreenDaoManager.getInstance().clear()
-        ClassScheduleGreenDaoManager.getInstance().clear()
-        DiaryDaoManager.getInstance().clear()
-        FreeNoteDaoManager.getInstance().clear()
-        ItemTypeDaoManager.getInstance().clear()
-        NoteContentDaoManager.getInstance().clear()
-        NoteDaoManager.getInstance().clear()
-        WallpaperDaoManager.getInstance().clear()
-        DateEventDaoManager.getInstance().clear()
-
-        FileUtils.deleteFile(File(Constants.BOOK_PATH))
-        FileUtils.deleteFile(File(Constants.SCREEN_PATH))
-        FileUtils.deleteFile(File(Constants.ZIP_PATH).parentFile)
-
-        EventBus.getDefault().post(Constants.BOOK_EVENT)
-        EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_BOOK_MANAGER_EVENT)
-        EventBus.getDefault().post(Constants.NOTE_EVENT)
-        EventBus.getDefault().post(Constants.COURSE_EVENT)
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        when(msgFlag){
-            //上传
-            Constants.DATA_UPLOAD_EVENT->{
-                eventType=Constants.DATA_UPLOAD_EVENT
-                mQiniuPresenter.getToken()
-            }
-            Constants.DIARY_UPLOAD_EVENT->{
-                eventType=Constants.DIARY_UPLOAD_EVENT
-                mQiniuPresenter.getToken()
             }
         }
     }

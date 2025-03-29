@@ -10,7 +10,7 @@ import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.manager.WallpaperDaoManager
 import com.bll.lnkteacher.mvp.model.WallpaperBean
-import com.bll.lnkteacher.ui.adapter.MyWallpaperAdapter
+import com.bll.lnkteacher.ui.adapter.WallpaperMyAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -22,8 +22,7 @@ import java.io.File
 class WallpaperMyActivity:BaseAppCompatActivity(){
 
     private var items= mutableListOf<WallpaperBean>()
-    private var mAdapter: MyWallpaperAdapter?=null
-    private var position=0
+    private var mAdapter: WallpaperMyAdapter?=null
     private var leftPath=""
     private var rightPath=""
 
@@ -57,13 +56,13 @@ class WallpaperMyActivity:BaseAppCompatActivity(){
     private fun initRecycleView(){
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,50f),
+            DP2PX.dip2px(this,30f), DP2PX.dip2px(this,60f),
             DP2PX.dip2px(this,30f),0)
         layoutParams.weight=1f
         rv_list.layoutParams= layoutParams
 
         rv_list.layoutManager = GridLayoutManager(this, 2)//创建布局管理
-        mAdapter = MyWallpaperAdapter(R.layout.item_wallpaper_my, null).apply {
+        mAdapter = WallpaperMyAdapter(R.layout.item_wallpaper_my, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
@@ -84,14 +83,13 @@ class WallpaperMyActivity:BaseAppCompatActivity(){
                 }
             }
             onItemLongClickListener = BaseQuickAdapter.OnItemLongClickListener { adapter, view, position ->
-                this@WallpaperMyActivity.position = position
-                delete()
+                delete(position)
                 true
             }
         }
     }
 
-    private fun delete(){
+    private fun delete(position:Int){
         CommonDialog(this).setContent("确定删除？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
             override fun cancel() {

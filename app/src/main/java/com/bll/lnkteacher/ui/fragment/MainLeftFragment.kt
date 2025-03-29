@@ -196,7 +196,6 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
         }
     }
 
-
     override fun onRefreshData() {
         lazyLoad()
     }

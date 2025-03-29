@@ -10,10 +10,10 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CatalogBookDialog
 import com.bll.lnkteacher.manager.TextbookGreenDaoManager
+import com.bll.lnkteacher.mvp.model.book.TextbookBean
 import com.bll.lnkteacher.mvp.model.catalog.CatalogChildBean
 import com.bll.lnkteacher.mvp.model.catalog.CatalogMsg
 import com.bll.lnkteacher.mvp.model.catalog.CatalogParentBean
-import com.bll.lnkteacher.mvp.model.book.TextbookBean
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.chad.library.adapter.base.entity.MultiItemEntity
@@ -71,6 +71,9 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
                 pageCount =catalogMsg?.totalCount!!
                 startCount = if (catalogMsg?.startCount!!-1<0)0 else catalogMsg?.startCount!!-1
             }
+        }
+        else{
+            pageCount=FileUtils.getFiles(FileAddress().getPathTextBookPicture(book?.bookPath!!)).size
         }
     }
 

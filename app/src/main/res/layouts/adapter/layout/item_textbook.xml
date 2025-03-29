@@ -10,7 +10,7 @@
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="220dp"
-        android:layout_height="292dp"
+        android:layout_height="290dp"
         android:background="@drawable/bg_black_stroke_5dp_corner"
         android:padding="1dp"
         android:scaleType="fitXY"

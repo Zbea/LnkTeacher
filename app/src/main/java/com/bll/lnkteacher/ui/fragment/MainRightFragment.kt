@@ -4,7 +4,6 @@ import PopupClick
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.COURSE_EVENT
 import com.bll.lnkteacher.Constants.Companion.MESSAGE_EVENT
 import com.bll.lnkteacher.Constants.Companion.NOTE_EVENT
@@ -18,10 +17,8 @@ import com.bll.lnkteacher.dialog.DiaryUploadListDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordCreateDialog
 import com.bll.lnkteacher.dialog.PrivacyPasswordDialog
 import com.bll.lnkteacher.manager.DiaryDaoManager
-import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.manager.NoteDaoManager
 import com.bll.lnkteacher.mvp.model.CloudListBean
-import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.mvp.model.Note
@@ -47,7 +44,6 @@ import kotlinx.android.synthetic.main.fragment_main_right.rv_main_message
 import kotlinx.android.synthetic.main.fragment_main_right.rv_main_note
 import kotlinx.android.synthetic.main.fragment_main_right.tv_diary
 import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 
 class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
@@ -58,8 +54,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
 
     private var notes= mutableListOf<Note>()
     private var mNoteAdapter:MainNoteAdapter?=null
-
-    private var uploadType=0//上传类型
     private var privacyPassword=MethodManager.getPrivacyPassword(0)
     private var diaryStartLong=0L
     private var diaryEndLong=0L
@@ -203,7 +197,12 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                         diaryStartLong=startLong
                         diaryEndLong=endLong
                         diaryUploadTitleStr=titleStr
-                        EventBus.getDefault().post(Constants.DIARY_UPLOAD_EVENT)
+                        if (NetworkUtil.isNetworkConnected()){
+                            mQiniuPresenter.getToken()
+                        }
+                        else{
+                            showToast("网络连接失败")
+                        }
                     }
                 }
                 3->{
@@ -247,11 +246,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
         lazyLoad()
     }
 
-
-    /**
-     * 每年上传日记
-     */
-    fun uploadDiary(token:String){
+    override fun onUpload(token: String){
         cloudList.clear()
         val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
         if (diarys.isNotEmpty()){
@@ -273,73 +268,19 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
                         downloadUrl=it
                     })
                     mCloudUploadPresenter.upload(cloudList)
-                    uploadType=1
                 }
-            }
-        }
-    }
-
-    /**
-     * 每年上传截图
-     */
-    fun uploadScreenShot(token:String){
-        cloudList.clear()
-        val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
-        val nullItems= mutableListOf<ItemTypeBean>()
-        val currentTime=System.currentTimeMillis()
-        val itemTypeBean=ItemTypeBean()
-        itemTypeBean.title="未分类"+DateUtils.longToStringDataNoYear(currentTime)
-        itemTypeBean.date=currentTime
-        itemTypeBean.path=FileAddress().getPathScreen("未分类")
-        screenTypes.add(0,itemTypeBean)
-        for (item in screenTypes){
-            val fileName=DateUtils.longToString(item.date)
-            val path=item.path
-            if (FileUtils.isExistContent(path)){
-                FileUploadManager(token).apply {
-                    startUpload(path,fileName)
-                    setCallBack{
-                        cloudList.add(CloudListBean().apply {
-                            type=6
-                            subTypeStr="截图"
-                            year=DateUtils.getYear()
-                            date=System.currentTimeMillis()
-                            listJson= Gson().toJson(item)
-                            downloadUrl=it
-                        })
-                        //当加入上传的内容等于全部需要上传时候，则上传
-                        if (cloudList.size== screenTypes.size-nullItems.size){
-                            mCloudUploadPresenter.upload(cloudList)
-                            uploadType=2
-                        }
-                    }
-                }
-            }
-            else{
-                //没有内容不上传
-                nullItems.add(item)
             }
         }
     }
 
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
-        super.uploadSuccess(cloudIds)
-        when(uploadType){
-            1->{
-                val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
-                for (item in diarys){
-                    val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
-                    FileUtils.deleteFile(File(path))
-                    DiaryDaoManager.getInstance().delete(item)
-                }
-                showToast("日记上传成功")
-            }
-            2->{
-                val path=FileAddress().getPathScreen("未分类")
-                FileUtils.deleteFile(File(path).parentFile)
-                ItemTypeDaoManager.getInstance().clear(3)
-            }
+        val diarys=DiaryDaoManager.getInstance().queryList(diaryStartLong,diaryEndLong)
+        for (item in diarys){
+            val path=FileAddress().getPathDiary(DateUtils.longToStringCalender(item.date))
+            FileUtils.deleteFile(File(path))
+            DiaryDaoManager.getInstance().delete(item)
         }
+        showToast("日记上传成功")
     }
 
 }

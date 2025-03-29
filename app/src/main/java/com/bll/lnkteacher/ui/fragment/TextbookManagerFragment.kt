@@ -2,7 +2,9 @@ package com.bll.lnkteacher.ui.fragment
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.Constants.Companion.SP_HANDOUT_TYPES
+import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -22,6 +24,7 @@ import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
+import org.greenrobot.eventbus.EventBus
 
 class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
     private val presenter=HandoutPresenter(this,1)
@@ -141,17 +144,21 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
         lazyLoad()
     }
 
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            Constants.AUTO_REFRESH_EVENT->{
+                mQiniuPresenter.getToken()
+            }
+        }
+    }
 
-    /**
-     * 每天上传书籍
-     */
-    fun upload(tokenStr: String) {
+    override fun onUpload(token: String){
         cloudList.clear()
         val books = TextbookGreenDaoManager.getInstance().queryTextBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
-                FileUploadManager(tokenStr).apply {
+                FileUploadManager(token).apply {
                     startUpload(book.bookDrawPath, book.bookId.toString())
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
@@ -184,13 +191,13 @@ class TextbookManagerFragment : BaseMainFragment(),IContractView.IHandoutView{
         }
     }
 
-    //上传完成后删除书籍
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(item.bookTypeId, item.bookId)
             MethodManager.deleteTextbook(bookBean)
         }
+        EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
 }

@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_book_type
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书架
@@ -106,16 +107,28 @@ class BookcaseFragment : BaseMainFragment() {
         GlideUtils.setImageRoundUrl(activity, url, image, 5)
     }
 
-    /**
-     * 每天上传书籍
-     */
-    fun upload(tokenStr: String) {
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            Constants.BOOK_EVENT->{
+                findBook()
+            }
+            Constants.AUTO_REFRESH_EVENT->{
+                mQiniuPresenter.getToken()
+            }
+        }
+    }
+
+    override fun onRefreshData() {
+        findBook()
+    }
+
+    override fun onUpload(token: String) {
         cloudList.clear()
         val books = BookGreenDaoManager.getInstance().queryBookByHalfYear()
         for (book in books) {
             //判读是否存在手写内容
             if (FileUtils.isExistContent(book.bookDrawPath)) {
-                FileUploadManager(tokenStr).apply {
+                FileUploadManager(token).apply {
                     startUpload(book.bookDrawPath, book.bookId.toString())
                     setCallBack {
                         cloudList.add(CloudListBean().apply {
@@ -146,23 +159,13 @@ class BookcaseFragment : BaseMainFragment() {
         }
     }
 
-    //上传完成后删除书籍
     override fun uploadSuccess(cloudIds: MutableList<Int>?) {
         super.uploadSuccess(cloudIds)
         for (item in cloudList) {
             val bookBean = BookGreenDaoManager.getInstance().queryBookByBookID(item.bookId)
             MethodManager.deleteBook(bookBean)
         }
-    }
-
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == Constants.BOOK_EVENT) {
-            findBook()
-        }
-    }
-
-    override fun onRefreshData() {
-        findBook()
+        EventBus.getDefault().post(Constants.BOOK_EVENT)
     }
 
 }

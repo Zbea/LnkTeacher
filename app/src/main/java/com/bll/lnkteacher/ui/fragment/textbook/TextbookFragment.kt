@@ -70,6 +70,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         mAdapter = TextbookAdapter(R.layout.item_textbook, null)
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
+        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  40))
         mAdapter?.setEmptyView(R.layout.common_empty)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val book = books[position]
@@ -85,7 +86,7 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
                 onLongClick()
                 true
             }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(3,  38))
+
     }
 
 

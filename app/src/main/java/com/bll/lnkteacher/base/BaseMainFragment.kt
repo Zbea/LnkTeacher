@@ -41,8 +41,6 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
     override fun onSuccessCloudUpload(cloudIds: MutableList<Int>?) {
         uploadSuccess(cloudIds)
     }
-    override fun onDeleteSuccess() {
-    }
 
     override fun initView() {
         tv_grade.setOnClickListener {

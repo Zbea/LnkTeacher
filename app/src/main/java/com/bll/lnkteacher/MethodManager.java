@@ -22,6 +22,7 @@ import com.bll.lnkteacher.manager.TextbookGreenDaoManager;
 import com.bll.lnkteacher.mvp.model.AppBean;
 import com.bll.lnkteacher.mvp.model.AreaBean;
 import com.bll.lnkteacher.mvp.model.HandoutBean;
+import com.bll.lnkteacher.mvp.model.ItemTypeBean;
 import com.bll.lnkteacher.mvp.model.book.Book;
 import com.bll.lnkteacher.mvp.model.Note;
 import com.bll.lnkteacher.mvp.model.PrivacyPassword;
@@ -351,5 +352,21 @@ public class MethodManager {
     public static List<AreaBean> getProvinces(Context context) throws IOException {
         String areaJson = FileUtils.readFileContent(context.getResources().getAssets().open("city.json"));
         return new Gson().fromJson(areaJson, new TypeToken<List<AreaBean>>(){}.getType());
+    }
+
+    /**
+     * 初始化不选中 指定位置选中
+     * @param list
+     * @param position
+     * @return
+     */
+    public static List<ItemTypeBean> setItemTypeBeanCheck(List<ItemTypeBean> list,int position){
+        if (list.size()>position){
+            for (ItemTypeBean item:list) {
+                item.isCheck=false;
+            }
+            list.get(position).isCheck=true;
+        }
+        return list;
     }
 }

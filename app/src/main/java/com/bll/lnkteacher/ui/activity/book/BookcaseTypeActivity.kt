@@ -10,6 +10,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.BookcaseDetailsDialog
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.ItemSelectorDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
@@ -33,7 +34,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
 
     private var mAdapter: BookAdapter? = null
     private var books = mutableListOf<Book>()
-    private var typeStr = ""//当前分类
+    private var tabPos=0
     private var pos = 0 //当前书籍位置
     private val mBookDaoManager=BookGreenDaoManager.getInstance()
     private var popupBeans = mutableListOf<PopupBean>()
@@ -66,17 +67,16 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         itemTabTypes = ItemTypeDaoManager.getInstance().queryAll(2)
         itemTabTypes.add(0,ItemTypeBean().apply {
             title = "全部"
+            isCheck=true
         })
-        itemTabTypes[pos].isCheck=true
+        itemTabTypes=MethodManager.setItemTypeBeanCheck(itemTabTypes,tabPos)
         mTabTypeAdapter?.setNewData(itemTabTypes)
         fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
         pageIndex = 1
-        typeStr = itemTabTypes[position].title
-        if (position == 0)
-            typeStr = ""
+        tabPos=position
         fetchData()
     }
 
@@ -93,6 +93,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
         mAdapter = BookAdapter(R.layout.item_bookstore, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
+            rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this@BookcaseTypeActivity, 30f)))
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
                 val bookBean=books[position]
@@ -104,7 +105,6 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,  DP2PX.dip2px(this, 30f)))
     }
 
     //顶部弹出选择
@@ -126,33 +126,25 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                     }
                 }
                 1 -> {
-                    val types=ItemTypeDaoManager.getInstance().queryAll(2)
-                    val lists= mutableListOf<ItemList>()
-                    for (i in types.indices){
-                        lists.add(ItemList(i,types[i].title))
+                    if (tabPos==0){
+                        showToast("默认分类无法删除")
+                        return@setOnSelectListener
                     }
-                    ItemSelectorDialog(this,"删除分类",lists).builder().setOnDialogClickListener{
-                        val typeNameStr=types[it].title
-                        val books = mBookDaoManager.queryAllBook(typeNameStr)
-                        if (books.isNotEmpty()){
-                            showToast("分类存在书籍，无法删除")
-                            return@setOnDialogClickListener
-                        }
-                        ItemTypeDaoManager.getInstance().deleteBean(types[it])
-                        var index = 0
-                        for (i in itemTabTypes.indices) {
-                            if (typeNameStr == itemTabTypes[i].title) {
-                                index = i
-                            }
-                        }
-                        mTabTypeAdapter?.remove(index)
-                        if (typeStr==typeNameStr){
+                    val books = mBookDaoManager.queryAllBook(getTypeStr())
+                    if (books.isNotEmpty()){
+                        showToast("分类存在书籍，无法删除")
+                        return@setOnSelectListener
+                    }
+                    CommonDialog(this).setContent("确定删除").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                        override fun ok() {
+                            ItemTypeDaoManager.getInstance().deleteBean(itemTabTypes[tabPos])
+                            mTabTypeAdapter?.remove(tabPos)
+                            tabPos=0
                             itemTabTypes[0].isCheck=true
-                            typeStr=""
-                            mTabTypeAdapter?.notifyItemChanged(0)
+                            pageIndex=1
                             fetchData()
                         }
-                    }
+                    })
                 }
                 2->{
                     BookcaseDetailsDialog(this).builder()
@@ -169,7 +161,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
             name="删除"
             resId=R.mipmap.icon_setting_delete
         })
-        if (typeStr==""){
+        if (getTypeStr()==""){
             longBeans.add(ItemList().apply {
                 name="分类"
                 resId=R.mipmap.icon_setting_set
@@ -189,7 +181,7 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
                     MethodManager.deleteBook(book)
                 }
                 else{
-                    if (typeStr==""){
+                    if (getTypeStr()==""){
                         val types= ItemTypeDaoManager.getInstance().queryAll(2)
                         if (types.size==0){
                             showToast("请先创建分类")
@@ -215,6 +207,10 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
             }
     }
 
+    private fun getTypeStr():String{
+        return if (tabPos==0) "" else itemTabTypes[tabPos].title
+    }
+
     override fun onEventBusMessage(msgFlag: String) {
         if (msgFlag == BOOK_EVENT) {
             fetchData()
@@ -222,8 +218,8 @@ class BookcaseTypeActivity : BaseAppCompatActivity() {
     }
 
     override fun fetchData() {
-        books=mBookDaoManager.queryAllBook(typeStr, pageIndex, pageSize)
-        val total = mBookDaoManager.queryAllBook(typeStr)
+        books=mBookDaoManager.queryAllBook(getTypeStr(), pageIndex, pageSize)
+        val total = mBookDaoManager.queryAllBook(getTypeStr())
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
     }

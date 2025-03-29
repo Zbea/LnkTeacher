@@ -165,5 +165,6 @@ class CloudDiaryFragment: BaseCloudFragment() {
 
     override fun onCloudDelete() {
         mAdapter?.remove(position)
+        onRefreshList(items)
     }
 }

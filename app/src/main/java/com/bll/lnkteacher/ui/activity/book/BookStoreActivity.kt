@@ -86,7 +86,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         initChangeScreenData()
         pageSize=12
         type = intent.flags
-        tabStr=DataBeanManager.bookStoreTypes[type-1].name
+        tabStr=if (type in 1..6) DataBeanManager.bookStoreTypes[type-1].name else ""
         popGrades=DataBeanManager.popupTypeGrades
 
         popSupplys=DataBeanManager.popupSupplys

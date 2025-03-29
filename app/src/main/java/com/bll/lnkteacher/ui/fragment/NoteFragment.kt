@@ -46,7 +46,7 @@ class NoteFragment : BaseMainFragment() {
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
     private var position = 0 //当前笔记标记
-    private var positionType = 0//当前笔记本标记
+    private var tabPos = 0//当前笔记本标记
     private var typeStr=""
     private var privacyPassword:PrivacyPassword?=null
 
@@ -91,21 +91,18 @@ class NoteFragment : BaseMainFragment() {
         itemTabTypes.add(0,ItemTypeBean().apply {
             title = getString(R.string.note_tab_diary)
         })
-        if (positionType>=itemTabTypes.size){
-            positionType=0
+        if (tabPos>=itemTabTypes.size){
+            tabPos=0
         }
-        for (item in itemTabTypes){
-            item.isCheck=false
-        }
-        itemTabTypes[positionType].isCheck=true
-        typeStr = itemTabTypes[positionType].title
+        itemTabTypes=MethodManager.setItemTypeBeanCheck(itemTabTypes,tabPos)
+        typeStr = itemTabTypes[tabPos].title
         mTabTypeAdapter?.setNewData(itemTabTypes)
 
         fetchData()
     }
 
     override fun onTabClickListener(view: View, position: Int) {
-        positionType=position
+        tabPos=position
         typeStr=itemTabTypes[position].title
         pageIndex=1
         fetchData()
@@ -123,7 +120,7 @@ class NoteFragment : BaseMainFragment() {
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
-            if (positionType==0&&privacyPassword!=null&&!note.isCancelPassword){
+            if (tabPos==0&&privacyPassword!=null&&!note.isCancelPassword){
                 PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
                     MethodManager.gotoNote(requireActivity(),note)
                 }
@@ -261,6 +258,16 @@ class NoteFragment : BaseMainFragment() {
         FileUtils.deleteFile(File(path))
 
         mAdapter?.remove(position)
+
+        if (notes.size==0){
+            if (pageIndex>1){
+                pageIndex-=1
+                fetchData()
+            }
+            else{
+                setPageNumber(0)
+            }
+        }
     }
 
 
