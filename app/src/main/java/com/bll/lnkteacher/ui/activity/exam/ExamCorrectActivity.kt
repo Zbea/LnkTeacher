@@ -18,6 +18,7 @@ import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
@@ -49,6 +50,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
     private var posUser = 0//当前学生下标
     private var currentImages = mutableListOf<String>()
     private var tokenStr = ""
+    private var initScores=mutableListOf<ScoreItem>()//初始题目分数
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -80,7 +82,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
         userItems[posUser].score = tv_total_score.text.toString().toDouble()
         userItems[posUser].teacherUrl = url
         userItems[posUser].status = 2
-        userItems[posUser].question = Gson().toJson(currentScores)
+        userItems[posUser].question = Gson().toJson(initScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         setDisableTouchInput(true)
@@ -201,7 +203,14 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
 
         when (correctStatus) {
             1 -> {
-                currentScores = jsonToList(examBean?.question!!) as MutableList<ScoreItem>
+                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    initScores=ScoreItemUtils.questionToList(userItem.question)
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                }
+                else{
+                    initScores=ScoreItemUtils.questionToList(examBean?.question!!)
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(examBean?.question!!))
+                }
                 currentImages = ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = ""
                 showView(ll_score, tv_save)
@@ -209,9 +218,10 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
-
             2 -> {
-                currentScores = jsonToList(userItem.question!!) as MutableList<ScoreItem>
+                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                }
                 currentImages = ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
@@ -220,7 +230,6 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
                 setDisableTouchInput(true)
                 setPWEnabled(true)
             }
-
             3 -> {
                 currentImages = mutableListOf()
                 disMissView(ll_score)
@@ -235,11 +244,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
 
         if (correctModule > 0 && correctStatus != 3) {
             showView(ll_score_topic)
-            if (correctModule < 3) {
-                mTopicScoreAdapter?.setNewData(currentScores)
-            } else {
-                mTopicMultiAdapter?.setNewData(currentScores)
-            }
+            setRecyclerViewScoreAdapter()
         } else {
             disMissView(ll_score_topic)
         }
@@ -345,6 +350,8 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
      * 提交考卷
      */
     private fun commit() {
+        //将赋值数据初始化给原数据
+        ScoreItemUtils.updateInitListData(initScores,currentScores,correctModule)
         val map = HashMap<String, Any>()
         map["id"] = userItems[posUser].id
         map["schoolExamJobId"] = userItems[posUser].schoolExamJobId
@@ -352,7 +359,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
         map["teacherUrl"] = url
         map["classId"] = userItems[posUser].classId
         map["status"] = 2
-        map["question"] = Gson().toJson(currentScores)
+        map["question"] = Gson().toJson(initScores)
         mPresenter.onExamCorrectComplete(map)
     }
 

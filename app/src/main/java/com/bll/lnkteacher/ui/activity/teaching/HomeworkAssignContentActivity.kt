@@ -176,7 +176,6 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
                 this@HomeworkAssignContentActivity.position=position
                 delete()
                 true
-
             }
         }
         rv_list?.addItemDecoration(SpaceItemDeco(40))
@@ -188,14 +187,10 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                val item=items[position]
-                ImageDialog(this@HomeworkAssignContentActivity,item.examUrl.split(",")).builder()
-            }
             setOnItemChildClickListener { adapter, view, position ->
                 onChildClick(view,position)
             }
-            setOnItemLongClickListener { adapter, view, position ->
+            setOnItemChildLongClickListener{ adapter, view, position ->
                 this@HomeworkAssignContentActivity.position=position
                 delete()
                 true
@@ -206,27 +201,35 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
 
     private fun onChildClick(view: View,position:Int){
         val item =items[position]
-        if (view.id==R.id.cb_check){
-            for (ite in items){
-                ite.isCheck=false
-            }
-            item.isCheck=true
-            mAdapter?.notifyDataSetChanged()
+        when(view.id){
+            R.id.cb_check->{
+                for (ite in items){
+                    if (ite.isCheck){
+                        ite.isCheck=false
+                        mAdapter?.notifyItemChanged(items.indexOf(ite))
+                    }
+                }
+                item.isCheck=true
+                mAdapter?.notifyItemChanged(position)
 
-            taskId=item.taskId
-            if (item.answerUrl.isNullOrEmpty()){
-                cb_correct.isEnabled=false
-                if (isCorrect){
-                    isCorrect=false
-                    cb_correct.isChecked=false
+                taskId=item.taskId
+                if (item.answerUrl.isNullOrEmpty()){
+                    cb_correct.isEnabled=false
+                    if (isCorrect){
+                        isCorrect=false
+                        cb_correct.isChecked=false
+                    }
+                }
+                else{
+                    cb_correct.isEnabled=true
                 }
             }
-            else{
-                cb_correct.isEnabled=true
+            R.id.tv_answer->{
+                ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
             }
-        }
-        else if (view.id==R.id.tv_answer){
-            ImageDialog(this@HomeworkAssignContentActivity,item.answerUrl.split(",")).builder()
+            R.id.iv_image->{
+                ImageDialog(this@HomeworkAssignContentActivity,item.examUrl.split(",")).builder()
+            }
         }
     }
 

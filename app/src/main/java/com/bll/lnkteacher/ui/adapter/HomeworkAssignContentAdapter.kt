@@ -15,13 +15,18 @@ class HomeworkAssignContentAdapter(layoutResId: Int, data: List<AssignPaperConte
             setChecked(R.id.cb_check,item.isCheck)
             setText(R.id.cb_check,"  "+item.title)
             setText(R.id.tv_standard_time,if (item.standardTime>0) "${item.standardTime}分钟" else "")
-            if (getView<ImageView>(R.id.iv_image)!=null)
-                GlideUtils.setImageUrl(mContext,item.url,getView(R.id.iv_image))
             setGone(R.id.ll_date_preset,DateUtils.date10ToDate13(item.time)>System.currentTimeMillis())
             setText(R.id.tv_date_preset,DateUtils.longToStringWeek(item.time))
             setGone(R.id.tv_answer,!item.answerUrl.isNullOrEmpty())
-            addOnClickListener(R.id.cb_check,R.id.tv_answer)
-            addOnLongClickListener(R.id.cb_check)
+            if (getView<ImageView>(R.id.iv_image)!=null){
+                GlideUtils.setImageUrl(mContext,item.url,getView(R.id.iv_image))
+                addOnClickListener(R.id.cb_check,R.id.tv_answer,R.id.iv_image)
+                addOnLongClickListener(R.id.iv_image)
+            }
+            else{
+                addOnLongClickListener(R.id.cb_check)
+                addOnClickListener(R.id.cb_check,R.id.tv_answer)
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ import com.bll.lnkteacher.ui.activity.teaching.ScoreRankActivity
 import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_down
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_up
@@ -66,7 +67,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
                 userItem.status = 2
             }
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
-                currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
+                currentScores = ScoreItemUtils.questionToList(userItem.question)
                 for (item in currentScores) {
                     if (correctModule < 3) {
                         if (totalAnalyseItems.size < currentScores.size) {

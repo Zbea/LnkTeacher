@@ -6,11 +6,11 @@ import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
-import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.ExamCorrectUserAdapter
 import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_record
@@ -156,14 +156,14 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
         when(correctStatus){
             1->{
-                currentScores = jsonToList(examBean?.question!!) as MutableList<ScoreItem>
+                currentScores = ScoreItemUtils.questionToList(examBean?.question!!)
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = ""
                 disMissView(ll_score)
                 onChangeContent()
             }
             2->{
-                currentScores = jsonToList(userItem.question!!) as MutableList<ScoreItem>
+                currentScores = ScoreItemUtils.questionToList(examBean?.question!!)
                 currentImages=ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
@@ -182,12 +182,7 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
         if (correctModule>0&&correctStatus!=3){
             showView(ll_score_topic)
-            if (correctModule<3){
-                mTopicScoreAdapter?.setNewData(currentScores)
-            }
-            else{
-                mTopicMultiAdapter?.setNewData(currentScores)
-            }
+            setRecyclerViewScoreAdapter()
         }
         else{
             disMissView(ll_score_topic)

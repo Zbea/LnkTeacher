@@ -127,26 +127,26 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            setOnItemClickListener { adapter, view, position ->
-                val item=items[position]
-                ImageDialog(this@TestPaperAssignContentActivity,item.examUrl.split(",")).builder()
-            }
             setOnItemChildClickListener { adapter, view, position ->
-                if (view.id==R.id.cb_check){
-                    for (item in items){
-                        item.isCheck=false
+                val item =items[position]
+                when (view.id) {
+                    R.id.cb_check -> {
+                        for (itm in items){
+                            itm.isCheck=false
+                        }
+                        item.isCheck=true
+                        taskId=item.taskId
+                        notifyDataSetChanged()
                     }
-                    val item =items[position]
-                    item.isCheck=true
-                    taskId=item.taskId
-                    notifyDataSetChanged()
-                }
-                else if (view.id==R.id.tv_answer){
-                    val item=items[position]
-                    ImageDialog(this@TestPaperAssignContentActivity,item.answerUrl.split(",")).builder()
+                    R.id.tv_answer -> {
+                        ImageDialog(this@TestPaperAssignContentActivity,item.answerUrl.split(",")).builder()
+                    }
+                    R.id.iv_image -> {
+                        ImageDialog(this@TestPaperAssignContentActivity,item.examUrl.split(",")).builder()
+                    }
                 }
             }
-            setOnItemLongClickListener { adapter, view, position ->
+            setOnItemChildLongClickListener { adapter, view, position ->
                 this@TestPaperAssignContentActivity.position=position
                 CommonDialog(this@TestPaperAssignContentActivity).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
                     CommonDialog.OnDialogClickListener {

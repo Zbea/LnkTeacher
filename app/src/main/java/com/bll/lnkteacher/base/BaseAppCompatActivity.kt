@@ -45,7 +45,8 @@ import com.bll.lnkteacher.ui.adapter.ClassAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
-import com.bll.lnkteacher.ui.adapter.TopicMultiScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicMultistageScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.utils.*
 import com.bll.lnkteacher.widget.FlowLayoutManager
@@ -58,8 +59,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.reactivex.annotations.NonNull
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.ac_list_tab.*
@@ -98,13 +97,14 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mClassAdapter:ClassAdapter?=null
 
     var mTopicScoreAdapter: TopicScoreAdapter?=null
-    var mTopicMultiAdapter: TopicMultiScoreAdapter?=null
+    var mTopicTwoScoreAdapter: TopicTwoScoreAdapter?=null
+    var mTopicMultistageScoreAdapter: TopicMultistageScoreAdapter?=null
 
     var mAnalyseAdapter: ExamAnalyseAdapter?=null
     var mAnalyseMultiAdapter: ExamAnalyseMultiAdapter?=null
     var totalAnalyseItems = mutableListOf<AnalyseItem>() //题目集合
 
-    var currentScores=mutableListOf<ScoreItem>()//初始题目分数
+    var currentScores=mutableListOf<ScoreItem>()//优化后题目分数
     var correctModule=-1//批改摸排
     var scoreMode = 0//1打分
     var correctStatus=0//批改状态
@@ -374,85 +374,189 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             rv_list_score.scrollBy(0, DP2PX.dip2px(this,100f))
         }
 
-        if (correctModule<3){
-            rv_list_score.layoutManager = GridLayoutManager(this,2)
-            mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,correctModule,null).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setOnItemChildClickListener { adapter, view, position ->
-                    if (correctStatus==1){
-                        setChangeItemScore(view,position)
+        when(correctModule){
+            1,2->{
+                rv_list_score.layoutManager = GridLayoutManager(this,3)
+                mTopicScoreAdapter = TopicScoreAdapter(R.layout.item_topic_score,scoreMode,null).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        if (correctStatus==1){
+                            setChangeItemScore(view,position)
+                        }
                     }
+                    rv_list_score.addItemDecoration(SpaceGridItemDeco(3,DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
                 }
-                rv_list_score.addItemDecoration(SpaceGridItemDeco(2,DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
             }
-        }
-        else{
-            rv_list_score.layoutManager = LinearLayoutManager(this)
-            mTopicMultiAdapter = TopicMultiScoreAdapter(R.layout.item_topic_multi_score,scoreMode,null).apply {
-                rv_list_score.adapter = this
-                bindToRecyclerView(rv_list_score)
-                setOnItemChildClickListener { adapter, view, position ->
-                    val item=currentScores[position]
-                    //批改状态为已提交未批改 且 没有子题目才能执行
-                    if (correctStatus==1&&item.childScores.isNullOrEmpty()){
-                        setChangeItemScore(view,position)
+            3,4,5->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                mTopicTwoScoreAdapter = TopicTwoScoreAdapter(if(correctModule==5)R.layout.item_topic_multi_score else R.layout.item_topic_two_score,scoreMode,null).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        val item=currentScores[position]
+                        //批改状态为已提交未批改 且 没有子题目才能执行
+                        if (correctStatus==1&&item.childScores.isNullOrEmpty()){
+                            setChangeItemScore(view,position)
+                        }
                     }
+                    setCustomItemChildClickListener{ position, view, childPos ->
+                        if (correctStatus==1){
+                            val scoreItem=currentScores[position]
+                            val childItem=scoreItem.childScores[childPos]
+                            when(view.id){
+                                R.id.tv_score->{
+                                    if (scoreMode==1){
+                                        NumberDialog(this@BaseAppCompatActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
+
+                                            childItem.score= it
+                                            childItem.result=ScoreItemUtils.getItemScoreResult(childItem)
+
+                                            scoreItem.score=ScoreItemUtils.getItemScoreTotal(scoreItem.childScores)
+                                            scoreItem.result=ScoreItemUtils.getItemScoreResult(scoreItem)
+
+                                            notifyItemChanged(position)
+                                            setTotalScore()
+                                        }
+                                    }
+                                }
+                                R.id.iv_result->{
+                                    if (childItem.result==0){
+                                        childItem.result=1
+                                    }
+                                    else{
+                                        childItem.result=0
+                                    }
+                                    childItem.score= childItem.result*childItem.label
+
+                                    scoreItem.score=ScoreItemUtils.getItemScoreTotal(scoreItem.childScores)
+                                    scoreItem.result=ScoreItemUtils.getItemScoreResult(scoreItem)
+
+                                    notifyItemChanged(position)
+                                    setTotalScore()
+                                }
+                            }
+                        }
+                    }
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
                 }
-                setCustomItemChildClickListener{ position, view, childPos ->
-                    if (correctStatus==1){
-                        val scoreItem=currentScores[position]
-                        val childItem=scoreItem.childScores[childPos]
-                        when(view.id){
-                            R.id.tv_score->{
-                                if (scoreMode==1){
-                                    NumberDialog(this@BaseAppCompatActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
-                                        if (childItem.label!=it){
-                                            childItem.result=0
+            }
+            6,7->{
+                rv_list_score.layoutManager = LinearLayoutManager(this)
+                mTopicMultistageScoreAdapter=TopicMultistageScoreAdapter(R.layout.item_topic_two_score,scoreMode,null).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    setOnItemChildClickListener { adapter, view, position ->
+                        val item=currentScores[position]
+                        //批改状态为已提交未批改 且 没有子题目才能执行
+                        if (correctStatus==1&&item.childScores.isNullOrEmpty()){
+                            setChangeItemScore(view,position)
+                        }
+                    }
+                    setCustomItemChildClickListener(object : TopicMultistageScoreAdapter.OnItemChildClickListener {
+                        override fun onParentClick(position: Int, view: View, parentPosition: Int) {
+                            val rootItem=currentScores[position]
+                            val parentItem=rootItem.childScores[parentPosition]
+                            if (correctStatus==1&&parentItem.childScores.isNullOrEmpty()){
+                                when(view.id){
+                                    R.id.tv_score->{
+                                        if (scoreMode==1){
+                                            NumberDialog(this@BaseAppCompatActivity,2,"最大输入${parentItem.label}",parentItem.label).builder().setDialogClickListener{
+                                                parentItem.score= it
+                                                parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                                rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                                rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                                notifyItemChanged(position)
+                                                setTotalScore()
+                                            }
                                         }
-                                        childItem.score= it
-                                        //获取小题总分
-                                        var scoreTotal=0.0
-                                        for (item in scoreItem.childScores){
-                                            scoreTotal+=item.score
+                                    }
+                                    R.id.iv_result->{
+                                        if (parentItem.result==0){
+                                            parentItem.result=1
                                         }
-                                        scoreItem.score=scoreTotal
+                                        else{
+                                            parentItem.result=0
+                                        }
+                                        parentItem.score= parentItem.result*parentItem.label
+
+                                        rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                        rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
                                         notifyItemChanged(position)
                                         setTotalScore()
                                     }
                                 }
                             }
-                            R.id.iv_result->{
-                                if (childItem.result==0){
-                                    childItem.result=1
-                                }
-                                else{
-                                    childItem.result=0
-                                }
-                                if (scoreMode==1){
-                                    childItem.score= childItem.result*childItem.label
-                                    //获取小题总分
-                                    var scoreTotal=0.0
-                                    for (item in scoreItem.childScores){
-                                        scoreTotal+=item.score
+                        }
+                        override fun onChildClick(position: Int, view: View, parentPosition: Int, childPos: Int) {
+                            val rootItem=currentScores[position]
+                            val parentItem=rootItem.childScores[parentPosition]
+                            val childItem=parentItem.childScores[childPos]
+                            if (correctStatus==1){
+                                when(view.id){
+                                    R.id.tv_score->{
+                                        if (scoreMode==1){
+                                            NumberDialog(this@BaseAppCompatActivity,2,"最大输入${childItem.label}",childItem.label).builder().setDialogClickListener{
+                                                childItem.score= it
+                                                childItem.result=ScoreItemUtils.getItemScoreResult(childItem)
+
+                                                parentItem.score=ScoreItemUtils.getItemScoreTotal(parentItem.childScores)
+                                                parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                                rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                                rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                                notifyItemChanged(position)
+                                                setTotalScore()
+                                            }
+                                        }
                                     }
-                                    scoreItem.score=scoreTotal
-                                }
-                                else{
-                                    var totalRight=0
-                                    for (item in scoreItem.childScores){
-                                        if (item.result==1)
-                                            totalRight+= 1
+                                    R.id.iv_result->{
+                                        if (childItem.result==0){
+                                            childItem.result=1
+                                        }
+                                        else{
+                                            childItem.result=0
+                                        }
+
+                                        childItem.score= childItem.result*childItem.label
+
+                                        parentItem.score=ScoreItemUtils.getItemScoreTotal(parentItem.childScores)
+                                        parentItem.result=ScoreItemUtils.getItemScoreResult(parentItem)
+
+                                        rootItem.score=ScoreItemUtils.getItemScoreTotal(rootItem.childScores)
+                                        rootItem.result=ScoreItemUtils.getItemScoreResult(rootItem)
+
+                                        notifyItemChanged(position)
+                                        setTotalScore()
                                     }
-                                    scoreItem.score= totalRight.toDouble()
                                 }
-                                notifyItemChanged(position)
-                                setTotalScore()
                             }
                         }
-                    }
+                    })
+                    rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
                 }
-                rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity,15f)))
+            }
+        }
+
+    }
+
+    /**
+     * 设置adapter
+     */
+    fun setRecyclerViewScoreAdapter(){
+        when(correctModule){
+            1,2->{
+                mTopicScoreAdapter?.setNewData(currentScores)
+            }
+            3,4,5->{
+                mTopicTwoScoreAdapter?.setNewData(currentScores)
+            }
+            6,7->{
+                mTopicMultistageScoreAdapter?.setNewData(currentScores)
             }
         }
     }
@@ -466,17 +570,20 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             R.id.tv_score->{
                 if (scoreMode==1){
                     NumberDialog(this@BaseAppCompatActivity,2,"最大输入${item.label}",item.label).builder().setDialogClickListener{
-                        if (item.label!=it){
-                            item.result=0
-                        }
                         item.score= it
+                        item.result=ScoreItemUtils.getItemScoreResult(item)
+                        when(correctModule){
+                            1,2->{
+                                mTopicScoreAdapter?.notifyItemChanged(position)
+                            }
+                            3,4,5->{
+                                mTopicTwoScoreAdapter?.notifyItemChanged(position)
+                            }
+                            6,7->{
+                                mTopicMultistageScoreAdapter?.notifyItemChanged(position)
+                            }
+                        }
                         setTotalScore()
-                        if (correctModule<3){
-                            mTopicScoreAdapter?.notifyItemChanged(position)
-                        }
-                        else{
-                            mTopicMultiAdapter?.notifyItemChanged(position)
-                        }
                     }
                 }
             }
@@ -487,20 +594,19 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                 else{
                     item.result=0
                 }
-                if (scoreMode==1){
-                    item.score= item.result*item.label
+                item.score= item.result*item.label
+                when(correctModule){
+                    1,2->{
+                        mTopicScoreAdapter?.notifyItemChanged(position)
+                    }
+                    3,4,5->{
+                        mTopicTwoScoreAdapter?.notifyItemChanged(position)
+                    }
+                    6,7->{
+                        mTopicMultistageScoreAdapter?.notifyItemChanged(position)
+                    }
                 }
-                else{
-                    item.score= item.result.toDouble()
-                }
-
                 setTotalScore()
-                if (correctModule<3){
-                    mTopicScoreAdapter?.notifyItemChanged(position)
-                }
-                else{
-                    mTopicMultiAdapter?.notifyItemChanged(position)
-                }
             }
         }
     }
@@ -704,13 +810,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             barChart.invalidate()
         }
 
-    }
-
-    /**
-     * 格式序列化  题目分数转行list集合
-     */
-    fun jsonToList(json:String):List<ScoreItem>{
-        return Gson().fromJson(json, object : TypeToken<List<ScoreItem>>() {}.type) as MutableList<ScoreItem>
     }
 
     /**

@@ -21,6 +21,7 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
+import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
@@ -63,6 +64,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
     private var tokenStr = ""
+    private var initScores=mutableListOf<ScoreItem>()//初始题目分数
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -83,7 +85,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         userItems[posUser].score = tv_total_score.text.toString().toDouble()
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
-        userItems[posUser].question = Gson().toJson(currentScores)
+        userItems[posUser].question = Gson().toJson(initScores)
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         setDisableTouchInput(true)
@@ -108,6 +110,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         mClassBean = correctList?.examList?.get(classPos)!!
         scoreMode = correctList?.questionMode!!
         correctModule = correctList?.questionType!!
+
         mId = correctList?.id!!
 
         if (!correctList?.answerUrl.isNullOrEmpty()) {
@@ -258,12 +261,15 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         when (correctStatus) {
             1 -> {
-                currentImages = ToolUtils.getImages(userItem.studentUrl)
-                currentScores = if (userItem.question?.isNotEmpty() == true && correctModule > 0) {
-                    jsonToList(userItem.question) as MutableList<ScoreItem>
-                } else {
-                    jsonToList(correctList?.question!!) as MutableList<ScoreItem>
+                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    initScores=ScoreItemUtils.questionToList(userItem.question)
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
                 }
+                else{
+                    initScores=ScoreItemUtils.questionToList(correctList?.question!!)
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(correctList?.question!!))
+                }
+                currentImages = ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score, tv_save)
                 onChangeContent()
@@ -271,10 +277,10 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 setPWEnabled(true)
             }
             2 -> {
-                currentImages = ToolUtils.getImages(userItem.submitUrl)
-                if (userItem.question?.isNotEmpty() == true && correctModule > 0) {
-                    currentScores = jsonToList(userItem.question) as MutableList<ScoreItem>
+                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
                 }
+                currentImages = ToolUtils.getImages(userItem.submitUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)
                 disMissView(tv_save)
@@ -294,16 +300,11 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             }
         }
 
-        if (correctModule > 0 && correctStatus != 3) {
+        if (correctModule > 0 ) {
             showView(ll_score_topic)
-
-            if (correctModule < 3) {
-                mTopicScoreAdapter?.setNewData(currentScores)
-            } else {
-                mTopicMultiAdapter?.setNewData(currentScores)
-            }
+            setRecyclerViewScoreAdapter()
         } else {
-            disMissView(ll_score_topic)
+            disInvisbleView(ll_score_topic)
         }
     }
 
@@ -408,12 +409,14 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
      * 提交学生考卷
      */
     private fun commit() {
+        //将赋值数据初始化给原数据
+        ScoreItemUtils.updateInitListData(initScores,currentScores,correctModule)
         val map = HashMap<String, Any>()
         map["studentTaskId"] = userItems[posUser].studentTaskId
         map["score"] = tv_total_score.text.toString().toDouble()
         map["submitUrl"] = url
         map["status"] = 2
-        map["question"] = Gson().toJson(currentScores)
+        map["question"] = Gson().toJson(initScores)
         mPresenter.commitPaperStudent(map)
     }
 

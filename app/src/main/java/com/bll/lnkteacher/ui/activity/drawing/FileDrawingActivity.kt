@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
+import java.io.File
 
 
 class FileDrawingActivity : BaseFileDrawingActivity() {
@@ -140,7 +141,7 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
             if (showFile != null) {
                 val myBitmap= BitmapFactory.decodeFile(showFile.absolutePath)
                 view.setImageBitmap(myBitmap)
-                elik.setLoadFilePath(getDrawingPath(index+1), true)
+                elik.setLoadFilePath(getDrawingPath(showFile), true)
             }
         }
     }
@@ -148,8 +149,8 @@ class FileDrawingActivity : BaseFileDrawingActivity() {
     /**
      * 得到提错本的手写路径
      */
-    private fun getDrawingPath(index: Int):String{
-        return "$path/drawing/$index.png"
+    private fun getDrawingPath(file: File):String{
+        return "$path/drawing/${file.name}"
     }
 
 }
