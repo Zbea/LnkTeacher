@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
@@ -88,7 +89,9 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
         if (answerImages.size>0){
             showView(tv_answer)
-            setAnswerView()
+            tv_answer.setOnClickListener {
+                ImageDialog(this,2,answerImages).builder()
+            }
         }
 
         initRecyclerView()
@@ -156,14 +159,22 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
         when(correctStatus){
             1->{
-                currentScores = ScoreItemUtils.questionToList(examBean?.question!!)
+                currentScores = if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                } else{
+                    ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(examBean?.question!!))
+                }
                 currentImages=ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = ""
                 disMissView(ll_score)
                 onChangeContent()
             }
             2->{
-                currentScores = ScoreItemUtils.questionToList(examBean?.question!!)
+                currentScores = if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                    ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                } else{
+                    ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(examBean?.question!!))
+                }
                 currentImages=ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score)

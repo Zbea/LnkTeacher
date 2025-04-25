@@ -105,7 +105,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         val item=items[position]
         showLoading()
         val pathStr= FileAddress().getPathImage("wallpaper",item.contentId.toString())
-        val images = mutableListOf(item.bodyUrl)
+        val images = item.bodyUrl.split(",")
         val savePaths= arrayListOf("$pathStr/1.png","$pathStr/2.png")
         FileMultitaskDownManager.with(requireActivity()).create(images).setPath(savePaths).startMultiTaskDownLoad(
             object : FileMultitaskDownManager.MultiTaskCallBack {

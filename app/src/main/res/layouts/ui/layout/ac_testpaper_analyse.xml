@@ -374,7 +374,7 @@
                     >
 
                     <ImageView
-                        android:id="@+id/iv_score_up"
+                        android:id="@+id/iv_analyse_up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/icon_arrow_page_up"
@@ -382,7 +382,7 @@
                         />
 
                     <ImageView
-                        android:id="@+id/iv_score_down"
+                        android:id="@+id/iv_analyse_down"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@mipmap/icon_arrow_page_down"
@@ -397,8 +397,8 @@
                         android:layout_centerInParent="true"
                         android:layout_marginTop="@dimen/dp_20"
                         android:layout_marginBottom="@dimen/dp_20"
-                        android:layout_marginStart="@dimen/dp_60"
-                        android:layout_marginEnd="@dimen/dp_60"
+                        android:layout_marginStart="@dimen/dp_80"
+                        android:layout_marginEnd="@dimen/dp_80"
                         />
 
                 </RelativeLayout>
@@ -412,16 +412,6 @@
     <include
         android:id="@+id/ll_draw_content"
         layout="@layout/common_correct_drawing"
-        />
-
-    <include
-        android:id="@+id/rl_answer"
-        android:layout_width="@dimen/width"
-        android:layout_height="680dp"
-        android:layout_marginTop="@dimen/statusbar_height"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        layout="@layout/common_answer"
         />
 
 </RelativeLayout>

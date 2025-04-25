@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class AnalyseItem implements Serializable {
     public int sort;
+    public String sortStr;
     public int num;//统计人数
     public int rightNum;//正确人数
     public int wrongNum;//错误人数

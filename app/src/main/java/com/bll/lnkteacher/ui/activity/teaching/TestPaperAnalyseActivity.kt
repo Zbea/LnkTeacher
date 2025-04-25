@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
@@ -15,17 +16,14 @@ import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.ActivityManager
-import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_down
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_score_up
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_rate
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_score_statistics
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_topic
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_topic_statistics
-import kotlinx.android.synthetic.main.ac_testpaper_analyse.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_answer
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_average_score
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.tv_average_topic
@@ -71,7 +69,8 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         var totalScore = 0.0
         for (userItem in bean.taskList) {
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
-                currentScores = ScoreItemUtils.questionToList(userItem.question)
+                currentScores = ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                showLog(Gson().toJson(currentScores))
                 for (item in currentScores) {
                     if (correctModule < 3) {
                         if (totalAnalyseItems.size < currentScores.size) {
@@ -118,7 +117,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         scoreIndex = pops[1].id
         if (scoreMode==1){
             if (users.size > 0) {
-                tv_average_score.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
+                tv_average_score.text = ToolUtils.getFormatNum(totalScore / users.size,"#.0")
             } else {
                 tv_average_score.text = ""
             }
@@ -128,7 +127,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         }
         else{
             if (users.size > 0) {
-                tv_average_topic.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
+                tv_average_topic.text = ToolUtils.getFormatNum(totalScore / users.size,"#.0")
             } else {
                 tv_average_topic.text = ""
             }
@@ -201,7 +200,9 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         if (answerImages.size > 0){
             showView(tv_answer)
-            setAnswerView()
+            tv_answer.setOnClickListener {
+                ImageDialog(this,2,answerImages).builder()
+            }
         }
 
         if (correctModule == 0){
@@ -270,13 +271,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
             }
         }
 
-        iv_score_up.setOnClickListener {
-            rv_list.scrollBy(0, -DP2PX.dip2px(this, 100f))
-        }
-
-        iv_score_down.setOnClickListener {
-            rv_list.scrollBy(0, DP2PX.dip2px(this, 100f))
-        }
 
         onChangeExpandView()
 
@@ -382,6 +376,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
      */
     private fun setAnalyseData(classUserBean: TestPaperClassUserList.ClassUserBean, scoreItem: ScoreItem, analyseItem: AnalyseItem) {
         analyseItem.sort = scoreItem.sort
+        analyseItem.sortStr=scoreItem.sortStr
         analyseItem.totalScore += scoreItem.score
         analyseItem.totalLabel+=scoreItem.label
         analyseItem.num += 1

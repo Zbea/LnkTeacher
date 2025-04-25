@@ -1,11 +1,13 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.media.MediaPlayer
+import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.NumberDialog
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
@@ -25,6 +27,7 @@ import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_expand_arrow
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_file
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_play
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_play
@@ -46,6 +49,7 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.stream.Collectors
 
 class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
 
@@ -65,6 +69,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private var mediaPlayer: MediaPlayer? = null
     private var tokenStr = ""
     private var initScores=mutableListOf<ScoreItem>()//初始题目分数
+    private var isTopicExpend=false
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -72,11 +77,13 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
     override fun onClassPapers(bean: TestPaperClassUserList) {
         userItems = bean.taskList
+        mAdapter?.setNewData(userItems)
         if (userItems.size > 0) {
             userItems[posUser].isCheck = true
-            setContentView()
+            Handler().post {
+                setContentView()
+            }
         }
-        mAdapter?.setNewData(userItems)
     }
 
     override fun onCorrectSuccess() {
@@ -86,6 +93,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
         userItems[posUser].question = Gson().toJson(initScores)
+        userItems[posUser].currentScores=currentScores.stream().collect(Collectors.toList())
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         setDisableTouchInput(true)
@@ -127,7 +135,9 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         if (answerImages.size > 0) {
             showView(tv_answer)
-            setAnswerView()
+            tv_answer.setOnClickListener {
+                ImageDialog(this,2,answerImages).builder()
+            }
         }
 
         //如果是朗读本
@@ -143,10 +153,27 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             mPresenter.complete(correctList?.id!!, mClassBean?.classId!!)
         }
 
+        iv_expand_arrow.setOnClickListener {
+            if (isTopicExpend){
+                isTopicExpend=false
+                setTopicExpend(false)
+            }
+            else{
+                isTopicExpend=true
+                setTopicExpend(true)
+            }
+        }
+
         tv_save.setOnClickListener {
             hideKeyboard()
             if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
+                //将赋值数据初始化给原数据
+                ScoreItemUtils.updateInitListData(initScores,currentScores,correctModule)
+                if (isTopicExpend){
+                    isTopicExpend=false
+                    setTopicExpend(false)
+                }
                 //没有手写，直接提交
                 if (!FileUtils.isExistContent(getPathDraw())) {
                     url = userItems[posUser].studentUrl
@@ -201,13 +228,20 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             setOnItemClickListener { adapter, view, position ->
                 if (position == posUser)
                     return@setOnItemClickListener
-                userItems[posUser].isCheck = false
+                val oldItem=userItems[posUser]
+                oldItem.isCheck = false
+                oldItem.currentScores=currentScores.stream().collect(Collectors.toList())
+                oldItem.score=tv_total_score.text.toString().toDouble()
                 mAdapter?.notifyItemChanged(posUser)
+
                 posUser = position//设置当前学生下标
                 userItems[position].isCheck = true
                 mAdapter?.notifyItemChanged(posUser)
+
                 posImage = 0
-                setContentView()
+                Handler().post {
+                    setContentView()
+                }
             }
         }
     }
@@ -245,9 +279,11 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             onChangeExpandView()
         }
         val userItem = userItems[posUser]
-        correctStatus = userItems[posUser].status
+        correctStatus = userItem.status
 
-        tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+        if (correctList?.taskType==1){
+            tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+        }
 
         if (correctList?.subType == 3) {
             if (!userItem.studentUrl.isNullOrEmpty()) {
@@ -261,51 +297,55 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         when (correctStatus) {
             1 -> {
-                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
+                if (!userItem.question.isNullOrEmpty()){
                     initScores=ScoreItemUtils.questionToList(userItem.question)
-                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                    currentScores = if (userItem.currentScores.isNotEmpty()){
+                        userItem.currentScores.stream().collect(Collectors.toList())
+                    } else{
+                        ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                    }
                 }
                 else{
                     initScores=ScoreItemUtils.questionToList(correctList?.question!!)
-                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(correctList?.question!!))
+                    currentScores = if (userItem.currentScores.isNotEmpty()){
+                        userItem.currentScores.stream().collect(Collectors.toList())
+                    } else{
+                        ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(correctList?.question!!))
+                    }
                 }
                 currentImages = ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = userItem.score.toString()
-                showView(ll_score, tv_save)
-                onChangeContent()
+                showView(ll_score,ll_score_topic, tv_save)
+
                 setDisableTouchInput(false)
                 setPWEnabled(true)
             }
             2 -> {
-                if (correctModule>0&&!userItem.question.isNullOrEmpty()){
-                    currentScores=ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
+                currentScores = if (userItem.currentScores.isNotEmpty()){
+                    userItem.currentScores.stream().collect(Collectors.toList())
+                } else{
+                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
                 }
                 currentImages = ToolUtils.getImages(userItem.submitUrl)
                 tv_total_score.text = userItem.score.toString()
-                showView(ll_score)
+                showView(ll_score,ll_score_topic)
                 disMissView(tv_save)
-                onChangeContent()
+
                 setDisableTouchInput(true)
-                setPWEnabled(true)
+                setPWEnabled(false)
             }
             3 -> {
+                currentScores.clear()
                 currentImages = mutableListOf()
-                disMissView(ll_score)
-                tv_page.text = ""
-                tv_page_total.text = ""
-                v_content_a?.setImageResource(0)
-                v_content_b?.setImageResource(0)
+                disMissView(ll_score,ll_score_topic)
+
                 setDisableTouchInput(true)
                 setPWEnabled(false)
             }
         }
 
-        if (correctModule > 0 ) {
-            showView(ll_score_topic)
-            setRecyclerViewScoreAdapter()
-        } else {
-            disInvisbleView(ll_score_topic)
-        }
+        setRecyclerViewScoreAdapter()
+        onChangeContent()
     }
 
     /**
@@ -319,6 +359,13 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         tv_page_total.text = "${getImageSize()}"
         tv_page_total_a.text = "${getImageSize()}"
+
+        if (currentImages.size==0){
+            v_content_a?.setImageResource(0)
+            v_content_a?.setImageResource(0)
+            return
+        }
+
         if (isExpand) {
             GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
             GlideUtils.setImageCacheUrl(this, currentImages[posImage + 1], v_content_b)
@@ -409,8 +456,6 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
      * 提交学生考卷
      */
     private fun commit() {
-        //将赋值数据初始化给原数据
-        ScoreItemUtils.updateInitListData(initScores,currentScores,correctModule)
         val map = HashMap<String, Any>()
         map["studentTaskId"] = userItems[posUser].studentTaskId
         map["score"] = tv_total_score.text.toString().toDouble()

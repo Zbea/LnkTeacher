@@ -5,7 +5,7 @@
     android:background="@color/bg_page"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="@dimen/width"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
@@ -14,17 +14,19 @@
         android:gravity="center_horizontal"
         >
         <include
+            android:id="@+id/ll_title"
             layout="@layout/common_title"
             />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="540dp"
+            android:layout_below="@+id/ll_title"
             android:layout_marginStart="@dimen/dp_60"
             android:layout_marginEnd="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             />
 
 
@@ -32,10 +34,11 @@
             android:id="@+id/ll_score_topic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/ll_score"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
+            android:background="@color/white"
             >
 
             <RelativeLayout
@@ -78,11 +81,22 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/rl_topic_content"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_500"
+                android:layout_height="500dp"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/bg_black_stroke_10dp_corner"
                 >
+
+                <ImageView
+                    android:id="@+id/iv_expand_arrow"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@mipmap/icon_topic_arrow_expend"
+                    android:layout_margin="@dimen/dp_10"
+                    android:background="@drawable/click_btn_transparent_line_black"
+                    />
 
                 <ImageView
                     android:id="@+id/iv_score_up"
@@ -108,8 +122,8 @@
                     android:layout_centerInParent="true"
                     android:layout_marginTop="@dimen/dp_25"
                     android:layout_marginBottom="@dimen/dp_25"
-                    android:layout_marginStart="@dimen/dp_60"
-                    android:layout_marginEnd="@dimen/dp_60"
+                    android:layout_marginStart="@dimen/dp_80"
+                    android:layout_marginEnd="@dimen/dp_80"
                     />
 
             </RelativeLayout>
@@ -121,6 +135,7 @@
             android:id="@+id/ll_score"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_50"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/dp_50"
             android:layout_marginEnd="@dimen/dp_50"
             android:layout_marginTop="@dimen/dp_20"
@@ -181,7 +196,7 @@
         </LinearLayout>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/ll_record"
@@ -254,13 +269,4 @@
         android:src="@mipmap/icon_app_geometry"
         android:visibility="gone" />
 
-    <include
-        android:id="@+id/rl_answer"
-        android:layout_width="@dimen/width"
-        android:layout_height="680dp"
-        android:layout_marginTop="@dimen/statusbar_height"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-        layout="@layout/common_answer"
-        />
 </RelativeLayout>

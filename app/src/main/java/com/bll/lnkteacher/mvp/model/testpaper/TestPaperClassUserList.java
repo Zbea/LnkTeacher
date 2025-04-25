@@ -3,6 +3,7 @@ package com.bll.lnkteacher.mvp.model.testpaper;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,5 +28,6 @@ public class TestPaperClassUserList implements Serializable {
         public boolean isCheck;
         public int questionType;
         public String question;//题目数据
+        public List<ScoreItem> currentScores=new ArrayList<>();
     }
 }

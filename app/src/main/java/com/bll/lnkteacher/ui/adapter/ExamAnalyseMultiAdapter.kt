@@ -5,15 +5,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
-import com.bll.lnkteacher.utils.ToolUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
 class ExamAnalyseMultiAdapter(layoutResId: Int, data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: AnalyseItem) {
-        helper.setText(R.id.tv_sort,ToolUtils.numbers[item.sort+1])
+        helper.setText(R.id.tv_sort,item.sortStr)
         helper.setText(R.id.tv_score,item.averageScore.toString())
+        helper.setText(R.id.tv_label_score,item.totalLabel.toString())
         helper.setText(R.id.tv_wrong_num,item.wrongNum.toString())
         helper.setGone(R.id.rv_list,!item.childAnalyses.isNullOrEmpty())
         helper.setGone(R.id.ll_analyse,item.childAnalyses.isNullOrEmpty())
@@ -31,8 +31,9 @@ class ExamAnalyseMultiAdapter(layoutResId: Int, data: List<AnalyseItem>?) : Base
 
     class ChildAdapter(layoutResId: Int,  data: List<AnalyseItem>?) : BaseQuickAdapter<AnalyseItem, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: AnalyseItem) {
-            helper.setText(R.id.tv_sort,"${item.sort+1}")
+            helper.setText(R.id.tv_sort,item.sortStr)
             helper.setText(R.id.tv_score,item.averageScore.toString())
+            helper.setText(R.id.tv_label_score,item.totalLabel.toString())
             helper.setText(R.id.tv_wrong_num,item.wrongNum.toString())
             helper.addOnClickListener(R.id.tv_wrong_num)
         }

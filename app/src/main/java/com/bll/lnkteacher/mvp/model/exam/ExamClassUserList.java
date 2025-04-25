@@ -1,6 +1,9 @@
 package com.bll.lnkteacher.mvp.model.exam;
 
+import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,5 +23,6 @@ public class ExamClassUserList implements Serializable {
         public boolean isCheck;
         public String question;//题目数据
         public int questionType;
+        public List<ScoreItem> currentScores=new ArrayList<>();
     }
 }

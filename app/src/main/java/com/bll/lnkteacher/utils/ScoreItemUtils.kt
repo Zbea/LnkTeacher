@@ -6,54 +6,50 @@ import com.google.gson.reflect.TypeToken
 
 object ScoreItemUtils {
 
-    /**
-     * 获取12中的特殊模式
-     */
-    fun getSpecialMode(correctModule: Int, json: String): Int {
-        val list = questionToList(json)
-        when(correctModule){
-         2->{
-             for (item in list) {
-                 if (!item.childScores.isNullOrEmpty()) {
-                     return 5
-                 }
-             }
-         }
-         3,4->{
-             for (item in list){
-                 if (!item.childScores.isNullOrEmpty()){
-                     for (childItem in item.childScores){
-                         if (!childItem.childScores.isNullOrEmpty()) {
-                             return if (correctModule==3) 6 else 7
-                         }
-                     }
-                 }
-             }
-         }
-        }
-        return correctModule
-    }
 
     /**
      * 格式序列化  题目分数转行list集合
      */
     fun questionToList(json: String): MutableList<ScoreItem> {
+        if (json.isEmpty()){
+            return mutableListOf()
+        }
         val list=Gson().fromJson(json, object : TypeToken<MutableList<ScoreItem>>() {}.type) as MutableList<ScoreItem>
-        setInitList(list,0)
+        for (item in list){
+            item.level=0
+            item.parentSort=0
+            item.rootSort=item.sort
+            if (!item.childScores.isNullOrEmpty()){
+                setInitListLevel(item.childScores,item)
+            }
+        }
+        setInitListScore(list)
         return list
     }
 
-    /**
-     * 给数据赋值层级
-     */
-    private fun setInitList(list:List<ScoreItem>,level: Int){
+    private fun setInitListLevel(list:List<ScoreItem>,parentItem: ScoreItem){
         for (item in list){
-            item.level=level
+            item.level=parentItem.level+1
+            item.parentSort=parentItem.sort
+            item.rootSort=parentItem.rootSort
             if (!item.childScores.isNullOrEmpty()){
-                item.label = getParentTotalLabel(item.childScores)
+                setInitListLevel(item.childScores,item)
+            }
+        }
+    }
+
+    /**
+     * 给数据节点赋分、以及统计对错
+     */
+    private fun setInitListScore(list:List<ScoreItem>){
+        for (item in list){
+            if (!item.childScores.isNullOrEmpty()){
+                item.label= getParentTotalLabel(item.childScores)
                 item.score= getParentTotalScore(item.childScores)
                 item.result= getItemScoreResult(item)
-                setInitList(item.childScores,item.level+1)
+            }
+            else{
+                item.result=getItemScoreResult(item)
             }
         }
     }
@@ -131,7 +127,7 @@ object ScoreItemUtils {
                             childItem.rootSort = item.rootSort
                             if (isShowSortStr){
                                 if (childItem.childScores.isNullOrEmpty()) {
-                                    childItem.sortStr="(${childItem.sort+1})"
+                                    childItem.sortStr=" (${childItem.sort+1})"
                                     childItems.add(childItem)
                                 } else {
                                     childItems.addAll(setRecursionChildList(correctModule,childItem.childScores, childItem))
@@ -165,7 +161,7 @@ object ScoreItemUtils {
                                     childItem.level=2
                                     if (isShowSortStr){
                                         if (childItem.childScores.isNullOrEmpty()) {
-                                            childItem.sortStr="(${childItem.sort+1})"
+                                            childItem.sortStr=" (${childItem.sort+1})"
                                             childItems.add(childItem)
                                         } else {
                                             childItems.addAll(setRecursionChildList(correctModule,childItem.childScores, childItem))
@@ -211,9 +207,9 @@ object ScoreItemUtils {
                 return currentList
             }
             5,6,7->{
-                val items=setRecursionList(currentList)
+                val items= setRecursionList(currentList)
                 setRecursionListAssignScore(initList,items)
-                setInitList(initList,0)
+                setInitListScore(initList)
             }
         }
         return initList
@@ -241,7 +237,7 @@ object ScoreItemUtils {
         val items = mutableListOf<ScoreItem>()
         for (item in list) {
             item.rootSort = parentItem.rootSort
-            item.sortStr=if (list.indexOf(item)==0&&item.level==if (correctModule==5)2 else 3) "(${parentItem.sort+1})" else ""
+            item.sortStr=if (list.indexOf(item)==0&&item.level==if (correctModule==5)2 else 3) " (${parentItem.sort+1})" else ""
             if (item.childScores.isNullOrEmpty()) {
                 items.add(item)
             } else {
@@ -289,7 +285,7 @@ object ScoreItemUtils {
      */
     private fun getCurrentScore(currentItem: ScoreItem, scoreList: MutableList<ScoreItem>): Double {
         for (item in scoreList) {
-            if (item.level == currentItem.level && item.rootSort == currentItem.rootSort && item.sort == currentItem.sort) {
+            if (item.level == currentItem.level && item.rootSort == currentItem.rootSort&&item.parentSort == currentItem.parentSort && item.sort == currentItem.sort) {
                 return item.score
             }
         }
