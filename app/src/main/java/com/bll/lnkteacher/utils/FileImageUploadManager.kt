@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.utils
 
 import android.util.Log
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.google.gson.Gson
@@ -56,7 +57,7 @@ class FileImageUploadManager(private val uploadToken:String,private val paths:Li
                 Log.d("debug",Gson().toJson(response))
                 if (info?.isOK == true) {
                     val keyStr=response.optString("key")
-                    val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
+                    val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
                     items.add(ItemList().apply {
                         id=key.toInt()
                         url=downloadUrl

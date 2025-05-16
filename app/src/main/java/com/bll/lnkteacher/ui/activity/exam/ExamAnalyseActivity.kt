@@ -116,7 +116,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
         tv_num_score.text = getScoreNum().toString()
 
         if (users.size > 0) {
-            tv_average_score.text = ToolUtils.getFormatNum(totalScore.toDouble() / users.size,"#.0")
+            tv_average_score.text = ToolUtils.getFormatNum(totalScore/ users.size,"#.0")
         } else {
             tv_average_score.text = ""
         }
@@ -326,7 +326,7 @@ class ExamAnalyseActivity:BaseDrawingActivity(),IContractView.IExamCorrectView {
             analyseItem.rightNum += 1
             analyseItem.rightStudents.add(AnalyseItem.UserBean(classUserBean.userId, classUserBean.studentName, classUserBean.score))
         }
-        analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
+        analyseItem.averageScore = ToolUtils.getFormatNum(analyseItem.totalScore / analyseItem.num,"#.0").toDouble()
         analyseItem.scoreRate=analyseItem.totalScore/analyseItem.totalLabel
     }
 

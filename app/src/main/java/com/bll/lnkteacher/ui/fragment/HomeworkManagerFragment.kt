@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.fragment
 
 import PopupClick
-import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.bll.lnkteacher.DataBeanManager
@@ -11,7 +10,6 @@ import com.bll.lnkteacher.dialog.HomeworkCreateDialog
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignSearchActivity
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
@@ -43,9 +41,8 @@ class HomeworkManagerFragment : BaseMainFragment(){
         }
 
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details)))
-        homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_assign_search)))
-        homeworkPopBeans.add(PopupBean(2, getString(R.string.teaching_pop_create_book)))
-        homeworkPopBeans.add(PopupBean(3, getString(R.string.teaching_pop_create_reel)))
+        homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book)))
+        homeworkPopBeans.add(PopupBean(2, getString(R.string.teaching_pop_create_reel)))
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -119,12 +116,9 @@ class HomeworkManagerFragment : BaseMainFragment(){
                         homeworkAssignFragment?.showAssignDetails()
                     }
                     1->{
-                        customStartActivity(Intent(requireActivity(),HomeworkAssignSearchActivity::class.java).setFlags(grade))
-                    }
-                    2->{
                         showCreateHomeworkName("输入作业本名称", item.id)
                     }
-                    3->{
+                    2->{
                         showCreateHomeworkName("输入作业卷名称", item.id)
                     }
                 }

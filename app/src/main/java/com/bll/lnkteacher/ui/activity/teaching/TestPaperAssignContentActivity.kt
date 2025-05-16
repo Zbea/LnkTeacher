@@ -9,19 +9,15 @@ import com.bll.lnkteacher.dialog.DateTimeSelectorDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.PopupCheckList
 import com.bll.lnkteacher.mvp.model.PopupBean
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignItem
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.TestPaperAssignContentPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.adapter.HomeworkAssignContentAdapter
-import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.ui.adapter.TestPaperAssignContentAdapter
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.cb_commit
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_commit
-import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.ll_correct
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_commit_time
 import kotlinx.android.synthetic.main.ac_testpaper_assgin_content.tv_group
@@ -30,7 +26,7 @@ import kotlinx.android.synthetic.main.common_title.tv_btn_1
 class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITestPaperAssignContentView {
 
     private lateinit var presenter:TestPaperAssignContentPresenter
-    private var mAdapter: HomeworkAssignContentAdapter? = null
+    private var mAdapter: TestPaperAssignContentAdapter? = null
     private var typeBean:TypeBean?=null
     private var items = mutableListOf<AssignPaperContentList.AssignPaperContentBean>()
     private var popGroups= mutableListOf<PopupBean>()
@@ -64,7 +60,7 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("type") as TypeBean
         grade=typeBean?.grade!!
 
-        val classSelectItem= Gson().fromJson(typeBean?.lastConfig,HomeworkClassSelectItem::class.java)
+        val classSelectItem= Gson().fromJson(typeBean?.lastConfig, HomeworkAssignItem::class.java)
         if (classSelectItem!=null){
             classIds=classSelectItem.classIds
         }
@@ -81,8 +77,6 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
     override fun initView() {
         setPageTitle(typeBean?.name.toString())
         setPageOk("发送")
-        disMissView(ll_correct,cb_commit)
-        ll_commit.layoutParams.width=DP2PX.dip2px(this,200f)
 
         tv_group.setOnClickListener {
             PopupCheckList(this, popGroups, tv_group,tv_group.width,  5).builder().setOnSelectListener{
@@ -123,7 +117,7 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
 
     private fun initRecyclerView(){
         rv_list.layoutManager = GridLayoutManager(this, 4)//创建布局管理
-        mAdapter = HomeworkAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
+        mAdapter = TestPaperAssignContentAdapter(R.layout.item_testpaper_assign_content, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
@@ -161,7 +155,7 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
                 true
             }
         }
-        rv_list?.addItemDecoration(SpaceGridItemDeco(4,20))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(4,60))
     }
 
     /**

@@ -19,7 +19,6 @@ import com.bll.lnkteacher.utils.ActivityManager
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_rate
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_score_statistics
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.ll_topic
@@ -70,7 +69,6 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
         for (userItem in bean.taskList) {
             if (!userItem.question.isNullOrEmpty() && userItem.status == 2 && correctModule > 0) {
                 currentScores = ScoreItemUtils.jsonListToModuleList(correctModule,ScoreItemUtils.questionToList(userItem.question))
-                showLog(Gson().toJson(currentScores))
                 for (item in currentScores) {
                     if (correctModule < 3) {
                         if (totalAnalyseItems.size < currentScores.size) {
@@ -388,7 +386,7 @@ class TestPaperAnalyseActivity : BaseDrawingActivity(), IContractView.ITestPaper
             analyseItem.rightStudents.add(AnalyseItem.UserBean(classUserBean.userId, classUserBean.name, classUserBean.score))
         }
         if (scoreMode == 1) {
-            analyseItem.averageScore = analyseItem.totalScore / analyseItem.num
+            analyseItem.averageScore =ToolUtils.getFormatNum(analyseItem.totalScore / analyseItem.num,"#.0").toDouble()
             analyseItem.scoreRate=analyseItem.totalScore/analyseItem.totalLabel
         } else {
             analyseItem.averageScore = analyseItem.rightNum.toDouble() / analyseItem.num

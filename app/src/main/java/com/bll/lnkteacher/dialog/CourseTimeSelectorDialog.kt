@@ -30,7 +30,7 @@ class CourseTimeSelectorDialog(private val context: Context) {
         tp_end_time?.setIs24HourView(true)
 
         val cancleTv = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        var okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
+        val okTv = dialog?.findViewById<TextView>(R.id.tv_ok)
 
         cancleTv?.setOnClickListener { dismiss() }
         okTv?.setOnClickListener {

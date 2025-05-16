@@ -13,24 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_type_height"
         android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_40"
         android:layout_marginStart="@dimen/dp_50"
         android:orientation="horizontal"
-        android:gravity="center"
+        android:gravity="center|end"
         >
-
-        <include
-            android:id="@+id/ll_date"
-            layout="@layout/common_date_arrow"
-            android:visibility="gone"
-            />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            />
-
 
         <TextView
             android:id="@+id/tv_group"
@@ -50,61 +37,19 @@
             android:background="@drawable/bg_black_stroke_5dp_corner"
             />
 
-        <LinearLayout
-            android:id="@+id/ll_commit"
-            android:layout_width="@dimen/dp_300"
+        <TextView
+            android:id="@+id/tv_commit_time"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:gravity="center_vertical"
-            android:background="@drawable/bg_black_stroke_5dp_corner"
-            >
-
-            <CheckBox
-                android:id="@+id/cb_commit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_15"
-                android:textColor="@color/black"
-                android:ellipsize="end"
-                android:button="@drawable/bg_check_selector"
-                android:textSize="@dimen/sp_25"
-                android:text="  提交"
-                android:lines="1"/>
-
-            <TextView
-                android:id="@+id/tv_commit_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_25"
-                android:hint="选择时间"
-                android:gravity="center"
-                android:textColorHint="@color/color_text_hint"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_correct"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_30"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_25"
+            android:hint="选择时间"
             android:gravity="center"
+            android:textColorHint="@color/color_text_hint"
             android:background="@drawable/bg_black_stroke_5dp_corner"
-            >
+            />
 
-            <CheckBox
-                android:id="@+id/cb_correct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:ellipsize="end"
-                android:button="@drawable/bg_check_selector"
-                android:textSize="@dimen/sp_25"
-                android:text="  自批"
-                android:lines="1"/>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -115,8 +60,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_30"
         android:layout_marginTop="@dimen/dp_40"
         />
 

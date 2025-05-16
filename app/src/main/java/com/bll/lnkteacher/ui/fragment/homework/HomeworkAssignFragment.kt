@@ -17,7 +17,7 @@ import com.bll.lnkteacher.manager.TextbookGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
-import com.bll.lnkteacher.mvp.model.homework.HomeworkClassSelectItem
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignItem
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
@@ -38,7 +38,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
-    private var classSelectBean: HomeworkClassSelectItem?=null //提交作业信息
+    private var classSelectBean: HomeworkAssignItem?=null //提交作业信息
     private var ids=""
 
     override fun onTypeList(list:  TypeList) {
@@ -228,12 +228,12 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 发送作业本消息
      */
-    private fun commitHomework(item:TypeBean, contentStr:String,classSelect: HomeworkClassSelectItem){
+    private fun commitHomework(item:TypeBean, contentStr:String,classSelect: HomeworkAssignItem){
         val map=HashMap<String,Any>()
         map["title"]=contentStr
         map["classIds"]=classSelect.classIds
-        map["showStatus"]=if (classSelect.isCommit) 0 else 1
-        map["endTime"]=if (classSelect.isCommit) classSelect.commitDate/1000 else 0
+        map["showStatus"]=classSelect.showStatus
+        map["endTime"]=if (classSelect.showStatus==0) classSelect.endTime/1000 else 0
         map["commonTypeId"]=item.id
         mPresenter.commitHomework(map)
     }

@@ -1,7 +1,9 @@
 package com.bll.lnkteacher.mvp.model.testpaper;
 
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignItem;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,8 +24,15 @@ public class AssignPaperContentList {
         public String url;
         public String answerUrl;
         public String examUrl;
-        public String question;
+//        public String question;
         public int questionType;
         public boolean isCheck;
+        public List<AutoAssignItem> sysTaskList;
+        public List<HomeworkAssignItem> assignItems=new ArrayList<>();
+        public HomeworkAssignItem assignItem;
+    }
+
+    public static class AutoAssignItem{
+        public String data;
     }
 }

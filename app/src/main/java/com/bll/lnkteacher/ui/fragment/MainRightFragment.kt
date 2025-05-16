@@ -102,8 +102,6 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
         initNoteView()
         initDialog(2)
 
-
-        onCheckUpdate()
     }
 
     override fun lazyLoad() {

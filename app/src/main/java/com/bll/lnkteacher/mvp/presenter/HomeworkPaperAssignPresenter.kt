@@ -53,6 +53,19 @@ class HomeworkPaperAssignPresenter(view: IContractView.IHomeworkPaperAssignView)
         }, true)
     }
 
+    fun setHomeworkAutoAssign(map:HashMap<String,Any>){
+        val boay=RequestUtils.getBody(map)
+        val list = RetrofitManager.service.setHomeworkAutoAssign(boay)
+        doRequest(list, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onSetAutoAssign()
+            }
+        }, true)
+    }
+
     fun deletePapers(ids:List<Int>){
         val map=HashMap<String,Any>()
         map["ids"]=ids.toIntArray()

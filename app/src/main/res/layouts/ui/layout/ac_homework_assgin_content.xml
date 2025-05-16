@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/statusbar_height"
+    android:background="@color/bg_page"
+    >
+
+    <include layout="@layout/common_title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_type_height"
+        android:orientation="horizontal"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:gravity="end"
+        >
+        <TextView
+            android:id="@+id/tv_group"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:lines="1"
+            android:ellipsize="end"
+            android:drawableRight="@mipmap/icon_arrow_down"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_25"
+            android:text="班级选择"
+            android:minWidth="160dp"
+            android:maxWidth="@dimen/dp_500"
+            android:gravity="center"
+            android:textColorHint="@color/color_text_hint"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            />
+
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+
+            <CheckBox
+                android:id="@+id/cb_multi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  单次布置"
+                android:lines="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/navigation_type_height"
+        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_50"
+        android:orientation="horizontal"
+        android:gravity="end"
+        >
+
+        <LinearLayout
+            android:id="@+id/ll_commit"
+            android:layout_width="@dimen/dp_300"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+
+            <CheckBox
+                android:id="@+id/cb_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_15"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  提交"
+                android:lines="1"/>
+
+            <TextView
+                android:id="@+id/tv_commit_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_25"
+                android:hint="选择时间"
+                android:gravity="center"
+                android:textColorHint="@color/color_text_hint"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_correct"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+
+            <CheckBox
+                android:id="@+id/cb_correct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  自批"
+                android:lines="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginEnd="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_20"
+        />
+
+    <include
+        layout="@layout/common_page_number"
+        />
+
+</LinearLayout>

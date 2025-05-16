@@ -246,6 +246,7 @@ public interface IContractView {
         default void onSearchAssignList(List<HomeworkAssignSearchBean> list){};
         default void onCommitSuccess(){};
         default void onDeleteSuccess(){};
+        default void onSetAutoAssign(){}
     }
 
     interface IMainRightView extends IBaseView{

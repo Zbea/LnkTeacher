@@ -39,34 +39,14 @@
         android:textColor="@color/black"
         android:textSize="@dimen/sp_25" />
 
-    <LinearLayout
-        android:id="@+id/ll_date_preset"
+    <TextView
+        android:id="@+id/tv_layout_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_gray_stroke_5dp_corner"
-            android:gravity="center"
-            android:lines="1"
-            android:text="预"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_20" />
-
-        <TextView
-            android:id="@+id/tv_date_preset"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_10"
-            android:lines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_25" />
-
-    </LinearLayout>
-
+        android:lines="1"
+        android:text="自动布置时间"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_25" />
 
 </LinearLayout>

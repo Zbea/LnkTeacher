@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
+import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
 
@@ -19,6 +20,10 @@ class MyBroadcastReceiver : BroadcastReceiver() {
         when(intent.action){
             "android.intent.action.PACKAGE_ADDED"->{
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
+                if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    // 应用安装完成后重启
+                    AppUtils.reOpenApk(context)
+                }
             }
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)

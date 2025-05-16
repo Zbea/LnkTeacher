@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_bg"
+    android:padding="@dimen/dialog_padding"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+            <CheckBox
+                android:id="@+id/cb_show"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  开启自发"
+                android:lines="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:gravity="center"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+            <CheckBox
+                android:id="@+id/cb_correct"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  自批"
+                android:lines="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/tv_assign_time"
+            android:layout_width="@dimen/dp_400"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_25"
+            android:hint="自动发送布置时间"
+            android:gravity="center"
+            android:textColorHint="@color/color_text_hint"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginBottom="@dimen/dp_30"
+        android:orientation="horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            >
+            <CheckBox
+                android:id="@+id/cb_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                android:button="@drawable/bg_check_selector"
+                android:textSize="@dimen/sp_25"
+                android:text="  提交"
+                android:lines="1"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_commit_time"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_20"
+            android:background="@drawable/bg_black_stroke_5dp_corner"
+            android:lines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_25"
+            android:visibility="gone"
+            android:hint="提交时间"
+            android:gravity="center"
+            android:textColorHint="@color/color_text_hint"
+            />
+
+    </LinearLayout>
+
+
+    <include
+        layout="@layout/common_dialog_ok"
+        />
+
+</LinearLayout>

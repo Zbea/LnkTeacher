@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.graphics.Color
+import android.os.Handler
 import android.view.Gravity
 import android.view.View
 import android.widget.GridLayout
@@ -132,11 +133,14 @@ class ClassScheduleActivity : BaseAppCompatActivity(), IContractView.IFileUpload
         tv_btn_1.text="保存"
         tv_btn_1?.setOnClickListener {
             if (selectLists.size == 0) return@setOnClickListener
+            showLoading()
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)
             val path=FileAddress().getPathCourse("course")+"/course${classGroupId}.png"
             BitmapUtils.saveScreenShot(grid, path)
-            mUploadPresenter.getToken(true)
+            Handler().postDelayed({
+                mUploadPresenter.getToken(true)
+            },1000)
         }
 
         val oldCourses= ClassScheduleGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)

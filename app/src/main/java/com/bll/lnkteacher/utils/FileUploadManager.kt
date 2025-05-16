@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.utils
 
 import android.util.Log
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
@@ -80,7 +81,7 @@ class FileUploadManager(private val uploadToken:String) {
                 if (info?.isOK == true) {
                     FileUtils.deleteFile(File(path))
                     val keyStr=response.optString("key")
-                    val downloadUrl="http://cdn.bailianlong.com/${keyStr}?attname=${File(path).name}"
+                    val downloadUrl="${Constants.UPDATE_URL}${keyStr}?attname=${File(path).name}"
                     Log.d("debug",downloadUrl)
                     callBack?.onUpLoadSuccess(downloadUrl)
                 }

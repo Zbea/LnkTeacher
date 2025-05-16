@@ -449,6 +449,11 @@ interface APIService{
     @GET("task/list/job")
     fun getHomeworkList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<AssignPaperContentList>>
     /**
+     * 设置自动发送
+     */
+    @POST("sys/task/updateAll2")
+    fun setHomeworkAutoAssign(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 发送作业本
      */
     @POST("task/group/insertJob")

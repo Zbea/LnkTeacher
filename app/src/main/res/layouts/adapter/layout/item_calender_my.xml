@@ -22,6 +22,4 @@
         android:button="@drawable/bg_check_selector"
         android:layout_marginTop="@dimen/dp_10"
         android:textColor="@color/black"/>
-
-
 </LinearLayout>

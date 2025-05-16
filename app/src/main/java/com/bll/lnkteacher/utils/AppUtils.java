@@ -358,7 +358,7 @@ public class AppUtils {
     }
 
     //重启app
-    public static void reOpenApk(Context context,String packageName){
+    public static void reOpenApk(Context context){
         final Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);

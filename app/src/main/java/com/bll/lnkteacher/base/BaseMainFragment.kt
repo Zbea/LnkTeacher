@@ -7,7 +7,6 @@ import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MyApplication
-import com.bll.lnkteacher.dialog.AppSystemUpdateDialog
 import com.bll.lnkteacher.dialog.AppUpdateDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.mvp.model.AppUpdateBean
@@ -105,7 +104,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
             if (code==200&&jsonObject!=null){
                 val item= Gson().fromJson(jsonObject.toString(),SystemUpdateInfo::class.java)
                 requireActivity().runOnUiThread {
-                    AppSystemUpdateDialog(requireActivity(),item).builder()
+                    AppUpdateDialog(requireActivity(),2,item).builder()
                 }
             }
         },null)
@@ -138,7 +137,7 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
      * 下载应用
      */
     private fun downLoadAPP(bean: AppUpdateBean) {
-        val updateDialog = AppUpdateDialog(requireActivity(),  bean).builder()
+        val updateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
 
         val targetFileStr = FileAddress().getPathApk("lnktecher")
         FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :

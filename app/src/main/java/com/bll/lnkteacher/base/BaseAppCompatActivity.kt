@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -38,14 +37,12 @@ import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.User
-import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.ExceptionHandle
 import com.bll.lnkteacher.net.IBaseView
-import com.bll.lnkteacher.ui.adapter.ClassAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
@@ -79,7 +76,6 @@ import kotlinx.android.synthetic.main.ac_testpaper_analyse.iv_analyse_up
 import kotlinx.android.synthetic.main.ac_testpaper_analyse.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_analyse_teaching.*
 import kotlinx.android.synthetic.main.ac_testpaper_correct.*
-import kotlinx.android.synthetic.main.common_answer.*
 import kotlinx.android.synthetic.main.common_drawing_tool.*
 import kotlinx.android.synthetic.main.common_page_number.*
 import kotlinx.android.synthetic.main.common_title.*
@@ -105,9 +101,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var isClickExpand = false //是否是单双屏切换
     var mTabTypeAdapter: TabTypeAdapter? = null
     var itemTabTypes = mutableListOf<ItemTypeBean>()
-
-    var mExamClassGroups = mutableListOf<ClassGroup>()
-    var mClassAdapter: ClassAdapter? = null
 
     var mTopicScoreAdapter: TopicScoreAdapter? = null
     var mTopicTwoScoreAdapter: TopicTwoScoreAdapter? = null

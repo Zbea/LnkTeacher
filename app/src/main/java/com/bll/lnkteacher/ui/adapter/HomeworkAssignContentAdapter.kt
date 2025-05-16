@@ -15,17 +15,23 @@ class HomeworkAssignContentAdapter(layoutResId: Int, data: List<AssignPaperConte
             setChecked(R.id.cb_check,item.isCheck)
             setText(R.id.cb_check,"  "+item.title)
             setText(R.id.tv_standard_time,if (item.standardTime>0) "${item.standardTime}分钟" else "")
-            setGone(R.id.ll_date_preset,DateUtils.date10ToDate13(item.time)>System.currentTimeMillis())
-            setText(R.id.tv_date_preset,DateUtils.longToStringWeek(item.time))
-            setGone(R.id.tv_answer,!item.answerUrl.isNullOrEmpty())
-            if (getView<ImageView>(R.id.iv_image)!=null){
-                GlideUtils.setImageUrl(mContext,item.url,getView(R.id.iv_image))
-                addOnClickListener(R.id.cb_check,R.id.tv_answer,R.id.iv_image)
-                addOnLongClickListener(R.id.iv_image)
+            if (item.assignItem==null){
+                setText(R.id.tv_layout_time,"自动布置时间")
+                setTextColor(R.id.tv_layout_time,mContext.getColor(R.color.black))
             }
             else{
-                addOnLongClickListener(R.id.cb_check)
-                addOnClickListener(R.id.cb_check,R.id.tv_answer)
+                setTextColor(R.id.tv_layout_time,if (item.assignItem.taskState==2) mContext.getColor(R.color.black) else mContext.getColor(R.color.black_90))
+                setText(R.id.tv_layout_time,DateUtils.longToStringNoYear1(item.assignItem.assignTime))
+            }
+            setGone(R.id.tv_answer,!item.answerUrl.isNullOrEmpty())
+            if (getView<ImageView>(R.id.iv_image)!=null){
+                GlideUtils.setImageRoundUrl(mContext,item.url,getView(R.id.iv_image),8)
+                addOnClickListener(R.id.cb_check,R.id.tv_answer,R.id.iv_image,R.id.tv_layout_time)
+                addOnLongClickListener(R.id.iv_image,R.id.tv_layout_time)
+            }
+            else{
+                addOnLongClickListener(R.id.cb_check,R.id.tv_layout_time)
+                addOnClickListener(R.id.cb_check,R.id.tv_answer,R.id.tv_layout_time)
             }
         }
     }
