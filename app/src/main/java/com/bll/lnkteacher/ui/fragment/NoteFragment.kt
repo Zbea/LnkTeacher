@@ -198,7 +198,7 @@ class NoteFragment : BaseMainFragment() {
         }
         val view =requireActivity().layoutInflater.inflate(R.layout.common_add_view,null)
         view.setOnClickListener {
-            ModuleItemDialog(requireContext(), 3,DataBeanManager.noteModuleBook).builder()
+            ModuleItemDialog(requireContext(), 3,"笔记模板",DataBeanManager.noteModuleBook).builder()
                 .setOnDialogClickListener { moduleBean ->
                     createNote(ToolUtils.getImageResStr(activity, moduleBean.resContentId))
                 }

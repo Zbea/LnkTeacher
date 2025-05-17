@@ -159,7 +159,7 @@ class FreeNoteActivity:BaseDrawingActivity(), IContractView.IFreeNoteView {
         }
 
         iv_expand.setOnClickListener {
-            ModuleItemDialog(this,getCurrentScreenPos(),DataBeanManager.freenoteModules).builder()
+            ModuleItemDialog(this,getCurrentScreenPos(),"随笔模板",DataBeanManager.freenoteModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     MethodManager.setImageResource(this,moduleBean.resContentId,v_content_b)
                     bgResList[posImage]=ToolUtils.getImageResStr(this, moduleBean.resContentId)

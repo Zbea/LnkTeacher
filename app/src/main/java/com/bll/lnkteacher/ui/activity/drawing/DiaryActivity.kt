@@ -17,8 +17,8 @@ import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.utils.ToolUtils
-import kotlinx.android.synthetic.main.ac_diary.ll_date
-import kotlinx.android.synthetic.main.ac_diary.tv_digest
+import kotlinx.android.synthetic.main.ac_drawing.ll_diary
+import kotlinx.android.synthetic.main.ac_drawing.tv_digest
 import kotlinx.android.synthetic.main.common_date_arrow.iv_down
 import kotlinx.android.synthetic.main.common_date_arrow.iv_up
 import kotlinx.android.synthetic.main.common_date_arrow.tv_date
@@ -39,7 +39,7 @@ class DiaryActivity:BaseDrawingActivity() {
     private var bgRes=""
 
     override fun layoutId(): Int {
-        return R.layout.ac_diary
+        return R.layout.ac_drawing
     }
 
     override fun initData() {
@@ -63,8 +63,8 @@ class DiaryActivity:BaseDrawingActivity() {
 
     override fun initView() {
         iv_btn.setImageResource(R.mipmap.icon_draw_change)
-        elik_b?.addOnTopView(ll_date)
-        elik_b?.addOnTopView(tv_digest)
+        showView(ll_diary)
+        elik_b?.addOnTopView(ll_diary)
 
         iv_up.setOnClickListener {
             val lastDiaryBean=DiaryDaoManager.getInstance().queryBeanByDate(nowLong,0,uploadId)
@@ -110,7 +110,7 @@ class DiaryActivity:BaseDrawingActivity() {
         }
 
         iv_btn.setOnClickListener {
-            ModuleItemDialog(this, getCurrentScreenPos(),DataBeanManager.noteModuleDiary).builder()
+            ModuleItemDialog(this, getCurrentScreenPos(),"日记模板",DataBeanManager.diaryModules).builder()
                 .setOnDialogClickListener { moduleBean ->
                     bgRes= ToolUtils.getImageResStr(this, moduleBean.resContentId)
                     diaryBean?.bgRes=bgRes

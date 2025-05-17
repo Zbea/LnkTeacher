@@ -68,7 +68,6 @@
     <string name="note_type_hgb">横格本</string>
     <string name="note_type_fgb">方格本</string>
     <string name="note_type_kbb">空白本</string>
-    <string name="note_type_yyb">英语本</string>
     <string name="note_type_tzb">田字本</string>
     <string name="note_type_wxp">五线谱</string>
 
@@ -159,4 +158,12 @@
     <string name="line_gray">灰线</string>
     <string name="line_dotted">虚线</string>
 
+    <string name="diary_type_hgb_11">横格本-11mm</string>
+    <string name="diary_type_hgb_9">横格本-9mm</string>
+    <string name="diary_type_hgb_7">横格本-7mm</string>
+    <string name="diary_type_fgb_10">方格本-10mm</string>
+    <string name="diary_type_fgb_8.5">方格本-8.5mm</string>
+    <string name="diary_type_fgb_7">方格本-7mm</string>
+    <string name="note_type_yyb_3_5">英语本-3.5mm</string>
+    <string name="note_type_yyb_3">英语本-3mm</string>
 </resources>
