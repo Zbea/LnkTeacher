@@ -26,6 +26,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     private var items= mutableListOf<WallpaperBean>()
     private var mAdapter: WallpaperAdapter?=null
     private var supply=1
+    private var type=1
     private var position=0
 
     override fun onList(bean: WallpaperList) {
@@ -147,6 +148,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         map["supply"]=supply
         map["type"]=1
         map["imgType"]=2
+        map["mainType"]=2
         presenter.getList(map)
     }
 

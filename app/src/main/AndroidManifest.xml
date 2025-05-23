@@ -244,6 +244,13 @@
         <activity android:name=".ui.activity.exam.ExamAnalyseTeachingActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.drawing.HomeworkContentDrawingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.teaching.HomeworkDrawContentTypeActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

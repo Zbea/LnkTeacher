@@ -103,7 +103,7 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
     override fun initData() {
         initChangeScreenData()
         typeBean= intent.getBundleExtra("bundle")?.getSerializable("homeworkType") as TypeBean
-        pageSize=if (typeBean?.subType==1) 12 else 10
+        pageSize=if (typeBean?.subType==1) 12 else 11
         grade=typeBean?.grade!!
         val classSelectItem=Gson().fromJson(typeBean?.lastConfig, HomeworkAssignItem::class.java)
         if (classSelectItem!=null){

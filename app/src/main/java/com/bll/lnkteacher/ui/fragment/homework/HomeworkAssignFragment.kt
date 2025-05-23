@@ -23,6 +23,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.TypeList
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.teaching.HomeworkAssignContentActivity
+import com.bll.lnkteacher.ui.activity.teaching.HomeworkDrawContentTypeActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkAssignAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.NetworkUtil
@@ -134,6 +135,13 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                             classSelectBean=classSelectItem
                             commitHomework(item,contentStr,classSelectItem)
                         }
+                    }
+                    7->{
+                        val intent= Intent(activity, HomeworkDrawContentTypeActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("homeworkType",item)
+                        intent.putExtra("bundle",bundle)
+                        customStartActivity(intent)
                     }
                     else->{
                         val intent= Intent(activity, HomeworkAssignContentActivity::class.java)

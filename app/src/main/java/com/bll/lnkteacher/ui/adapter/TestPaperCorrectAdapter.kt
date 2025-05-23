@@ -28,14 +28,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        val isShow = when(item.subType){
-            3,6->{
-                false
-            }
-            else->{
-                true
-            }
-        }
+        val isShow = item.subType != 3
         helper.setText(tv_title,item.title)
         helper.setText(tv_exam_type,item.subTypeName)
         helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")

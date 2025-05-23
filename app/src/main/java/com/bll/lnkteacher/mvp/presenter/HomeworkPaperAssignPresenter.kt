@@ -1,6 +1,5 @@
 package com.bll.lnkteacher.mvp.presenter
 
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignSearchBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.net.BasePresenter
@@ -27,18 +26,6 @@ class HomeworkPaperAssignPresenter(view: IContractView.IHomeworkPaperAssignView)
         }, true)
     }
 
-    fun getListSearch(map: HashMap<String,Any>){
-        val list = RetrofitManager.service.getHomeworkAssignContent(map)
-        doRequest(list, object : Callback<MutableList<HomeworkAssignSearchBean>>(view) {
-            override fun failed(tBaseResult: BaseResult<MutableList<HomeworkAssignSearchBean>>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<MutableList<HomeworkAssignSearchBean>>) {
-                if (tBaseResult.data!=null)
-                    view.onSearchAssignList(tBaseResult.data)
-            }
-        }, true)
-    }
 
     fun commitHomeworkReel(map:HashMap<String,Any>){
         val boay=RequestUtils.getBody(map)

@@ -43,6 +43,7 @@ object DataBeanManager {
 
     var resources = arrayOf("新闻报刊","书籍阅读","期刊杂志","我的工具","锁屏壁纸","跳页日历")
 
+
     fun getClassGroups(grade: Int):MutableList<ClassGroup>{
         val items= mutableListOf<ClassGroup>()
         for (classGroup in classGroups){

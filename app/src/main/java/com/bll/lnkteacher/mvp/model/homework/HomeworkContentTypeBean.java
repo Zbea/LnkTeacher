@@ -1,48 +1,39 @@
-package com.bll.lnkteacher.mvp.model;
+package com.bll.lnkteacher.mvp.model.homework;
 
 import com.bll.lnkteacher.MethodManager;
-import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
-import java.util.Objects;
-import org.greenrobot.greendao.annotation.Generated;
-
 @Entity
-public class ItemTypeBean {
+public class HomeworkContentTypeBean {
 
     @Unique
     @Id(autoincrement = true)
     public Long id;
     public long userId= MethodManager.getAccountId();
     public String title;
-    public int type;//1笔记2书籍分类3截图分类4日记分类
     public long date;
     public String path;
     public int typeId;
-    @Transient
-    public boolean isCheck;
-    @Transient
-    public int cloudId;
-    @Transient
-    public String downloadUrl;
+    public int contentId;
 
-    @Generated(hash = 710016298)
-    public ItemTypeBean(Long id, long userId, String title, int type, long date, String path,
-            int typeId) {
+    @Generated(hash = 1373413654)
+    public HomeworkContentTypeBean(Long id, long userId, String title, long date,
+            String path, int typeId, int contentId) {
         this.id = id;
         this.userId = userId;
         this.title = title;
-        this.type = type;
         this.date = date;
         this.path = path;
         this.typeId = typeId;
+        this.contentId = contentId;
     }
-    @Generated(hash = 2077540725)
-    public ItemTypeBean() {
+    @Generated(hash = 2009361301)
+    public HomeworkContentTypeBean() {
     }
     public Long getId() {
         return this.id;
@@ -62,12 +53,6 @@ public class ItemTypeBean {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getType() {
-        return this.type;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
     public long getDate() {
         return this.date;
     }
@@ -86,6 +71,11 @@ public class ItemTypeBean {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
-
+    public int getContentId() {
+        return this.contentId;
+    }
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
+    }
 
 }

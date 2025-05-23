@@ -43,6 +43,7 @@ class HomeworkManagerFragment : BaseMainFragment(){
         homeworkPopBeans.add(PopupBean(0, getString(R.string.teaching_pop_assign_details)))
         homeworkPopBeans.add(PopupBean(1, getString(R.string.teaching_pop_create_book)))
         homeworkPopBeans.add(PopupBean(2, getString(R.string.teaching_pop_create_reel)))
+        homeworkPopBeans.add(PopupBean(3, getString(R.string.teaching_pop_create_draw)))
 
         homeworkAssignFragment = HomeworkAssignFragment()
         homeworkCorrectFragment = HomeworkCorrectFragment()
@@ -121,6 +122,9 @@ class HomeworkManagerFragment : BaseMainFragment(){
                     2->{
                         showCreateHomeworkName("输入作业卷名称", item.id)
                     }
+                    3->{
+                        showCreateHomeworkName("输入手写本名称", item.id)
+                    }
                 }
             }
     }
@@ -131,11 +135,21 @@ class HomeworkManagerFragment : BaseMainFragment(){
     private fun showCreateHomeworkName(hint: String,typeId:Int) {
         HomeworkCreateDialog(requireContext(),grade, hint).builder()
             .setOnDialogClickListener { str,ids ->
-                var subtype=2
-                var typeName="作业本"
-                if (typeId==2){
-                    subtype=1
-                    typeName="作业卷"
+                var subtype=0
+                var typeName=""
+                when(typeId){
+                    1->{
+                        subtype=2
+                        typeName="作业本"
+                    }
+                    2->{
+                        subtype=1
+                        typeName="作业卷"
+                    }
+                    3->{
+                        subtype=7
+                        typeName="手写本"
+                    }
                 }
                 val homeworkType = TypeBean()
                 homeworkType.name = str+typeName

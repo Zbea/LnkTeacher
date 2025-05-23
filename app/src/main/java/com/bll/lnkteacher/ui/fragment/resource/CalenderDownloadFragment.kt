@@ -39,6 +39,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
     private var detailsDialog:DownloadCalenderDialog?=null
     private var position=0
     private var supply=1
+    private var type=1
 
     override fun onList(list: CalenderList) {
         setPageNumber(list.total)
@@ -201,6 +202,12 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
         fetchData()
     }
 
+    fun changeType(type:Int){
+        this.type=type
+        pageIndex=1
+        fetchData()
+    }
+
     override fun initChangeScreenData() {
         super.initChangeScreenData()
         presenter=CalenderPresenter(this,getScreenPosition())
@@ -211,6 +218,7 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
         map["page"] = pageIndex
         map["size"] = pageSize
         map["type"] = supply
+        map["mainType"]=2
         presenter.getList(map)
     }
 

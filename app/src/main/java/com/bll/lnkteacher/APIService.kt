@@ -24,7 +24,6 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.model.group.ClassGroupList
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignSearchBean
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.model.testpaper.RankBean
@@ -438,11 +437,6 @@ interface APIService{
      */
     @POST("student/task/allCompleted")
     fun completeCorrectPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-    /**
-     * 作业搜索
-     */
-    @GET("task/listTimeRange")
-    fun getHomeworkAssignContent(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<MutableList<HomeworkAssignSearchBean>>>
     /**
      * 获取作业卷内容列表
      */

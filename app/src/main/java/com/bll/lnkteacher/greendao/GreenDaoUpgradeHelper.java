@@ -38,7 +38,9 @@ public class GreenDaoUpgradeHelper extends DaoMaster.DevOpenHelper{
                 CalenderItemBeanDao.class,
                 ClassScheduleBeanDao.class,
                 HandoutBeanDao.class,
-                TextbookBeanDao.class
+                TextbookBeanDao.class,
+                HomeworkContentBeanDao.class,
+                HomeworkContentTypeBeanDao.class
         );
     }
 }

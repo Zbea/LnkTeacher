@@ -115,10 +115,16 @@ class FileAddress {
         return "$TESTPAPER_PATH/$mUserId/paperCorrectId$paperCorrectId/classId$classId/userId$userId"
     }
     /**
+     * 老师手写地址
+     */
+    fun getPathHomeworkContent(typeId: Int,contentId: Int):String{
+        return "$HOMEWORK_PATH/$mUserId/content/$typeId/$contentId"
+    }
+    /**
      * 批改学生作业保存地址
      */
     fun getPathHomework(paperCorrectId: Int?,classId: Int?,userId:Int):String{
-        return "$HOMEWORK_PATH/$mUserId/homeworkCorrectId$paperCorrectId/classId$classId/userId$userId"
+        return "$HOMEWORK_PATH/$mUserId/correct/$paperCorrectId/$classId/$userId"
     }
     /**
      * 批改学生考试保存地址
@@ -126,19 +132,6 @@ class FileAddress {
     fun getPathExam(paperCorrectId: Int?,classId: Int?,userId:Int):String{
         return "$EXAM_PATH/$mUserId/examCorrectId$paperCorrectId/classId$classId/userId$userId"
     }
-    /**
-     * 得到老师测卷手写地址
-     */
-    fun getPathTestPaperDrawing(id: Int):String{
-        return "$IMAGE_PATH/$mUserId/testDrawing/$id"
-    }
-    /**
-     * 得到老师考试手写地址
-     */
-    fun getPathExamDrawing(id: Int):String{
-        return "$IMAGE_PATH/$mUserId/examDrawing/$id"
-    }
-
     /**
      * 计划总览路径
      */

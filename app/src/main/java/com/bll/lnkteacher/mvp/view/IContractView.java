@@ -3,7 +3,6 @@ package com.bll.lnkteacher.mvp.view;
 import com.bll.lnkteacher.mvp.model.AccountQdBean;
 import com.bll.lnkteacher.mvp.model.AccountOrder;
 import com.bll.lnkteacher.mvp.model.AppList;
-import com.bll.lnkteacher.mvp.model.AppUpdateBean;
 import com.bll.lnkteacher.mvp.model.book.BookStore;
 import com.bll.lnkteacher.mvp.model.book.BookStoreType;
 import com.bll.lnkteacher.mvp.model.CalenderList;
@@ -14,7 +13,6 @@ import com.bll.lnkteacher.mvp.model.HandoutList;
 import com.bll.lnkteacher.mvp.model.Message;
 import com.bll.lnkteacher.mvp.model.SchoolBean;
 import com.bll.lnkteacher.mvp.model.ShareNoteList;
-import com.bll.lnkteacher.mvp.model.SystemUpdateInfo;
 import com.bll.lnkteacher.mvp.model.WallpaperList;
 import com.bll.lnkteacher.mvp.model.book.TextbookStore;
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList;
@@ -25,7 +23,6 @@ import com.bll.lnkteacher.mvp.model.group.ClassGroup;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupTeacher;
 import com.bll.lnkteacher.mvp.model.group.ClassGroupUser;
 import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignDetailsList;
-import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignSearchBean;
 import com.bll.lnkteacher.mvp.model.testpaper.AssignPaperContentList;
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList;
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList;
@@ -243,7 +240,6 @@ public interface IContractView {
 
     interface IHomeworkPaperAssignView extends IBaseView{
         default void onList(AssignPaperContentList contentList){};
-        default void onSearchAssignList(List<HomeworkAssignSearchBean> list){};
         default void onCommitSuccess(){};
         default void onDeleteSuccess(){};
         default void onSetAutoAssign(){}
