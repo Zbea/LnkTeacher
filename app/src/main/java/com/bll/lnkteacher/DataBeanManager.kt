@@ -5,6 +5,8 @@ import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.catalog.CatalogChildBean
 import com.bll.lnkteacher.mvp.model.catalog.CatalogParentBean
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
+import com.bll.lnkteacher.mvp.model.homework.ResultStandardItem
+import com.bll.lnkteacher.mvp.model.homework.ResultStandardItem.ResultChildItem
 import com.chad.library.adapter.base.entity.MultiItemEntity
 import java.util.*
 
@@ -481,6 +483,125 @@ object DataBeanManager {
                 versionStr=item.desc
         }
         return versionStr
+    }
+
+    private fun getResultChildItems():MutableList<ResultChildItem>{
+        val items= mutableListOf<ResultChildItem>()
+        items.add(ResultChildItem().apply {
+            sort=1
+            sortStr="A"
+            score=92.5
+            isCheck=false
+        })
+        items.add(ResultChildItem().apply {
+            sort=2
+            sortStr="B"
+            score=77.5
+            isCheck=false
+        })
+        items.add(ResultChildItem().apply {
+            sort=3
+            sortStr="C"
+            score=62.5
+            isCheck=false
+        })
+        return items
+    }
+
+    /**
+     * 练字评分
+     */
+    fun getResultStandardItem6s():MutableList<ResultStandardItem>{
+        val items= mutableListOf<ResultStandardItem>()
+        items.add(ResultStandardItem().apply {
+            title="比例匀称"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="字迹工整"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="卷面整洁"
+            list= getResultChildItems()
+        })
+        return items
+    }
+
+    /**
+     * 朗读评分
+     */
+    fun getResultStandardItem3s():MutableList<ResultStandardItem>{
+        val items= mutableListOf<ResultStandardItem>()
+        items.add(ResultStandardItem().apply {
+            title="语言标准"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="词汇语法"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="流畅程度"
+            list= getResultChildItems()
+        })
+        return items
+    }
+
+    /**
+     * 阅读评分
+     */
+    fun getResultStandardItem8s():MutableList<ResultStandardItem>{
+        val items= mutableListOf<ResultStandardItem>()
+        items.add(ResultStandardItem().apply {
+            title="词句摘抄"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="阅读感想"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="卷面整洁"
+            list= getResultChildItems()
+        })
+        return items
+    }
+
+    /**
+     * 作文评分
+     */
+    fun getResultStandardItem2s():MutableList<ResultStandardItem>{
+        val items= mutableListOf<ResultStandardItem>()
+        items.add(ResultStandardItem().apply {
+            title="思想内容"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="语言文字"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="层次结构"
+            list= getResultChildItems()
+        })
+        items.add(ResultStandardItem().apply {
+            title="卷面书写"
+            list= getResultChildItems()
+        })
+        return items
+    }
+
+    /**
+     * 手写
+     */
+    fun getResultStandardItems():MutableList<ResultStandardItem>{
+        val items= mutableListOf<ResultStandardItem>()
+        items.add(ResultStandardItem().apply {
+            title="标准评分"
+            list= getResultChildItems()
+        })
+        return items
     }
 
     fun operatingGuideInfo():List<MultiItemEntity>{

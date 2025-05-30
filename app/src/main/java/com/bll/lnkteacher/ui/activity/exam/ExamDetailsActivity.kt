@@ -14,7 +14,6 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
-import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_record
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
 import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
@@ -85,7 +84,7 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
     override fun initView() {
         setPageTitle("考卷详情  ${examClassBean?.className}")
         setDisableTouchInput(true)
-        disMissView(iv_tool,iv_catalog,iv_btn,ll_record)
+        disMissView(iv_tool,iv_catalog,iv_btn)
 
         if (answerImages.size>0){
             showView(tv_answer)
@@ -149,11 +148,6 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
      * 设置切换内容展示
      */
     private fun setContentView(){
-        if (isExpand){
-            isExpand=false
-            onChangeExpandView()
-        }
-
         val userItem=userItems[posUser]
         correctStatus=userItem.status
 

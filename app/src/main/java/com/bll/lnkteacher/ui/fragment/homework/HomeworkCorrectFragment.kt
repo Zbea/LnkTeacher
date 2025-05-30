@@ -16,6 +16,7 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectList
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectPresenter
 import com.bll.lnkteacher.mvp.view.IContractView.ITestPaperCorrectView
+import com.bll.lnkteacher.ui.activity.teaching.HomeworkCorrectActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperAnalyseActivity
 import com.bll.lnkteacher.ui.activity.teaching.TestPaperCorrectActivity
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectAdapter
@@ -95,7 +96,14 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
             setOnChildClickListener { view,parentPos, position ->
                 val item=items[parentPos]
                 if (view.id==R.id.ll_content){
-                    val intent= Intent(requireActivity(), TestPaperCorrectActivity::class.java)
+                    val intent = when(item.subType){
+                        1->{
+                            Intent(requireActivity(), TestPaperCorrectActivity::class.java)
+                        }
+                        else->{
+                            Intent(requireActivity(), HomeworkCorrectActivity::class.java)
+                        }
+                    }
                     val bundle= Bundle()
                     bundle.putSerializable("paperCorrect",item)
                     intent.putExtra("bundle",bundle)
@@ -113,8 +121,6 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
         val item=items[position]
         CommonDialog(requireActivity()).setContent("确认发送？").builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
             override fun ok() {
                 val ids= mutableListOf<Int>()
                 if (item.examList.size==1){

@@ -12,6 +12,7 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkAssignFragment
 import com.bll.lnkteacher.ui.fragment.homework.HomeworkCorrectFragment
+import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_fragment_title.iv_manager
 import kotlinx.android.synthetic.main.common_fragment_title.tv_grade
 
@@ -117,13 +118,13 @@ class HomeworkManagerFragment : BaseMainFragment(){
                         homeworkAssignFragment?.showAssignDetails()
                     }
                     1->{
-                        showCreateHomeworkName("输入作业本名称", item.id)
+                        showCreateHomeworkName( item.id)
                     }
                     2->{
-                        showCreateHomeworkName("输入作业卷名称", item.id)
+                        showCreateHomeworkName(item.id)
                     }
                     3->{
-                        showCreateHomeworkName("输入手写本名称", item.id)
+                        showCreateHomeworkName(item.id)
                     }
                 }
             }
@@ -132,29 +133,25 @@ class HomeworkManagerFragment : BaseMainFragment(){
     /**
      * 新增作业本
      */
-    private fun showCreateHomeworkName(hint: String,typeId:Int) {
-        HomeworkCreateDialog(requireContext(),grade, hint).builder()
+    private fun showCreateHomeworkName(typeId:Int) {
+        HomeworkCreateDialog(requireContext(),grade, typeId).builder()
             .setOnDialogClickListener { str,ids ->
-                var subtype=0
-                var typeName=""
-                when(typeId){
+                val subtype=when(typeId){
                     1->{
-                        subtype=2
-                        typeName="作业本"
+                        2
                     }
                     2->{
-                        subtype=1
-                        typeName="作业卷"
+                        1
                     }
-                    3->{
-                        subtype=7
-                        typeName="手写本"
+                    else->{
+                        7
                     }
                 }
                 val homeworkType = TypeBean()
-                homeworkType.name = str+typeName
-                homeworkType.subType = typeId
-                homeworkAssignFragment?.addHomeworkType(homeworkType,subtype,ids)
+                homeworkType.name = str
+                homeworkType.subType = subtype
+                homeworkType.classIds= ToolUtils.getImagesStr(ids)
+                homeworkAssignFragment?.addHomeworkType(homeworkType)
             }
 
     }

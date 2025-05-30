@@ -28,7 +28,7 @@ class HomeworkAssignDetailsDialog(val mContext: Context, private val items:List<
         window.setBackgroundDrawableResource(android.R.color.transparent)
         val layoutParams = window.attributes
         layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
-        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(mContext,800f))/2
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(mContext,820f))/2
         dialog?.show()
 
         val rvList= dialog?.findViewById<RecyclerView>(R.id.rv_list)

@@ -214,18 +214,18 @@ public interface IContractView {
          * 获取作业分类
          * @param list
          */
-        void onTypeList(TypeList list);
+        default void onTypeList(TypeList list){};
         /**
          * 添加作业分类
          */
-        void onAddSuccess();
+        default void onAddSuccess(){};
         /**
          * 删除分类
          */
-        void onDeleteSuccess();
-        void onEditSuccess();
-        void onTopSuccess();
-        void onBingSuccess();
+        default void onDeleteSuccess(){};
+        default void onEditSuccess(){};
+        default void onTopSuccess(){};
+        default void onBingSuccess(){};
         /**
          * 发送成功
          */
@@ -234,8 +234,8 @@ public interface IContractView {
          * 布置详情
          * @param details
          */
-        void onDetails(HomeworkAssignDetailsList details);
-        void onDetailsDeleteSuccess();
+        default void onDetails(HomeworkAssignDetailsList details){};
+        default void onDetailsDeleteSuccess(){};
     }
 
     interface IHomeworkPaperAssignView extends IBaseView{

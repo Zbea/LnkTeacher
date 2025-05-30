@@ -25,7 +25,6 @@ import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_expand_arrow
-import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_record
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
 import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
@@ -74,9 +73,10 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
             }
             userItems.add(item)
         }
-        mAdapter?.setNewData(userItems)
         if (userItems.size > 0) {
             userItems[posUser].isCheck = true
+
+            mAdapter?.setNewData(userItems)
             Handler().post {
                 setContentView()
             }
@@ -115,7 +115,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
 
     override fun initView() {
         setPageTitle("考卷批改  ${examBean?.examName}  ${examBean?.className}")
-        disMissView(iv_catalog, iv_btn, ll_record)
+        disMissView(iv_catalog, iv_btn)
 
         if (answerImages.size > 0) {
             showView(tv_answer)
@@ -149,7 +149,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
             if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
                 //将赋值数据初始化给原数据
-                ScoreItemUtils.updateInitListData(initScores,currentScores,correctModule)
+                initScores=ScoreItemUtils.updateInitListData(initScores, currentScores,correctModule)
                 if (isTopicExpend){
                     isTopicExpend=false
                     setTopicExpend(false)
@@ -227,11 +227,6 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
      * 设置切换内容展示
      */
     private fun setContentView() {
-        if (isExpand) {
-            isExpand = false
-            onChangeExpandView()
-        }
-
         val userItem = userItems[posUser]
         correctStatus = userItem.status
 

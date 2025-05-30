@@ -163,6 +163,9 @@
         <activity android:name=".ui.activity.teaching.TestPaperCorrectActivity"
             android:windowSoftInputMode="adjustPan"
             />
+        <activity android:name=".ui.activity.teaching.HomeworkCorrectActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity android:name=".ui.activity.book.BookcaseTypeActivity"
             android:windowSoftInputMode="adjustPan"
             />
@@ -244,7 +247,7 @@
         <activity android:name=".ui.activity.exam.ExamAnalyseTeachingActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.drawing.HomeworkContentDrawingActivity"
+        <activity android:name=".ui.activity.teaching.HomeworkContentDrawingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize"
             android:windowSoftInputMode="adjustPan"
             />

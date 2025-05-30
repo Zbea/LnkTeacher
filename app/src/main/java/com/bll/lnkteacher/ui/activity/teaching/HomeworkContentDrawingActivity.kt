@@ -1,5 +1,6 @@
-package com.bll.lnkteacher.ui.activity.drawing
+package com.bll.lnkteacher.ui.activity.teaching
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.EinkPWInterface
 import com.bll.lnkteacher.Constants
@@ -11,25 +12,28 @@ import com.bll.lnkteacher.dialog.HomeworkPublishDialog
 import com.bll.lnkteacher.manager.HomeworkContentDaoManager
 import com.bll.lnkteacher.manager.HomeworkContentTypeDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignItem
 import com.bll.lnkteacher.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkteacher.mvp.model.homework.HomeworkContentTypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
-import java.io.File
 
-class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView {
+class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView,IContractView.IHomeworkAssignView {
 
     private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mPresenter= HomeworkAssignPresenter(this)
     private var contentId = 0
     private var typeBean: TypeBean?=null//作业卷分类
     private var contentTypeBean: HomeworkContentTypeBean? = null
@@ -37,6 +41,7 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
     private var content_a: HomeworkContentBean? = null//a屏内容
     private var contentBeans = mutableListOf<HomeworkContentBean>() //所有内容
     private var page = 0//页码
+    private var currentAssignItem:HomeworkAssignItem?=null
 
     override fun onToken(token: String) {
         val paths= mutableListOf<String>()
@@ -47,7 +52,14 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
             startUpload()
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
-
+                    val map=HashMap<String,Any>()
+                    map["title"]=currentAssignItem!!.contentStr
+                    map["classIds"]=currentAssignItem!!.classIds
+                    map["showStatus"]=currentAssignItem!!.showStatus
+                    map["endTime"]=if (currentAssignItem!!.showStatus==0) currentAssignItem?.endTime!!/1000 else 0
+                    map["commonTypeId"]=typeBean!!.id
+                    map["examUrl"]=ToolUtils.getImagesStr(urls)
+                    mPresenter.commitHomework(map)
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -55,6 +67,17 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
                 }
             })
         }
+    }
+
+    override fun onCommitSuccess() {
+        showToast("作业布置成功")
+        contentTypeBean?.title=currentAssignItem?.contentStr
+        contentTypeBean?.isSave=true
+        HomeworkContentTypeDaoManager.getInstance().insertOrReplace(contentTypeBean)
+        //删除合图
+        FileUtils.delete(contentTypeBean?.path+"/merge/")
+        setResult(Constants.RESULT_10001, Intent().putExtra("contentTitle",currentAssignItem?.contentStr))
+        finish()
     }
 
     override fun layoutId(): Int {
@@ -76,10 +99,12 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
         }
     }
 
-
     override fun initView() {
         MethodManager.setImageResource(this,R.mipmap.icon_note_content_hg_9,v_content_a)
         MethodManager.setImageResource(this,R.mipmap.icon_note_content_hg_9,v_content_b)
+
+        if (contentTypeBean?.isSave==true)
+            disMissView(iv_btn)
 
         iv_btn.setImageResource(R.mipmap.icon_draw_commit)
         iv_btn.setOnClickListener {
@@ -91,8 +116,9 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
                         BitmapUtils.saveBmpGallery(bitmap,item.mergePath)
                     }
                 }
-                HomeworkPublishDialog(this,typeBean!!).builder().setOnDialogClickListener{ contentStr, classSelectItem->
-                    showLoading()
+                HomeworkPublishDialog(this,typeBean!!).builder().setOnDialogClickListener{
+                    currentAssignItem=it
+                    mUploadPresenter.getToken(true)
                 }
             }
             else{
@@ -135,24 +161,16 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
                 onChangeContent()
             }
             else if (page==total-1){
-                if (isDrawLastContent()){
-                    newCreateContent()
-                    page=contentBeans.size-1
-                    onChangeContent()
-                }
-                else{
-                    page=total
-                    onChangeContent()
-                }
+                newCreateContent()
+                page=contentBeans.size-1
+                onChangeContent()
             }
         }
         else{
             if (page ==total) {
-                if (isDrawLastContent()){
-                    newCreateContent()
-                    page=contentBeans.size-1
-                    onChangeContent()
-                }
+                newCreateContent()
+                page=contentBeans.size-1
+                onChangeContent()
             } else {
                 page += 1
                 onChangeContent()
@@ -180,13 +198,7 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
     override fun onChangeExpandContent() {
         changeErasure()
         if (contentBeans.size==1){
-            //如果最后一张已写,则可以在全屏时创建新的
-            if (isDrawLastContent()){
-                newCreateContent()
-            }
-            else{
-                return
-            }
+            newCreateContent()
         }
         if (page==0){
             page=1
@@ -195,14 +207,6 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
         moveToScreen(isExpand)
         onChangeExpandView()
         onChangeContent()
-    }
-
-    /**
-     * 最后一个是否已写
-     */
-    private fun isDrawLastContent():Boolean{
-        val contentBean = contentBeans.last()
-        return File(contentBean.filePath).exists()
     }
 
     override fun onChangeContent() {
@@ -234,12 +238,13 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
     }
 
     override fun onElikSava_a() {
-        if (isExpand)
+        if (isExpand&&contentTypeBean?.isSave==false)
             BitmapUtils.saveScreenShot(v_content_a, content_a?.mergePath)
     }
 
     override fun onElikSava_b() {
-        BitmapUtils.saveScreenShot(v_content_b, content_b?.mergePath)
+        if (contentTypeBean?.isSave==false)
+            BitmapUtils.saveScreenShot(v_content_b, content_b?.mergePath)
     }
 
     //创建新的作业内容

@@ -147,7 +147,6 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
         map["size"] = pageSize
         map["supply"]=supply
         map["type"]=1
-        map["imgType"]=2
         map["mainType"]=2
         presenter.getList(map)
     }

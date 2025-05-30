@@ -57,8 +57,22 @@ class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
         tv_date.text=DateUtils.longToStringWeek(endTime)
         cb_commit.isChecked=isCommit
 
+        var allClassGroups= mutableListOf<ClassGroup>()
+        //判断是否绑定了班群
+        if (typeBean.classIds.isNullOrEmpty()){
+            allClassGroups=if (typeBean.addType==1) DataBeanManager.getClassGroupByMains(typeBean.grade) else DataBeanManager.getClassGroups(typeBean.grade)
+        }
+        else{
+            val bindClassIds=typeBean.classIds.split(",")
+            for (classGroup in DataBeanManager.getClassGroups(typeBean.grade)){
+                if (bindClassIds.contains(classGroup.classId.toString())){
+                    allClassGroups.add(classGroup)
+                }
+            }
+        }
+
         val items= mutableListOf<ClassGroup>()
-        for (item in DataBeanManager.getClassGroupByMains(typeBean.grade)){
+        for (item in allClassGroups){
             if (!classIds.isNullOrEmpty()&&classIds.contains(item.classId)){
                 item.isCheck=true
             }
@@ -104,10 +118,11 @@ class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
                 if (classIds.isNotEmpty())
                 {
                     val classSelect= HomeworkAssignItem()
+                    classSelect.contentStr=contentStr
                     classSelect.classIds=classIds
                     classSelect.endTime=if (isCommit) endTime else 0L
                     classSelect.showStatus=if (isCommit) 0 else 1
-                    listener?.onSend(contentStr,classSelect)
+                    listener?.onSend(classSelect)
                     dialog.dismiss()
                 }
             }
@@ -123,7 +138,7 @@ class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onSend(contentStr:String,classSelect: HomeworkAssignItem)
+        fun onSend(classSelect: HomeworkAssignItem)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

@@ -10,6 +10,7 @@ import java.util.List;
  * 选择班级信息
  */
 public class HomeworkAssignItem implements Serializable {
+    public String contentStr;
     public int selfBatchStatus;//1自批
     @SerializedName("layoutTime")
     public long assignTime;

@@ -6,7 +6,6 @@ public class TestPaperClassBean implements Serializable {
     public int classId;
     public int classGroupId;
     public String name;//班级名称
-    public int examChangeId;
     public int status;
     public int totalStudent;
     public int totalSubmitStudent;

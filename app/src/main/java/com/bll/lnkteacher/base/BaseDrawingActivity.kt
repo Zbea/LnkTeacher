@@ -107,7 +107,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
         iv_page_down?.setOnClickListener {
             Handler().postDelayed({
                 onPageDown()
-            },100)
+            },200)
         }
 
         iv_catalog?.setOnClickListener {

@@ -39,7 +39,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     private var types= mutableListOf<TypeBean>()
     private var position=0
     private var detailsDialog:HomeworkAssignDetailsDialog?=null
-    private var classSelectBean: HomeworkAssignItem?=null //提交作业信息
     private var ids=""
 
     override fun onTypeList(list:  TypeList) {
@@ -130,11 +129,12 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]
                 when(item.subType){
-                    3,6->{
-                        HomeworkPublishDialog(requireContext(),item).builder().setOnDialogClickListener{ contentStr, classSelectItem->
-                            classSelectBean=classSelectItem
-                            commitHomework(item,contentStr,classSelectItem)
-                        }
+                    1->{
+                        val intent= Intent(activity, HomeworkAssignContentActivity::class.java)
+                        val bundle= Bundle()
+                        bundle.putSerializable("homeworkType",item)
+                        intent.putExtra("bundle",bundle)
+                        customStartActivity(intent)
                     }
                     7->{
                         val intent= Intent(activity, HomeworkDrawContentTypeActivity::class.java)
@@ -144,11 +144,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                         customStartActivity(intent)
                     }
                     else->{
-                        val intent= Intent(activity, HomeworkAssignContentActivity::class.java)
-                        val bundle= Bundle()
-                        bundle.putSerializable("homeworkType",item)
-                        intent.putExtra("bundle",bundle)
-                        customStartActivity(intent)
+                        HomeworkPublishDialog(requireContext(),item).builder().setOnDialogClickListener{
+                            commitHomework(item,it)
+                        }
                     }
                 }
             }
@@ -179,7 +177,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         })
         beans.add(ItemList().apply {
             name = "绑定管理"
-            resId = R.mipmap.icon_setting_top
+            resId = R.mipmap.icon_setting_set
         })
 
         LongClickManageDialog(requireActivity(),2, item.name, beans).builder()
@@ -236,9 +234,9 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 发送作业本消息
      */
-    private fun commitHomework(item:TypeBean, contentStr:String,classSelect: HomeworkAssignItem){
+    private fun commitHomework(item:TypeBean,classSelect: HomeworkAssignItem){
         val map=HashMap<String,Any>()
-        map["title"]=contentStr
+        map["title"]=classSelect.contentStr
         map["classIds"]=classSelect.classIds
         map["showStatus"]=classSelect.showStatus
         map["endTime"]=if (classSelect.showStatus==0) classSelect.endTime/1000 else 0
@@ -249,14 +247,14 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
     /**
      * 添加作业本
      */
-    fun addHomeworkType(item: TypeBean, subType:Int,ids:List<Int>){
+    fun addHomeworkType(item: TypeBean){
         val map=HashMap<String,Any>()
         map["name"]=item.name
         map["type"]=2
-        map["subType"]=subType
+        map["subType"]=item.subType
         map["grade"]=grade
-        map["classIds"]=ToolUtils.getImagesStr(ids)
-        mPresenter.addType(map,true)
+        map["classIds"]=item.classIds
+        mPresenter.addType(map)
     }
 
     /**

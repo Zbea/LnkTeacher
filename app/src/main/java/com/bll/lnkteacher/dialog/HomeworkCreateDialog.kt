@@ -13,9 +13,9 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.KeyboardUtils
 import com.bll.lnkteacher.utils.SToast
 
-class HomeworkCreateDialog(val context: Context, val grade:Int,val string: String) {
+class HomeworkCreateDialog(val context: Context, val grade:Int,val type: Int) {
 
-    var classGroupIds= mutableListOf<Int>()
+    private var classGroupIds= mutableListOf<Int>()
 
     fun builder(): HomeworkCreateDialog{
         val dialog = Dialog(context)
@@ -30,7 +30,28 @@ class HomeworkCreateDialog(val context: Context, val grade:Int,val string: Strin
         val btn_ok = dialog.findViewById<Button>(R.id.tv_ok)
         val tvClass = dialog.findViewById<TextView>(R.id.tv_class)
         val tvName = dialog.findViewById<EditText>(R.id.ed_name)
-        tvName?.hint=string
+
+        var hintStr=""
+        var typeName=""
+
+        when(type){
+            1->{
+                hintStr="输入作业本名称"
+                typeName="作业本"
+            }
+            2->{
+                hintStr="输入作业卷名称"
+                typeName="作业卷"
+            }
+            3->{
+                hintStr="输入手写本名称"
+                typeName="手写本"
+            }
+        }
+
+        tvName?.hint=hintStr
+        tvName?.setText(typeName)
+        tvName?.setSelection(0)
 
         tvClass.setOnClickListener {
             ClassGroupSelectorDialog(context, DataBeanManager.getClassGroups(grade)).builder().setOnDialogSelectListener{

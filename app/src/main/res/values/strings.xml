@@ -36,8 +36,8 @@
     <string name="dissolve_success">解散成功</string>
     <string name="details">详情</string>
     <string name="save">保存</string>
-    <string name="play">播放</string>
-    <string name="pause">暂停</string>
+    <string name="play_record">播放录音</string>
+    <string name="pause_record">暂停录音</string>
     <string name="buy">购买</string>
     <string name="download">下载</string>
 
@@ -99,8 +99,7 @@
     <string name="note_create_dialog_title">新建笔记本</string>
     <string name="note_create_dialog_hint">输入笔记本名称</string>
 
-    <string name="teaching_pop_assign_details">作业布置详情</string>
-    <string name="teaching_pop_assign_search">作业预设检索</string>
+    <string name="teaching_pop_assign_details">布置详情</string>
     <string name="teaching_pop_create_book">新增作业本</string>
     <string name="teaching_pop_create_reel">新增作业卷</string>
     <string name="teaching_pop_create_draw">新增手写本</string>

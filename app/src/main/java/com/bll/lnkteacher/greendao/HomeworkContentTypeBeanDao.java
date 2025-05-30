@@ -31,6 +31,7 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
         public final static Property Path = new Property(4, String.class, "path", false, "PATH");
         public final static Property TypeId = new Property(5, int.class, "typeId", false, "TYPE_ID");
         public final static Property ContentId = new Property(6, int.class, "contentId", false, "CONTENT_ID");
+        public final static Property IsSave = new Property(7, Boolean.class, "isSave", false, "IS_SAVE");
     }
 
 
@@ -52,7 +53,8 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
                 "\"DATE\" INTEGER NOT NULL ," + // 3: date
                 "\"PATH\" TEXT," + // 4: path
                 "\"TYPE_ID\" INTEGER NOT NULL ," + // 5: typeId
-                "\"CONTENT_ID\" INTEGER NOT NULL );"); // 6: contentId
+                "\"CONTENT_ID\" INTEGER NOT NULL ," + // 6: contentId
+                "\"IS_SAVE\" INTEGER);"); // 7: isSave
     }
 
     /** Drops the underlying database table. */
@@ -83,6 +85,11 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
         }
         stmt.bindLong(6, entity.getTypeId());
         stmt.bindLong(7, entity.getContentId());
+ 
+        Boolean isSave = entity.getIsSave();
+        if (isSave != null) {
+            stmt.bindLong(8, isSave ? 1L: 0L);
+        }
     }
 
     @Override
@@ -107,6 +114,11 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
         }
         stmt.bindLong(6, entity.getTypeId());
         stmt.bindLong(7, entity.getContentId());
+ 
+        Boolean isSave = entity.getIsSave();
+        if (isSave != null) {
+            stmt.bindLong(8, isSave ? 1L: 0L);
+        }
     }
 
     @Override
@@ -123,7 +135,8 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
             cursor.getLong(offset + 3), // date
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // path
             cursor.getInt(offset + 5), // typeId
-            cursor.getInt(offset + 6) // contentId
+            cursor.getInt(offset + 6), // contentId
+            cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0 // isSave
         );
         return entity;
     }
@@ -137,6 +150,7 @@ public class HomeworkContentTypeBeanDao extends AbstractDao<HomeworkContentTypeB
         entity.setPath(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setTypeId(cursor.getInt(offset + 5));
         entity.setContentId(cursor.getInt(offset + 6));
+        entity.setIsSave(cursor.isNull(offset + 7) ? null : cursor.getShort(offset + 7) != 0);
      }
     
     @Override

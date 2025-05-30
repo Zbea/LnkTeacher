@@ -28,15 +28,13 @@ import com.chad.library.adapter.base.BaseViewHolder
 class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : BaseQuickAdapter<CorrectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: CorrectBean) {
-        val isShow = item.subType != 3
         helper.setText(tv_title,item.title)
         helper.setText(tv_exam_type,item.subTypeName)
         helper.setText(tv_self_correct,if (item.selfBatchStatus==1)"自批" else "")
         helper.setText(tv_standard_time,if(item.standardTime>0) "${item.standardTime}分钟" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
-        helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&isShow)
-        helper.setGone(tv_send,isShow)
+        helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&item.subType==1)
 
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理

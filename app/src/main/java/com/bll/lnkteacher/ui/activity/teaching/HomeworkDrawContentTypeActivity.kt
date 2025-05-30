@@ -2,9 +2,13 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
@@ -13,7 +17,6 @@ import com.bll.lnkteacher.manager.HomeworkContentTypeDaoManager
 import com.bll.lnkteacher.mvp.model.homework.HomeworkContentTypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.drawing.HomeworkContentDrawingActivity
 import com.bll.lnkteacher.ui.adapter.HomeworkDrawContentTypeAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
@@ -29,6 +32,8 @@ class HomeworkDrawContentTypeActivity:BaseAppCompatActivity(),IContractView.IHom
     private var typeBean: TypeBean?=null//作业卷分类
     private var items= mutableListOf<HomeworkContentTypeBean>()
     private var mAdapter:HomeworkDrawContentTypeAdapter?=null
+    private var startActivityLauncher: ActivityResultLauncher<Intent>?=null
+    private var position=0
 
     override fun layoutId(): Int {
         return R.layout.ac_list
@@ -39,6 +44,15 @@ class HomeworkDrawContentTypeActivity:BaseAppCompatActivity(),IContractView.IHom
         typeId=typeBean?.id!!
         pageSize=12
 
+        startActivityLauncher=registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if (it.resultCode== Constants.RESULT_10001){
+                val title=it.data!!.getStringExtra("contentTitle")
+                val item=items[position]
+                item.isSave=true
+                item.title=title
+                mAdapter?.notifyItemChanged(position)
+            }
+        }
     }
 
     override fun initView() {
@@ -54,9 +68,14 @@ class HomeworkDrawContentTypeActivity:BaseAppCompatActivity(),IContractView.IHom
             item.path=FileAddress().getPathHomeworkContent(typeId,item.contentId)
             HomeworkContentTypeDaoManager.getInstance().insertOrReplace(item)
 
+            position=0
             gotoDrawing(item)
 
-            fetchData()
+            Handler().postDelayed({
+                pageIndex=1
+                fetchData()
+            },500)
+
         }
 
         initRecyclerView()
@@ -85,20 +104,20 @@ class HomeworkDrawContentTypeActivity:BaseAppCompatActivity(),IContractView.IHom
                 }
             }
             setOnItemClickListener { adapter, view, position ->
-                val item=items[position]
-                gotoDrawing(item)
+                this@HomeworkDrawContentTypeActivity.position=position
+                gotoDrawing(items[position])
             }
         }
         rv_list?.addItemDecoration(SpaceItemDeco(35))
     }
 
     private fun gotoDrawing(item:HomeworkContentTypeBean){
-        val intent= Intent(this@HomeworkDrawContentTypeActivity,HomeworkContentDrawingActivity::class.java)
+        val intent= Intent(this@HomeworkDrawContentTypeActivity, HomeworkContentDrawingActivity::class.java)
         val bundle= Bundle()
         bundle.putSerializable("homeworkType",typeBean)
         intent.putExtra("bundle",bundle)
         intent.putExtra("contentId",item.contentId)
-        customStartActivity(intent)
+        startActivityLauncher?.launch(intent)
     }
 
     override fun fetchData() {

@@ -76,6 +76,7 @@ class ClassScheduleActivity : BaseAppCompatActivity(), IContractView.IFileUpload
 
     override fun onSubjects(subjects: MutableList<String>) {
         lists.add(ItemList(0,"清空"))
+        lists.add(ItemList(0,"自习"))
         for (subject in subjects){
             lists.add(ItemList(DataBeanManager.getCourseId(subject),subject))
         }

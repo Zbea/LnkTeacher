@@ -20,10 +20,11 @@ public class HomeworkContentTypeBean {
     public String path;
     public int typeId;
     public int contentId;
+    public Boolean isSave=false;
 
-    @Generated(hash = 1373413654)
+    @Generated(hash = 468235703)
     public HomeworkContentTypeBean(Long id, long userId, String title, long date,
-            String path, int typeId, int contentId) {
+            String path, int typeId, int contentId, Boolean isSave) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -31,6 +32,7 @@ public class HomeworkContentTypeBean {
         this.path = path;
         this.typeId = typeId;
         this.contentId = contentId;
+        this.isSave = isSave;
     }
     @Generated(hash = 2009361301)
     public HomeworkContentTypeBean() {
@@ -76,6 +78,12 @@ public class HomeworkContentTypeBean {
     }
     public void setContentId(int contentId) {
         this.contentId = contentId;
+    }
+    public Boolean getIsSave() {
+        return this.isSave;
+    }
+    public void setIsSave(Boolean isSave) {
+        this.isSave = isSave;
     }
 
 }

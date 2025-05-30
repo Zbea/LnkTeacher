@@ -34,7 +34,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
     /**
      * 添加作业本
      */
-    fun addType(map: HashMap<String,Any>,boolean: Boolean) {
+    fun addType(map: HashMap<String,Any>) {
         val body=RequestUtils.getBody(map)
         val type = RetrofitManager.service.addPaperType(body)
         doRequest(type, object : Callback<Any>(view) {
@@ -44,7 +44,7 @@ class HomeworkAssignPresenter(view: IContractView.IHomeworkAssignView) : BasePre
             override fun success(tBaseResult: BaseResult<Any>) {
                 view.onAddSuccess()
             }
-        }, boolean)
+        }, true)
     }
 
     /**
