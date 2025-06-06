@@ -229,6 +229,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
     private fun setContentView() {
         val userItem = userItems[posUser]
         correctStatus = userItem.status
+        isDrawingSave=correctStatus==1
 
         when (correctStatus) {
             1 -> {

@@ -91,6 +91,8 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
         contentId=contentTypeBean?.contentId!!
         contentBeans = HomeworkContentDaoManager.getInstance().queryAllByContent(contentId)
 
+        isDrawingSave=!contentTypeBean?.isSave!!
+
         if (contentBeans.isNotEmpty()) {
             content_b = contentBeans[contentBeans.size - 1]
             page = contentBeans.size - 1
@@ -112,7 +114,9 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
                 //未手写部分保存本地图片
                 for (item in contentBeans){
                     if (!FileUtils.isExist(item.mergePath)){
-                        val bitmap=BitmapFactory.decodeResource(resources,R.mipmap.icon_note_content_hg_9)
+                        val options = BitmapFactory.Options()
+                        options.inScaled = false // 防止自动缩放
+                        val bitmap=BitmapFactory.decodeResource(resources,R.mipmap.icon_note_content_hg_9,options)
                         BitmapUtils.saveBmpGallery(bitmap,item.mergePath)
                     }
                 }

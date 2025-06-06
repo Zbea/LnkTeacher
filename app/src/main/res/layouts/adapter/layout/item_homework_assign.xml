@@ -10,6 +10,7 @@
         android:layout_width="220dp"
         android:layout_height="290dp"
         android:padding="1dp"
+        android:background="@mipmap/icon_homework_cover_1"
         >
 
         <ImageView

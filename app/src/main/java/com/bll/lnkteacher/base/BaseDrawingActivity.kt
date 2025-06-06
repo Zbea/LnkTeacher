@@ -44,6 +44,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
     private var isAllowChange=true //是否运行移屏幕
+    var isDrawingSave=false
 
     var ll_page_content_a: LinearLayout?=null
     var ll_page_content_b: LinearLayout?=null
@@ -101,13 +102,13 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
         iv_page_up?.setOnClickListener {
             Handler().postDelayed({
                 onPageUp()
-            },100)
+            },if (isDrawingSave) 500 else 0)
         }
 
         iv_page_down?.setOnClickListener {
             Handler().postDelayed({
                 onPageDown()
-            },200)
+            },if (isDrawingSave) 500 else 0)
         }
 
         iv_catalog?.setOnClickListener {

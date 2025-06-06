@@ -90,7 +90,7 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
         tv_commit_time.setOnClickListener {
             DateTimeSelectorDialog(this).builder().setOnDateListener { timeStr, timeLong ->
                 if (timeLong>System.currentTimeMillis()){
-                    tv_commit_time.text= DateUtils.longToStringNoYear1(timeLong)
+                    tv_commit_time.text= DateUtils.longToHour(timeLong)
                     commitTime=timeLong
                 }
                 else{

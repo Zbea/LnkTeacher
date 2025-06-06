@@ -34,7 +34,13 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
         helper.setText(tv_standard_time,if(item.standardTime>0) "${item.standardTime}分钟" else "")
         helper.setText(tv_date_create,mContext.getString(R.string.teaching_assign_time)+"："+ DateUtils.longToStringWeek(DateUtils.dateStrToLong(item.createTime)))
         helper.setText(tv_date_commit,"提交时间："+ if (item.taskType==1) DateUtils.longToStringWeek(item.endTime) else DateUtils.longToStringNoYear1(item.endTime))
-        helper.setGone(tv_analyse, !item.examList.isNullOrEmpty()&&item.subType==1)
+        val isShow=if (item.taskType==1){
+            item.subType==1
+        }
+        else{
+            true
+        }
+        helper.setGone(tv_analyse, isShow)
 
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理

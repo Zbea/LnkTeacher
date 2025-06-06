@@ -165,18 +165,16 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
             .startSingleTaskDownLoad(object : FileDownManager.SingleTaskCallBack {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                 }
-
                 override fun completed(task: BaseDownloadTask?) {
                     item.date = System.currentTimeMillis()
                     HandoutDaoManager.getInstance().insertOrReplace(item)
                     mAdapter?.notifyItemChanged(position)
                     showToast(1, item.title + getString(R.string.book_download_success))
                     hideLoading()
+                    MethodManager.gotoHandouts(requireActivity(), item)
                 }
-
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     //删除缓存 poolmap
                     hideLoading()

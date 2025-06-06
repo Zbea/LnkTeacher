@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="100dp"
-        android:layout_height="@dimen/dp_36"
-        android:background="@drawable/bg_gray_stroke_10dp_corner"
+        android:layout_width="95dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_gray_stroke_5dp_corner"
+        android:lines="1"
+        android:ellipsize="end"
         android:gravity="center"
-        android:textSize="@dimen/sp_20"
+        android:textSize="@dimen/sp_22"
+        android:textColor="@color/black"/>
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="5dp"
+        android:textSize="@dimen/sp_22"
         android:textColor="@color/black"/>
 
 

@@ -37,6 +37,11 @@ public class DateUtils {
         return day;
     }
 
+    public static String secondToString(int second){
+        SimpleDateFormat sdf = new SimpleDateFormat("mm:ss", Locale.CHINA); // "yyyy-MM-dd HH:mm:ss"
+        return sdf.format(new Date(second));
+    }
+
     public static long longToMinute(long date) {
         int minuteTime=60*1000;
         if (date>0){

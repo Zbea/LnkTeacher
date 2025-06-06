@@ -176,6 +176,8 @@ public interface IContractView {
          */
         default void onCorrectSuccess(){};
         default void onCompleteSuccess(){};
+        default void onChangeQuestionType(){}
+        default void onShare(){}
     }
 
     interface IAnalyseTeachingView extends IBaseView{
@@ -319,6 +321,7 @@ public interface IContractView {
     interface IExamCorrectView extends IBaseView {
         void onExamClassUser(ExamClassUserList classUserList);
         default void onCorrectSuccess(){};
+        default void onShare(){}
     }
 
     interface IFreeNoteView extends IBaseView{

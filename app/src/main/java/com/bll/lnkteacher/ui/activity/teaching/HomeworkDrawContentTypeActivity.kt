@@ -74,7 +74,7 @@ class HomeworkDrawContentTypeActivity:BaseAppCompatActivity(),IContractView.IHom
             Handler().postDelayed({
                 pageIndex=1
                 fetchData()
-            },500)
+            },800)
 
         }
 

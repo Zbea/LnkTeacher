@@ -27,6 +27,7 @@ import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_share
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_expand_arrow
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
@@ -101,6 +102,10 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
 
+    override fun onShare() {
+        showToast("分享成功")
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
     }
@@ -123,7 +128,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     override fun initView() {
-        setPageTitle("${if (correctList?.taskType == 1) "作业" else "测卷"}批改  ${correctList?.title}  ${mClassBean?.name}")
+        val title=if (correctList?.taskType == 1) "作业卷" else "测卷"
+        setPageTitle("${title}批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog, iv_btn)
         setPageSetting("全部保存")
 
@@ -182,6 +188,23 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             }
         }
 
+        tv_share.setOnClickListener {
+            CommonDialog(this).setContent("确定分享该学生${title}？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun ok() {
+                    val userIds= mutableListOf<Int>()
+                    for (item in userItems){
+//                        if (userItems.indexOf(item)!=posUser)
+                            userIds.add(item.userId)
+                    }
+                    val map=HashMap<String,Any>()
+                    map["type"]=if (correctList?.taskType == 1) 1 else 2
+                    map["id"]=userItems[posUser].studentTaskId
+                    map["userIds"]= userIds
+                    mPresenter.share(map)
+                }
+            })
+        }
+
         initRecyclerViewUser()
         initRecyclerViewScore()
 
@@ -189,11 +212,11 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     private fun initRecyclerViewUser() {
-        rv_list.layoutManager = GridLayoutManager(this, 7)//创建布局管理
-        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
+        rv_list.layoutManager = GridLayoutManager(this, 6)//创建布局管理
+        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, 2,correctModule,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(7, 30))
+            rv_list.addItemDecoration(SpaceGridItemDeco(6, 25))
             setOnItemClickListener { adapter, view, position ->
                 if (position == posUser)
                     return@setOnItemClickListener
@@ -246,6 +269,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         val userItem = userItems[posUser]
         correctStatus = userItem.status
 
+        isDrawingSave=correctStatus==1
+
         if (correctList?.taskType==1){
             tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
         }
@@ -271,6 +296,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 currentImages = ToolUtils.getImages(userItem.studentUrl)
                 tv_total_score.text = userItem.score.toString()
                 showView(ll_score,ll_score_topic, tv_save)
+                disMissView(tv_share)
 
                 setDisableTouchInput(false)
                 setPWEnabled(true)
@@ -283,7 +309,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 }
                 currentImages = ToolUtils.getImages(userItem.submitUrl)
                 tv_total_score.text = userItem.score.toString()
-                showView(ll_score,ll_score_topic)
+                showView(ll_score,ll_score_topic,tv_share)
                 disMissView(tv_save)
 
                 setDisableTouchInput(true)

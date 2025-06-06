@@ -2,6 +2,8 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.media.MediaPlayer
 import android.os.Handler
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -9,6 +11,7 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.homework.ResultStandardItem
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
@@ -20,6 +23,7 @@ import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.HomeworkResultStandardAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import com.bll.lnkteacher.utils.FileUtils
@@ -31,13 +35,21 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_homework_correct.iv_file
 import kotlinx.android.synthetic.main.ac_homework_correct.iv_play
+import kotlinx.android.synthetic.main.ac_homework_correct.iv_tips
+import kotlinx.android.synthetic.main.ac_homework_correct.iv_tips_info
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_correct
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_play
+import kotlinx.android.synthetic.main.ac_homework_correct.ll_progressbar
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_record
+import kotlinx.android.synthetic.main.ac_homework_correct.progressBar
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list_score
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_correct_module
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_end_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_play
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_save
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_share
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_start_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_take_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -48,6 +60,8 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.util.Timer
+import java.util.TimerTask
 import java.util.stream.Collectors
 
 class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
@@ -71,6 +85,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private var items=mutableListOf<ResultStandardItem>()
     private val results= mutableListOf<Int>()
     private var result=0
+    private var timer: Timer?=null
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -112,6 +127,15 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
 
+    override fun onChangeQuestionType() {
+        correctList?.questionType=correctModule
+        disMissView(tv_correct_module)
+    }
+
+    override fun onShare() {
+        showToast("分享成功")
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_homework_correct
     }
@@ -121,30 +145,11 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         val classPos = intent.getIntExtra("classPos", -1)
         correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         mClassBean = correctList?.examList?.get(classPos)!!
-        scoreMode = correctList?.questionMode!!
-        correctModule = correctList?.questionType!!
+        correctModule = if (correctList?.questionType!!<0)1 else correctList?.questionType!!
 
         mId = correctList?.id!!
 
-        resultStandardItems = when(correctList?.subType){
-            3->{
-                DataBeanManager.getResultStandardItem3s()
-            }
-            6->{
-                DataBeanManager.getResultStandardItem6s()
-            }
-            8->{
-                DataBeanManager.getResultStandardItem8s()
-            }
-            else->{
-                if (correctList?.subTypeName=="作文作业本"){
-                    DataBeanManager.getResultStandardItem2s()
-                }
-                else{
-                    DataBeanManager.getResultStandardItems()
-                }
-            }
-        }
+        resultStandardItems=DataBeanManager.getResultStandardItems(correctList!!.subType,correctList!!.subTypeName,correctModule)
 
         fetchClassList()
     }
@@ -160,6 +165,13 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         } else {
             disMissView(ll_record)
             showView(ll_draw_content)
+        }
+
+        if (correctList?.questionType!!<0){
+            showView(tv_correct_module)
+        }
+        else{
+            disMissView(tv_correct_module)
         }
 
         tv_save.setOnClickListener {
@@ -181,24 +193,57 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
 
         iv_play.setOnClickListener {
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer()
-                mediaPlayer?.setDataSource(recordPath)
-                mediaPlayer?.setOnCompletionListener {
-                    changeMediaView(false)
-                }
-                mediaPlayer?.prepare()
-                mediaPlayer?.start()
-                changeMediaView(true)
-            } else {
+            if (mediaPlayer != null) {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
+                    timer?.cancel()
                     changeMediaView(false)
                 } else {
                     mediaPlayer?.start()
+                    startTimer()
                     changeMediaView(true)
                 }
             }
+        }
+
+        tv_correct_module.setOnClickListener {
+             if (correctModule==1){
+                 correctModule =2
+                 tv_correct_module.text="初级批改"
+            } else{
+                 correctModule=1
+                 tv_correct_module.text="高级批改"
+            }
+            resultStandardItems=DataBeanManager.getResultStandardItems(correctList!!.subType,correctList!!.subTypeName,correctModule)
+            initRecyclerViewResult()
+            Handler().post {
+                setContentView()
+            }
+        }
+
+        iv_tips.setOnClickListener {
+            showView(iv_tips_info)
+        }
+
+        iv_tips_info.setOnClickListener {
+            disMissView(iv_tips_info)
+        }
+
+        tv_share.setOnClickListener {
+            CommonDialog(this).setContent("确定分享该学生作业？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun ok() {
+                    val userIds= mutableListOf<Int>()
+                    for (item in userItems){
+//                        if (userItems.indexOf(item)!=posUser)
+                            userIds.add(item.userId)
+                    }
+                    val map=HashMap<String,Any>()
+                    map["type"]=1
+                    map["id"]=userItems[posUser].studentTaskId
+                    map["userIds"]= userIds
+                    mPresenter.share(map)
+                }
+            })
         }
 
         initRecyclerViewUser()
@@ -208,14 +253,17 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     private fun initRecyclerViewUser() {
-        rv_list.layoutManager = GridLayoutManager(this, 7)//创建布局管理
-        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, null).apply {
+        rv_list.layoutManager = GridLayoutManager(this, 6)//创建布局管理
+        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, 1,correctModule,null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
-            rv_list.addItemDecoration(SpaceGridItemDeco(7, 30))
+            rv_list.addItemDecoration(SpaceGridItemDeco(6, 25))
             setOnItemClickListener { adapter, view, position ->
                 if (position == posUser)
                     return@setOnItemClickListener
+
+                release()
+
                 val oldItem=userItems[posUser]
                 oldItem.isCheck = false
                 mAdapter?.notifyItemChanged(posUser)
@@ -233,11 +281,35 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     private fun initRecyclerViewResult() {
-        rv_list_score.layoutManager = LinearLayoutManager(this)//创建布局管理
-        mResultStandardAdapter = HomeworkResultStandardAdapter(R.layout.item_homework_result_standard, null).apply {
+        val itemDeco=SpaceItemDeco(40)
+        if (correctModule==2){
+            val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(
+                DP2PX.dip2px(this,20f), DP2PX.dip2px(this,30f),
+                DP2PX.dip2px(this,20f), DP2PX.dip2px(this,30f))
+            rv_list_score.layoutParams=layoutParams
+        }
+        else{
+            val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(
+                DP2PX.dip2px(this,80f), DP2PX.dip2px(this,30f),
+                DP2PX.dip2px(this,80f), DP2PX.dip2px(this,30f))
+            rv_list_score.layoutParams=layoutParams
+        }
+        val layoutManager=if (correctModule==2) GridLayoutManager(this,resultStandardItems.size) else LinearLayoutManager(this)
+        val layoutResId=if (correctModule==2) R.layout.item_homework_result_standard_high else R.layout.item_homework_result_standard
+        rv_list_score.layoutManager = layoutManager//创建布局管理
+        mResultStandardAdapter = HomeworkResultStandardAdapter(layoutResId, correctModule,items).apply {
             rv_list_score.adapter = this
             bindToRecyclerView(rv_list_score)
-            rv_list_score.addItemDecoration(SpaceItemDeco(30))
+            if (correctModule==2){
+                if (rv_list_score.itemDecorationCount!=0){
+                    rv_list_score.removeItemDecorationAt(0)
+                }
+            }else{
+                if (rv_list_score.itemDecorationCount==0)
+                    rv_list_score.addItemDecoration(itemDeco)
+            }
             setCustomItemChildClickListener{ position,childPosition->
                 val parentItem=items[position]
                 for (item in parentItem.list){
@@ -259,21 +331,52 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                         totalScores+=item.score
                     }
                     val averageScore=totalScores/items.size
-                    if (averageScore>=85){
-                        result=1
-                        tv_total_score.text="A"
-                    }
-                    else if (averageScore>=70){
-                        result=2
-                        tv_total_score.text="B"
-                    }
-                    else{
-                        result=3
-                        tv_total_score.text="C"
-                    }
+                    getScore(averageScore)
                 }
             }
         }
+    }
+
+    private fun getScore(averageScore:Double){
+        if (correctModule==1){
+            result = if (averageScore>=85){
+                1
+            } else if (averageScore>=70){
+                2
+            } else{
+                3
+            }
+        }
+        else{
+            if (averageScore>=95){
+                result=1
+            }
+            else if (averageScore>=90){
+                result=2
+            }
+            else if (averageScore>=85){
+                result=3
+            }
+            else if (averageScore>=80){
+                result=4
+            }
+            else if (averageScore>=75){
+                result=5
+            }
+            else if (averageScore>=70){
+                result=6
+            }
+            else if (averageScore>=65){
+                result=7
+            }
+            else if (averageScore>=60){
+                result=8
+            }
+            else{
+                result=9
+            }
+        }
+        tv_total_score.text=DataBeanManager.getResultStandardStr(result.toDouble(),correctModule)
     }
 
     /**
@@ -336,16 +439,36 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         if (correctList?.subType == 3) {
             if (!userItem.studentUrl.isNullOrEmpty()) {
                 recordPath = userItem.studentUrl
-                showView(iv_file, ll_play)
+
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.setDataSource(recordPath)
+                mediaPlayer?.setOnCompletionListener {
+                    changeMediaView(false)
+                    mediaPlayer?.seekTo(0)
+                    progressBar.progress=0
+                    tv_start_time.text="00:00"
+                    timer?.cancel()
+                }
+                mediaPlayer?.prepare()
+                tv_start_time.text="00:00"
+                mediaPlayer?.seekTo(0)
+                tv_end_time.text=DateUtils.secondToString(mediaPlayer?.duration!!)
+                progressBar.max = mediaPlayer?.duration!!
+                changeMediaView(false)
+
+                showView(iv_file, ll_play,ll_progressbar)
             } else {
-                disMissView(iv_file, ll_play)
+                disMissView(iv_file, ll_play,ll_progressbar)
             }
         }
+
+        isDrawingSave=correctStatus==1
 
         when (correctStatus) {
             1 -> {
                 currentImages = ToolUtils.getImages(userItem.studentUrl)
                 showView(ll_correct,tv_save)
+                disMissView(tv_share)
                 tv_total_score.text=""
 
                 setDisableTouchInput(false)
@@ -353,14 +476,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             }
             2 -> {
                 currentImages = ToolUtils.getImages(userItem.submitUrl)
-
-                val resultStr=when(userItem.score){
-                    1.0->{"A"}
-                    2.0->{"B"}
-                    else->{"C"}
-                }
-                tv_total_score.text=resultStr
-
+                tv_total_score.text=DataBeanManager.getResultStandardStr(userItem.score,correctModule)
+                if (correctList?.subType!=3)
+                    showView(tv_share)
                 showView(ll_correct)
                 disMissView(tv_save)
 
@@ -498,6 +616,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         map["score"] = result
         map["question"]=Gson().toJson(results)
         mPresenter.commitPaperStudent(map)
+
+        if (correctList?.questionType!!<0)
+            mPresenter.changeQuestionType(mId,correctModule)
     }
 
     /**
@@ -549,8 +670,23 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
     }
 
+    private fun startTimer(){
+        Thread {
+            timer= Timer()
+            timer!!.schedule(object: TimerTask() {
+                override fun run() {
+                    runOnUiThread {
+                        progressBar.progress=mediaPlayer?.currentPosition!!
+                        tv_start_time.text=DateUtils.secondToString(mediaPlayer?.currentPosition!!)
+                    }
+                }
+            } ,500,500)
+        }.start()
+    }
+
 
     private fun release() {
+        timer?.cancel()
         if (mediaPlayer != null) {
             mediaPlayer?.stop()
             mediaPlayer?.release()

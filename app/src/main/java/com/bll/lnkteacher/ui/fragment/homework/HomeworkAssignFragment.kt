@@ -115,8 +115,8 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
         val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.weight=1f
         layoutParams.setMargins(
-            DP2PX.dip2px(activity,40f), DP2PX.dip2px(activity,60f),
-            DP2PX.dip2px(activity,40f), 0)
+            DP2PX.dip2px(activity,30f), DP2PX.dip2px(activity,60f),
+            DP2PX.dip2px(activity,30f), 0)
         rv_list.layoutParams=layoutParams
         rv_list.layoutManager = GridLayoutManager(activity,3)
 
@@ -124,7 +124,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             setEmptyView(R.layout.common_empty)
-            rv_list.addItemDecoration(SpaceGridItemDeco(3, DP2PX.dip2px(requireActivity(),50f)))
+            rv_list.addItemDecoration(SpaceGridItemDeco(3, DP2PX.dip2px(requireActivity(),60f)))
             setOnItemClickListener { _, _, position ->
                 this@HomeworkAssignFragment.position=position
                 val item=types[position]

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
+import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamList
@@ -14,6 +15,7 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_share
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
 import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
@@ -60,6 +62,10 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
         }
         mAdapter?.setNewData(userItems)
     }
+
+    override fun onShare() {
+        showToast("分享成功")
+    }
     
     override fun layoutId(): Int {
         return R.layout.ac_testpaper_correct
@@ -91,6 +97,23 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
             tv_answer.setOnClickListener {
                 ImageDialog(this,2,answerImages).builder()
             }
+        }
+
+        tv_share.setOnClickListener {
+            CommonDialog(this).setContent("确定分享该学生考卷？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                override fun ok() {
+                    val userIds= mutableListOf<Int>()
+                    for (item in userItems){
+                        if (userItems.indexOf(item)!=posUser)
+                            userIds.add(item.userId)
+                    }
+                    val map=HashMap<String,Any>()
+                    map["type"]=3
+                    map["id"]=userItems[posUser].id
+                    map["userIds"]= userIds
+                    mPresenter.share(map)
+                }
+            })
         }
 
         initRecyclerView()
@@ -171,7 +194,7 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
                 }
                 currentImages=ToolUtils.getImages(userItem.teacherUrl)
                 tv_total_score.text = userItem.score.toString()
-                showView(ll_score)
+                showView(ll_score,tv_share)
                 disMissView(tv_save)
                 onChangeContent()
             }

@@ -438,6 +438,16 @@ interface APIService{
     @POST("student/task/allCompleted")
     fun completeCorrectPaper(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
+     * 修改questionType
+     */
+    @POST("student/task/updateQType")
+    fun changeHomeworkQuestionType(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
+     * 分享作业
+     */
+    @POST("exam/share/insert")
+    fun shareHomework(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
+    /**
      * 获取作业卷内容列表
      */
     @GET("task/list/job")

@@ -24,16 +24,16 @@ class HomeworkAssignAdapter(layoutResId: Int, data: List<TypeBean>?) : BaseQuick
                     R.mipmap.icon_homework_cover_2
                 }
                 6->{
-                    R.mipmap.icon_homework_cover_7
-                }
-                7->{
-                    R.mipmap.icon_homework_cover_5
-                }
-                8->{
                     R.mipmap.icon_homework_cover_6
                 }
+                7->{
+                    R.mipmap.icon_homework_cover_7
+                }
+                8->{
+                    R.mipmap.icon_homework_cover_8
+                }
                 else->{
-                    if (item.name=="作文作业本")  R.mipmap.icon_homework_cover_8 else R.mipmap.icon_homework_cover_1
+                    if (item.name=="作文作业本")  R.mipmap.icon_homework_cover_5 else R.mipmap.icon_homework_cover_1
                 }
             }
             helper.setImageResource(R.id.iv_image,bg)

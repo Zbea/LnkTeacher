@@ -59,4 +59,34 @@ class TestPaperCorrectDetailsPresenter(view: IContractView.ITestPaperCorrectDeta
         }, true)
     }
 
+    fun changeQuestionType(id:Int,questionType:Int) {
+        val map = HashMap<String, Any>()
+        map["taskGroupId"] = id
+        map["questionType"] = questionType
+        val body = RequestUtils.getBody(map)
+        val type = RetrofitManager.service.changeHomeworkQuestionType(body)
+        doRequest(type, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onChangeQuestionType()
+            }
+        }, true)
+    }
+
+    fun share(map:HashMap<String,Any>){
+        val body=RequestUtils.getBody(map)
+        val commit = RetrofitManager.service.shareHomework(body)
+        doRequest(commit, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onShare()
+            }
+        }, true)
+    }
+
 }
