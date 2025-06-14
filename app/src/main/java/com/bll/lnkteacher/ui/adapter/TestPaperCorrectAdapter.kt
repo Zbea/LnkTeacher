@@ -41,6 +41,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
             true
         }
         helper.setGone(tv_analyse, isShow)
+        helper.setGone(tv_send,item.taskType!=1)
 
         val rvList=helper.getView<RecyclerView>(rv_list)
         rvList.layoutManager = LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false)//创建布局管理

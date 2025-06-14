@@ -221,6 +221,11 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
      * 设置学生提交图片展示
      */
     override fun onChangeContent(){
+        if (currentImages.size==0){
+            setContentImageClear()
+            return
+        }
+
         if (isExpand&&posImage>getImageSize()-2)
             posImage=getImageSize()-2
         if (isExpand&&posImage<0)

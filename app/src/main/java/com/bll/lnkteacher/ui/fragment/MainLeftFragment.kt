@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.fragment
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -160,8 +159,7 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
     private fun setDateDrawingView(){
         val path=FileAddress().getPathImage("date",DateUtils.longToStringCalender(nowDate))+"/draw.png"
         if (File(path).exists()){
-            val myBitmap= BitmapFactory.decodeFile(path)
-            iv_date.setImageBitmap(myBitmap)
+            MethodManager.setImageFile(path,iv_date)
         }
         else{
             iv_date.setImageResource(0)

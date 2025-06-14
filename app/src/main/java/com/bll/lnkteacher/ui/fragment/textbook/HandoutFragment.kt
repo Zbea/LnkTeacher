@@ -171,12 +171,10 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
                     item.date = System.currentTimeMillis()
                     HandoutDaoManager.getInstance().insertOrReplace(item)
                     mAdapter?.notifyItemChanged(position)
-                    showToast(1, item.title + getString(R.string.book_download_success))
                     hideLoading()
                     MethodManager.gotoHandouts(requireActivity(), item)
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                    //删除缓存 poolmap
                     hideLoading()
                     showToast(1, "${item.title}下载失败")
                 }

@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
@@ -13,6 +14,7 @@ import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
+import kotlinx.android.synthetic.main.ac_account_info.btn_edit_password
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_phone
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_school
 import kotlinx.android.synthetic.main.ac_account_info.btn_logout
@@ -113,6 +115,10 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
                 presenter.checkPhone(it)
             }
+        }
+
+        btn_edit_password.setOnClickListener {
+            customStartActivity(Intent(this, AccountRegisterActivity::class.java).setFlags(1))
         }
 
         btn_logout.setOnClickListener {

@@ -18,6 +18,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.DeviceUtil
 import com.bll.lnkteacher.utils.FileDownManager
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.ToolUtils
 import com.google.gson.Gson
@@ -137,33 +138,34 @@ abstract class BaseMainFragment : BaseFragment(), IContractView.ICloudUploadView
      * 下载应用
      */
     private fun downLoadAPP(bean: AppUpdateBean) {
-        val updateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
-
-        val targetFileStr = FileAddress().getPathApk("lnktecher")
-        FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
-            FileDownManager.SingleTaskCallBack {
-            override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-                if (task != null && task.isRunning) {
-                    requireActivity().runOnUiThread {
-                        val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
-                                ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
-                        updateDialog.setUpdateBtn(s)
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            AppUtils.installApp(requireActivity(), targetFileStr)
+        }
+        else{
+            val updateDialog = AppUpdateDialog(requireActivity(), 1, bean).builder()
+            FileDownManager.with(requireActivity()).create(bean.downloadUrl).setPath(targetFileStr).startSingleTaskDownLoad(object :
+                FileDownManager.SingleTaskCallBack {
+                override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                    if (task != null && task.isRunning) {
+                        requireActivity().runOnUiThread {
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024), "0.0M") + "/" +
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024), "0.0M")
+                            updateDialog.setUpdateBtn(s)
+                        }
                     }
                 }
-            }
-
-            override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
-            }
-
-            override fun completed(task: BaseDownloadTask?) {
-                updateDialog.dismiss()
-                AppUtils.installApp(requireActivity(), targetFileStr)
-            }
-
-            override fun error(task: BaseDownloadTask?, e: Throwable?) {
-                updateDialog.dismiss()
-            }
-        })
+                override fun paused(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
+                }
+                override fun completed(task: BaseDownloadTask?) {
+                    updateDialog.dismiss()
+                    AppUtils.installApp(requireActivity(), targetFileStr)
+                }
+                override fun error(task: BaseDownloadTask?, e: Throwable?) {
+                    updateDialog.dismiss()
+                }
+            })
+        }
     }
 
 

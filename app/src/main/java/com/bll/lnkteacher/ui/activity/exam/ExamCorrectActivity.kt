@@ -53,8 +53,8 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
     private var posUser = 0//当前学生下标
     private var currentImages = mutableListOf<String>()
     private var tokenStr = ""
-    private var initScores=mutableListOf<ScoreItem>()//初始题目分数
-    private var isTopicExpend=false
+    private var initScores = mutableListOf<ScoreItem>()//初始题目分数
+    private var isTopicExpend = false
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -90,7 +90,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
         userItems[posUser].teacherUrl = url
         userItems[posUser].status = 2
         userItems[posUser].question = Gson().toJson(initScores)
-        userItems[posUser].currentScores=currentScores.stream().collect(Collectors.toList())
+        userItems[posUser].currentScores = currentScores.stream().collect(Collectors.toList())
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
         setDisableTouchInput(true)
@@ -120,7 +120,7 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
         if (answerImages.size > 0) {
             showView(tv_answer)
             tv_answer.setOnClickListener {
-                ImageDialog(this,2,answerImages).builder()
+                ImageDialog(this, 2, answerImages).builder()
             }
         }
 
@@ -134,12 +134,11 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
         }
 
         iv_expand_arrow.setOnClickListener {
-            if (isTopicExpend){
-                isTopicExpend=false
+            if (isTopicExpend) {
+                isTopicExpend = false
                 setTopicExpend(false)
-            }
-            else{
-                isTopicExpend=true
+            } else {
+                isTopicExpend = true
                 setTopicExpend(true)
             }
         }
@@ -149,9 +148,9 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
             if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
                 //将赋值数据初始化给原数据
-                initScores=ScoreItemUtils.updateInitListData(initScores, currentScores,correctModule)
-                if (isTopicExpend){
-                    isTopicExpend=false
+                initScores = ScoreItemUtils.updateInitListData(initScores, currentScores, correctModule)
+                if (isTopicExpend) {
+                    isTopicExpend = false
                     setTopicExpend(false)
                 }
                 //没有手写，直接提交
@@ -179,10 +178,10 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
             setOnItemClickListener { adapter, view, position ->
                 if (position == posUser)
                     return@setOnItemClickListener
-                val oldItem=userItems[posUser]
+                val oldItem = userItems[posUser]
                 oldItem.isCheck = false
-                oldItem.currentScores=currentScores.stream().collect(Collectors.toList())
-                oldItem.score=tv_total_score.text.toString().toDouble()
+                oldItem.currentScores = currentScores.stream().collect(Collectors.toList())
+                oldItem.score = tv_total_score.text.toString().toDouble()
                 mAdapter?.notifyItemChanged(posUser)
 
                 posUser = position//设置当前学生下标
@@ -227,57 +226,70 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
      * 设置切换内容展示
      */
     private fun setContentView() {
-        val userItem = userItems[posUser]
-        correctStatus = userItem.status
-        isDrawingSave=correctStatus==1
+        Thread {
+            runOnUiThread {
 
-        when (correctStatus) {
-            1 -> {
-                initScores=ScoreItemUtils.questionToList(examBean?.question!!)
-                currentScores = if (userItem.currentScores.isNotEmpty()){
-                    userItem.currentScores.stream().collect(Collectors.toList())
-                } else{
-                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(examBean?.question!!))
+                val userItem = userItems[posUser]
+                correctStatus = userItem.status
+                isDrawingSave = correctStatus == 1
+
+                when (correctStatus) {
+                    1 -> {
+                        initScores = ScoreItemUtils.questionToList(examBean?.question!!)
+                        currentScores = if (userItem.currentScores.isNotEmpty()) {
+                            userItem.currentScores.stream().collect(Collectors.toList())
+                        } else {
+                            ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(examBean?.question!!))
+                        }
+                        currentImages = ToolUtils.getImages(userItem.studentUrl)
+                        tv_total_score.text = ""
+                        showView(ll_score, ll_score_topic, tv_save)
+
+                        setDisableTouchInput(false)
+                        setPWEnabled(true)
+                    }
+
+                    2 -> {
+                        currentScores = if (userItem.currentScores.isNotEmpty()) {
+                            userItem.currentScores.stream().collect(Collectors.toList())
+                        } else {
+                            ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                        }
+                        currentImages = ToolUtils.getImages(userItem.teacherUrl)
+                        tv_total_score.text = userItem.score.toString()
+                        showView(ll_score, ll_score_topic)
+                        disMissView(tv_save)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
+                    }
+
+                    3 -> {
+                        currentScores.clear()
+                        currentImages = mutableListOf()
+                        disMissView(ll_score, ll_score_topic)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
+                    }
                 }
-                currentImages = ToolUtils.getImages(userItem.studentUrl)
-                tv_total_score.text = ""
-                showView(ll_score, ll_score_topic,tv_save)
 
-                setDisableTouchInput(false)
-                setPWEnabled(true)
+                setRecyclerViewScoreAdapter()
+                onChangeContent()
+
             }
-            2 -> {
-                currentScores = if (userItem.currentScores.isNotEmpty()){
-                    userItem.currentScores.stream().collect(Collectors.toList())
-                } else{
-                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
-                }
-                currentImages = ToolUtils.getImages(userItem.teacherUrl)
-                tv_total_score.text = userItem.score.toString()
-                showView(ll_score,ll_score_topic)
-                disMissView(tv_save)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-            3 -> {
-                currentScores.clear()
-                currentImages = mutableListOf()
-                disMissView(ll_score,ll_score_topic)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-        }
-
-        setRecyclerViewScoreAdapter()
-        onChangeContent()
+        }.start()
     }
 
     /**
      * 设置学生提交图片展示
      */
     override fun onChangeContent() {
+        if (currentImages.size == 0) {
+            setContentImageClear()
+            return
+        }
+
         if (isExpand && posImage > getImageSize() - 2)
             posImage = getImageSize() - 2
         if (isExpand && posImage < 0)
@@ -285,12 +297,6 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
 
         tv_page_total.text = "${getImageSize()}"
         tv_page_total_a.text = "${getImageSize()}"
-
-        if (currentImages.size==0){
-            v_content_a?.setImageResource(0)
-            v_content_a?.setImageResource(0)
-            return
-        }
 
         if (isExpand) {
             GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
@@ -320,10 +326,9 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
     }
 
     override fun onElikSava_b() {
-        if (isExpand){
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage+1))
-        }
-        else{
+        if (isExpand) {
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+        } else {
             BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
         }
     }

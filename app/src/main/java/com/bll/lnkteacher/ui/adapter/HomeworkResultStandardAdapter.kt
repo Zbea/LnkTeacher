@@ -28,7 +28,7 @@ class HomeworkResultStandardAdapter(layoutResId: Int,val correctModule:Int, data
             val mAdapter = ChildAdapter(layoutId,correctModule,data.size==4,item.list)
             recyclerView?.adapter = mAdapter
             if (correctModule==2&&recyclerView.itemDecorationCount==0)
-               recyclerView.addItemDecoration(SpaceGridItemDeco1(3,15,if (data.size==4)20 else 30))
+               recyclerView.addItemDecoration(SpaceGridItemDeco1(3,15,if (data.size==4)30 else 50))
             mAdapter.bindToRecyclerView(recyclerView)
             mAdapter.setOnItemClickListener { adapter, view, position ->
                 listener?.onClick(helper.adapterPosition,position)
@@ -39,10 +39,9 @@ class HomeworkResultStandardAdapter(layoutResId: Int,val correctModule:Int, data
         }
     }
 
-    class ChildAdapter(layoutResId: Int,val correctModule:Int,val isVertical:Boolean,  data: List<ResultChildItem>?) : BaseQuickAdapter<ResultChildItem, BaseViewHolder>(layoutResId, data) {
+    class ChildAdapter(layoutResId: Int, val correctModule:Int, private val isVertical:Boolean, data: List<ResultChildItem>?) : BaseQuickAdapter<ResultChildItem, BaseViewHolder>(layoutResId, data) {
         override fun convert(helper: BaseViewHolder, item: ResultChildItem) {
             helper.setText(R.id.tv_score,item.sortStr)
-            helper.setImageResource(R.id.iv_result,if (item.isCheck) R.mipmap.icon_correct_right else R.mipmap.icon_correct_wrong)
             if (isVertical&&correctModule==2) {
                 helper.setImageResource(R.id.iv_result,if (item.isCheck) R.mipmap.icon_correct_right_vertical else R.mipmap.icon_correct_wrong_vertical)
             }

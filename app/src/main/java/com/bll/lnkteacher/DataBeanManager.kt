@@ -571,18 +571,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem6s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="比例匀称"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="字迹工整"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -592,18 +591,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem3s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="语言标准"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="词汇语法"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="流畅程度"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -613,18 +611,17 @@ object DataBeanManager {
      */
     private fun getResultStandardItem8s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="词句摘抄"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="阅读感想"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面整洁"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -634,22 +631,21 @@ object DataBeanManager {
      */
     private fun getResultStandardItem2s(correctModule:Int):MutableList<ResultStandardItem>{
         val items= mutableListOf<ResultStandardItem>()
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         items.add(ResultStandardItem().apply {
             title="思想内容"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="语言文字"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="层次结构"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         items.add(ResultStandardItem().apply {
             title="卷面书写"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }
@@ -658,11 +654,10 @@ object DataBeanManager {
      * 手写
      */
     private fun getResultStandardItem0s(correctModule:Int):MutableList<ResultStandardItem>{
-        val childItems=if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         val items= mutableListOf<ResultStandardItem>()
         items.add(ResultStandardItem().apply {
             title="标准评分"
-            list= childItems
+            list= if (correctModule==2) getResultChildHighItems() else getResultChildItems()
         })
         return items
     }

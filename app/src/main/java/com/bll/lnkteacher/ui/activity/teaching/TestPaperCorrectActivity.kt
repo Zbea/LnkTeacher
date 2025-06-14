@@ -27,13 +27,13 @@ import com.bll.lnkteacher.utils.ScoreItemUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.ac_homework_correct.tv_share
 import kotlinx.android.synthetic.main.ac_testpaper_correct.iv_expand_arrow
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
 import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_answer
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_save
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_share
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_take_time
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_total_score
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
@@ -62,8 +62,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private var posUser = 0//当前学生下标
     private var currentImages = mutableListOf<String>()//当前学生作业地址
     private var tokenStr = ""
-    private var initScores=mutableListOf<ScoreItem>()//初始题目分数
-    private var isTopicExpend=false
+    private var initScores = mutableListOf<ScoreItem>()//初始题目分数
+    private var isTopicExpend = false
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -88,9 +88,10 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
         userItems[posUser].question = Gson().toJson(initScores)
-        userItems[posUser].currentScores=currentScores.stream().collect(Collectors.toList())
+        userItems[posUser].currentScores = currentScores.stream().collect(Collectors.toList())
         mAdapter?.notifyItemChanged(posUser)
         disMissView(tv_save)
+        showView(tv_share)
         setDisableTouchInput(true)
         FileUtils.deleteFile(File(getPath()))
         EventBus.getDefault().post(if (correctList?.taskType == 1) Constants.HOMEWORK_CORRECT_EVENT else Constants.TESTPAPER_CORRECT_EVENT)
@@ -128,7 +129,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     override fun initView() {
-        val title=if (correctList?.taskType == 1) "作业卷" else "测卷"
+        val title = if (correctList?.taskType == 1) "作业卷" else "测卷"
         setPageTitle("${title}批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog, iv_btn)
         setPageSetting("全部保存")
@@ -136,7 +137,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         if (answerImages.size > 0) {
             showView(tv_answer)
             tv_answer.setOnClickListener {
-                ImageDialog(this,2,answerImages).builder()
+                ImageDialog(this, 2, answerImages).builder()
             }
         }
 
@@ -150,12 +151,11 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         }
 
         iv_expand_arrow.setOnClickListener {
-            if (isTopicExpend){
-                isTopicExpend=false
+            if (isTopicExpend) {
+                isTopicExpend = false
                 setTopicExpend(false)
-            }
-            else{
-                isTopicExpend=true
+            } else {
+                isTopicExpend = true
                 setTopicExpend(true)
             }
         }
@@ -165,9 +165,9 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
                 showLoading()
                 //将赋值数据初始化给原数据
-                initScores=ScoreItemUtils.updateInitListData(initScores, currentScores,correctModule)
-                if (isTopicExpend){
-                    isTopicExpend=false
+                initScores = ScoreItemUtils.updateInitListData(initScores, currentScores, correctModule)
+                if (isTopicExpend) {
+                    isTopicExpend = false
                     setTopicExpend(false)
                 }
                 //没有手写，直接提交
@@ -191,16 +191,20 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         tv_share.setOnClickListener {
             CommonDialog(this).setContent("确定分享该学生${title}？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun ok() {
-                    val userIds= mutableListOf<Int>()
-                    for (item in userItems){
-//                        if (userItems.indexOf(item)!=posUser)
+                    val userIds = mutableListOf<Int>()
+                    for (item in userItems) {
+                        if (userItems.indexOf(item)!=posUser)
                             userIds.add(item.userId)
                     }
-                    val map=HashMap<String,Any>()
-                    map["type"]=if (correctList?.taskType == 1) 1 else 2
-                    map["id"]=userItems[posUser].studentTaskId
-                    map["userIds"]= userIds
-                    mPresenter.share(map)
+                    if (userIds.isEmpty()) {
+                        showToast(2, "暂无可分享学生")
+                    } else {
+                        val map = HashMap<String, Any>()
+                        map["type"] = if (correctList?.taskType == 1) 1 else 2
+                        map["id"] = userItems[posUser].studentTaskId
+                        map["userIds"] = userIds
+                        mPresenter.share(map)
+                    }
                 }
             })
         }
@@ -213,17 +217,17 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
     private fun initRecyclerViewUser() {
         rv_list.layoutManager = GridLayoutManager(this, 6)//创建布局管理
-        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, 2,correctModule,null).apply {
+        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, 2, correctModule, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(6, 25))
             setOnItemClickListener { adapter, view, position ->
                 if (position == posUser)
                     return@setOnItemClickListener
-                val oldItem=userItems[posUser]
+                val oldItem = userItems[posUser]
                 oldItem.isCheck = false
-                oldItem.currentScores=currentScores.stream().collect(Collectors.toList())
-                oldItem.score=tv_total_score.text.toString().toDouble()
+                oldItem.currentScores = currentScores.stream().collect(Collectors.toList())
+                oldItem.score = tv_total_score.text.toString().toDouble()
                 mAdapter?.notifyItemChanged(posUser)
 
                 posUser = position//设置当前学生下标
@@ -266,73 +270,84 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
      * 设置切换内容展示
      */
     private fun setContentView() {
-        val userItem = userItems[posUser]
-        correctStatus = userItem.status
+        Thread {
+            runOnUiThread {
 
-        isDrawingSave=correctStatus==1
+                val userItem = userItems[posUser]
+                correctStatus = userItem.status
+                isDrawingSave = correctStatus == 1
 
-        if (correctList?.taskType==1){
-            tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
-        }
+                if (correctList?.taskType == 1) {
+                    tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+                }
 
-        when (correctStatus) {
-            1 -> {
-                if (!userItem.question.isNullOrEmpty()){
-                    initScores=ScoreItemUtils.questionToList(userItem.question)
-                    currentScores = if (userItem.currentScores.isNotEmpty()){
-                        userItem.currentScores.stream().collect(Collectors.toList())
-                    } else{
-                        ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                when (correctStatus) {
+                    1 -> {
+                        if (!userItem.question.isNullOrEmpty()) {
+                            initScores = ScoreItemUtils.questionToList(userItem.question)
+                            currentScores = if (userItem.currentScores.isNotEmpty()) {
+                                userItem.currentScores.stream().collect(Collectors.toList())
+                            } else {
+                                ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                            }
+                        } else {
+                            initScores = ScoreItemUtils.questionToList(correctList?.question!!)
+                            currentScores = if (userItem.currentScores.isNotEmpty()) {
+                                userItem.currentScores.stream().collect(Collectors.toList())
+                            } else {
+                                ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(correctList?.question!!))
+                            }
+                        }
+                        currentImages = ToolUtils.getImages(userItem.studentUrl)
+                        tv_total_score.text = userItem.score.toString()
+                        showView(ll_score, ll_score_topic, tv_save)
+                        disMissView(tv_share)
+
+                        setDisableTouchInput(false)
+                        setPWEnabled(true)
+                    }
+
+                    2 -> {
+                        currentScores = if (userItem.currentScores.isNotEmpty()) {
+                            userItem.currentScores.stream().collect(Collectors.toList())
+                        } else {
+                            ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                        }
+                        currentImages = ToolUtils.getImages(userItem.submitUrl)
+                        tv_total_score.text = userItem.score.toString()
+                        showView(ll_score, ll_score_topic, tv_share)
+                        disMissView(tv_save)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
+                    }
+
+                    3 -> {
+                        currentScores.clear()
+                        currentImages = mutableListOf()
+                        disMissView(ll_score, ll_score_topic)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
                     }
                 }
-                else{
-                    initScores=ScoreItemUtils.questionToList(correctList?.question!!)
-                    currentScores = if (userItem.currentScores.isNotEmpty()){
-                        userItem.currentScores.stream().collect(Collectors.toList())
-                    } else{
-                        ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(correctList?.question!!))
-                    }
-                }
-                currentImages = ToolUtils.getImages(userItem.studentUrl)
-                tv_total_score.text = userItem.score.toString()
-                showView(ll_score,ll_score_topic, tv_save)
-                disMissView(tv_share)
 
-                setDisableTouchInput(false)
-                setPWEnabled(true)
+                setRecyclerViewScoreAdapter()
+                onChangeContent()
+
             }
-            2 -> {
-                currentScores = if (userItem.currentScores.isNotEmpty()){
-                    userItem.currentScores.stream().collect(Collectors.toList())
-                } else{
-                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
-                }
-                currentImages = ToolUtils.getImages(userItem.submitUrl)
-                tv_total_score.text = userItem.score.toString()
-                showView(ll_score,ll_score_topic,tv_share)
-                disMissView(tv_save)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-            3 -> {
-                currentScores.clear()
-                currentImages = mutableListOf()
-                disMissView(ll_score,ll_score_topic)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-        }
-
-        setRecyclerViewScoreAdapter()
-        onChangeContent()
+        }.start()
     }
 
     /**
      * 设置学生提交图片展示
      */
     override fun onChangeContent() {
+        if (currentImages.size == 0) {
+            setContentImageClear()
+            return
+        }
+
         if (isExpand && posImage > getImageSize() - 2)
             posImage = getImageSize() - 2
         if (isExpand && posImage < 0)
@@ -340,12 +355,6 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         tv_page_total.text = "${getImageSize()}"
         tv_page_total_a.text = "${getImageSize()}"
-
-        if (currentImages.size==0){
-            v_content_a?.setImageResource(0)
-            v_content_a?.setImageResource(0)
-            return
-        }
 
         if (isExpand) {
             GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
@@ -380,14 +389,13 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
     override fun onElikSava_a() {
         if (isExpand)
-           BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
     }
 
     override fun onElikSava_b() {
-        if (isExpand){
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage+1))
-        }
-        else{
+        if (isExpand) {
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+        } else {
             BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
         }
     }

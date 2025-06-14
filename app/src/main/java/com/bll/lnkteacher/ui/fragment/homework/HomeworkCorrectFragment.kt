@@ -81,7 +81,7 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
                     }
                     R.id.tv_analyse->{
                         val intent=Intent(requireActivity(), TestPaperAnalyseActivity::class.java)
-                        intent.flags=1
+                        intent.flags= Intent.FLAG_GRANT_READ_URI_PERMISSION
                         val bundle=Bundle()
                         bundle.putSerializable("paperCorrect",item)
                         intent.putExtra("bundle",bundle)
@@ -119,28 +119,28 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
 
     private fun send(view: View){
         val item=items[position]
-        CommonDialog(requireActivity()).setContent("确认发送？").builder().setDialogClickListener(object :
-            CommonDialog.OnDialogClickListener {
-            override fun ok() {
-                val ids= mutableListOf<Int>()
-                if (item.examList.size==1){
+        val ids= mutableListOf<Int>()
+        if (item.examList.size==1){
+            CommonDialog(requireActivity()).setContent("确认发送？").builder().setDialogClickListener(object :
+                CommonDialog.OnDialogClickListener {
+                override fun ok() {
                     ids.add(item.examList[0].classId)
                     mPresenter.sendClass(item.id,ids)
                 }
-                else{
-                    val pops= mutableListOf<PopupBean>()
-                    for (classItem in item.examList){
-                        pops.add(PopupBean(classItem.classId,classItem.name))
-                    }
-                    PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
-                        for (bean in it){
-                            ids.add(bean.id)
-                        }
-                        mPresenter.sendClass(item.id,ids)
-                    }
-                }
+            })
+        }
+        else{
+            val pops= mutableListOf<PopupBean>()
+            for (classItem in item.examList){
+                pops.add(PopupBean(classItem.classId,classItem.name))
             }
-        })
+            PopupCheckList(requireActivity(),pops,view,5).builder().setOnSelectListener{
+                for (bean in it){
+                    ids.add(bean.id)
+                }
+                mPresenter.sendClass(item.id,ids)
+            }
+        }
     }
 
 
@@ -150,8 +150,6 @@ class HomeworkCorrectFragment:BaseFragment(),ITestPaperCorrectView {
     private fun deleteCorrect(){
         CommonDialog(requireActivity()).setContent(R.string.is_delete_tips).builder().setDialogClickListener(object :
             CommonDialog.OnDialogClickListener {
-            override fun cancel() {
-            }
             override fun ok() {
                 mPresenter.deleteCorrect(items[position].id)
             }

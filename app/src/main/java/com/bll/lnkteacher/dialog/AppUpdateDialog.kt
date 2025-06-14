@@ -23,11 +23,11 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         dialog= Dialog(context)
         dialog?.setContentView(R.layout.dialog_update)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog!!.setCanceledOnTouchOutside(false)
+//        dialog!!.setCanceledOnTouchOutside(false)
         val window = dialog?.window
         val layoutParams = window?.attributes
         layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.START
-        layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 698f)) / 2
+        layoutParams?.x = (Constants.WIDTH - DP2PX.dip2px(context, 480f)) / 2
         dialog?.show()
 
         btn_ok = dialog?.findViewById(R.id.tv_update)

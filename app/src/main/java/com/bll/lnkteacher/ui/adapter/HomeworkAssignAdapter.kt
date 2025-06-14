@@ -32,6 +32,9 @@ class HomeworkAssignAdapter(layoutResId: Int, data: List<TypeBean>?) : BaseQuick
                 8->{
                     R.mipmap.icon_homework_cover_8
                 }
+                10->{
+                    R.mipmap.icon_homework_cover_10
+                }
                 else->{
                     if (item.name=="作文作业本")  R.mipmap.icon_homework_cover_5 else R.mipmap.icon_homework_cover_1
                 }

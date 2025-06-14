@@ -7,8 +7,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
 import com.bll.lnkteacher.utils.AppUtils
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.NetworkUtil
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 class MyBroadcastReceiver : BroadcastReceiver() {
 
@@ -21,6 +23,8 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             "android.intent.action.PACKAGE_ADDED"->{
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
                 if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    //安装完成后删除
+                    FileUtils.deleteFile(File(FileAddress().getLauncherPath()))
                     // 应用安装完成后重启
                     AppUtils.reOpenApk(context)
                 }

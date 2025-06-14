@@ -18,6 +18,7 @@ import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.classgroup.ClassGroupActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
+import com.bll.lnkteacher.utils.AppUtils
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
@@ -53,6 +54,15 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
+        val screenshotPath=FileAddress().getPathScreen("未分类")
+        if (!FileUtils.isExist(screenshotPath)){
+            FileUtils.mkdirs(screenshotPath)
+        }
+
+        val targetFileStr = FileAddress().getLauncherPath()
+        if (FileUtils.isExist(targetFileStr)){
+            FileUtils.deleteFile(File(targetFileStr))
+        }
     }
 
     override fun initView() {

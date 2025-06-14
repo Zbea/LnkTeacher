@@ -346,6 +346,19 @@ public class MethodManager {
     }
 
     /**
+     * 加载本地图片
+     * @param path
+     * @param imageView
+     */
+    public static void setImageFile(String path, ImageView imageView){
+        File file=new File(path);
+        if (file.exists()){
+            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    /**
      * 获取省
      * @param context
      * @return

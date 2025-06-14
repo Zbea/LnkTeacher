@@ -21,11 +21,13 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_list"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="match_parent"
             android:layout_below="@+id/ll_title"
+            android:layout_above="@+id/ll_score_topic"
             android:layout_marginStart="@dimen/dp_60"
             android:layout_marginEnd="@dimen/dp_60"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             />
 
         <LinearLayout
@@ -81,7 +83,7 @@
             <RelativeLayout
                 android:id="@+id/rl_topic_content"
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="500dp"
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/bg_black_stroke_10dp_corner"
                 >
@@ -183,7 +185,7 @@
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_50"
-                android:text="@string/save"
+                android:text="保存发送"
                 android:textSize="@dimen/sp_24"
                 android:textColor="@color/black"
                 android:background="@drawable/click_btn_line_black_5dp"

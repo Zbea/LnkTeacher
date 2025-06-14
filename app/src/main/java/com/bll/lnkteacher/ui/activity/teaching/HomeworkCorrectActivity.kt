@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
 import android.media.MediaPlayer
-import android.os.Handler
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,7 +40,9 @@ import kotlinx.android.synthetic.main.ac_homework_correct.ll_correct
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_play
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_progressbar
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_record
+import kotlinx.android.synthetic.main.ac_homework_correct.ll_score
 import kotlinx.android.synthetic.main.ac_homework_correct.progressBar
+import kotlinx.android.synthetic.main.ac_homework_correct.ratingBar
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list_score
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_correct_module
@@ -62,18 +63,17 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.Timer
 import java.util.TimerTask
-import java.util.stream.Collectors
 
 class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
 
     private var mId = 0
+    private var subType=0
     private var correctList: CorrectBean? = null
     private val mUploadPresenter = FileUploadPresenter(this, 3)
     private val mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
     private var mClassBean: TestPaperClassBean? = null
     private var userItems = mutableListOf<TestPaperClassUserList.ClassUserBean>()
     private var mResultStandardAdapter: HomeworkResultStandardAdapter? = null
-    private var resultStandardItems= mutableListOf<ResultStandardItem>()
     private var mAdapter: TestPaperCorrectUserAdapter? = null
     private var url = ""//上个学生提交地址
     private var posImage = 0//当前图片下标
@@ -82,10 +82,10 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private var recordPath = ""
     private var mediaPlayer: MediaPlayer? = null
     private var tokenStr = ""
-    private var items=mutableListOf<ResultStandardItem>()
-    private val results= mutableListOf<Int>()
-    private var result=0
-    private var timer: Timer?=null
+    private var items = mutableListOf<ResultStandardItem>()
+    private val results = mutableListOf<Int>()
+    private var score = 0
+    private var timer: Timer? = null
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -98,9 +98,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             userItems[posUser].isCheck = true
             mAdapter?.setNewData(userItems)
 
-            Handler().post {
-                setContentView()
-            }
+            setContentView()
         }
     }
 
@@ -110,15 +108,17 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
-        userItems[posUser].score= result.toDouble()
-        userItems[posUser].question=Gson().toJson(results)
+        userItems[posUser].score = score.toDouble()
+        userItems[posUser].question = Gson().toJson(results)
 
         mAdapter?.notifyItemChanged(posUser)
 
         disMissView(tv_save)
+        if (subType!=10&&subType!=3)
+            showView(tv_share)
         setDisableTouchInput(true)
         FileUtils.deleteFile(File(getPath()))
-        EventBus.getDefault().post(if (correctList?.taskType == 1) Constants.HOMEWORK_CORRECT_EVENT else Constants.TESTPAPER_CORRECT_EVENT)
+        EventBus.getDefault().post(Constants.HOMEWORK_CORRECT_EVENT)
     }
 
     override fun onCompleteSuccess() {
@@ -128,7 +128,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     override fun onChangeQuestionType() {
-        correctList?.questionType=correctModule
+        correctList?.questionType = correctModule
         disMissView(tv_correct_module)
     }
 
@@ -145,11 +145,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         val classPos = intent.getIntExtra("classPos", -1)
         correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
         mClassBean = correctList?.examList?.get(classPos)!!
-        correctModule = if (correctList?.questionType!!<0)1 else correctList?.questionType!!
-
+        correctModule = if (correctList?.questionType!! < 0) 1 else correctList?.questionType!!
         mId = correctList?.id!!
-
-        resultStandardItems=DataBeanManager.getResultStandardItems(correctList!!.subType,correctList!!.subTypeName,correctModule)
+        subType=correctList?.subType!!
 
         fetchClassList()
     }
@@ -158,29 +156,30 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         setPageTitle("作业批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog, iv_btn)
 
-        //如果是朗读本
-        if (correctList?.subType == 3) {
-            showView(ll_record)
-            disMissView(ll_draw_content)
-        } else {
-            disMissView(ll_record)
-            showView(ll_draw_content)
-        }
-
-        if (correctList?.questionType!!<0){
+        if (correctList?.questionType!! < 0) {
             showView(tv_correct_module)
-        }
-        else{
+        } else {
             disMissView(tv_correct_module)
         }
 
+        //如果是朗读本
+        if (subType == 3) {
+            showView(ll_record)
+            disMissView(ll_draw_content)
+        }
+
+        //预习本
+        if (subType==10){
+            showView(ratingBar)
+            disMissView(rv_list_score,tv_correct_module,iv_tips)
+        }
+
         tv_save.setOnClickListener {
-            if (correctStatus == 1&&isCorrectComplete()) {
+            if (correctStatus == 1 && score>0) {
                 showLoading()
-                if (correctList?.subType==3){
+                if (subType == 3) {
                     commit()
-                }
-                else{
+                } else {
                     //没有手写，直接提交
                     if (!FileUtils.isExistContent(getPathDraw())) {
                         url = userItems[posUser].studentUrl
@@ -207,18 +206,15 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
 
         tv_correct_module.setOnClickListener {
-             if (correctModule==1){
-                 correctModule =2
-                 tv_correct_module.text="初级批改"
-            } else{
-                 correctModule=1
-                 tv_correct_module.text="高级批改"
+            if (correctModule == 1) {
+                correctModule = 2
+                tv_correct_module.text = "初级批改"
+            } else {
+                correctModule = 1
+                tv_correct_module.text = "高级批改"
             }
-            resultStandardItems=DataBeanManager.getResultStandardItems(correctList!!.subType,correctList!!.subTypeName,correctModule)
             initRecyclerViewResult()
-            Handler().post {
-                setContentView()
-            }
+            setContentView()
         }
 
         iv_tips.setOnClickListener {
@@ -232,29 +228,45 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         tv_share.setOnClickListener {
             CommonDialog(this).setContent("确定分享该学生作业？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                 override fun ok() {
-                    val userIds= mutableListOf<Int>()
-                    for (item in userItems){
-//                        if (userItems.indexOf(item)!=posUser)
-                            userIds.add(item.userId)
+                    val userIds = mutableListOf<Int>()
+                    for (item in userItems) {
+                      if (userItems.indexOf(item)!=posUser)
+                        userIds.add(item.userId)
                     }
-                    val map=HashMap<String,Any>()
-                    map["type"]=1
-                    map["id"]=userItems[posUser].studentTaskId
-                    map["userIds"]= userIds
-                    mPresenter.share(map)
+                    if (userIds.isEmpty()) {
+                        showToast(2, "暂无可分享学生")
+                    } else {
+                        val map = HashMap<String, Any>()
+                        map["type"] = 1
+                        map["id"] = userItems[posUser].studentTaskId
+                        map["userIds"] = userIds
+                        mPresenter.share(map)
+                    }
                 }
             })
         }
 
+        ratingBar.setOnRatingBarChangeListener { ratingBar, fl, b ->
+            score=fl.toInt()
+        }
+
         initRecyclerViewUser()
-        initRecyclerViewResult()
+        if(subType!=10)
+            initRecyclerViewResult()
 
         onChangeExpandView()
     }
 
+    /**
+     * 初始化数据
+     */
+    private fun getInitResultStandardItems(): MutableList<ResultStandardItem> {
+        return DataBeanManager.getResultStandardItems(subType, correctList!!.subTypeName, correctModule)
+    }
+
     private fun initRecyclerViewUser() {
         rv_list.layoutManager = GridLayoutManager(this, 6)//创建布局管理
-        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, 1,correctModule,null).apply {
+        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, if (subType==10)3 else 1, correctModule, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(6, 25))
@@ -264,7 +276,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
                 release()
 
-                val oldItem=userItems[posUser]
+                val oldItem = userItems[posUser]
                 oldItem.isCheck = false
                 mAdapter?.notifyItemChanged(posUser)
 
@@ -273,118 +285,103 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 mAdapter?.notifyItemChanged(posUser)
 
                 posImage = 0
-                Handler().post {
-                    setContentView()
-                }
+                setContentView()
             }
         }
     }
 
     private fun initRecyclerViewResult() {
-        val itemDeco=SpaceItemDeco(40)
-        if (correctModule==2){
-            val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(
-                DP2PX.dip2px(this,20f), DP2PX.dip2px(this,30f),
-                DP2PX.dip2px(this,20f), DP2PX.dip2px(this,30f))
-            rv_list_score.layoutParams=layoutParams
-        }
-        else{
-            val layoutParams= LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(
-                DP2PX.dip2px(this,80f), DP2PX.dip2px(this,30f),
-                DP2PX.dip2px(this,80f), DP2PX.dip2px(this,30f))
-            rv_list_score.layoutParams=layoutParams
-        }
-        val layoutManager=if (correctModule==2) GridLayoutManager(this,resultStandardItems.size) else LinearLayoutManager(this)
-        val layoutResId=if (correctModule==2) R.layout.item_homework_result_standard_high else R.layout.item_homework_result_standard
+        val itemDeco = SpaceItemDeco(50)
+
+        val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        layoutParams.setMargins(
+            DP2PX.dip2px(this, if (correctModule == 2) 20f else 80f), DP2PX.dip2px(this, 30f),
+            DP2PX.dip2px(this, if (correctModule == 2) 20f else 80f), DP2PX.dip2px(this, 30f)
+        )
+        rv_list_score.layoutParams = layoutParams
+
+        val layoutManager = if (correctModule == 2) GridLayoutManager(this, getInitResultStandardItems().size) else LinearLayoutManager(this)
+        val layoutResId = if (correctModule == 2) R.layout.item_homework_result_standard_high else R.layout.item_homework_result_standard
         rv_list_score.layoutManager = layoutManager//创建布局管理
-        mResultStandardAdapter = HomeworkResultStandardAdapter(layoutResId, correctModule,items).apply {
+        mResultStandardAdapter = HomeworkResultStandardAdapter(layoutResId, correctModule, items).apply {
             rv_list_score.adapter = this
             bindToRecyclerView(rv_list_score)
-            if (correctModule==2){
-                if (rv_list_score.itemDecorationCount!=0){
+            if (correctModule == 2) {
+                if (rv_list_score.itemDecorationCount != 0) {
                     rv_list_score.removeItemDecorationAt(0)
                 }
-            }else{
-                if (rv_list_score.itemDecorationCount==0)
+            } else {
+                if (rv_list_score.itemDecorationCount == 0)
                     rv_list_score.addItemDecoration(itemDeco)
             }
-            setCustomItemChildClickListener{ position,childPosition->
-                val parentItem=items[position]
-                for (item in parentItem.list){
-                    item.isCheck=false
-                }
-                val childItem=parentItem.list[childPosition]
-                childItem.isCheck=true
-
-                parentItem.sort=childItem.sort
-                parentItem.score=childItem.score
-
-                notifyItemChanged(position)
-
-                if (isCorrectComplete()){
-                    results.clear()
-                    var totalScores=0.0
-                    for (item in items){
-                        results.add(item.sort)
-                        totalScores+=item.score
+            setCustomItemChildClickListener { position, childPosition ->
+                if (correctStatus == 1) {
+                    val parentItem = items[position]
+                    for (item in parentItem.list) {
+                        item.isCheck = false
                     }
-                    val averageScore=totalScores/items.size
-                    getScore(averageScore)
+                    val childItem = parentItem.list[childPosition]
+                    childItem.isCheck = true
+
+                    parentItem.sort = childItem.sort
+                    parentItem.score = childItem.score
+
+                    notifyItemChanged(position)
+
+                    if (isCorrectComplete()) {
+                        results.clear()
+                        var totalScores = 0.0
+                        for (item in items) {
+                            results.add(item.sort)
+                            totalScores += item.score
+                        }
+                        val averageScore = totalScores / items.size
+                        getScore(averageScore)
+                    }
                 }
             }
         }
     }
 
-    private fun getScore(averageScore:Double){
-        if (correctModule==1){
-            result = if (averageScore>=85){
+    private fun getScore(averageScore: Double) {
+        if (correctModule == 1) {
+            score = if (averageScore >= 85) {
                 1
-            } else if (averageScore>=70){
+            } else if (averageScore >= 70) {
                 2
-            } else{
+            } else {
                 3
             }
-        }
-        else{
-            if (averageScore>=95){
-                result=1
-            }
-            else if (averageScore>=90){
-                result=2
-            }
-            else if (averageScore>=85){
-                result=3
-            }
-            else if (averageScore>=80){
-                result=4
-            }
-            else if (averageScore>=75){
-                result=5
-            }
-            else if (averageScore>=70){
-                result=6
-            }
-            else if (averageScore>=65){
-                result=7
-            }
-            else if (averageScore>=60){
-                result=8
-            }
-            else{
-                result=9
+        } else {
+            if (averageScore >= 95) {
+                score = 1
+            } else if (averageScore >= 90) {
+                score = 2
+            } else if (averageScore >= 85) {
+                score = 3
+            } else if (averageScore >= 80) {
+                score = 4
+            } else if (averageScore >= 75) {
+                score = 5
+            } else if (averageScore >= 70) {
+                score = 6
+            } else if (averageScore >= 65) {
+                score = 7
+            } else if (averageScore >= 60) {
+                score = 8
+            } else {
+                score = 9
             }
         }
-        tv_total_score.text=DataBeanManager.getResultStandardStr(result.toDouble(),correctModule)
+        tv_total_score.text = DataBeanManager.getResultStandardStr(score.toDouble(), correctModule)
     }
 
     /**
      * 判断批改是否完成
      */
-    private fun isCorrectComplete():Boolean{
-        for (item in items){
-            if (item.score<=0){
+    private fun isCorrectComplete(): Boolean {
+        for (item in items) {
+            if (item.score <= 0) {
                 return false
             }
         }
@@ -419,91 +416,116 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
      * 设置切换内容展示
      */
     private fun setContentView() {
-        val userItem = userItems[posUser]
-        correctStatus = userItem.status
+        Thread {
+            runOnUiThread {
 
-        tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+                val userItem = userItems[posUser]
+                correctStatus = userItem.status
+                isDrawingSave = correctStatus == 1
+                score=0
 
-        items=resultStandardItems.stream().collect(Collectors.toList())
-        if (!userItem.question.isNullOrEmpty()&&userItem.question.length<20){
-            val types=Gson().fromJson(userItem.question, object : TypeToken<MutableList<Int>>() {}.type) as MutableList<Int>
-            if (types.size>0){
-                for (item in items){
-                    val i=items.indexOf(item)
-                    val type=types[i]
-                    item.list[type-1].isCheck=true
+                tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
+
+                items = getInitResultStandardItems()
+                if (!userItem.question.isNullOrEmpty() && userItem.question.length < 20) {
+                    val types = Gson().fromJson(userItem.question, object : TypeToken<MutableList<Int>>() {}.type) as MutableList<Int>
+                    for (i in types.indices) {
+                        val type = types[i]
+                        if (i<items.size){
+                            val item = items[i]
+                            for (childItem in item.list) {
+                                if (childItem.sort == type) {
+                                    childItem.isCheck = true
+                                    item.score=childItem.score
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        }
 
-        if (correctList?.subType == 3) {
-            if (!userItem.studentUrl.isNullOrEmpty()) {
-                recordPath = userItem.studentUrl
+                if (correctList?.subType == 3) {
+                    if (!userItem.studentUrl.isNullOrEmpty()) {
+                        recordPath = userItem.studentUrl
 
-                mediaPlayer = MediaPlayer()
-                mediaPlayer?.setDataSource(recordPath)
-                mediaPlayer?.setOnCompletionListener {
-                    changeMediaView(false)
-                    mediaPlayer?.seekTo(0)
-                    progressBar.progress=0
-                    tv_start_time.text="00:00"
-                    timer?.cancel()
+                        mediaPlayer = MediaPlayer()
+                        mediaPlayer?.setDataSource(recordPath)
+                        mediaPlayer?.setOnCompletionListener {
+                            changeMediaView(false)
+                            mediaPlayer?.seekTo(0)
+                            progressBar.progress = 0
+                            tv_start_time.text = "00:00"
+                            timer?.cancel()
+                        }
+                        mediaPlayer?.prepare()
+                        tv_start_time.text = "00:00"
+                        mediaPlayer?.seekTo(0)
+                        tv_end_time.text = DateUtils.secondToString(mediaPlayer?.duration!!)
+                        progressBar.max = mediaPlayer?.duration!!
+                        changeMediaView(false)
+
+                        showView(iv_file, ll_play, ll_progressbar)
+                    } else {
+                        disMissView(iv_file, ll_play, ll_progressbar)
+                    }
                 }
-                mediaPlayer?.prepare()
-                tv_start_time.text="00:00"
-                mediaPlayer?.seekTo(0)
-                tv_end_time.text=DateUtils.secondToString(mediaPlayer?.duration!!)
-                progressBar.max = mediaPlayer?.duration!!
-                changeMediaView(false)
 
-                showView(iv_file, ll_play,ll_progressbar)
-            } else {
-                disMissView(iv_file, ll_play,ll_progressbar)
+                when (correctStatus) {
+                    1 -> {
+                        currentImages = ToolUtils.getImages(userItem.studentUrl)
+                        showView(ll_correct, tv_save)
+                        disMissView(tv_share)
+
+                        if (userItem.score>0)
+                            score=userItem.score.toInt()
+                        tv_total_score.text =if (userItem.score>0)DataBeanManager.getResultStandardStr(userItem.score, correctModule) else ""
+
+                        setDisableTouchInput(false)
+                        setPWEnabled(true)
+                    }
+
+                    2 -> {
+                        currentImages = ToolUtils.getImages(userItem.submitUrl)
+                        tv_total_score.text = DataBeanManager.getResultStandardStr(userItem.score, correctModule)
+                        showView(ll_correct,tv_share)
+                        disMissView(tv_save)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
+                    }
+
+                    3 -> {
+                        currentScores.clear()
+                        currentImages = mutableListOf()
+                        disMissView(ll_correct)
+
+                        setDisableTouchInput(true)
+                        setPWEnabled(false)
+                    }
+                }
+                if (correctList?.subType == 3)
+                    disMissView(tv_share)
+                if (correctList?.subType==10){
+                    ratingBar.rating=userItem.score.toFloat()
+                    disMissView(ll_score,tv_share)
+                }
+
+                mResultStandardAdapter?.setNewData(items)
+
+                onChangeContent()
+
             }
-        }
-
-        isDrawingSave=correctStatus==1
-
-        when (correctStatus) {
-            1 -> {
-                currentImages = ToolUtils.getImages(userItem.studentUrl)
-                showView(ll_correct,tv_save)
-                disMissView(tv_share)
-                tv_total_score.text=""
-
-                setDisableTouchInput(false)
-                setPWEnabled(true)
-            }
-            2 -> {
-                currentImages = ToolUtils.getImages(userItem.submitUrl)
-                tv_total_score.text=DataBeanManager.getResultStandardStr(userItem.score,correctModule)
-                if (correctList?.subType!=3)
-                    showView(tv_share)
-                showView(ll_correct)
-                disMissView(tv_save)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-            3 -> {
-                currentScores.clear()
-                currentImages = mutableListOf()
-                disMissView(ll_correct)
-
-                setDisableTouchInput(true)
-                setPWEnabled(false)
-            }
-        }
-
-        mResultStandardAdapter?.setNewData(items)
-
-        onChangeContent()
+        }.start()
     }
 
     /**
      * 设置学生提交图片展示
      */
     override fun onChangeContent() {
+        if (currentImages.size == 0) {
+            setContentImageClear()
+            return
+        }
+
         if (isExpand && posImage > getImageSize() - 2)
             posImage = getImageSize() - 2
         if (isExpand && posImage < 0)
@@ -511,12 +533,6 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
         tv_page_total.text = "${getImageSize()}"
         tv_page_total_a.text = "${getImageSize()}"
-
-        if (currentImages.size==0){
-            v_content_a?.setImageResource(0)
-            v_content_a?.setImageResource(0)
-            return
-        }
 
         if (isExpand) {
             GlideUtils.setImageCacheUrl(this, currentImages[posImage], v_content_a)
@@ -538,6 +554,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
             }
             tv_page.text = "${posImage + 1}"
         }
+
     }
 
     /**
@@ -551,14 +568,13 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
     override fun onElikSava_a() {
         if (isExpand)
-           BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
     }
 
     override fun onElikSava_b() {
-        if (isExpand){
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage+1))
-        }
-        else{
+        if (isExpand) {
+            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+        } else {
             BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
         }
     }
@@ -610,15 +626,15 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private fun commit() {
         val map = HashMap<String, Any>()
         map["studentTaskId"] = userItems[posUser].studentTaskId
-        if (correctList?.subType!=3)
+        if (correctList?.subType != 3)
             map["submitUrl"] = url
         map["status"] = 2
-        map["score"] = result
-        map["question"]=Gson().toJson(results)
+        map["score"] = score
+        map["question"] = Gson().toJson(results)
         mPresenter.commitPaperStudent(map)
 
-        if (correctList?.questionType!!<0)
-            mPresenter.changeQuestionType(mId,correctModule)
+        if (correctList?.questionType!! < 0)
+            mPresenter.changeQuestionType(mId, correctModule)
     }
 
     /**
@@ -670,17 +686,17 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
     }
 
-    private fun startTimer(){
+    private fun startTimer() {
         Thread {
-            timer= Timer()
-            timer!!.schedule(object: TimerTask() {
+            timer = Timer()
+            timer!!.schedule(object : TimerTask() {
                 override fun run() {
                     runOnUiThread {
-                        progressBar.progress=mediaPlayer?.currentPosition!!
-                        tv_start_time.text=DateUtils.secondToString(mediaPlayer?.currentPosition!!)
+                        progressBar.progress = mediaPlayer?.currentPosition!!
+                        tv_start_time.text = DateUtils.secondToString(mediaPlayer?.currentPosition!!)
                     }
                 }
-            } ,500,500)
+            }, 500, 500)
         }.start()
     }
 
