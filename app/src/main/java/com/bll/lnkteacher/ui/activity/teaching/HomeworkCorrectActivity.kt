@@ -1,8 +1,8 @@
 package com.bll.lnkteacher.ui.activity.teaching
 
-import android.media.MediaPlayer
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
@@ -30,6 +30,9 @@ import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.bll.lnkteacher.widget.SpaceItemDeco
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.ac_homework_correct.iv_file
@@ -41,6 +44,7 @@ import kotlinx.android.synthetic.main.ac_homework_correct.ll_play
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_progressbar
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_record
 import kotlinx.android.synthetic.main.ac_homework_correct.ll_score
+import kotlinx.android.synthetic.main.ac_homework_correct.ll_speed
 import kotlinx.android.synthetic.main.ac_homework_correct.progressBar
 import kotlinx.android.synthetic.main.ac_homework_correct.ratingBar
 import kotlinx.android.synthetic.main.ac_homework_correct.rv_list
@@ -50,6 +54,11 @@ import kotlinx.android.synthetic.main.ac_homework_correct.tv_end_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_play
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_save
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_share
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_speed_0_5
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_speed_1
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_speed_1_5
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_speed_2
+import kotlinx.android.synthetic.main.ac_homework_correct.tv_speed_2_5
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_start_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_take_time
 import kotlinx.android.synthetic.main.ac_homework_correct.tv_total_score
@@ -67,7 +76,7 @@ import java.util.TimerTask
 class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
 
     private var mId = 0
-    private var subType=0
+    private var subType = 0
     private var correctList: CorrectBean? = null
     private val mUploadPresenter = FileUploadPresenter(this, 3)
     private val mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
@@ -80,12 +89,14 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private var posUser = 0//当前学生下标
     private var currentImages = mutableListOf<String>()//当前学生作业地址
     private var recordPath = ""
-    private var mediaPlayer: MediaPlayer? = null
     private var tokenStr = ""
     private var items = mutableListOf<ResultStandardItem>()
     private val results = mutableListOf<Int>()
     private var score = 0
+    private var exoPlayer: ExoPlayer? = null
     private var timer: Timer? = null
+    private var speed=1f
+    private var isReadyRecorder=false
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -114,7 +125,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         mAdapter?.notifyItemChanged(posUser)
 
         disMissView(tv_save)
-        if (subType!=10&&subType!=3)
+        if (subType != 3)
             showView(tv_share)
         setDisableTouchInput(true)
         FileUtils.deleteFile(File(getPath()))
@@ -134,6 +145,8 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
     override fun onShare() {
         showToast("分享成功")
+        userItems[posUser].shareType = 1
+        mAdapter?.notifyItemChanged(posUser)
     }
 
     override fun layoutId(): Int {
@@ -147,7 +160,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         mClassBean = correctList?.examList?.get(classPos)!!
         correctModule = if (correctList?.questionType!! < 0) 1 else correctList?.questionType!!
         mId = correctList?.id!!
-        subType=correctList?.subType!!
+        subType = correctList?.subType!!
 
         fetchClassList()
     }
@@ -169,13 +182,13 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
 
         //预习本
-        if (subType==10){
+        if (subType == 10) {
             showView(ratingBar)
-            disMissView(rv_list_score,tv_correct_module,iv_tips)
+            disMissView(rv_list_score, tv_correct_module, iv_tips)
         }
 
         tv_save.setOnClickListener {
-            if (correctStatus == 1 && score>0) {
+            if (correctStatus == 1 && score > 0) {
                 showLoading()
                 if (subType == 3) {
                     commit()
@@ -192,16 +205,51 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
 
         iv_play.setOnClickListener {
-            if (mediaPlayer != null) {
-                if (mediaPlayer?.isPlaying == true) {
-                    mediaPlayer?.pause()
+            if (exoPlayer != null) {
+                if (!isReadyRecorder){
+                    showToast(1,"录音未加载完成")
+                    return@setOnClickListener
+                }
+                if (exoPlayer?.isPlaying == true) {
+                    exoPlayer?.pause()
                     timer?.cancel()
                     changeMediaView(false)
                 } else {
-                    mediaPlayer?.start()
+                    exoPlayer?.play()
                     startTimer()
                     changeMediaView(true)
                 }
+            }
+        }
+
+        tv_speed_0_5.setOnClickListener {
+            if (exoPlayer != null) {
+                setSpeed(0.5f)
+                setSpeedView(tv_speed_0_5)
+            }
+        }
+        tv_speed_1.setOnClickListener {
+            if (exoPlayer != null) {
+                setSpeed(1f)
+                setSpeedView(tv_speed_1)
+            }
+        }
+        tv_speed_1_5.setOnClickListener {
+            if (exoPlayer != null) {
+                setSpeed(1.5f)
+                setSpeedView(tv_speed_1_5)
+            }
+        }
+        tv_speed_2.setOnClickListener {
+            if (exoPlayer != null) {
+                setSpeed(2f)
+                setSpeedView(tv_speed_2)
+            }
+        }
+        tv_speed_2_5.setOnClickListener {
+            if (exoPlayer != null) {
+                setSpeed(2.5f)
+                setSpeedView(tv_speed_2_5)
             }
         }
 
@@ -230,8 +278,8 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 override fun ok() {
                     val userIds = mutableListOf<Int>()
                     for (item in userItems) {
-                      if (userItems.indexOf(item)!=posUser)
-                        userIds.add(item.userId)
+                        if (userItems.indexOf(item) != posUser)
+                            userIds.add(item.userId)
                     }
                     if (userIds.isEmpty()) {
                         showToast(2, "暂无可分享学生")
@@ -247,14 +295,40 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         }
 
         ratingBar.setOnRatingBarChangeListener { ratingBar, fl, b ->
-            score=fl.toInt()
+            score = fl.toInt()
         }
 
         initRecyclerViewUser()
-        if(subType!=10)
+        if (subType != 10)
             initRecyclerViewResult()
 
         onChangeExpandView()
+    }
+
+    private fun setSpeedView(tvSpeed: TextView) {
+        tv_speed_0_5.background = getDrawable(R.drawable.bg_black_stroke_5dp_corner)
+        tv_speed_0_5.setTextColor(getColor(R.color.black))
+        tv_speed_1.background = getDrawable(R.drawable.bg_black_stroke_5dp_corner)
+        tv_speed_1.setTextColor(getColor(R.color.black))
+        tv_speed_1_5.background = getDrawable(R.drawable.bg_black_stroke_5dp_corner)
+        tv_speed_1_5.setTextColor(getColor(R.color.black))
+        tv_speed_2.background = getDrawable(R.drawable.bg_black_stroke_5dp_corner)
+        tv_speed_2.setTextColor(getColor(R.color.black))
+        tv_speed_2_5.background = getDrawable(R.drawable.bg_black_stroke_5dp_corner)
+        tv_speed_2_5.setTextColor(getColor(R.color.black))
+        tvSpeed.background = getDrawable(R.drawable.bg_black_solid_5dp_corner)
+        tvSpeed.setTextColor(getColor(R.color.white))
+    }
+
+    private fun setSpeed(speed: Float) {
+        this.speed=speed
+        exoPlayer?.setPlaybackSpeed(speed)
+        if (exoPlayer?.isPlaying == true) {
+            exoPlayer?.pause()
+            timer?.cancel()
+            exoPlayer?.play()
+            startTimer()
+        }
     }
 
     /**
@@ -266,7 +340,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
     private fun initRecyclerViewUser() {
         rv_list.layoutManager = GridLayoutManager(this, 6)//创建布局管理
-        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, if (subType==10)3 else 1, correctModule, null).apply {
+        mAdapter = TestPaperCorrectUserAdapter(R.layout.item_homework_correct_name, if (subType == 10) 3 else 1, correctModule, null).apply {
             rv_list.adapter = this
             bindToRecyclerView(rv_list)
             rv_list.addItemDecoration(SpaceGridItemDeco(6, 25))
@@ -422,7 +496,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 val userItem = userItems[posUser]
                 correctStatus = userItem.status
                 isDrawingSave = correctStatus == 1
-                score=0
+                score = 0
 
                 tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
 
@@ -431,12 +505,12 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                     val types = Gson().fromJson(userItem.question, object : TypeToken<MutableList<Int>>() {}.type) as MutableList<Int>
                     for (i in types.indices) {
                         val type = types[i]
-                        if (i<items.size){
+                        if (i < items.size) {
                             val item = items[i]
                             for (childItem in item.list) {
                                 if (childItem.sort == type) {
                                     childItem.isCheck = true
-                                    item.score=childItem.score
+                                    item.score = childItem.score
                                 }
                             }
                         }
@@ -446,26 +520,37 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 if (correctList?.subType == 3) {
                     if (!userItem.studentUrl.isNullOrEmpty()) {
                         recordPath = userItem.studentUrl
-
-                        mediaPlayer = MediaPlayer()
-                        mediaPlayer?.setDataSource(recordPath)
-                        mediaPlayer?.setOnCompletionListener {
-                            changeMediaView(false)
-                            mediaPlayer?.seekTo(0)
-                            progressBar.progress = 0
-                            tv_start_time.text = "00:00"
-                            timer?.cancel()
-                        }
-                        mediaPlayer?.prepare()
+                        speed=1f
+                        isReadyRecorder=false
+                        exoPlayer = ExoPlayer.Builder(this).build()
+                        exoPlayer?.setMediaItem(MediaItem.fromUri(recordPath))
+                        exoPlayer?.addListener(object : Player.Listener {
+                            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                                when (playbackState) {
+                                    Player.STATE_READY -> {
+                                        isReadyRecorder=true
+                                        val totalTime = exoPlayer?.duration!!.toInt()
+                                        tv_end_time.text = DateUtils.secondToString(totalTime)
+                                        progressBar.max = totalTime/1000
+                                    }
+                                    Player.STATE_ENDED -> {
+                                        tv_start_time.text = "00:00"
+                                        exoPlayer?.pause()
+                                        exoPlayer?.seekTo(0)
+                                        progressBar.progress = 0
+                                        changeMediaView(false)
+                                        timer?.cancel()
+                                    }
+                                }
+                            }
+                        })
+                        exoPlayer?.prepare()
                         tv_start_time.text = "00:00"
-                        mediaPlayer?.seekTo(0)
-                        tv_end_time.text = DateUtils.secondToString(mediaPlayer?.duration!!)
-                        progressBar.max = mediaPlayer?.duration!!
                         changeMediaView(false)
 
-                        showView(iv_file, ll_play, ll_progressbar)
+                        showView(iv_file, ll_play, ll_progressbar,ll_speed)
                     } else {
-                        disMissView(iv_file, ll_play, ll_progressbar)
+                        disMissView(iv_file, ll_play, ll_progressbar,ll_speed)
                     }
                 }
 
@@ -475,9 +560,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                         showView(ll_correct, tv_save)
                         disMissView(tv_share)
 
-                        if (userItem.score>0)
-                            score=userItem.score.toInt()
-                        tv_total_score.text =if (userItem.score>0)DataBeanManager.getResultStandardStr(userItem.score, correctModule) else ""
+                        if (userItem.score > 0)
+                            score = userItem.score.toInt()
+                        tv_total_score.text = if (userItem.score > 0) DataBeanManager.getResultStandardStr(userItem.score, correctModule) else ""
 
                         setDisableTouchInput(false)
                         setPWEnabled(true)
@@ -486,7 +571,7 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                     2 -> {
                         currentImages = ToolUtils.getImages(userItem.submitUrl)
                         tv_total_score.text = DataBeanManager.getResultStandardStr(userItem.score, correctModule)
-                        showView(ll_correct,tv_share)
+                        showView(ll_correct, tv_share)
                         disMissView(tv_save)
 
                         setDisableTouchInput(true)
@@ -504,9 +589,9 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                 }
                 if (correctList?.subType == 3)
                     disMissView(tv_share)
-                if (correctList?.subType==10){
-                    ratingBar.rating=userItem.score.toFloat()
-                    disMissView(ll_score,tv_share)
+                if (correctList?.subType == 10) {
+                    ratingBar.rating = userItem.score.toFloat()
+                    disMissView(ll_score)
                 }
 
                 mResultStandardAdapter?.setNewData(items)
@@ -687,26 +772,28 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     private fun startTimer() {
+        val periodTime = (1000/speed).toLong()
         Thread {
             timer = Timer()
             timer!!.schedule(object : TimerTask() {
                 override fun run() {
                     runOnUiThread {
-                        progressBar.progress = mediaPlayer?.currentPosition!!
-                        tv_start_time.text = DateUtils.secondToString(mediaPlayer?.currentPosition!!)
+                        val currentTime=exoPlayer?.currentPosition!!.toInt()
+                        progressBar.progress = currentTime/1000
+                        tv_start_time.text = DateUtils.secondToString(currentTime)
                     }
                 }
-            }, 500, 500)
+            }, 0, periodTime)
         }.start()
     }
 
 
     private fun release() {
         timer?.cancel()
-        if (mediaPlayer != null) {
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = null
+        if (exoPlayer != null) {
+            exoPlayer?.stop()
+            exoPlayer?.release()
+            exoPlayer = null
         }
     }
 

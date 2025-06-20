@@ -65,6 +65,8 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
 
     override fun onShare() {
         showToast("分享成功")
+        userItems[posUser].shareType = 1
+        mAdapter?.notifyItemChanged(posUser)
     }
     
     override fun layoutId(): Int {

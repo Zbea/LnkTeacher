@@ -250,8 +250,8 @@
 
             <ImageView
                 android:id="@+id/iv_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:src="@mipmap/icon_record_play" />
 
             <TextView
@@ -265,6 +265,71 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_50"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+
+            <TextView
+                android:id="@+id/tv_speed_0_5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="0.5X"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+            <TextView
+                android:id="@+id/tv_speed_1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="1X"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18"
+                android:layout_marginStart="@dimen/dp_30"
+                android:background="@drawable/bg_black_solid_5dp_corner"
+                />
+            <TextView
+                android:id="@+id/tv_speed_1_5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="1.5X"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:layout_marginStart="@dimen/dp_30"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+            <TextView
+                android:id="@+id/tv_speed_2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="2X"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:layout_marginStart="@dimen/dp_30"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+            <TextView
+                android:id="@+id/tv_speed_2_5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="2.5X"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_18"
+                android:layout_marginStart="@dimen/dp_30"
+                android:background="@drawable/bg_black_stroke_5dp_corner"
+                />
+
+        </LinearLayout>
 
     </LinearLayout>
 

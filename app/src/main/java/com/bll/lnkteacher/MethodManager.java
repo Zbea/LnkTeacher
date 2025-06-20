@@ -1,6 +1,7 @@
 package com.bll.lnkteacher;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -92,6 +93,14 @@ public class MethodManager {
         intent.putExtra("userId", 0L);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
+    }
+
+    public static void gotoPptDetails(Context context,String path){
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+        intent.putExtra("path", path);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     /**

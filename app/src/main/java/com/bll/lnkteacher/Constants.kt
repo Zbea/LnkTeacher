@@ -87,6 +87,7 @@ class Constants {
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理刷新
 
+        const val PACKAGE_PPT= "com.htfyun.dualdocreader"
         const val PACKAGE_READER = "com.geniatech.knote.reader"
         const val PACKAGE_GEOMETRY = "com.geometry"
         const val PACKAGE_SYSTEM_UPDATE = "com.htfyun.firmwareupdate"

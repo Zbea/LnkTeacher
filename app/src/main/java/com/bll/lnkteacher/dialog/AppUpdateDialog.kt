@@ -32,12 +32,11 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
 
         btn_ok = dialog?.findViewById(R.id.tv_update)
         val tvCancel = dialog?.findViewById<TextView>(R.id.tv_cancel)
-        val tv_name = dialog?.findViewById<TextView>(R.id.tv_title)
-        tv_info = dialog?.findViewById(R.id.tv_info)
-
         tvCancel?.setOnClickListener {
             dismiss()
         }
+        val tv_name = dialog?.findViewById<TextView>(R.id.tv_title)
+        tv_info = dialog?.findViewById(R.id.tv_info)
 
         if(type==1){
             val item=item as AppUpdateBean

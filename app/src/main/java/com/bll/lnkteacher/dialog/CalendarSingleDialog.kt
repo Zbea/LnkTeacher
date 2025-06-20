@@ -6,6 +6,7 @@ import android.content.Context
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.TextView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.DateUtils
@@ -13,10 +14,12 @@ import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 
 
-class CalendarSingleDialog(private val context: Context,private val x:Float,private val y:Float) {
+class CalendarSingleDialog(private val context: Context,private val screen:Int,private val x:Float,private val y:Float) {
 
     private var dialog: Dialog? = null
     constructor(context: Context):this(context,0f,0f)
+    constructor(context: Context,screen: Int):this(context,screen,0f,0f)
+    constructor(context: Context,x: Float,y: Float):this(context,2,0f,0f)
 
     @SuppressLint("SetTextI18n")
     fun builder(): CalendarSingleDialog {
@@ -29,6 +32,11 @@ class CalendarSingleDialog(private val context: Context,private val x:Float,priv
             layoutParams.gravity = Gravity.TOP or Gravity.END
             layoutParams.x = DP2PX.dip2px(context, x)
             layoutParams.y = DP2PX.dip2px(context, y)
+        }
+        if (screen>0){
+            val layoutParams=window.attributes
+            layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+            layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,400f))/2
         }
         dialog?.show()
 

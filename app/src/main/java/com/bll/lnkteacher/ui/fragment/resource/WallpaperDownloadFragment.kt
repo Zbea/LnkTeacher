@@ -26,7 +26,6 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
     private var items= mutableListOf<WallpaperBean>()
     private var mAdapter: WallpaperAdapter?=null
     private var supply=1
-    private var type=1
     private var position=0
 
     override fun onList(bean: WallpaperList) {
@@ -37,7 +36,7 @@ class WallpaperDownloadFragment : BaseFragment(), IContractView.IWallpaperView{
 
     override fun buySuccess() {
         items[position].buyStatus=1
-        mAdapter?.notifyDataSetChanged()
+        mAdapter?.notifyItemChanged(position)
     }
 
 

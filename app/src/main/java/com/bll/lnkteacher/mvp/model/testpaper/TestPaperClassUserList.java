@@ -25,8 +25,8 @@ public class TestPaperClassUserList implements Serializable {
         @SerializedName("Type")
         public int type;
         public String name;
+        public int shareType;//1已分享
         public boolean isCheck;
-        public int questionType;
         public String question;//题目数据
         public List<ScoreItem> currentScores=new ArrayList<>();
     }

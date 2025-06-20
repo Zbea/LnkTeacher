@@ -105,6 +105,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
     override fun onShare() {
         showToast("分享成功")
+        userItems[posUser].shareType = 1
+        mAdapter?.notifyItemChanged(posUser)
     }
 
     override fun layoutId(): Int {
@@ -133,6 +135,13 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         setPageTitle("${title}批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog, iv_btn)
         setPageSetting("全部保存")
+
+        if (correctList?.taskType==1){
+            tv_save.text="保存发送"
+        }
+        else{
+            tv_save.text="保存"
+        }
 
         if (answerImages.size > 0) {
             showView(tv_answer)

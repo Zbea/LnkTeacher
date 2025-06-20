@@ -15,9 +15,6 @@ import kotlinx.android.synthetic.main.common_title.tv_supply
 
 class ResourceCenterActivity:BaseAppCompatActivity(){
     private var lastFragment: Fragment? = null
-    private var appFragment: AppDownloadFragment? = null
-    private var bookFragment: AppDownloadFragment? = null
-    private var readFragment: AppDownloadFragment? = null
     private var toolFragment: AppDownloadFragment? = null
     private var wallpaperFragment: WallpaperDownloadFragment? = null
     private var calenderFragment: CalenderDownloadFragment? = null
@@ -36,14 +33,11 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
         setPageTitle("资源中心")
         showView(tv_supply)
 
-        appFragment=AppDownloadFragment().newInstance(1)
-        bookFragment=AppDownloadFragment().newInstance(3)
-        readFragment=AppDownloadFragment().newInstance(4)
         toolFragment=AppDownloadFragment().newInstance(2)
         wallpaperFragment = WallpaperDownloadFragment()
         calenderFragment = CalenderDownloadFragment()
 
-        switchFragment(lastFragment, appFragment)
+        switchFragment(lastFragment, toolFragment)
         initTab()
 
         if (popSupplys.size>0)
@@ -51,9 +45,6 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
         tv_supply.setOnClickListener {
             PopupRadioList(this,popSupplys,tv_supply,tv_supply.width,5).builder().setOnSelectListener {
                 tv_supply.text = it.name
-                appFragment?.changeSupply(it.id)
-                bookFragment?.changeSupply(it.id)
-                readFragment?.changeSupply(it.id)
                 toolFragment?.changeSupply(it.id)
                 wallpaperFragment?.changeSupply(it.id)
                 calenderFragment?.changeSupply(it.id)
@@ -75,21 +66,12 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
     override fun onTabClickListener(view: View, position: Int) {
         when(position){
             0->{
-                switchFragment(lastFragment, appFragment)
-            }
-            1->{
-                switchFragment(lastFragment, bookFragment)
-            }
-            2->{
-                switchFragment(lastFragment, readFragment)
-            }
-            3->{
                 switchFragment(lastFragment, toolFragment)
             }
-            4->{
+            1->{
                 switchFragment(lastFragment, wallpaperFragment)
             }
-            5->{
+            2->{
                 switchFragment(lastFragment, calenderFragment)
             }
         }
@@ -118,7 +100,6 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
     }
 
     override fun initChangeScreenData() {
-        appFragment?.initChangeScreenData()
         toolFragment?.initChangeScreenData()
         wallpaperFragment?.initChangeScreenData()
         calenderFragment?.initChangeScreenData()

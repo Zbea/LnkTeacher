@@ -26,15 +26,19 @@ class TestPaperCorrectUserAdapter(layoutResId: Int,val type:Int,val questionType
 
         helper.setText(R.id.tv_score,score)
         helper.setText(R.id.tv_name,item.name)
+        helper.setGone(R.id.iv_share,item.shareType==1)
 
         var colorRes=0
         var bgRes=0
+        var shareResId=0
 
         if (item.isCheck){
             colorRes=mContext.getColor(R.color.white)
             bgRes=R.drawable.bg_black_solid_5dp_corner
+            shareResId=R.mipmap.icon_share_type_white
         }
         else{
+            shareResId=R.mipmap.icon_share_type_black
             if (item.status==3){
                 colorRes=mContext.getColor(R.color.gray)
                 bgRes=R.drawable.bg_gray_stroke_5dp_corner
@@ -46,7 +50,7 @@ class TestPaperCorrectUserAdapter(layoutResId: Int,val type:Int,val questionType
         }
         helper.setTextColor(R.id.tv_name,colorRes)
         helper.setBackgroundRes(R.id.tv_name,bgRes)
-
+        helper.setImageResource(R.id.iv_share,shareResId)
     }
 
 }

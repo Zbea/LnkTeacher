@@ -21,6 +21,7 @@ import com.bll.lnkteacher.utils.FileDownManager
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
+import com.bll.lnkteacher.utils.ToolUtils
 import com.bll.lnkteacher.utils.zip.IZipCallback
 import com.bll.lnkteacher.utils.zip.ZipUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
@@ -29,7 +30,6 @@ import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.text.DecimalFormat
 
 class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
 
@@ -134,8 +134,8 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
                 override fun progress(task: BaseDownloadTask?, soFarBytes: Int, totalBytes: Int) {
                     if (task != null && task.isRunning) {
                         requireActivity().runOnUiThread {
-                            val s = getFormatNum(soFarBytes.toDouble() / (1024 * 1024),) + "/" +
-                                    getFormatNum(totalBytes.toDouble() / (1024 * 1024),)
+                            val s = ToolUtils.getFormatNum(soFarBytes.toDouble() / (1024 * 1024),"0.0M") + "/" +
+                                    ToolUtils.getFormatNum(totalBytes.toDouble() / (1024 * 1024),"0.0M")
                             detailsDialog?.setUnClickBtn(s)
                         }
                     }
@@ -187,23 +187,11 @@ class CalenderDownloadFragment: BaseFragment(), IContractView.ICalenderView {
         })
     }
 
-
-    fun getFormatNum(pi: Double): String? {
-        val df = DecimalFormat("0.0M")
-        return df.format(pi)
-    }
-
     /**
      * 改变供应商
      */
     fun changeSupply(supply:Int){
         this.supply=supply
-        pageIndex=1
-        fetchData()
-    }
-
-    fun changeType(type:Int){
-        this.type=type
         pageIndex=1
         fetchData()
     }

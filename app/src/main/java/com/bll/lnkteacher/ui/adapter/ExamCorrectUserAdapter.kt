@@ -8,20 +8,32 @@ import com.chad.library.adapter.base.BaseViewHolder
 class ExamCorrectUserAdapter(layoutResId: Int, data: List<ExamClassUserList.ClassUserBean>?) : BaseQuickAdapter<ExamClassUserList.ClassUserBean, BaseViewHolder>(layoutResId, data) {
     override fun convert(helper: BaseViewHolder, item: ExamClassUserList.ClassUserBean) {
         helper.setText(R.id.tv_name,item.studentName)
-        val resId=when(item.status){
-            1->{
-                R.mipmap.icon_student_select_no
+        helper.setText(R.id.tv_score,if (item.status==2) item.score.toString() else "")
+        helper.setGone(R.id.iv_share,item.shareType==1)
+
+        var colorRes=0
+        var bgRes=0
+        var shareResId=0
+
+        if (item.isCheck){
+            colorRes=mContext.getColor(R.color.white)
+            bgRes=R.drawable.bg_black_solid_5dp_corner
+            shareResId=R.mipmap.icon_share_type_white
+        }
+        else{
+            shareResId=R.mipmap.icon_share_type_black
+            if (item.status==3){
+                colorRes=mContext.getColor(R.color.gray)
+                bgRes=R.drawable.bg_gray_stroke_5dp_corner
             }
-            2->{
-                R.mipmap.icon_student_select_end
-            }
-            else->{
-                R.drawable.bg_gray_stroke_10dp_corner
+            else{
+                colorRes=mContext.getColor(R.color.black)
+                bgRes=R.drawable.bg_black_stroke_5dp_corner
             }
         }
-        helper.setBackgroundRes(R.id.tv_name,if (item.isCheck) R.drawable.bg_black_solid_10dp_corner else resId)
-
-        helper.setTextColor(R.id.tv_name,if (item.isCheck) mContext.getColor(R.color.white) else mContext.getColor(R.color.black))
+        helper.setTextColor(R.id.tv_name,colorRes)
+        helper.setBackgroundRes(R.id.tv_name,bgRes)
+        helper.setImageResource(R.id.iv_share,shareResId)
     }
 
 }

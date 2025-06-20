@@ -111,10 +111,6 @@ class TestPaperAssignFragment : BaseFragment(), IContractView.ITestPaperAssignVi
             resId = R.mipmap.icon_setting_delete
         })
         beans.add(ItemList().apply {
-            name = "置顶"
-            resId = R.mipmap.icon_setting_top
-        })
-        beans.add(ItemList().apply {
             name = "重命名"
             resId = R.mipmap.icon_setting_edit
         })
@@ -128,11 +124,6 @@ class TestPaperAssignFragment : BaseFragment(), IContractView.ITestPaperAssignVi
                         presenter.deleteType(map)
                     }
                     1->{
-                        val map=HashMap<String,Any>()
-                        map["id"]=item.id
-                        presenter.topType(map)
-                    }
-                    2->{
                         InputContentDialog(requireActivity(), 2, item.name).builder().setOnDialogClickListener {
                             editTypeStr = it
                             val map = HashMap<String, Any>()

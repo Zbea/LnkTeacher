@@ -84,7 +84,7 @@ class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
         }
 
         tv_date.setOnClickListener {
-            CalendarSingleDialog(context).builder().setOnDateListener{
+            CalendarSingleDialog(context,2).builder().setOnDateListener{
                 if (it>System.currentTimeMillis()){
                     endTime=it
                     tv_date.text=DateUtils.longToStringWeek(endTime)

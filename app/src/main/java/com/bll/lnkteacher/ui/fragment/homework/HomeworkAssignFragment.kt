@@ -172,10 +172,6 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
             resId = R.mipmap.icon_setting_edit
         })
         beans.add(ItemList().apply {
-            name = "置顶"
-            resId = R.mipmap.icon_setting_top
-        })
-        beans.add(ItemList().apply {
             name = "绑定管理"
             resId = R.mipmap.icon_setting_set
         })
@@ -205,12 +201,12 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                             mPresenter.editHomeworkType(map)
                         }
                     }
+//                    2->{
+//                        val map=HashMap<String,Any>()
+//                        map["id"]=item.id
+//                        mPresenter.topType(map)
+//                    }
                     2->{
-                        val map=HashMap<String,Any>()
-                        map["id"]=item.id
-                        mPresenter.topType(map)
-                    }
-                    3->{
                         val classIds=item.classIds.split(",")
                         val items= mutableListOf<ClassGroup>()
                         for (classGroup in DataBeanManager.getClassGroups(grade)){
