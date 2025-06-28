@@ -1,15 +1,13 @@
 package com.bll.lnkteacher;
 
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.media.MediaScannerConnection;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -33,6 +31,7 @@ import com.bll.lnkteacher.ui.activity.AccountLoginActivity;
 import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkteacher.ui.activity.book.TextbookDetailsActivity;
+import com.bll.lnkteacher.ui.activity.LessonsFullImageActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;
@@ -47,11 +46,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MethodManager {
 
@@ -95,10 +92,11 @@ public class MethodManager {
         context.sendBroadcast(intent);
     }
 
-    public static void gotoPptDetails(Context context,String path){
+    public static void gotoPptDetails(Context context,String path,int flags){
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
         intent.putExtra("path", path);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -241,6 +239,18 @@ public class MethodManager {
     }
 
     /**
+     * 放大图片
+     */
+    public static void gotoFullImage(Context context,String url,String path){
+        Intent intent=new Intent(context, LessonsFullImageActivity.class);
+        intent.putExtra("imageUrl", url);
+        intent.putExtra("imagePath", path);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, Constants.SCREEN_FULL);
+        ActivityManager.getInstance().finishActivity(intent.getClass().getName());
+        context.startActivity(intent);
+    }
+
+    /**
      * 跳转笔记写作
      */
     public static void gotoNote(Context context,Note note) {
@@ -251,7 +261,7 @@ public class MethodManager {
 
         note.date=System.currentTimeMillis();
         NoteDaoManager.getInstance().insertOrReplace(note);
-        EventBus.getDefault().post(Constants.NOTE_EVENT);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> EventBus.getDefault().post(Constants.NOTE_EVENT),1500);
     }
 
     /**
@@ -394,4 +404,20 @@ public class MethodManager {
         return list;
     }
 
+    /**
+     * 创建共享文件件
+     * @param context
+     * @param path
+     */
+    public static void createFileScan(Context context,String path){
+        if (!FileUtils.isExist(path)){
+            File file=new File(path+"/1");
+            file.mkdirs();
+            MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()},null, null);
+            new Handler().postDelayed(() -> {
+                FileUtils.deleteFile(file);
+                MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()},null, null);
+            },10*1000);
+        }
+    }
 }

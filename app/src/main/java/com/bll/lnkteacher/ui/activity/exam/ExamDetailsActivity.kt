@@ -2,6 +2,8 @@ package com.bll.lnkteacher.ui.activity.exam
 
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -92,13 +94,18 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
     override fun initView() {
         setPageTitle("考卷详情  ${examClassBean?.className}")
         setDisableTouchInput(true)
-        disMissView(iv_tool,iv_catalog,iv_btn)
+        disMissView(iv_tool,iv_catalog)
+        iv_btn.setImageResource(R.mipmap.icon_draw_image_zoom)
 
         if (answerImages.size>0){
             showView(tv_answer)
             tv_answer.setOnClickListener {
                 ImageDialog(this,2,answerImages).builder()
             }
+        }
+
+        iv_btn.setOnClickListener {
+            MethodManager.gotoFullImage(this,ToolUtils.getImagesStr(currentImages),getPath())
         }
 
         tv_share.setOnClickListener {
@@ -256,5 +263,11 @@ class ExamDetailsActivity:BaseDrawingActivity(),IContractView.IExamCorrectView{
         return currentImages.size
     }
 
+    /**
+     * 文件路径
+     */
+    private fun getPath(): String {
+        return FileAddress().getPathTestPaperDrawing(examBean?.id, examClassBean?.classId, userItems[posUser].userId)
+    }
 
 }

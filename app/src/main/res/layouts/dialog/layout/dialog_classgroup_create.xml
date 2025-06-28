@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:text="创建班群"
+        android:text="建群"
         android:textStyle="bold"
         android:textSize="@dimen/sp_26"/>
 

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="加入班群"
+        android:text="加群"
         android:textSize="26sp"
         android:textStyle="bold"
         android:textColor="@color/black" />

@@ -3,6 +3,8 @@ package com.bll.lnkteacher.ui.fragment.textbook
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -43,6 +45,7 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
             item.bookPath = FileAddress().getPathHandout(fileName + FileUtils.getUrlFormat(item.bodyUrl))
             item.bookDrawPath = FileAddress().getPathHandoutDraw(fileName)
         }
+        DataBeanManager.handouts=list.list
         items = list.list
         mAdapter?.setNewData(items)
     }
@@ -89,7 +92,7 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
 
     private fun initRecyclerView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        layoutParams.setMargins(DP2PX.dip2px(requireActivity(), 20f), DP2PX.dip2px(requireActivity(), 40f), DP2PX.dip2px(requireActivity(), 20f), 0)
+        layoutParams.setMargins(DP2PX.dip2px(requireActivity(), 20f), DP2PX.dip2px(requireActivity(), 30f), DP2PX.dip2px(requireActivity(), 20f), 0)
         layoutParams.weight = 1f
         rv_list.layoutParams = layoutParams
 
@@ -98,12 +101,19 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         mAdapter?.setEmptyView(R.layout.common_empty)
-        rv_list?.addItemDecoration(SpaceGridItemDeco(5, 50))
+        rv_list?.addItemDecoration(SpaceGridItemDeco(5, 20))
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             this.position = position
             val item = items[position]
             if (HandoutDaoManager.getInstance().isExist(item.id)) {
-                MethodManager.gotoHandouts(requireActivity(), item)
+                when(FileUtils.getUrlFormat(item.bookPath)){
+                    ".ppt",".pptx"->{
+                        MethodManager.gotoPptDetails(requireActivity(),item.bookPath,Constants.SCREEN_LEFT)
+                    }
+                    ".pdf"->{
+                        MethodManager.gotoHandouts(requireActivity(), item)
+                    }
+                }
             } else {
                 downLoadStart()
             }
@@ -125,10 +135,6 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
             resId = R.mipmap.icon_setting_delete
         })
         beans.add(ItemList().apply {
-            name = "置顶"
-            resId = R.mipmap.icon_setting_top
-        })
-        beans.add(ItemList().apply {
             name = "重命名"
             resId = R.mipmap.icon_setting_edit
         })
@@ -142,14 +148,14 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
                         presenter.delete(map)
                     }
                     1->{
-                        presenter.top(map)
-                    }
-                    2->{
                         InputContentDialog(requireActivity(),1,item.title).builder().setOnDialogClickListener{
                             editTitleStr=it
                             map["title"]=it
                             presenter.edit(map)
                         }
+                    }
+                    2->{
+                        presenter.top(map)
                     }
                 }
             }
@@ -172,7 +178,14 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
                     HandoutDaoManager.getInstance().insertOrReplace(item)
                     mAdapter?.notifyItemChanged(position)
                     hideLoading()
-                    MethodManager.gotoHandouts(requireActivity(), item)
+                    when(FileUtils.getUrlFormat(item.bookPath)){
+                        ".ppt",".pptx"->{
+                            MethodManager.gotoPptDetails(requireActivity(),item.bookPath,Constants.SCREEN_LEFT)
+                        }
+                        ".pdf"->{
+                            MethodManager.gotoHandouts(requireActivity(), item)
+                        }
+                    }
                 }
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {
                     hideLoading()
@@ -207,6 +220,10 @@ class HandoutFragment : BaseMainFragment(), IContractView.IHandoutView {
             items = HandoutDaoManager.getInstance().queryAll(type, pageIndex, pageSize)
             mAdapter?.setNewData(items)
         }
+    }
+
+    override fun onRefreshData() {
+        fetchData()
     }
 
 }

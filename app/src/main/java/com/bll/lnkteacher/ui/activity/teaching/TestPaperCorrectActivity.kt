@@ -4,6 +4,7 @@ import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -133,8 +134,9 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     override fun initView() {
         val title = if (correctList?.taskType == 1) "作业卷" else "测卷"
         setPageTitle("${title}批改  ${correctList?.title}  ${mClassBean?.name}")
-        disMissView(iv_catalog, iv_btn)
+        disMissView(iv_catalog)
         setPageSetting("全部保存")
+        iv_btn.setImageResource(R.mipmap.icon_draw_image_zoom)
 
         if (correctList?.taskType==1){
             tv_save.text="保存发送"
@@ -148,6 +150,10 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
             tv_answer.setOnClickListener {
                 ImageDialog(this, 2, answerImages).builder()
             }
+        }
+
+        iv_btn.setOnClickListener {
+            MethodManager.gotoFullImage(this,ToolUtils.getImagesStr(currentImages),getPath())
         }
 
         tv_custom_1.setOnClickListener {

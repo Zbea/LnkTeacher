@@ -26,6 +26,7 @@ import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.presenter.MainRightPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
+import com.bll.lnkteacher.ui.activity.ClassScheduleEditActivity
 import com.bll.lnkteacher.ui.activity.MessageListActivity
 import com.bll.lnkteacher.ui.activity.drawing.DiaryActivity
 import com.bll.lnkteacher.ui.activity.drawing.FreeNoteActivity
@@ -37,13 +38,14 @@ import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.GlideUtils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_main_right.iv_course
-import kotlinx.android.synthetic.main.fragment_main_right.ll_course
+import kotlinx.android.synthetic.main.fragment_main_right.iv_class_schedule
 import kotlinx.android.synthetic.main.fragment_main_right.ll_message
 import kotlinx.android.synthetic.main.fragment_main_right.rv_main_message
 import kotlinx.android.synthetic.main.fragment_main_right.rv_main_note
+import kotlinx.android.synthetic.main.fragment_main_right.tv_class_schedule
 import kotlinx.android.synthetic.main.fragment_main_right.tv_diary
 import kotlinx.android.synthetic.main.fragment_main_right.tv_free_note
+import kotlinx.android.synthetic.main.fragment_main_right.tv_lessons_schedule
 import java.io.File
 
 class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
@@ -65,7 +67,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
     }
 
     override fun onClassSchedule(url: String) {
-        GlideUtils.setImageUrl(requireActivity(),url,iv_course)
+        GlideUtils.setImageUrl(requireActivity(),url,iv_class_schedule)
     }
 
     override fun getLayoutId(): Int {
@@ -78,8 +80,18 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
 
-        ll_course.setOnClickListener {
-            customStartActivity(Intent(activity, ClassScheduleActivity::class.java).setFlags(1)
+        tv_lessons_schedule.setOnClickListener {
+            customStartActivity(Intent(activity, ClassScheduleActivity::class.java))
+        }
+
+        tv_class_schedule.setOnClickListener {
+            customStartActivity(Intent(activity, ClassScheduleEditActivity::class.java).setFlags(1)
+                .putExtra("classGroupId", 0)
+            )
+        }
+
+        iv_class_schedule.setOnClickListener {
+            customStartActivity(Intent(activity, ClassScheduleEditActivity::class.java).setFlags(1)
                 .putExtra("classGroupId", 0)
             )
         }

@@ -15,14 +15,12 @@ import java.io.File
 class MyBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        //未登录不执行
-        if (!MethodManager.isLogin()){
-            return
-        }
         when(intent.action){
             "android.intent.action.PACKAGE_ADDED"->{
+                Log.d(Constants.DEBUG,"应用安装")
                 EventBus.getDefault().post(Constants.APP_INSTALL_EVENT)
                 if (intent.data?.schemeSpecificPart.equals(context.packageName)) {
+                    Log.d(Constants.DEBUG,"更新launcher")
                     //安装完成后删除
                     FileUtils.deleteFile(File(FileAddress().getLauncherPath()))
                     // 应用安装完成后重启
@@ -31,6 +29,9 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)
+            }
+            "android.intent.action.PACKAGE_REPLACED"->{
+                Log.d(Constants.DEBUG,"自更新")
             }
             Constants.DATA_UPLOAD_BROADCAST_EVENT->{
                 Log.d("debug","上传")

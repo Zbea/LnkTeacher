@@ -34,7 +34,7 @@ class ClassGroupChildUserActivity : BaseAppCompatActivity(), IContractView.IClas
     override fun onOutSuccess() {
         showToast(R.string.classgroup_kick_success)
         mAdapter?.remove(position)
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
     }
 
     override fun layoutId(): Int {

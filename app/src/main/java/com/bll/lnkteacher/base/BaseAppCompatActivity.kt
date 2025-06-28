@@ -179,8 +179,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
         }
 
         mUser = MethodManager.getUser()
-        if (mUser != null)
-            mUserId = mUser?.accountId!!
+        mUserId=MethodManager.getAccountId()
 
         screenPos = getCurrentScreenPos()
         if (rv_tab != null) {

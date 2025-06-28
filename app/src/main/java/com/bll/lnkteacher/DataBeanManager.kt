@@ -18,6 +18,8 @@ object DataBeanManager {
     var courses = mutableListOf<ItemList>()
     var versions = mutableListOf<ItemList>()
 
+    var handouts = mutableListOf<HandoutBean>()
+
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
     val textbookStoreType = arrayOf(
@@ -57,9 +59,9 @@ object DataBeanManager {
     }
 
     /**
-     * 获取当年级主群
+     * 获取除开子群的主群
      */
-    fun getClassGroupByMains(grade: Int):MutableList<ClassGroup>{
+    fun getClassGroupExcpetChilds(grade: Int):MutableList<ClassGroup>{
         val items= mutableListOf<ClassGroup>()
         for (classGroup in classGroups){
             if (classGroup.grade==grade&&classGroup.state==1){
@@ -70,24 +72,18 @@ object DataBeanManager {
         return items
     }
 
-    fun getClassGroupPopsByGrade(grade: Int): MutableList<PopupBean> {
-        val popClasss = mutableListOf<PopupBean>()
-        for (item in classGroups) {
-            if (item.grade == grade) {
-                popClasss.add(PopupBean(item.classId, item.name, false))
+    /**
+     * 获取主群
+     */
+    fun getClassGroupMains():MutableList<ClassGroup>{
+        val items= mutableListOf<ClassGroup>()
+        for (classGroup in classGroups){
+            if (classGroup.state==1&&classGroup.type==1){
+                classGroup.isCheck=false
+                items.add(classGroup)
             }
         }
-        return popClasss
-    }
-
-    fun getClassGroupPopsByClassIds(classIds:MutableList<Int> ): MutableList<PopupBean> {
-        val popClasss = mutableListOf<PopupBean>()
-        for (item in classGroups) {
-            if (classIds.contains(item.classId)) {
-                popClasss.add(PopupBean(item.classId, item.name, false))
-            }
-        }
-        return popClasss
+        return items
     }
 
     /**
@@ -297,9 +293,9 @@ object DataBeanManager {
             name = "教情"
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_app)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_app_check)
-            name = "应用"
+            icon = mContext.getDrawable(R.mipmap.icon_tab_lessons)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_lessons_check)
+            name = "课中"
         })
         return list
     }

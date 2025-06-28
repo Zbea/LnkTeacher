@@ -8,6 +8,7 @@ import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
+import com.bll.lnkteacher.Constants.Companion.PPT_PATH
 import com.bll.lnkteacher.Constants.Companion.SCREEN_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PATH
@@ -172,6 +173,13 @@ class FileAddress {
      */
     fun getPathScreen(typeStr: String):String{
         return "$SCREEN_PATH/${getAccountId()}/$typeStr"
+    }
+
+    /**
+     * 授课ppt
+     */
+    fun getPathPpt(typeStr: String):String{
+        return "$PPT_PATH/$typeStr"
     }
 
 }

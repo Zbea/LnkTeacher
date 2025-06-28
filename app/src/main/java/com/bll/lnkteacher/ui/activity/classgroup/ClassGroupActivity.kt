@@ -13,18 +13,18 @@ import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
 import com.bll.lnkteacher.dialog.CommonDialog
-import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.ui.activity.ClassScheduleActivity
 import com.bll.lnkteacher.ui.adapter.ClassGroupAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.widget.SpaceItemDeco
 import kotlinx.android.synthetic.main.ac_list.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
-import kotlinx.android.synthetic.main.common_title.tv_btn_2
+import kotlinx.android.synthetic.main.common_title.tv_custom_1
+import kotlinx.android.synthetic.main.common_title.tv_custom_2
+import org.greenrobot.eventbus.EventBus
 
 class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupView {
 
@@ -32,24 +32,27 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     private var classGroups = mutableListOf<ClassGroup>()
     private var mAdapter: ClassGroupAdapter? = null
     private var position = 0
-    private var classGroupAddDialog:ClassGroupAddDialog?=null
+    private var classGroupAddDialog: ClassGroupAddDialog? = null
+    private var classGroupId = 0
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups = groups
         classGroups = groups
         mAdapter?.setNewData(classGroups)
     }
+
     override fun onClassInfo(classGroup: ClassGroup) {
-        if (classGroup.name==null){
+        if (classGroup.name == null) {
             classGroupAddDialog?.setTextInfo("")
-        }
-        else{
-            val info="班级信息：${classGroup.name} ${classGroup.teacher}"
+        } else {
+            val info = "班级信息：${classGroup.name} ${classGroup.teacher}"
             classGroupAddDialog?.setTextInfo(info)
         }
     }
+
     override fun onSuccess() {
         mGroupPresenter.getClassGroups()
+        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
     override fun layoutId(): Int {
@@ -57,22 +60,27 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun initData() {
-        if (NetworkUtil.isNetworkConnected()){
+        if (NetworkUtil.isNetworkConnected()) {
             mGroupPresenter.getClassGroups()
-        }
-        else{
-            classGroups=DataBeanManager.classGroups
+        } else {
+            classGroups = DataBeanManager.classGroups
         }
     }
 
     override fun initView() {
         setPageTitle(R.string.main_classgroup_title)
-        showView(tv_btn_1, tv_btn_2)
-        tv_btn_2.text = "建群"
+        showView(tv_custom_1, tv_custom_2, tv_btn_1)
+        tv_custom_1.text = "创建班群"
+        tv_custom_2.text = "创建辅群"
         tv_btn_1.text = "加群"
 
-        tv_btn_2.setOnClickListener {
-            createClassGroup()
+
+
+        tv_custom_1.setOnClickListener {
+            createClassGroup(1)
+        }
+        tv_custom_2.setOnClickListener {
+            createClassGroup(2)
         }
 
         tv_btn_1.setOnClickListener {
@@ -97,24 +105,10 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position = position
             val classGroup = classGroups[position]
-            //是否是班主任
-            val isHeader = classGroup.userId == mUserId
             when (view.id) {
-                R.id.tv_course -> {
-                    if (classGroup.state == 1) {
-                        if (isHeader) {
-                            customStartActivity(Intent(this, ClassScheduleActivity::class.java)
-                                    .setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                                    .putExtra("classGroupId", classGroup.classGroupId))
-                        } else {
-                            ImageDialog(this, arrayListOf(classGroup.imageUrl)).builder()
-                        }
-                    }
-                }
-
                 R.id.tv_edit -> {
                     if (classGroup.state == 1) {
-                        ClassGroupCreateDialog(this, classGroup.name, classGroup.grade).builder()
+                        ClassGroupCreateDialog(this, classGroup.type, classGroup.name, classGroup.grade).builder()
                             .setOnDialogClickListener { name, grade ->
                                 mGroupPresenter.editClassGroup(name, grade, classGroup.classId, classGroup.classGroupId)
                             }
@@ -147,7 +141,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                 }
 
                 R.id.tv_detail -> {
-                    val intent = Intent(this,if (classGroup.state==1) ClassGroupUserActivity::class.java else ClassGroupChildUserActivity::class.java)
+                    val intent = Intent(this, if (classGroup.state == 1) ClassGroupUserActivity::class.java else ClassGroupChildUserActivity::class.java)
                     val bundle = Bundle()
                     bundle.putSerializable("classGroup", classGroup)
                     intent.putExtra("bundle", bundle)
@@ -175,10 +169,10 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     /**
      * 创建班群
      */
-    private fun createClassGroup() {
-        ClassGroupCreateDialog(this).builder()
+    private fun createClassGroup(type: Int) {
+        ClassGroupCreateDialog(this, type).builder()
             .setOnDialogClickListener { name, grade ->
-                mGroupPresenter.createClassGroup(name, grade)
+                mGroupPresenter.createClassGroup(name, grade, type)
             }
     }
 
@@ -186,11 +180,12 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
      * 加入班群
      */
     private fun addClassGroup() {
-        classGroupAddDialog=ClassGroupAddDialog(this).builder()
-        classGroupAddDialog?.setOnDialogClickListener (object : ClassGroupAddDialog.OnDialogClickListener {
+        classGroupAddDialog = ClassGroupAddDialog(this).builder()
+        classGroupAddDialog?.setOnDialogClickListener(object : ClassGroupAddDialog.OnDialogClickListener {
             override fun onClick(code: Int) {
                 mGroupPresenter.addClassGroup(code)
             }
+
             override fun onEditTextCode(code: Int) {
                 mGroupPresenter.onClassGroupInfo(code)
             }
@@ -202,7 +197,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
      * 解散班群
      */
     private fun dissolveGroup() {
-        val classGroup=classGroups[position]
+        val classGroup = classGroups[position]
         val classId = classGroup.classId
         val boolean = classGroup.userId == mUserId
         val titleStr = if (boolean) "确定解散${classGroup.name}？" else "确定退出${classGroup.name}？"
@@ -222,7 +217,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == Constants.CLASSGROUP_EVENT) {
+        if (msgFlag == Constants.CLASSGROUP_INFO_EVENT) {
             mGroupPresenter.getClassGroups()
         }
     }

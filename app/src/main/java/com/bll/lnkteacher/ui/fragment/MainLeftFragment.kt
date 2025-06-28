@@ -60,6 +60,13 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
             }
         }
         mTeachingAdapter?.setNewData(classGroups)
+        for (classGroup in classGroups){
+            val gradeStr=DataBeanManager.getGradeStr(classGroup.grade)
+            val path = FileAddress().getPathPpt(gradeStr)
+            if (!FileUtils.isExist(path)){
+                MethodManager.createFileScan(requireActivity(),path)
+            }
+        }
     }
 
     override fun getLayoutId(): Int {
@@ -137,7 +144,7 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
         mTeachingAdapter = MainTeachingAdapter(R.layout.item_main_teaching, null)
         rv_main_plan.adapter = mTeachingAdapter
         mTeachingAdapter?.bindToRecyclerView(rv_main_plan)
-        rv_main_plan.addItemDecoration(SpaceItemDeco(25))
+        rv_main_plan.addItemDecoration(SpaceItemDeco(15))
         mTeachingAdapter?.setOnItemClickListener { _, _, position ->
             val intent = Intent(activity, TeachingPlanActivity::class.java)
             val bundle = Bundle()
@@ -214,6 +221,11 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
             }
             Constants.CALENDER_SET_EVENT->{
                 setCalenderView()
+            }
+            Constants.CLASSGROUP_EVENT->{
+                if (NetworkUtil.isNetworkConnected()){
+                    mGroupPresenter.getClassGroups()
+                }
             }
         }
     }

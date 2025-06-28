@@ -60,6 +60,10 @@ class AppUpdateDialog(private val context: Context,private val type:Int,private 
         dialog?.show()
     }
 
+    fun isShow():Boolean?{
+        return dialog?.isShowing
+    }
+
     fun dismiss() {
         dialog?.dismiss()
     }

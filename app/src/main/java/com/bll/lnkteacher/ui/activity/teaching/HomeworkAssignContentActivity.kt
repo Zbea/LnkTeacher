@@ -113,7 +113,7 @@ class HomeworkAssignContentActivity:BaseAppCompatActivity(),IContractView.IHomew
         commitTime=System.currentTimeMillis()+Constants.dayLong
 
         var mClassGroups= mutableListOf<ClassGroup>()
-        val totalClassGroups=if (typeBean?.addType==1) DataBeanManager.getClassGroupByMains(grade) else DataBeanManager.getClassGroups(grade)
+        val totalClassGroups=if (typeBean?.addType==1) DataBeanManager.getClassGroupExcpetChilds(grade) else DataBeanManager.getClassGroups(grade)
         if (typeBean?.classIds.isNullOrEmpty()){
             mClassGroups=totalClassGroups
         }

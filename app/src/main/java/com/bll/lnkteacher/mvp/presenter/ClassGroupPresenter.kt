@@ -57,11 +57,12 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int=0) 
 
     }
 
-    fun createClassGroup(name: String,grade:Int) {
+    fun createClassGroup(name: String,grade:Int,type:Int) {
 
         val body = RequestUtils.getBody(
             Pair.create("name", name),
             Pair.create("grade", grade),
+            Pair.create("type", type)
         )
         val createGroup = RetrofitManager.service.createClassGroup(body)
         doRequest(createGroup, object : Callback<Any>(view,screen) {

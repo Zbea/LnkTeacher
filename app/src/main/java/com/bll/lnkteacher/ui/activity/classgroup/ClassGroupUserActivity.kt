@@ -39,7 +39,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     override fun onOutSuccess() {
         showToast(R.string.classgroup_kick_success)
         mAdapter?.remove(position)
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
     }
 
     override fun onEditSuccess() {
@@ -57,7 +57,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
             mClassGroup?.isAllowJoin=1
             setPageCustom("关闭班群")
         }
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
     }
 
     override fun layoutId(): Int {
@@ -162,7 +162,7 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
     }
 
     override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag==Constants.CLASSGROUP_CHANGE_EVENT){
+        if (msgFlag==Constants.CLASSGROUP_INFO_CHANGE_EVENT){
             isCreate=false
             mAdapter?.setChange(false)
         }

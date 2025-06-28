@@ -8,9 +8,9 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.KeyboardUtils
 
-class ClassGroupCreateDialog(val context: Context,private val name:String,private var grade: Int) {
+class ClassGroupCreateDialog(val context: Context,val type:Int,private val name:String,private var grade: Int) {
 
-    constructor(context: Context):this(context, "",0)
+    constructor(context: Context,type: Int):this(context, type,"",0)
 
     fun builder(): ClassGroupCreateDialog {
 
@@ -26,11 +26,22 @@ class ClassGroupCreateDialog(val context: Context,private val name:String,privat
         if (grade!=0){
             tv_grade.text=DataBeanManager.getGradeStr(grade)
         }
+        if (type==1){
+            tv_title.text="创建班群"
+        }
+        else{
+            tv_title.text="创建辅群"
+        }
 
         if (name.isNotEmpty()){
             et_name.setText(name)
             et_name.setSelection(name.length)
-            tv_title.text = "修改班群名称"
+            if (type==1){
+                tv_title.text="修改班群"
+            }
+            else{
+                tv_title.text="修改辅群"
+            }
         }
 
         val grades=DataBeanManager.popupGrades(grade)

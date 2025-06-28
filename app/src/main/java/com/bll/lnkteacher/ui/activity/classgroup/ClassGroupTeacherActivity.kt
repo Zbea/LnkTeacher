@@ -37,8 +37,8 @@ class ClassGroupTeacherActivity:BaseAppCompatActivity(),IContractView.IClassGrou
         isCreate=false
         mAdapter?.setChange(false)
         mPresenter.getClassList(mClassGroup?.classGroupId!!)
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
-        EventBus.getDefault().post(Constants.CLASSGROUP_CHANGE_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_CHANGE_EVENT)
     }
 
     override fun layoutId(): Int {

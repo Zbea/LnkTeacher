@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CommonDialog
@@ -167,7 +168,8 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
 
     override fun initView() {
         setPageTitle("作业批改  ${correctList?.title}  ${mClassBean?.name}")
-        disMissView(iv_catalog, iv_btn)
+        disMissView(iv_catalog)
+        iv_btn.setImageResource(R.mipmap.icon_draw_image_zoom)
 
         if (correctList?.questionType!! < 0) {
             showView(tv_correct_module)
@@ -185,6 +187,10 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
         if (subType == 10) {
             showView(ratingBar)
             disMissView(rv_list_score, tv_correct_module, iv_tips)
+        }
+
+        iv_btn.setOnClickListener {
+            MethodManager.gotoFullImage(this,ToolUtils.getImagesStr(currentImages),getPath())
         }
 
         tv_save.setOnClickListener {

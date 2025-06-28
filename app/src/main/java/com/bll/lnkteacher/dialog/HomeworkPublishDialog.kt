@@ -60,7 +60,7 @@ class HomeworkPublishDialog(val context: Context,val typeBean: TypeBean) {
         var allClassGroups= mutableListOf<ClassGroup>()
         //判断是否绑定了班群
         if (typeBean.classIds.isNullOrEmpty()){
-            allClassGroups=if (typeBean.addType==1) DataBeanManager.getClassGroupByMains(typeBean.grade) else DataBeanManager.getClassGroups(typeBean.grade)
+            allClassGroups=if (typeBean.addType==1) DataBeanManager.getClassGroupExcpetChilds(typeBean.grade) else DataBeanManager.getClassGroups(typeBean.grade)
         }
         else{
             val bindClassIds=typeBean.classIds.split(",")

@@ -51,7 +51,7 @@ class TestPaperAnalyseTeachingActivity:BaseDrawingActivity(),IContractView.IAnal
 
     override fun onCreateSuccess() {
         showToast("创建层群成功")
-        EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
+        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
     }
 
     override fun onRefreshSuccess() {

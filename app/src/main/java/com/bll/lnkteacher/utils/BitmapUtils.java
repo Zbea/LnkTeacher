@@ -224,7 +224,10 @@ public class BitmapUtils {
         Canvas c = new Canvas(bitmap);
         //如果不设置canvas画布为白色，则生成透明
         c.drawColor(Color.WHITE);
+//        c.save();
+//        c.scale(2f, 2f);
         view.draw(c);
+//        c.restore();
         return bitmap;
     }
 

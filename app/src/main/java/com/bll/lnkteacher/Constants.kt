@@ -63,6 +63,7 @@ class Constants {
 
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
+        val PPT_PATH =Environment.getExternalStoragePublicDirectory("Ppts").absolutePath
 
         //eventbus通知标志
         const val DATA_UPLOAD_EVENT = "AutoUploadEvent"
@@ -74,7 +75,8 @@ class Constants {
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
         const val NOTE_EVENT = "NoteEvent"
         const val CLASSGROUP_EVENT = "ClassGroupEvent"
-        const val CLASSGROUP_CHANGE_EVENT = "ClassGroupChangeEvent"
+        const val CLASSGROUP_INFO_EVENT = "ClassGroupInfoEvent"
+        const val CLASSGROUP_INFO_CHANGE_EVENT = "ClassGroupInfoChangeEvent"
         const val MESSAGE_EVENT = "MessageEvent"
         const val HOMEWORK_CORRECT_EVENT = "HomeworkCorrectEvent"
         const val TESTPAPER_CORRECT_EVENT = "TestPaperCorrectEvent"

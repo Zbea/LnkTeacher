@@ -64,7 +64,7 @@ class TestPaperAssignContentActivity : BaseAppCompatActivity(),IContractView.ITe
         if (classSelectItem!=null){
             classIds=classSelectItem.classIds
         }
-        for (item in DataBeanManager.getClassGroupByMains(grade)){
+        for (item in DataBeanManager.getClassGroupExcpetChilds(grade)){
             popGroups.add(PopupBean(item.classId,item.name,classIds.contains(item.classId)))
         }
         fetchData()
