@@ -1,27 +1,34 @@
-package com.bll.lnkteacher.ui.fragment.textbook
+package com.bll.lnkteacher.ui.fragment
 
-import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants.Companion.AUTO_REFRESH_EVENT
 import com.bll.lnkteacher.Constants.Companion.TEXT_BOOK_EVENT
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.manager.TextbookGreenDaoManager
+import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.ItemList
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.book.TextbookBean
 import com.bll.lnkteacher.mvp.presenter.TextbookPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.TextbookAdapter
 import com.bll.lnkteacher.utils.DP2PX
+import com.bll.lnkteacher.utils.FileUploadManager
+import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_list.rv_list
+import org.greenrobot.eventbus.EventBus
 
 class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
-
     private val mPresenter = TextbookPresenter(this,1)
     private var mAdapter: TextbookAdapter? = null
     private var books = mutableListOf<TextbookBean>()
@@ -35,28 +42,37 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         TextbookGreenDaoManager.getInstance().insertOrReplaceBook(books[position])
     }
 
-    /**
-     * 实例 传送数据
-     */
-    fun newInstance(typeId:Int): TextbookFragment {
-        val fragment= TextbookFragment()
-        val bundle= Bundle()
-        bundle.putInt("textbook",typeId)
-        fragment.arguments=bundle
-        return fragment
-    }
-
     override fun getLayoutId(): Int {
-        return R.layout.fragment_list_content
+        return R.layout.fragment_list
     }
 
     override fun initView() {
-        typeId= arguments?.getInt("textbook")!!
+        setTitle(DataBeanManager.getIndexLeftData()[2].name)
         pageSize = 9
+
         initRecyclerView()
+
+        initTab()
     }
 
     override fun lazyLoad() {
+    }
+
+    private fun initTab() {
+        val strs=DataBeanManager.textbookType
+        for (i in strs.indices){
+            itemTabTypes.add(ItemTypeBean().apply {
+                title=strs[i]
+                isCheck=i==0
+            })
+        }
+        mTabTypeAdapter?.setNewData(itemTabTypes)
+        fetchData()
+    }
+
+    override fun onTabClickListener(view: View, position: Int) {
+        typeId=position
+        pageIndex=1
         fetchData()
     }
 
@@ -88,7 +104,6 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             }
 
     }
-
 
     //长按显示课本管理
     private fun onLongClick() {
@@ -157,10 +172,8 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
             }
     }
 
-    override fun onEventBusMessage(msgFlag: String) {
-        if (msgFlag == TEXT_BOOK_EVENT) {
-            fetchData()
-        }
+    override fun onRefreshData() {
+        fetchData()
     }
 
     override fun fetchData() {
@@ -168,6 +181,65 @@ class TextbookFragment : BaseMainFragment(), IContractView.ITextbookView {
         val total = TextbookGreenDaoManager.getInstance().queryAllTextBook(typeId)
         setPageNumber(total.size)
         mAdapter?.setNewData(books)
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        when(msgFlag){
+            AUTO_REFRESH_EVENT->{
+                mQiniuPresenter.getToken()
+            }
+            TEXT_BOOK_EVENT->{
+                fetchData()
+            }
+        }
+    }
+
+    override fun onUpload(token: String){
+        cloudList.clear()
+        val books = TextbookGreenDaoManager.getInstance().queryTextBookByHalfYear()
+        for (book in books) {
+            //判读是否存在手写内容
+            if (FileUtils.isExistContent(book.bookDrawPath)) {
+                FileUploadManager(token).apply {
+                    startUpload(book.bookDrawPath, book.bookId.toString())
+                    setCallBack {
+                        cloudList.add(CloudListBean().apply {
+                            type = 2
+                            zipUrl = book.downloadUrl
+                            downloadUrl = it
+                            subTypeStr = DataBeanManager.textbookType[book.category]
+                            date = System.currentTimeMillis()
+                            listJson = Gson().toJson(book)
+                            bookId = book.bookId
+                            bookTypeId = book.category
+                        })
+                        if (cloudList.size == books.size)
+                            mCloudUploadPresenter.upload(cloudList)
+                    }
+                }
+            } else {
+                cloudList.add(CloudListBean().apply {
+                    type = 2
+                    zipUrl = book.downloadUrl
+                    subTypeStr = DataBeanManager.textbookType[book.category]
+                    date = System.currentTimeMillis()
+                    listJson = Gson().toJson(book)
+                    bookId = book.bookId
+                    bookTypeId = book.category
+                })
+                if (cloudList.size == books.size)
+                    mCloudUploadPresenter.upload(cloudList)
+            }
+        }
+    }
+
+    override fun uploadSuccess(cloudIds: MutableList<Int>?) {
+        super.uploadSuccess(cloudIds)
+        for (item in cloudList) {
+            val bookBean = TextbookGreenDaoManager.getInstance().queryTextBookByBookId(item.bookTypeId, item.bookId)
+            MethodManager.deleteTextbook(bookBean)
+        }
+        EventBus.getDefault().post(TEXT_BOOK_EVENT)
     }
 
 }

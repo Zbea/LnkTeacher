@@ -1,6 +1,7 @@
 package com.bll.lnkteacher.ui.fragment
 
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
@@ -9,6 +10,7 @@ import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.mvp.model.CloudListBean
 import com.bll.lnkteacher.mvp.model.book.Book
 import com.bll.lnkteacher.ui.activity.book.BookcaseTypeActivity
@@ -25,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_book_type
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
+import kotlinx.android.synthetic.main.item_bookcase_type.iv_tips
 import org.greenrobot.eventbus.EventBus
 
 /**
@@ -43,9 +46,6 @@ class BookcaseFragment : BaseMainFragment() {
     override fun initView() {
         setTitle(DataBeanManager.getIndexLeftData()[1].name)
 
-        initRecyclerView()
-        findBook()
-
         tv_book_type.setOnClickListener {
             startActivity(Intent(activity, BookcaseTypeActivity::class.java))
         }
@@ -53,6 +53,9 @@ class BookcaseFragment : BaseMainFragment() {
         ll_book_top.setOnClickListener {
             bookTopBean?.let { MethodManager.gotoBookDetails(requireActivity(), it) }
         }
+
+        initRecyclerView()
+        findBook()
     }
 
     override fun lazyLoad() {
@@ -77,6 +80,8 @@ class BookcaseFragment : BaseMainFragment() {
      * 查找本地书籍
      */
     private fun findBook() {
+        iv_tips?.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+
         books = BookGreenDaoManager.getInstance().queryAllBook(true)
         if (books.size == 0) {
             bookTopBean = null

@@ -225,4 +225,21 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int=0) 
         }, true)
     }
 
+    fun allowJoinGroup(classId: Int, join: Int) {
+        val body = RequestUtils.getBody(
+            Pair.create("classId", classId),
+            Pair.create("isAllowJoin", join),
+        )
+        val list = RetrofitManager.service.allowJoinGroup(body)
+        doRequest(list, object : Callback<Any>(view) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onAllowSuccess()
+            }
+        }, true)
+    }
+
 }

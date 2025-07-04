@@ -71,8 +71,21 @@ public class FileUtils {
      * @return
      * @throws FileNotFoundException
      */
-    public static InputStream file2InputStream(File file) throws FileNotFoundException {
-        return new FileInputStream(file);
+    public static InputStream file2InputStream(File file) throws IOException {
+        return Files.newInputStream(file.toPath());
+    }
+
+    public static List<String> getDirectorys(String path){
+        List<String> names = new ArrayList<>();
+        File file = new File(path);
+        File[] tempList = file.listFiles();
+        if (tempList==null) return names;
+        for (int i = 0; i < tempList.length; i++) {
+            if (tempList[i].isDirectory()) {
+                names.add(tempList[i].getName());
+            }
+        }
+        return names;
     }
 
     /**

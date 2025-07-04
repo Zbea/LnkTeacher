@@ -204,7 +204,12 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
                         url = userItems[posUser].studentUrl
                         commit()
                     } else {
-                        commitPaper()
+                        if (bitmapBatchSaver.isAccomplished){
+                            commitPaper()
+                        }
+                        else{
+                            showToast("手写未保存，请稍后提交")
+                        }
                     }
                 }
             }
@@ -498,10 +503,8 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     private fun setContentView() {
         Thread {
             runOnUiThread {
-
                 val userItem = userItems[posUser]
                 correctStatus = userItem.status
-                isDrawingSave = correctStatus == 1
                 score = 0
 
                 tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
@@ -658,15 +661,19 @@ class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperC
     }
 
     override fun onElikSava_a() {
-        if (isExpand)
-            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+        if (isExpand){
+//            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(posImage),null)
+        }
     }
 
     override fun onElikSava_b() {
         if (isExpand) {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage + 1),null)
         } else {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage),null)
         }
     }
 

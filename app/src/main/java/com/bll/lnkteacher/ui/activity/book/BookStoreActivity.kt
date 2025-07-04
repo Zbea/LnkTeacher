@@ -1,10 +1,10 @@
 package com.bll.lnkteacher.ui.activity.book
 
-import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
@@ -12,6 +12,7 @@ import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.DownloadBookDialog
 import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.manager.BookGreenDaoManager
+import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
@@ -33,6 +34,7 @@ import com.liulishuo.filedownloader.FileDownloader
 import kotlinx.android.synthetic.main.ac_list_tab.rv_list
 import kotlinx.android.synthetic.main.common_title.tv_subgrade
 import kotlinx.android.synthetic.main.common_title.tv_supply
+import org.greenrobot.eventbus.EventBus
 
 /**
  * 书城
@@ -86,7 +88,7 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
         initChangeScreenData()
         pageSize=12
         type = intent.flags
-        tabStr=if (type in 1..6) DataBeanManager.bookStoreTypes[type-1].name else ""
+        tabStr=DataBeanManager.bookStoreTypes[type-1].name
         popGrades=DataBeanManager.popupTypeGrades
 
         popSupplys=DataBeanManager.popupSupplys
@@ -226,20 +228,32 @@ class BookStoreActivity : BaseAppCompatActivity(), IContractView.IBookStoreView 
                 override fun completed(task: BaseDownloadTask?) {
                     book.apply {
                         loadSate = 2
-                        subtypeStr = ""
+                        subtypeStr = when (tabStr) {
+                            "思维科学", "自然科学" -> {
+                                "科学技术"
+                            }
+                            "运动健康","艺术才能" -> {
+                                "运动才艺"
+                            }
+                            else -> {
+                                subTypeStr
+                            }
+                        }
                         time = System.currentTimeMillis()//下载时间用于排序
                         bookPath = targetFileStr
                         bookDrawPath=FileAddress().getPathBookDraw(fileName)
                     }
+                    //修改书库分类状态
+                    ItemTypeDaoManager.getInstance().saveBookBean(book.subtypeStr,true)
                     //下载解压完成后更新存储的book
                     BookGreenDaoManager.getInstance().insertOrReplaceBook(book)
                     //更新列表
                     mAdapter?.notifyDataSetChanged()
                     downloadBookDialog?.dismiss()
-                    Handler().postDelayed({
-                        showToast(book.bookName+getString(R.string.book_download_success))
-                        hideLoading()
-                    },500)
+                    EventBus.getDefault().post(Constants.BOOK_TYPE_EVENT)
+                    EventBus.getDefault().post(Constants.BOOK_EVENT)
+                    showToast(book.bookName+getString(R.string.book_download_success))
+                    hideLoading()
                 }
 
                 override fun error(task: BaseDownloadTask?, e: Throwable?) {

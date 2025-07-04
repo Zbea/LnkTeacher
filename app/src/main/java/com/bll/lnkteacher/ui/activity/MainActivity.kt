@@ -13,16 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bll.lnkteacher.*
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.manager.*
-import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
-import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.ui.activity.classgroup.ClassGroupActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
-import com.bll.lnkteacher.utils.AppUtils
+import com.bll.lnkteacher.ui.fragment.document.GiveLessonsFragment
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
-import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.*
 
@@ -33,12 +31,11 @@ class MainActivity : BaseAppCompatActivity() {
     private var bookcaseFragment: BookcaseFragment? = null
     private var homeworkManagerFragment: HomeworkManagerFragment? = null
     private var noteFragment: NoteFragment? = null
-    private var appFragment: AppFragment? = null
-    private var textbookFragment: TextbookManagerFragment? = null
+    private var textbookFragment: TextbookFragment? = null
     private var examFragment: ExamManagerFragment? = null
     private var testpaperManagerFragment: TestPaperManagerFragment? = null
     private var learningConditionFragment: LearningConditionFragment? = null
-    private var giveLessonsFragment:GiveLessonsFragment?=null
+    private var documentManagerFragment: DocumentManagerFragment?=null
 
     private var leftPosition = 0
     private var mAdapterLeft: MainListAdapter? = null
@@ -55,14 +52,28 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun initData() {
+        //创建截图默认分类
         val screenshotPath=FileAddress().getPathScreen("未分类")
         if (!FileUtils.isExist(screenshotPath)){
             FileUtils.mkdirs(screenshotPath)
         }
 
+        //删除launcherApk
         val targetFileStr = FileAddress().getLauncherPath()
         if (FileUtils.isExist(targetFileStr)){
             FileUtils.deleteFile(File(targetFileStr))
+        }
+
+        //创建书架分类
+        if (ItemTypeDaoManager.getInstance().queryAll(2).size==0){
+            val strings = DataBeanManager.bookType
+            for (i in strings.indices) {
+                val item = ItemTypeBean()
+                item.type=2
+                item.title = strings[i]
+                item.date=System.currentTimeMillis()
+                ItemTypeDaoManager.getInstance().insertOrReplace(item)
+            }
         }
     }
 
@@ -80,15 +91,14 @@ class MainActivity : BaseAppCompatActivity() {
 
         mainLeftFragment=MainLeftFragment()
         mainRightFragment = MainRightFragment()
-        textbookFragment= TextbookManagerFragment()
+        textbookFragment= TextbookFragment()
         bookcaseFragment = BookcaseFragment()
         homeworkManagerFragment = HomeworkManagerFragment()
         noteFragment= NoteFragment()
-        appFragment = AppFragment()
         examFragment= ExamManagerFragment()
         testpaperManagerFragment= TestPaperManagerFragment()
         learningConditionFragment= LearningConditionFragment()
-        giveLessonsFragment=GiveLessonsFragment()
+        documentManagerFragment= DocumentManagerFragment()
 
         switchFragment(1, mainLeftFragment)
         switchFragment(2, mainRightFragment)
@@ -105,7 +115,7 @@ class MainActivity : BaseAppCompatActivity() {
                     1 -> switchFragment(1,bookcaseFragment)//书架
                     2 -> switchFragment(1,textbookFragment)//课本
                     3 -> switchFragment(1,learningConditionFragment)//义教
-                    4 -> switchFragment(1,giveLessonsFragment)//应用
+                    4 -> switchFragment(1,documentManagerFragment)//应用
                 }
                 leftPosition = position
             }

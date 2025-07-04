@@ -14,6 +14,8 @@ class ClassGroupAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAd
             setText(R.id.tv_name,item.name)
             setText(R.id.tv_number,item.studentCount.toString()+"人")
             setText(R.id.tv_code,if (item.state==1)ToolUtils.getFormatNum(item.classGroupId,"000000") else "")
+            setText(R.id.tv_allow,if(item.isAllowJoin==2)"开启" else "关闭")
+            setVisible(R.id.tv_allow,isHeader&&item.state==1)
             setGone(R.id.tv_code,isHeader&&item.state==1)
             setText(R.id.tv_teacher,item.teacher)
             setGone(R.id.tv_teacher,item.state==1)
@@ -21,7 +23,7 @@ class ClassGroupAdapter(layoutResId: Int, data: List<ClassGroup>?) : BaseQuickAd
             setVisible(R.id.tv_edit,isHeader)
             setText(R.id.tv_child,if (item.state==1)"层群创建" else  "层群编辑")
             setGone(R.id.iv_space,item.state==1)
-            addOnClickListener(R.id.tv_dissolve,R.id.tv_edit,R.id.tv_child,R.id.tv_detail)
+            addOnClickListener(R.id.tv_dissolve,R.id.tv_edit,R.id.tv_child,R.id.tv_detail,R.id.tv_allow)
         }
     }
 }

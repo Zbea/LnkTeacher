@@ -17,7 +17,6 @@ import com.bll.lnkteacher.utils.DP2PX
 import kotlinx.android.synthetic.main.ac_classgroup_user.iv_arrow_page_down
 import kotlinx.android.synthetic.main.ac_classgroup_user.iv_arrow_page_up
 import kotlinx.android.synthetic.main.ac_classgroup_user.rv_list
-import kotlinx.android.synthetic.main.common_title.tv_custom
 import kotlinx.android.synthetic.main.common_title.tv_custom_1
 import org.greenrobot.eventbus.EventBus
 
@@ -48,18 +47,6 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
         mAdapter?.notifyDataSetChanged()
     }
 
-    override fun onAllowSuccess() {
-        if (mClassGroup?.isAllowJoin==1){
-            mClassGroup?.isAllowJoin=2
-            setPageCustom("打开班群")
-        }
-        else{
-            mClassGroup?.isAllowJoin=1
-            setPageCustom("关闭班群")
-        }
-        EventBus.getDefault().post(Constants.CLASSGROUP_INFO_EVENT)
-    }
-
     override fun layoutId(): Int {
         return R.layout.ac_classgroup_user
     }
@@ -79,8 +66,6 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
         setPageTitle("${mClassGroup?.name}  详情")
         if (mClassGroup?.state==1){
             setPageSetting("教师详情")
-            if (mClassGroup?.userId==mUserId)
-                setPageCustom(if (mClassGroup?.isAllowJoin==1) "关闭班群" else "开启班群")
         }
 
         tv_custom_1.setOnClickListener {
@@ -89,17 +74,6 @@ class ClassGroupUserActivity : BaseAppCompatActivity(), IContractView.IClassGrou
             bundle.putSerializable("classGroup", mClassGroup)
             intent.putExtra("bundle", bundle)
             startActivity(intent)
-        }
-
-        tv_custom.setOnClickListener {
-            val titleInfo=if (mClassGroup?.isAllowJoin==1) "不允许学生加入班群？" else "允许学生加入班群？"
-            CommonDialog(this).setContent(titleInfo).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-                override fun ok() {
-                    mPresenter.allowJoinGroup(mClassGroup?.classId!!,if (mClassGroup?.isAllowJoin==1) 2 else 1)
-                }
-            }
         }
 
         iv_arrow_page_up.setOnClickListener {

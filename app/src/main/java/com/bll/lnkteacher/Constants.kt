@@ -63,13 +63,14 @@ class Constants {
 
         val BOOK_PATH = Environment.getExternalStoragePublicDirectory("Books").absolutePath
         val SCREEN_PATH = Environment.getExternalStoragePublicDirectory("Screenshots").absolutePath
-        val PPT_PATH =Environment.getExternalStoragePublicDirectory("Ppts").absolutePath
+        val DOCUMENT_PATH =Environment.getExternalStoragePublicDirectory("Documents").absolutePath
 
         //eventbus通知标志
         const val DATA_UPLOAD_EVENT = "AutoUploadEvent"
         const val AUTO_REFRESH_EVENT = "AutoRefreshEvent"//每天更新
         const val DATE_EVENT = "DateEvent"
         const val BOOK_EVENT = "BookEvent"
+        const val BOOK_TYPE_EVENT = "BookTypeEvent"//书籍下载通知
         const val TEXT_BOOK_EVENT = "TextBookEvent"
         const val COURSE_EVENT = "CourseEvent"
         const val NOTE_BOOK_MANAGER_EVENT = "NoteBookManagerEvent"
@@ -110,7 +111,6 @@ class Constants {
         const val VERSION_NO = "VersionNO"
 
         const val SP_DIARY_BG_SET = "dirayBgRes"//日记
-        const val SP_HANDOUT_TYPES = "handoutTypes"//讲义分类
     }
 
 }

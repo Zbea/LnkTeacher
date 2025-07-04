@@ -1,11 +1,10 @@
 package com.bll.lnkteacher.ui.activity
 
-import android.widget.ImageView
-import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.utils.FileMultitaskDownManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.GlideUtils
 import com.liulishuo.filedownloader.BaseDownloadTask
 import kotlinx.android.synthetic.main.ac_lessons_full_image.btn_page_down
 import kotlinx.android.synthetic.main.ac_lessons_full_image.btn_page_up
@@ -35,13 +34,13 @@ class LessonsFullImageActivity:BaseDrawingActivity() {
         for (i in images.indices){
             paths.add(path + "/full/${i + 1}.png")
         }
-
-        if (FileUtils.isExistContent(path)){
-            onChangeContent()
-        }
-        else{
-            downloadImage()
-        }
+        onChangeContent()
+//        if (FileUtils.isExistContent(path)){
+//            onChangeContent()
+//        }
+//        else{
+//            downloadImage()
+//        }
     }
 
     override fun initView() {
@@ -87,9 +86,9 @@ class LessonsFullImageActivity:BaseDrawingActivity() {
     override fun onChangeContent() {
         tv_page_current.text="${posImage+1}"
         tv_page_total_bottom.text = "${images.size}"
-        MethodManager.setImageFile(paths[posImage],iv_image)
-//        GlideUtils.setImageNoCacheUrl(this, images[posImage], iv_image)
-        iv_image.scaleType= ImageView.ScaleType.FIT_CENTER
+//        MethodManager.setImageFile(paths[posImage],iv_image)
+        GlideUtils.setImageNoCacheUrl(this, images[posImage], iv_image)
+//        iv_image.scaleType= ImageView.ScaleType.FIT_CENTER
     }
 
     private fun downloadImage(){

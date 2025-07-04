@@ -18,7 +18,12 @@ object DataBeanManager {
     var courses = mutableListOf<ItemList>()
     var versions = mutableListOf<ItemList>()
 
-    var handouts = mutableListOf<HandoutBean>()
+    val bookType = arrayOf(
+        "诗经楚辞", "唐诗宋词", "古代经典",
+        "四大名著", "中国科技", "小说散文",
+        "外国原著", "历史地理", "政治经济",
+        "军事战略", "科学技术", "运动才艺"
+    )
 
     private val cloudListTitle = arrayOf("书架","教材","笔记","日记","截图")
 
@@ -31,7 +36,11 @@ object DataBeanManager {
     )
 
     val textbookType = arrayOf(
-        "课本教材","课辅教材","教学教育","专业期刊","我的文档"
+        "课本教材","课辅教材","教学教育","专业期刊"
+    )
+
+    val documentType = arrayOf(
+        "我的PPT","我的文档"
     )
 
     var teachingStrs = arrayOf(
@@ -203,28 +212,6 @@ object DataBeanManager {
             return list
         }
 
-
-    fun getTextbookFragment(): MutableList<ItemList> {
-        val list = mutableListOf<ItemList>()
-        list.add(ItemList().apply {
-            id=0
-            desc= textbookType[0]
-        })
-        list.add(ItemList().apply {
-            id=1
-            desc= textbookType[1]
-        })
-        list.add(ItemList().apply {
-            id=2
-            desc= textbookType[2]
-        })
-        list.add(ItemList().apply {
-            id=3
-            desc= textbookType[3]
-        })
-        return list
-    }
-
     /**
      * 获取index栏目
      *
@@ -293,9 +280,9 @@ object DataBeanManager {
             name = "教情"
         })
         list.add(ItemList().apply {
-            icon = mContext.getDrawable(R.mipmap.icon_tab_lessons)
-            icon_check = mContext.getDrawable(R.mipmap.icon_tab_lessons_check)
-            name = "课中"
+            icon = mContext.getDrawable(R.mipmap.icon_tab_document)
+            icon_check = mContext.getDrawable(R.mipmap.icon_tab_document_check)
+            name = "文档"
         })
         return list
     }

@@ -45,13 +45,14 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
     private var currentDrawObj=PWDrawObjectHandler.DRAW_OBJ_RANDOM_PEN//当前笔形
 
     private var isAllowChange=true //是否运行移屏幕
-    var isDrawingSave=false
 
     var ll_page_content_a: LinearLayout?=null
     var ll_page_content_b: LinearLayout?=null
     var ll_draw_content: LinearLayout?=null
     var v_content_a: ImageView?=null
     var v_content_b: ImageView?=null
+
+    var bitmapBatchSaver= BitmapBatchSaver(4)
 
     override fun initCreate() {
         if (this is FreeNoteActivity || this is PlanOverviewActivity || this is DateEventActivity){
@@ -101,15 +102,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
         }
 
         iv_page_up?.setOnClickListener {
-            Handler().postDelayed({
-                onPageUp()
-            },if (isDrawingSave) 600 else 0)
+            onPageUp()
         }
 
         iv_page_down?.setOnClickListener {
-            Handler().postDelayed({
-                onPageDown()
-            },if (isDrawingSave) 600 else 0)
+            onPageDown()
         }
 
         iv_catalog?.setOnClickListener {
@@ -719,6 +716,10 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        bitmapBatchSaver.shutdown()
+    }
 }
 
 

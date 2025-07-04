@@ -80,6 +80,7 @@ public interface IContractView {
         default void onSubjects(List<String> subjects){};
         default void onSuccess(){};
         default void onUploadSuccess(){};
+        default void onAllowSuccess(){};
     }
 
     interface IClassGroupUserView extends IBaseView{
@@ -89,7 +90,6 @@ public interface IContractView {
         default void onOutSuccess(){};
         //修改学生职位成功
         default void onEditSuccess(){};
-        default void onAllowSuccess(){};
     }
 
     interface IClassGroupChildView extends IBaseView{
@@ -270,14 +270,6 @@ public interface IContractView {
     interface IAPPView extends IBaseView {
         void onAppList(AppList appBean);
         void buySuccess();
-    }
-
-    interface IHandoutView extends IBaseView {
-        default void onType(List<String> list){};
-        default void onList(HandoutList list){};
-        default void onDelete(){};
-        default void onEdit(){};
-        default void onTop(){};
     }
 
     interface IWallpaperView extends IBaseView {

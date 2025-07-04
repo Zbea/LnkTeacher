@@ -158,7 +158,12 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
                     url = userItems[posUser].studentUrl
                     commit()
                 } else {
-                    commitPaper()
+                    if (bitmapBatchSaver.isAccomplished){
+                        commitPaper()
+                    }
+                    else{
+                        showToast("手写未保存，请稍后提交")
+                    }
                 }
             }
         }
@@ -231,7 +236,6 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
 
                 val userItem = userItems[posUser]
                 correctStatus = userItem.status
-                isDrawingSave = correctStatus == 1
 
                 when (correctStatus) {
                     1 -> {
@@ -321,15 +325,19 @@ class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectVie
     }
 
     override fun onElikSava_a() {
-        if (isExpand)
-            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+        if (isExpand){
+//            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(posImage),null)
+        }
     }
 
     override fun onElikSava_b() {
         if (isExpand) {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage + 1),null)
         } else {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+            bitmapBatchSaver?.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage),null)
         }
     }
 

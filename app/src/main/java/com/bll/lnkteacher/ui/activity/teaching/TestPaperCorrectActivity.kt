@@ -190,7 +190,12 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                     url = userItems[posUser].studentUrl
                     commit()
                 } else {
-                    commitPaper()
+                    if (bitmapBatchSaver.isAccomplished){
+                        commitPaper()
+                    }
+                    else{
+                        showToast("手写未保存，请稍后提交")
+                    }
                 }
             }
         }
@@ -287,10 +292,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private fun setContentView() {
         Thread {
             runOnUiThread {
-
                 val userItem = userItems[posUser]
                 correctStatus = userItem.status
-                isDrawingSave = correctStatus == 1
 
                 if (correctList?.taskType == 1) {
                     tv_take_time.text = if (userItem.takeTime > 0) "用时：${DateUtils.longToMinute(userItem.takeTime)}分钟" else ""
@@ -403,15 +406,19 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     override fun onElikSava_a() {
-        if (isExpand)
-            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+        if (isExpand){
+//            BitmapUtils.saveScreenShot(v_content_a, getPathMergeStr(posImage))
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),getPathMergeStr(posImage),null)
+        }
     }
 
     override fun onElikSava_b() {
         if (isExpand) {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage + 1))
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage + 1),null)
         } else {
-            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+//            BitmapUtils.saveScreenShot(v_content_b, getPathMergeStr(posImage))
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),getPathMergeStr(posImage),null)
         }
     }
 
@@ -513,4 +520,5 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     override fun onRefreshData() {
         fetchClassList()
     }
+
 }

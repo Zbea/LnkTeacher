@@ -33,7 +33,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     private var mAdapter: ClassGroupAdapter? = null
     private var position = 0
     private var classGroupAddDialog: ClassGroupAddDialog? = null
-    private var classGroupId = 0
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups = groups
@@ -55,6 +54,17 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         EventBus.getDefault().post(Constants.CLASSGROUP_EVENT)
     }
 
+    override fun onAllowSuccess() {
+        val classGroup=classGroups[position]
+        if (classGroup.isAllowJoin==2){
+            classGroup.isAllowJoin=1
+        }
+        else{
+            classGroup.isAllowJoin=2
+        }
+        mAdapter?.notifyItemChanged(position)
+    }
+
     override fun layoutId(): Int {
         return R.layout.ac_list
     }
@@ -73,8 +83,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         tv_custom_1.text = "创建班群"
         tv_custom_2.text = "创建辅群"
         tv_btn_1.text = "加群"
-
-
 
         tv_custom_1.setOnClickListener {
             createClassGroup(1)
@@ -146,6 +154,17 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                     bundle.putSerializable("classGroup", classGroup)
                     intent.putExtra("bundle", bundle)
                     customStartActivity(intent)
+                }
+
+                R.id.tv_allow->{
+                    val titleInfo=if (classGroup.isAllowJoin==2) "开启班群，允许学生加入班群？" else "关闭班群，不允许学生加入班群？"
+                    CommonDialog(this).setContent(titleInfo).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
+                        override fun cancel() {
+                        }
+                        override fun ok() {
+                            mGroupPresenter.allowJoinGroup(classGroup.classId,if (classGroup.isAllowJoin==2) 1 else 2)
+                        }
+                    }
                 }
             }
 

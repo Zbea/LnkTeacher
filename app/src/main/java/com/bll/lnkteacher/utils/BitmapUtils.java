@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
+import com.bll.lnkteacher.Constants;
 import com.bll.lnkteacher.FileAddress;
 
 import java.io.ByteArrayOutputStream;
@@ -217,7 +218,7 @@ public class BitmapUtils {
         }).start();
     }
 
-    private static Bitmap loadBitmapFromViewByCanvas(View view) {
+    public static Bitmap loadBitmapFromViewByCanvas(View view) {
         int w = view.getWidth();
         int h = view.getHeight();
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);

@@ -96,16 +96,12 @@ class NoteDrawingActivity : BaseDrawingActivity() {
                 page+=2
                 onChangeContent()
             }
-            else if (page==total-1){
+            else{
                 if (isDrawLastContent()){
                     newNoteContent()
-                    page=noteContents.size-1
-                    onChangeContent()
                 }
-                else{
-                    page=total
-                    onChangeContent()
-                }
+                page=noteContents.size - 1
+                onChangeContent()
             }
         }
         else{

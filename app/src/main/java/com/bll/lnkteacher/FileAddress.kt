@@ -3,12 +3,12 @@ package com.bll.lnkteacher
 import com.bll.lnkteacher.Constants.Companion.APK_PATH
 import com.bll.lnkteacher.Constants.Companion.BOOK_PATH
 import com.bll.lnkteacher.Constants.Companion.DIARY_PATH
+import com.bll.lnkteacher.Constants.Companion.DOCUMENT_PATH
 import com.bll.lnkteacher.Constants.Companion.EXAM_PATH
 import com.bll.lnkteacher.Constants.Companion.FREENOTE_PATH
 import com.bll.lnkteacher.Constants.Companion.HOMEWORK_PATH
 import com.bll.lnkteacher.Constants.Companion.IMAGE_PATH
 import com.bll.lnkteacher.Constants.Companion.NOTE_PATH
-import com.bll.lnkteacher.Constants.Companion.PPT_PATH
 import com.bll.lnkteacher.Constants.Companion.SCREEN_PATH
 import com.bll.lnkteacher.Constants.Companion.TESTPAPER_PATH
 import com.bll.lnkteacher.Constants.Companion.TEXTBOOK_PATH
@@ -176,10 +176,16 @@ class FileAddress {
     }
 
     /**
+     * 我的文档
+     */
+    fun getPathDocument(typeStr: String):String{
+        return "$DOCUMENT_PATH/我的文档/$typeStr"
+    }
+    /**
      * 授课ppt
      */
     fun getPathPpt(typeStr: String):String{
-        return "$PPT_PATH/$typeStr"
+        return "$DOCUMENT_PATH/我的PPT/$typeStr"
     }
 
 }

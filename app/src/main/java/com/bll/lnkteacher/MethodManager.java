@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.bll.lnkteacher.dialog.ImageDialog;
 import com.bll.lnkteacher.manager.AppDaoManager;
 import com.bll.lnkteacher.manager.BookGreenDaoManager;
 import com.bll.lnkteacher.manager.NoteDaoManager;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -90,6 +92,37 @@ public class MethodManager {
         intent.putExtra("userId", 0L);
         intent.setAction(Constants.LOGOUT_BROADCAST_EVENT);
         context.sendBroadcast(intent);
+    }
+
+    public static void gotoDocument(Context context,File file){
+        String format=FileUtils.getUrlFormat(file.getPath());
+        if (format.equals(".ppt") || format.equals(".pptx")){
+            gotoPptDetails(context,file.getPath(),Constants.SCREEN_LEFT);
+        }
+        else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
+            List<String> images=new ArrayList<>();
+            images.add(file.getPath());
+            new ImageDialog(context,images).builder();
+        }
+        else {
+            List<AppBean> toolApps= getAppTools(context,1);
+            JSONArray result = getJsonArray(toolApps);
+
+            String fileName=FileUtils.getUrlName(file.getPath());
+            String drawPath=file.getParent()+"/"+fileName+"draw/";
+            Intent intent=new Intent();
+            intent.setAction("com.geniatech.reader.action.VIEW_BOOK_PATH");
+            intent.setPackage(Constants.PACKAGE_READER);
+            intent.putExtra("path", file.getPath());
+            intent.putExtra("bookName", fileName);
+            intent.putExtra("tool", result.toString());
+            intent.putExtra("userId", getAccountId());
+            intent.putExtra("type", 1);
+            intent.putExtra("drawPath", drawPath);
+            intent.putExtra("key_book_type", 1);
+            intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 
     public static void gotoPptDetails(Context context,String path,int flags){
@@ -166,32 +199,6 @@ public class MethodManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
-    }
-
-    /**
-     * 跳转阅读器
-     * @param context
-     */
-    public static void gotoHandouts(Context context, HandoutBean bean)  {
-        AppUtils.stopApp(context,Constants.PACKAGE_READER);
-
-        List<AppBean> toolApps= getAppTools(context,1);
-        JSONArray result = getJsonArray(toolApps);
-
-        Intent intent = new Intent();
-        intent.setAction( "com.geniatech.reader.action.VIEW_BOOK_PATH");
-        intent.setPackage(Constants.PACKAGE_READER);
-        intent.putExtra("path", bean.bookPath);
-        intent.putExtra("key_book_id",bean.id+"");
-        intent.putExtra("bookName", bean.title);
-        intent.putExtra("tool",result.toString());
-        intent.putExtra("userId",getUser().accountId);
-        intent.putExtra("type", 3);
-        intent.putExtra("drawPath", bean.bookDrawPath);
-        intent.putExtra("key_book_type", 3);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 
     private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
@@ -419,5 +426,14 @@ public class MethodManager {
                 MediaScannerConnection.scanFile(context, new String[]{file.getAbsolutePath()},null, null);
             },10*1000);
         }
+    }
+
+    /**
+     * 通知共享文件
+     * @param context
+     * @param path
+     */
+    public static void notifyFileScan(Context context,String path){
+        MediaScannerConnection.scanFile(context, new String[]{path},null, null);
     }
 }

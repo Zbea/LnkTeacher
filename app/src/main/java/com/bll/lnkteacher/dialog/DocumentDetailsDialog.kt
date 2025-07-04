@@ -2,14 +2,16 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.Gravity
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.FileAddress
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.manager.ItemTypeDaoManager
 import com.bll.lnkteacher.mvp.model.ItemDetailsBean
-import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.widget.FlowLayoutManager
 import com.bll.lnkteacher.widget.MaxRecyclerView
@@ -18,29 +20,29 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import java.io.File
 
-class ScreenshotDetailsDialog(val context: Context) {
+class DocumentDetailsDialog(val context: Context) {
 
-    fun builder(): ScreenshotDetailsDialog {
+    fun builder(): DocumentDetailsDialog {
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.dialog_bookcase_list)
         val window= dialog.window!!
         window.setBackgroundDrawableResource(android.R.color.transparent)
+        val layoutParams =window.attributes
+        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.START
+        layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,600F))/2
         dialog.show()
 
         var total=0
         val items= mutableListOf<ItemDetailsBean>()
 
-        val screenTypes= ItemTypeDaoManager.getInstance().queryAll(3)
-        screenTypes.add(0, ItemTypeBean().apply {
-            path= FileAddress().getPathScreen("未分类")
-            title="未分类"
-        })
+        val path = FileAddress().getPathDocument("默认")
+        val documentTypeNames=FileUtils.getDirectorys(File(path).parent)
 
-        for (item in screenTypes){
-            val files= FileUtils.getDescFiles(item.path)
+        for (name in documentTypeNames){
+            val files= FileUtils.getDescFiles(FileAddress().getPathDocument(name))
             if (files.isNotEmpty()){
                 items.add(ItemDetailsBean().apply {
-                    typeStr=item.title
+                    typeStr=name
                     num=files.size
                     this.files=files
                 })
@@ -49,7 +51,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         }
 
         val tv_title=dialog.findViewById<TextView>(R.id.tv_title)
-        tv_title.text="截图明细"
+        tv_title.setText("文档明细")
 
         val tv_total=dialog.findViewById<TextView>(R.id.tv_total)
         tv_total.text="总计：${total}"
@@ -61,10 +63,8 @@ class ScreenshotDetailsDialog(val context: Context) {
         mAdapter.bindToRecyclerView(rv_list)
         rv_list?.addItemDecoration(SpaceItemDeco(30))
         mAdapter.setOnChildClickListener{ parentPos,pos->
-//            dialog.dismiss()
-//            val path=screenTypes[parentPos].path
-//            val files=FileUtils.getDescFiles(path)
-//            MethodManager.gotoScreenFile(context,files.size-pos-1,screenTypes[parentPos].path)
+            dialog.dismiss()
+            MethodManager.gotoDocument(context, items[parentPos].files[pos])
         }
 
         return this
@@ -89,7 +89,7 @@ class ScreenshotDetailsDialog(val context: Context) {
         class ChildAdapter(layoutResId: Int,  data: List<File>?) : BaseQuickAdapter<File, BaseViewHolder>(layoutResId, data) {
             override fun convert(helper: BaseViewHolder, item: File) {
                 helper.apply {
-                    helper.setText(R.id.tv_name, item.name.replace(".png",""))
+                    helper.setText(R.id.tv_name, FileUtils.getFileName(item.name))
                 }
             }
         }

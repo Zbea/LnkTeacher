@@ -91,8 +91,6 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
         contentId=contentTypeBean?.contentId!!
         contentBeans = HomeworkContentDaoManager.getInstance().queryAllByContent(contentId)
 
-        isDrawingSave=!contentTypeBean?.isSave!!
-
         if (contentBeans.isNotEmpty()) {
             content_b = contentBeans[contentBeans.size - 1]
             page = contentBeans.size - 1
@@ -164,7 +162,7 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
                 page+=2
                 onChangeContent()
             }
-            else if (page==total-1){
+            else{
                 newCreateContent()
                 page=contentBeans.size-1
                 onChangeContent()
@@ -243,12 +241,12 @@ class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFile
 
     override fun onElikSava_a() {
         if (isExpand&&contentTypeBean?.isSave==false)
-            BitmapUtils.saveScreenShot(v_content_a, content_a?.mergePath)
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_a),content_a?.mergePath,null)
     }
 
     override fun onElikSava_b() {
         if (contentTypeBean?.isSave==false)
-            BitmapUtils.saveScreenShot(v_content_b, content_b?.mergePath)
+            bitmapBatchSaver.submitBitmap(BitmapUtils.loadBitmapFromViewByCanvas(v_content_b),content_b?.mergePath,null)
     }
 
     //创建新的作业内容
