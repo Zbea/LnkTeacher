@@ -325,6 +325,52 @@ object DataBeanManager {
         return list
     }
 
+    //排课表
+    val scheduleClassModules: MutableList<ModuleBean>
+        get() {
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = "五天六节课"
+                resId = R.mipmap.icon_schedule_class_1
+            })
+            list.add(ModuleBean().apply {
+                name = "六天六节课"
+                resId = R.mipmap.icon_schedule_class_2
+            })
+            list.add(ModuleBean().apply {
+                name = "五天七节课"
+                resId = R.mipmap.icon_schedule_class_3
+            })
+            list.add(ModuleBean().apply {
+                name = "六天七节课"
+                resId = R.mipmap.icon_schedule_class_4
+            })
+            return list
+        }
+
+    //课程表
+    val scheduleCourseModules: MutableList<ModuleBean>
+        get() {
+            val list= mutableListOf<ModuleBean>()
+            list.add(ModuleBean().apply {
+                name = "五天六节课"
+                resId = R.mipmap.icon_schedule_course_1
+            })
+            list.add(ModuleBean().apply {
+                name = "六天六节课"
+                resId = R.mipmap.icon_schedule_course_3
+            })
+            list.add(ModuleBean().apply {
+                name = "五天七节课"
+                resId = R.mipmap.icon_schedule_course_2
+            })
+            list.add(ModuleBean().apply {
+                name = "六天七节课"
+                resId = R.mipmap.icon_schedule_course_4
+            })
+            return list
+        }
+
     val freenoteModules: MutableList<ModuleBean>
         get() {
             val list= mutableListOf<ModuleBean>()
@@ -455,6 +501,22 @@ object DataBeanManager {
             list.add(ItemList(4, mContext.getString(R.string.book_tab_sxkx)))
             list.add(ItemList(5, mContext.getString(R.string.book_tab_yscn)))
             list.add(ItemList(6, mContext.getString(R.string.book_tab_ydjk)))
+            return list
+        }
+
+    val times: MutableList<ItemList>
+        get() {
+            val list = mutableListOf<ItemList>()
+            list.add(ItemList(15, "15分钟"))
+            list.add(ItemList(30, "30分钟"))
+            list.add(ItemList(40, "40分钟"))
+            list.add(ItemList(45, "45分钟"))
+            list.add(ItemList(60, "60分钟"))
+            list.add(ItemList(80, "80分钟"))
+            list.add(ItemList(90, "90分钟"))
+            list.add(ItemList(120, "120分钟"))
+            list.add(ItemList(150, "150分钟"))
+
             return list
         }
 

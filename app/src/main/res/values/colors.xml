@@ -10,7 +10,7 @@
     <color name="bg_page">#FFFFFFFF</color>
 
     <color name="color_transparent">#00000000</color>
-    <color name="color_text_hint">#666666</color>
+    <color name="color_text_hint">#999999</color>
     <color name="line_color">#ff707070</color>
     <color name="click_gray_color">#e7e7e7</color>
 </resources>

@@ -13,9 +13,10 @@ import com.bll.lnkteacher.utils.GlideUtils
 import kotlinx.android.synthetic.main.ac_class_schedule.iv_image
 import kotlinx.android.synthetic.main.common_title.tv_custom
 
-class ClassScheduleActivity:BaseAppCompatActivity() {
+class ScheduleCourseActivity:BaseAppCompatActivity() {
 
     private var classGroupId = 0
+    private var classGroupName=""
 
     override fun layoutId(): Int {
         return R.layout.ac_class_schedule
@@ -25,6 +26,7 @@ class ClassScheduleActivity:BaseAppCompatActivity() {
         for (classGroup in DataBeanManager.getClassGroupMains()) {
             if (classGroup.userId == mUserId) {
                 classGroupId = classGroup.classGroupId
+                classGroupName=classGroup.name
                 break
             }
         }
@@ -42,9 +44,9 @@ class ClassScheduleActivity:BaseAppCompatActivity() {
         tv_custom.text = "课程表编辑"
 
         tv_custom.setOnClickListener {
-            val intent=Intent(this, ClassScheduleEditActivity::class.java)
-                .setFlags(2)
+            val intent=Intent(this, ScheduleCourseEditActivity::class.java)
                 .putExtra("classGroupId",classGroupId)
+                .putExtra("classGroupName",classGroupName)
             activityResultLauncher.launch(intent)
         }
 

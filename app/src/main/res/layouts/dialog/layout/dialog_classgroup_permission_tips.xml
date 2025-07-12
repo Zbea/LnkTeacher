@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="450dp"
+    android:layout_height="wrap_content"
+    android:background="@mipmap/icon_popwindow_drawing_btn_bg"
+    android:gravity="center_horizontal"
+    android:padding="@dimen/dp_20"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:text="权限打开后将允许学生查看课外书籍、视教、书画；"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:textSize="22sp"
+        android:text="选择时间后，时间到后自动关闭权限,将允许学生查看；"
+        android:textColor="@color/black"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_20"
+        android:textSize="22sp"
+        android:text="选择时间后，时间到后自动关闭权限,将允许学生查看；"
+        android:textColor="@color/black"/>
+
+
+</LinearLayout>

@@ -1,22 +1,22 @@
 package com.bll.lnkteacher.ui.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
-import com.bll.lnkteacher.dialog.CourseModuleDialog
-import com.bll.lnkteacher.dialog.CourseTimeSelectorDialog
-import com.bll.lnkteacher.dialog.InputContentDialog
-import com.bll.lnkteacher.dialog.ItemSelectorDialog
+import com.bll.lnkteacher.dialog.ScheduleClassModuleDialog
+import com.bll.lnkteacher.dialog.ScheduleCourseTimeSelectorDialog
+import com.bll.lnkteacher.dialog.ScheduleItemDialog
 import com.bll.lnkteacher.manager.ClassScheduleGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ClassScheduleBean
 import com.bll.lnkteacher.mvp.model.ItemList
@@ -25,17 +25,18 @@ import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkteacher.utils.BitmapUtils
+import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import kotlinx.android.synthetic.main.ac_class_schedule_edit.grid
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import kotlinx.android.synthetic.main.common_title.tv_btn_2
 import org.greenrobot.eventbus.EventBus
 
-//课程表
-class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUploadView,IClassGroupView {
+//排课表
+class ScheduleClassEditActivity : BaseAppCompatActivity(), IContractView.IFileUploadView,IClassGroupView {
     private lateinit var mUploadPresenter :FileUploadPresenter
     private lateinit var mPresenter:ClassGroupPresenter
-    private var type=1//排课表2课程表
+    private var type=1
     private var classGroupId=0
     private var mode = 0//0五天六节 1六天六节 2五天七节 3六天七节 4五天八节 5六天八节
     private var row = 11
@@ -56,6 +57,8 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
     private var width = 210
     private var path=""
 
+    private var isSave=false
+
     override fun onToken(token: String) {
         val commitPaths= mutableListOf<String>()
         commitPaths.add(FileAddress().getPathCourse("course")+"/course${classGroupId}.png")
@@ -64,12 +67,7 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
             setCallBack(object : FileImageUploadManager.UploadCallBack {
                 override fun onUploadSuccess(urls: List<String>) {
                     path=urls[0]
-                    if (type==1){
-                        mPresenter.uploadClassSchedule(path)
-                    }
-                    else{
-                        mPresenter.uploadClassGroup(classGroupId,path)
-                    }
+                    mPresenter.uploadClassSchedule(path)
                 }
                 override fun onUploadFail() {
                     hideLoading()
@@ -79,29 +77,8 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
         }
     }
 
-    override fun onSubjects(subjects: MutableList<String>) {
-        lists.add(ItemList(0,"清空"))
-        lists.add(ItemList(0,"自定义"))
-        lists.add(ItemList(0,"自习"))
-        for (subject in subjects){
-            lists.add(ItemList(DataBeanManager.getCourseId(subject),subject))
-        }
-    }
-
     override fun onUploadSuccess() {
-        if (type==1){
-            EventBus.getDefault().post(Constants.COURSE_EVENT)
-        }
-        else{
-            for (item in DataBeanManager.classGroups){
-                if (item.classGroupId==classGroupId){
-                    item.imageUrl=path
-                }
-            }
-            val intent = Intent()
-            intent.putExtra("path", path)
-            setResult(Activity.RESULT_OK, intent)
-        }
+        EventBus.getDefault().post(Constants.COURSE_EVENT)
         finish()
     }
 
@@ -111,19 +88,10 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
 
     override fun initData() {
         initChangeScreenData()
-        type = intent.flags
-        classGroupId=intent.getIntExtra("classGroupId",0)
-
-        if (type==1){
-            lists.add(ItemList(0,"清空"))
-            val classGroups=DataBeanManager.classGroups
-            for (item in classGroups){
-                if (item.state==1)
-                    lists.add(ItemList(item.classId,item.name))
-            }
-        }
-        else{
-            mPresenter.getClassGroupSubject(classGroupId)
+        val classGroups=DataBeanManager.classGroups
+        for (item in classGroups){
+            if (item.state==1)
+                lists.add(ItemList(item.classId,item.name))
         }
     }
 
@@ -133,17 +101,23 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
     }
 
     override fun initView() {
-        setPageTitle(if (type==1)"排课表   编辑" else "课程表    编辑")
+        setPageTitle("排课表   编辑")
         showView(tv_btn_1,tv_btn_2)
+
+        val layoutParams= LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        layoutParams.topMargin= DP2PX.dip2px(this,100f)
+        grid.layoutParams=layoutParams
 
         tv_btn_2.text="模板"
         tv_btn_2.setOnClickListener {
-            CourseModuleDialog(this).builder().setOnClickListener {
-                mode=it
-                ClassScheduleGreenDaoManager.getInstance().editByTypeLists(type, classGroupId, mode)
-                selectLists.clear()
-                grid.removeAllViews()
-                setData()
+            ScheduleClassModuleDialog(this,DataBeanManager.scheduleClassModules).builder().setOnClickListener {
+                if (mode!=it){
+                    mode=it
+                    ClassScheduleGreenDaoManager.getInstance().editByTypeLists(type, classGroupId, mode)
+                    selectLists.clear()
+                    grid.removeAllViews()
+                    setData()
+                }
             }
         }
 
@@ -153,15 +127,19 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
             showLoading()
             ClassScheduleGreenDaoManager.getInstance().delete(type, classGroupId)
             ClassScheduleGreenDaoManager.getInstance().insertAll(selectLists)
-            val path=FileAddress().getPathCourse("course")+"/course${classGroupId}.png"
-            BitmapUtils.saveScreenShot(grid, path)
+            selectLists.clear()
+            grid.removeAllViews()
+            isSave=true
+            setData()
             Handler().postDelayed({
+                val path=FileAddress().getPathCourse("course")+"/course${classGroupId}.png"
+                BitmapUtils.saveScreenShot(grid, path)
                 mUploadPresenter.getToken(true)
-            },1000)
+            },500)
         }
 
         val oldCourses= ClassScheduleGreenDaoManager.getInstance().queryByTypeLists(type,classGroupId)
-        if (oldCourses.size>0){
+        if (oldCourses.isNotEmpty()){
             mode=oldCourses[0].mode
         }
         setData()
@@ -378,26 +356,31 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
         for (i in 1 until row) {
             val id = "1$i".toInt()
             //根据id 查询是否已经存储了对应的时间
-            val course = ClassScheduleGreenDaoManager.getInstance().queryID(type,classGroupId,id)
+            val courseBean = ClassScheduleGreenDaoManager.getInstance().queryID(type,classGroupId,id)
             val index = i - 1
 
-            val view = getLessonsView(lessons[index])
-
+            val view = getLessonsTimeView(lessons[index])
             view.id = id
+
             val tvTime = view.findViewById<TextView>(R.id.tv_time)
             view.setOnClickListener {
-                selectTime(tvTime, id)
+                setTime(id,tvTime)
             }
 
-            if (course != null) {
-                tvTime.text = course.name
-                selectLists.add(course)//将已经存在的加入课程集合
+            if (courseBean != null) {
+                tvTime.text = courseBean.name
+                selectLists.add(courseBean)//将已经存在的加入课程集合
+            }
+            else{
+                //保存时绘图去除hint
+                if (isSave)
+                    tvTime.text=" "
             }
 
             val params = GridLayout.LayoutParams()
             params.width = lessonsWidth
 
-            if (mode == 0 || mode == 1) {
+            if (mode<2) {
 
                 when (i) {
                     3, 8, 10 -> {
@@ -417,7 +400,7 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
                     }
                 }
 
-            } else if (mode == 2 || mode == 3) {
+            } else if (mode<4) {
 
                 when (i) {
                     3, 10 -> {
@@ -465,23 +448,55 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
     private fun addContentLayout() {
         for (i in 2 until column) {
             for (j in 1 until row) {
-                var view: TextView?
+                val view:View?
                 val id = (i.toString() + j.toString()).toInt()
                 //根据textview id 查询是否已经存储了对应的课程
-                val course = ClassScheduleGreenDaoManager.getInstance().queryID(type,classGroupId,id)
+                val courseBean = ClassScheduleGreenDaoManager.getInstance().queryID(type,classGroupId,id)
+
+                val lineView = getDividerView()
+                lineView.id = id
+
+                val contentView = getCourseContentView()
+                contentView.id = id
+                val tvContent = contentView.findViewById<TextView>(R.id.tv_name)
+                val ivClear = contentView.findViewById<ImageView>(R.id.iv_clear)
+                val tvAdd = contentView.findViewById<TextView>(R.id.tv_add)
+
+                contentView.setOnClickListener {
+                    ScheduleItemDialog(this,"班级选择",lists).builder().setOnDialogClickListener{ contentStr ->
+                        setContent(id,tvContent,contentStr)
+                        disMissView(tvAdd)
+                        showView(ivClear)
+                    }
+                }
+                ivClear.setOnClickListener {
+                    selectLists.removeIf { item->item.viewId==id }
+                    tvContent.text=""
+                    showView(tvAdd)
+                    disMissView(ivClear)
+                }
+
+                if (courseBean != null) {
+                    disMissView(tvAdd)
+                    showView(ivClear)
+                    tvContent.text = courseBean.name
+                    selectLists.add(courseBean)//将已经存在的加入课程集合
+                }
+                else{
+                    showView(tvAdd)
+                    disMissView(ivClear)
+                }
+
+                //保存时去除其他内容
+                if (isSave)
+                    disMissView(tvAdd,ivClear)
 
                 if (mode == 0 || mode == 1) {
 
-                    if (j == 3 || j == 6 || j == 8 || j == 10) {
-                        view = getCourseView1()
-//                        view.setOnClickListener {
-//                            inputContent(view as TextView)
-//                        }
+                    view=if (j == 3 || j == 6 || j == 8 || j == 10) {
+                        lineView
                     } else {
-                        view = getCourseView()
-                        view.setOnClickListener {
-                            inputContent(view as TextView)
-                        }
+                        contentView
                     }
 
                     val params = GridLayout.LayoutParams()
@@ -506,23 +521,17 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
                             params.width = width
                             params.height = height
                             params.columnSpec = GridLayout.spec(i, 1)
+                            params.setGravity(Gravity.TOP)
                         }
                     }
                     grid.addView(view, params)
 
                 }
                 else if (mode == 2 || mode == 3) {
-
-                    if (j == 3 || j == 6 || j == 10) {
-                        view = getCourseView1()
-//                        view.setOnClickListener {
-//                            inputContent(view as TextView)
-//                        }
+                    view=if (j == 3 || j == 6 || j == 10) {
+                        lineView
                     } else {
-                        view = getCourseView()
-                        view.setOnClickListener {
-                            inputContent(view as TextView)
-                        }
+                        contentView
                     }
 
                     val params = GridLayout.LayoutParams()
@@ -553,16 +562,10 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
 
                 }
                 else {
-                    if (j == 5) {
-                        view = getCourseView1()
-//                        view.setOnClickListener {
-//                            inputContent(view as TextView)
-//                        }
+                    view=if (j == 5) {
+                        lineView
                     } else {
-                        view = getCourseView()
-                        view.setOnClickListener {
-                            inputContent(view as TextView)
-                        }
+                        contentView
                     }
 
                     val params = GridLayout.LayoutParams()
@@ -585,20 +588,14 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
                     grid.addView(view, params)
                 }
 
-                view.id = id
-
-                if (course != null) {
-                    view.text = course.name
-                    selectLists.add(course)//将已经存在的加入课程集合
-                }
             }
 
         }
     }
 
     //获得第二列课节view
-    private fun getLessonsView(str: String): View {
-        return layoutInflater.inflate(R.layout.common_course_lessons, null).also {
+    private fun getLessonsTimeView(str: String): View {
+        return layoutInflater.inflate(R.layout.common_schedule_class_time, null).also {
             it.findViewById<TextView>(R.id.tv_name).also { iv ->
                 iv.text=str
             }
@@ -608,25 +605,21 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
 
     //获取星期
     private fun getWeekView(str: String): View {
-        return TextView(this).also {
-            it.setTextColor(Color.BLACK)
-            it.text=str
-            it.textSize = 28f
-            it.gravity = Gravity.CENTER
-            it.setBackgroundResource(R.drawable.bg_course)
+        return TextView(this).apply {
+            setTextColor(Color.BLACK)
+            text=str
+            textSize = 28f
+            gravity = Gravity.CENTER
+            setBackgroundResource(R.drawable.bg_course)
         }
     }
     //获得课程
-    private fun getCourseView(): TextView {
-        return TextView(this).apply {
-            setTextColor(Color.BLACK)
-            textSize = if (type==1)24f else 28f
-            gravity = Gravity.CENTER
-        }
+    private fun getCourseContentView(): View {
+        return layoutInflater.inflate(R.layout.common_schedule_class_content, null)
     }
 
     //空白view
-    private fun getCourseView1(): TextView {
+    private fun getDividerView(): TextView {
         return TextView(this).apply {
             setTextColor(Color.BLACK)
             textSize = 20f
@@ -637,67 +630,49 @@ class ClassScheduleEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
 
     //获得第一列 时间
     private fun getDateView(str: String): View {
-        return layoutInflater.inflate(R.layout.common_course_date, null).also {
-            it.findViewById<TextView>(R.id.tv_name).also { tv ->
-                tv.text=str
-            }
-            it.setBackgroundResource(R.drawable.bg_course)
+        return TextView(this).apply {
+            setTextColor(Color.BLACK)
+            text=str
+            textSize = 26f
+            gravity = Gravity.CENTER
+            setLineSpacing(1f,1.5f)
+            setBackgroundResource(R.drawable.bg_course)
         }
     }
 
     //时间选择器
-    private fun selectTime(tvStart: TextView, id: Int) {
-        CourseTimeSelectorDialog(this).builder().setOnDateListener {
+    private fun setTime(viewId: Int,tvStart: TextView) {
+        ScheduleCourseTimeSelectorDialog(this).builder().setOnDateListener {
                 startStr, endStr->
 
             tvStart.text = "$startStr~$endStr"
 
             val course = ClassScheduleBean().apply {
-                type=this@ClassScheduleEditActivity.type
-                classGroupId=this@ClassScheduleEditActivity.classGroupId
+                type=this@ScheduleClassEditActivity.type
+                classGroupId=this@ScheduleClassEditActivity.classGroupId
                 name = "$startStr~$endStr"
-                viewId = id
-                mode = this@ClassScheduleEditActivity.mode
+                this.viewId = viewId
+                mode = this@ScheduleClassEditActivity.mode
             }
-            selectLists.removeIf { item->item.viewId==id}
+            selectLists.removeIf { item->item.viewId==viewId}
             selectLists.add(course)
-
         }
     }
 
-
-    /**
-     * 输入课程
-     */
-    private fun inputContent(v: TextView) {
-        val titleStr=if (type==1) "班级选择" else "科目选择"
-        ItemSelectorDialog(this,titleStr,lists).builder().setOnDialogClickListener{ position ->
-            if (type==2&&position==1){
-                InputContentDialog(this,"").builder().setOnDialogClickListener{
-                    setContent(v,it)
-                }
-            }
-            else{
-                val contentStr=if (position==0)"" else lists[position].name
-                setContent(v,contentStr)
-            }
-        }
-    }
-
-    private fun setContent(v: TextView,contentStr:String){
+    private fun setContent(viewId:Int,v: TextView,contentStr:String){
         v.text = contentStr
 
         val course = ClassScheduleBean().apply {
-            type=this@ClassScheduleEditActivity.type
-            classGroupId=this@ClassScheduleEditActivity.classGroupId
-            viewId = v.id
+            type=this@ScheduleClassEditActivity.type
+            classGroupId=this@ScheduleClassEditActivity.classGroupId
+            this.viewId = viewId
             name = contentStr
-            mode = this@ClassScheduleEditActivity.mode
+            mode = this@ScheduleClassEditActivity.mode
         }
 
         selectLists.removeIf { item->item.viewId==v.id }
-        if(contentStr!="清空")
-            selectLists.add(course)
+        selectLists.add(course)
+
     }
 
 }

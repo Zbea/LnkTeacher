@@ -10,12 +10,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 
-class CourseTimeSelectorDialog(private val context: Context) {
+class ScheduleCourseTimeSelectorDialog(private val context: Context) {
     private var dialog:Dialog?=null
 
-    fun builder(): CourseTimeSelectorDialog {
+    fun builder(): ScheduleCourseTimeSelectorDialog {
         dialog =Dialog(context)
-        dialog?.setContentView(R.layout.dialog_course_time_selector)
+        dialog?.setContentView(R.layout.dialog_schedule_course_time_selector)
         dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog?.show()
 

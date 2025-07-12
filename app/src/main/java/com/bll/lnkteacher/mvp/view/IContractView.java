@@ -81,6 +81,7 @@ public interface IContractView {
         default void onSuccess(){};
         default void onUploadSuccess(){};
         default void onAllowSuccess(){};
+        default void onPermission(){};
     }
 
     interface IClassGroupUserView extends IBaseView{

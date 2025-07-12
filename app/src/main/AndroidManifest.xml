@@ -130,10 +130,13 @@
         <activity android:name=".ui.activity.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.ClassScheduleEditActivity"
+        <activity android:name=".ui.activity.ScheduleClassEditActivity"
             android:windowSoftInputMode="adjustPan"
             />
-        <activity android:name=".ui.activity.ClassScheduleActivity"
+        <activity android:name=".ui.activity.ScheduleCourseActivity"
+            android:windowSoftInputMode="adjustPan"
+            />
+        <activity android:name=".ui.activity.ScheduleCourseEditActivity"
             android:windowSoftInputMode="adjustPan"
             />
         <activity android:name=".ui.activity.TeachingPlanActivity"

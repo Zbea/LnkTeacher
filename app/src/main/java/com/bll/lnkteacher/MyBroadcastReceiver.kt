@@ -30,9 +30,6 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             "android.intent.action.PACKAGE_REMOVED"->{
                 EventBus.getDefault().post(Constants.APP_UNINSTALL_EVENT)
             }
-            "android.intent.action.PACKAGE_REPLACED"->{
-                Log.d(Constants.DEBUG,"自更新")
-            }
             Constants.DATA_UPLOAD_BROADCAST_EVENT->{
                 Log.d("debug","上传")
                 EventBus.getDefault().postSticky(Constants.DATA_UPLOAD_EVENT)

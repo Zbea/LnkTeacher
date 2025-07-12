@@ -188,6 +188,7 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
+        showLog(path)
         elik.setLoadFilePath(path, true)
     }
 

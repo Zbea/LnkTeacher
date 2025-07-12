@@ -106,7 +106,7 @@ class DocumentManagerFragment:BaseMainFragment() {
         initTab()
 
         Handler().postDelayed({
-            setGradeStr()
+            onGradeSelectorEvent()
         },500)
     }
 

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.GlideUtils
@@ -43,11 +44,16 @@ class ImageDialog(val context: Context,private val screenPos:Int, private val im
         ivImage=dialog.findViewById(R.id.iv_image)
         ivBgImage=dialog.findViewById(R.id.iv_bgres)
         val ivClose=dialog.findViewById<ImageView>(R.id.iv_close)
+        ivClose.setOnClickListener { dialog.dismiss() }
         val rlPage=dialog.findViewById<RelativeLayout>(R.id.rl_page)
         val ivUp=dialog.findViewById<ImageView>(R.id.iv_up)
         val ivDown=dialog.findViewById<ImageView>(R.id.iv_down)
         tvPage=dialog.findViewById(R.id.tv_page)
-        ivClose.setOnClickListener { dialog.dismiss() }
+
+        val ivFull=dialog.findViewById<ImageView>(R.id.iv_full)
+        ivFull.setOnClickListener {
+            MethodManager.gotoFullImage(context,ToolUtils.getImagesStr(images),"")
+        }
 
         if (images.isNotEmpty()){
             rlPage.visibility=View.VISIBLE

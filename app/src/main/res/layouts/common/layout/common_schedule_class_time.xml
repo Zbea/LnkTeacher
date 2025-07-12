@@ -19,7 +19,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_5"
-        android:textSize="@dimen/sp_24"
+        android:textSize="@dimen/sp_22"
+        android:hint="点击选择时间"
+        android:textColorHint="@color/color_text_hint"
         android:textColor="@color/black"
         />
 

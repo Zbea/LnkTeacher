@@ -2,6 +2,8 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
+import android.view.WindowManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,29 +15,40 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco2
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ItemSelectorDialog(val context: Context, val titleStr: String,val items:MutableList<ItemList>) {
+class ScheduleItemDialog(val context: Context, val titleStr: String, val items:MutableList<ItemList>) {
 
-    fun builder(): ItemSelectorDialog {
+    fun builder(): ScheduleItemDialog {
         val dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_item_select)
+        dialog.setContentView(R.layout.dialog_item_schedule_plan)
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         dialog.show()
 
-        val tv_name = dialog.findViewById<TextView>(R.id.tv_name)
-        tv_name.text=titleStr
+        val tv_title = dialog.findViewById<TextView>(R.id.tv_title)
+        tv_title.text=titleStr
         val iv_close = dialog.findViewById<ImageView>(R.id.iv_close)
         iv_close.setOnClickListener {
             dialog.dismiss()
         }
+        val et_custom = dialog.findViewById<EditText>(R.id.et_custom)
+
+        val tv_ok = dialog.findViewById<TextView>(R.id.tv_ok)
+        tv_ok.setOnClickListener {
+            val contentStr=et_custom.text.toString()
+            if (contentStr.isNotEmpty()){
+                listener?.onClick(contentStr)
+                dialog.dismiss()
+            }
+        }
 
         val rv_list=dialog.findViewById<RecyclerView>(R.id.rv_list)
         rv_list?.layoutManager = GridLayoutManager(context,2)
-        val mAdapter = ScheduleItemDialog.MyAdapter(R.layout.item_select_name, items)
+        val mAdapter = MyAdapter(R.layout.item_schedule_title, items)
         rv_list?.adapter = mAdapter
         rv_list?.addItemDecoration(SpaceGridItemDeco2(20, DP2PX.dip2px(context,15f)))
         mAdapter.bindToRecyclerView(rv_list)
         mAdapter.setOnItemClickListener { adapter, view, position ->
-            listener?.onClick(position)
+            listener?.onClick(items[position].name)
             dialog.dismiss()
         }
 
@@ -45,7 +58,7 @@ class ItemSelectorDialog(val context: Context, val titleStr: String,val items:Mu
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(pos: Int)
+        fun onClick(contentStr:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {

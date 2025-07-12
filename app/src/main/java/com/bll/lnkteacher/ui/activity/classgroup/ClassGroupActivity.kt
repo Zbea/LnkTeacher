@@ -12,6 +12,7 @@ import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.ClassGroupAddDialog
 import com.bll.lnkteacher.dialog.ClassGroupChildCreateDialog
 import com.bll.lnkteacher.dialog.ClassGroupCreateDialog
+import com.bll.lnkteacher.dialog.ClassGroupPermissionDialog
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.mvp.model.group.ClassGroup
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
@@ -33,6 +34,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
     private var mAdapter: ClassGroupAdapter? = null
     private var position = 0
     private var classGroupAddDialog: ClassGroupAddDialog? = null
+    private var permissionTime=0L
 
     override fun onClasss(groups: MutableList<ClassGroup>) {
         DataBeanManager.classGroups = groups
@@ -62,6 +64,12 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         else{
             classGroup.isAllowJoin=2
         }
+        mAdapter?.notifyItemChanged(position)
+    }
+
+    override fun onPermission() {
+        val classGroup=classGroups[position]
+        classGroup.permissionTime=permissionTime
         mAdapter?.notifyItemChanged(position)
     }
 
@@ -110,6 +118,14 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         rv_list.adapter = mAdapter
         mAdapter?.bindToRecyclerView(rv_list)
         rv_list.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this, 20f)))
+        mAdapter?.setOnItemClickListener { adapter, view, position ->
+            val classGroup = classGroups[position]
+            val intent = Intent(this, if (classGroup.state == 1) ClassGroupUserActivity::class.java else ClassGroupChildUserActivity::class.java)
+            val bundle = Bundle()
+            bundle.putSerializable("classGroup", classGroup)
+            intent.putExtra("bundle", bundle)
+            customStartActivity(intent)
+        }
         mAdapter?.setOnItemChildClickListener { adapter, view, position ->
             this.position = position
             val classGroup = classGroups[position]
@@ -148,15 +164,24 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                     dissolveGroup()
                 }
 
-                R.id.tv_detail -> {
-                    val intent = Intent(this, if (classGroup.state == 1) ClassGroupUserActivity::class.java else ClassGroupChildUserActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putSerializable("classGroup", classGroup)
-                    intent.putExtra("bundle", bundle)
-                    customStartActivity(intent)
+                R.id.tv_permission -> {
+                    if (classGroup.permissionTime>System.currentTimeMillis()){
+                        CommonDialog(this).setContent("确定关闭权限？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
+                            override fun ok() {
+                                permissionTime=0
+                            }
+                        })
+                    }
+                    else{
+                        ClassGroupPermissionDialog(this).builder().setOnDialogClickListener{
+                            val time=it*60*1000
+                            permissionTime=System.currentTimeMillis()+time
+
+                        }
+                    }
                 }
 
-                R.id.tv_allow->{
+                R.id.iv_arrow_join->{
                     val titleInfo=if (classGroup.isAllowJoin==2) "开启班群，允许学生加入班群？" else "关闭班群，不允许学生加入班群？"
                     CommonDialog(this).setContent(titleInfo).builder().onDialogClickListener= object : CommonDialog.OnDialogClickListener {
                         override fun cancel() {

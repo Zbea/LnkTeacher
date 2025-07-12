@@ -212,10 +212,8 @@ public class BitmapUtils {
      * @param path
      */
     public static void saveScreenShot(View view, String path) {
-       new Thread(() -> {
-            Bitmap bitmap = loadBitmapFromViewByCanvas(view);
-            saveBmpGallery(bitmap, path);
-        }).start();
+        Bitmap bitmap = loadBitmapFromViewByCanvas(view);
+        saveBmpGallery(bitmap, path);
     }
 
     public static Bitmap loadBitmapFromViewByCanvas(View view) {
