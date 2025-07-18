@@ -14,10 +14,9 @@ import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DateUtils
@@ -48,11 +47,11 @@ import org.greenrobot.eventbus.EventBus
 import java.io.File
 import java.util.stream.Collectors
 
-class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
+class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IContractView.IQiniuView {
 
     private var mId = 0
     private var correctList: CorrectBean? = null
-    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mUploadPresenter = QiniuPresenter(this, 3)
     private val mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
     private var mClassBean: TestPaperClassBean? = null
     private var userItems = mutableListOf<TestPaperClassUserList.ClassUserBean>()

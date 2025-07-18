@@ -54,7 +54,7 @@ class HomeworkCreateDialog(val context: Context, val grade:Int,val type: Int) {
         tvName?.setSelection(0)
 
         tvClass.setOnClickListener {
-            ClassGroupSelectorDialog(context, DataBeanManager.getClassGroups(grade)).builder().setOnDialogSelectListener{
+            ClassGroupSelectorDialog(context,2, DataBeanManager.getClassGroups(grade)).builder().setOnDialogSelectListener{
                 classGroupIds= it.toMutableList()
             }
         }

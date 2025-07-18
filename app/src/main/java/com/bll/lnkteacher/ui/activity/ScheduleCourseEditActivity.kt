@@ -20,7 +20,7 @@ import com.bll.lnkteacher.manager.ClassScheduleGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ClassScheduleBean
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkteacher.utils.BitmapUtils
@@ -31,8 +31,8 @@ import kotlinx.android.synthetic.main.common_title.tv_btn_1
 import kotlinx.android.synthetic.main.common_title.tv_btn_2
 
 //课程表
-class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileUploadView,IClassGroupView {
-    private lateinit var mUploadPresenter :FileUploadPresenter
+class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IQiniuView,IClassGroupView {
+    private lateinit var mUploadPresenter : QiniuPresenter
     private lateinit var mPresenter:ClassGroupPresenter
     private var type=2
     private var classGroupId=0
@@ -44,14 +44,14 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
     private var lists= mutableListOf<ItemList>()
 
     private var timeWidth = 60
-    private var weekHeight = 80
+    private var weekHeight = 86
     private var lessonsWidth = 230
-    private var dividerHeight = 44
-    private var dividerHeight1 = 60
+    private var dividerHeight = 52
 
     private var totalWidth = 1330
+    private var totalHeight = 1150
 
-    private var height = 106
+    private var height = 120
     private var width = 210
     private var path=""
 
@@ -112,7 +112,7 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
     }
 
     override fun initChangeScreenData() {
-        mUploadPresenter = FileUploadPresenter(this,getCurrentScreenPos())
+        mUploadPresenter = QiniuPresenter(this,getCurrentScreenPos())
         mPresenter=ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
@@ -163,24 +163,28 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
     private fun setData(){
         when (mode) {
             0 -> {//五天六节课
-                row = 19
+                row = 11
                 column = 7
                 width = (totalWidth - timeWidth - lessonsWidth) / 5
+                height=(totalHeight-weekHeight-dividerHeight)/9
             }
             1 -> {//六天六节课
-                row = 19
+                row = 11
                 column = 8
                 width = (totalWidth - timeWidth - lessonsWidth) / 6
+                height=(totalHeight-weekHeight-dividerHeight)/9
             }
             2 -> {//五天七节课
-                row = 21
+                row = 12
                 column = 7
                 width = (totalWidth - timeWidth - lessonsWidth) / 5
+                height=(totalHeight-weekHeight-dividerHeight)/10
             }
             3 -> {//六天七节课
-                row = 21
+                row = 12
                 column = 8
                 width = (totalWidth - timeWidth - lessonsWidth) / 6
+                height=(totalHeight-weekHeight-dividerHeight)/10
             }
         }
         grid.columnCount = column
@@ -195,13 +199,13 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
     //添加时间布局在第一列
     private fun addTimeLayout() {
 
-        val heightTime1=weekHeight + dividerHeight*4 + 5 * height
+        val heightTime1=weekHeight + 5 * height
         val type=if (mode<2) 4 else 5
-        val heightTime2=dividerHeight * type + type * height
+        val heightTime2=type * height
 
         val view = getDateView("上午")
         val params = GridLayout.LayoutParams()
-        params.rowSpec = GridLayout.spec(0, 10)
+        params.rowSpec = GridLayout.spec(0, 6)
         params.width = timeWidth
         params.height = heightTime1
         params.columnSpec = GridLayout.spec(0, 1)
@@ -209,7 +213,7 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
 
         val view1 = getDateView("下午")
         val params1 = GridLayout.LayoutParams()
-        params1.rowSpec = GridLayout.spec(11, row - 11)
+        params1.rowSpec = GridLayout.spec(7, row - 7)
         params1.width = timeWidth
         params1.height = heightTime2
         params1.columnSpec = GridLayout.spec(0, 1)
@@ -255,47 +259,30 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
             0, 1 -> {
                 arrayOf(
                     "早读",
-                    "",
                     "第一节",
-                    "",
                     "第二节",
-                    "",
                     "第三节",
-                    "",
                     "第四节",
                     "",
                     "午读",
-                    "",
                     "第五节",
-                    "",
                     "第六节",
-                    "",
-                    "课后",
-                    ""
+                    "课后"
                 )
             }
             else -> {
                 arrayOf(
                     "早读",
-                    "",
                     "第一节",
-                    "",
                     "第二节",
-                    "",
                     "第三节",
-                    "",
                     "第四节",
                     "",
                     "午读",
-                    "",
                     "第五节",
-                    "",
                     "第六节",
-                    "",
                     "第七节",
-                    "",
-                    "课后",
-                    ""
+                    "课后"
                 )
             }
         }
@@ -326,14 +313,9 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
             val params = GridLayout.LayoutParams()
             params.width = lessonsWidth
             when (i) {
-                2,4,6,8,12,14,16,18,20 -> {
+                6 -> {
                     params.rowSpec = GridLayout.spec(i, 1)
                     params.height = dividerHeight
-                    params.columnSpec = GridLayout.spec(1, column - 1)
-                }
-                10 -> {
-                    params.rowSpec = GridLayout.spec(i, 1)
-                    params.height = dividerHeight1
                     params.columnSpec = GridLayout.spec(0, column)
                 }
                 else -> {
@@ -396,7 +378,7 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
                     disMissView(tvAdd,ivClear)
 
                 view=when(j){
-                    2,4,6,8,10,12,14,16,18,20->{
+                    6->{
                         lineView
                     }
                     else->{
@@ -406,19 +388,12 @@ class ScheduleCourseEditActivity : BaseAppCompatActivity(), IContractView.IFileU
 
                 val params = GridLayout.LayoutParams()
                 when (j) {
-                    2,4,6,8,12,14,16,18,20 -> {
-                        view.setBackgroundResource(R.drawable.bg_course)
-                        params.rowSpec = GridLayout.spec(j, 1)
-                        params.width = width * (column - 2) + lessonsWidth
-                        params.height = dividerHeight
-                        params.columnSpec = GridLayout.spec(1, column - 1)
-                    }
-                    10 -> {
+                    6 -> {
                         (view as TextView).text="午休"
                         view.setBackgroundResource(R.drawable.bg_course)
                         params.rowSpec = GridLayout.spec(j, 1)
                         params.width = width * (column - 2) + lessonsWidth + timeWidth
-                        params.height = dividerHeight1
+                        params.height = dividerHeight
                         params.columnSpec = GridLayout.spec(0, column)
                     }
                     else -> {

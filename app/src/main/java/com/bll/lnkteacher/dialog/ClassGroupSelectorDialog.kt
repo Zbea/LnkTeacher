@@ -13,7 +13,7 @@ import com.bll.lnkteacher.utils.DP2PX
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 
-class ClassGroupSelectorDialog(val context: Context,private val classGroups: List<ClassGroup>) {
+class ClassGroupSelectorDialog(val context: Context,private val screenPos:Int ,private val classGroups: List<ClassGroup>) {
 
     fun builder(): ClassGroupSelectorDialog {
         val dialog = Dialog(context)
@@ -21,7 +21,12 @@ class ClassGroupSelectorDialog(val context: Context,private val classGroups: Lis
         dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
         val window=dialog.window!!
         val layoutParams=window.attributes
-        layoutParams.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        if (screenPos==1){
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.START
+        }
+        else{
+            layoutParams?.gravity = Gravity.CENTER_VERTICAL or Gravity.END
+        }
         layoutParams.x=(Constants.WIDTH- DP2PX.dip2px(context,400f))/2
         dialog.show()
 

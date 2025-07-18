@@ -169,6 +169,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                         CommonDialog(this).setContent("确定关闭权限？").builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
                                 permissionTime=0
+                                mGroupPresenter.setClassGroupPermission(classGroup.classGroupId,permissionTime)
                             }
                         })
                     }
@@ -176,7 +177,7 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
                         ClassGroupPermissionDialog(this).builder().setOnDialogClickListener{
                             val time=it*60*1000
                             permissionTime=System.currentTimeMillis()+time
-
+                            mGroupPresenter.setClassGroupPermission(classGroup.classGroupId,permissionTime)
                         }
                     }
                 }

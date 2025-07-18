@@ -126,12 +126,14 @@ public class MethodManager {
     }
 
     public static void gotoPptDetails(Context context,String path,int flags){
-        Intent intent = new Intent();
-        intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
-        intent.putExtra("path", path);
-        intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
+            intent.putExtra("path", path);
+            intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 
     /**

@@ -206,11 +206,6 @@ public interface IContractView {
         void onExamGrade(ExamRankList list);
     }
 
-    //文件上传
-    interface IFileUploadView extends IBaseView{
-        void onToken(String token);
-    }
-
     //作业布置
     interface IHomeworkAssignView extends IBaseView{
         /**
@@ -326,6 +321,11 @@ public interface IContractView {
         void onBind();
         void onUnbind();
         void onListFriend(FriendList list);
+    }
+
+
+    interface IDocumentView extends IBaseView{
+        void onSendSuccess();
     }
 
 }

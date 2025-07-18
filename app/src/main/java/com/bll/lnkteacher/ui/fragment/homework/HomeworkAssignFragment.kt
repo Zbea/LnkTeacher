@@ -214,7 +214,7 @@ class HomeworkAssignFragment:BaseFragment(),IContractView.IHomeworkAssignView {
                                 classGroup.isCheck=true
                             items.add(classGroup)
                         }
-                        ClassGroupSelectorDialog(requireActivity(),items).builder().setOnDialogSelectListener{
+                        ClassGroupSelectorDialog(requireActivity(),2,items).builder().setOnDialogSelectListener{
                             ids=ToolUtils.getImagesStr(it)
                             val map=HashMap<String,Any>()
                             map["id"]=item.id

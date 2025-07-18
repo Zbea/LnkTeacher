@@ -580,11 +580,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             1, 2 -> {
                 mTopicScoreAdapter?.setNewData(currentScores)
             }
-
             3, 4, 5 -> {
                 mTopicTwoScoreAdapter?.setNewData(currentScores)
             }
-
             6, 7 -> {
                 mTopicMultistageScoreAdapter?.setNewData(currentScores)
             }

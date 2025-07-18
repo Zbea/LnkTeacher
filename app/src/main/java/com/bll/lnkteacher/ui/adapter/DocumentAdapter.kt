@@ -11,7 +11,7 @@ import java.io.File
 class DocumentAdapter(layoutResId: Int, data: List<File>?) : BaseQuickAdapter<File, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, file: File) {
-        helper.setText(R.id.tv_name,file.name)
+        helper.setText(R.id.tv_name,FileUtils.getUrlName(file.path))
         val ivImage=helper.getView<ImageView>(R.id.iv_image)
         val format= FileUtils.getUrlFormat(file.path)
         when(format)

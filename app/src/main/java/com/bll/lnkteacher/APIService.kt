@@ -68,7 +68,11 @@ interface APIService{
     @POST("cloud/data/delete")
     fun deleteCloudList(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
 
-
+    /**
+     * 分享教材
+     */
+    @POST("teacher/share/insert")
+    fun sendDocument(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 公共年级接口
      */
@@ -251,6 +255,11 @@ interface APIService{
      */
     @GET("class/group/infoV2")
     fun getGroupInfo(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<ClassGroup>>
+    /**
+     * 设置班级权限
+     */
+    @POST("class/permissionTime")
+    fun setGroupPermission(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
     /**
      * 班群科目
      */

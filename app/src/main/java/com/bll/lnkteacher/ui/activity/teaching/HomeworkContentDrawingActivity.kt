@@ -16,8 +16,8 @@ import com.bll.lnkteacher.mvp.model.homework.HomeworkAssignItem
 import com.bll.lnkteacher.mvp.model.homework.HomeworkContentBean
 import com.bll.lnkteacher.mvp.model.homework.HomeworkContentTypeBean
 import com.bll.lnkteacher.mvp.model.testpaper.TypeBean
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
 import com.bll.lnkteacher.mvp.presenter.HomeworkAssignPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.DateUtils
@@ -30,9 +30,9 @@ import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 
-class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IFileUploadView,IContractView.IHomeworkAssignView {
+class HomeworkContentDrawingActivity : BaseDrawingActivity(),IContractView.IQiniuView,IContractView.IHomeworkAssignView {
 
-    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mUploadPresenter = QiniuPresenter(this, 3)
     private val mPresenter= HomeworkAssignPresenter(this)
     private var contentId = 0
     private var typeBean: TypeBean?=null//作业卷分类

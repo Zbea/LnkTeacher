@@ -16,10 +16,9 @@ import com.bll.lnkteacher.mvp.model.homework.ResultStandardItem
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassUserList
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.presenter.TestPaperCorrectDetailsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.HomeworkResultStandardAdapter
 import com.bll.lnkteacher.ui.adapter.TestPaperCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
@@ -74,12 +73,12 @@ import java.io.File
 import java.util.Timer
 import java.util.TimerTask
 
-class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IFileUploadView {
+class HomeworkCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaperCorrectDetailsView, IContractView.IQiniuView {
 
     private var mId = 0
     private var subType = 0
     private var correctList: CorrectBean? = null
-    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mUploadPresenter = QiniuPresenter(this, 3)
     private val mPresenter = TestPaperCorrectDetailsPresenter(this, 3)
     private var mClassBean: TestPaperClassBean? = null
     private var userItems = mutableListOf<TestPaperClassUserList.ClassUserBean>()

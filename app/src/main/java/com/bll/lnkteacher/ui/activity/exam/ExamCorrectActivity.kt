@@ -12,9 +12,8 @@ import com.bll.lnkteacher.mvp.model.exam.ExamClassUserList
 import com.bll.lnkteacher.mvp.model.exam.ExamCorrectList
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.ExamCorrectPresenter
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
-import com.bll.lnkteacher.mvp.view.IContractView.IFileUploadView
 import com.bll.lnkteacher.ui.adapter.ExamCorrectUserAdapter
 import com.bll.lnkteacher.utils.BitmapUtils
 import com.bll.lnkteacher.utils.FileImageUploadManager
@@ -40,10 +39,10 @@ import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
 import java.util.stream.Collectors
 
-class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectView, IFileUploadView {
+class ExamCorrectActivity : BaseDrawingActivity(), IContractView.IExamCorrectView, IContractView.IQiniuView {
 
     private var examBean: ExamCorrectList.ExamCorrectBean? = null
-    private val mUploadPresenter = FileUploadPresenter(this, 3)
+    private val mUploadPresenter = QiniuPresenter(this, 3)
     private val mPresenter = ExamCorrectPresenter(this, 3)
     private var userItems = mutableListOf<ExamClassUserList.ClassUserBean>()
 

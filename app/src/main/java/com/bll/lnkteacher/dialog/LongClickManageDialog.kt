@@ -34,7 +34,6 @@ class LongClickManageDialog(val context: Context,val screenPos:Int, val name:Str
         layoutParams?.x=(Constants.WIDTH- DP2PX.dip2px(context,450F))/2
         dialog.show()
 
-
         val tv_name=dialog.findViewById<TextView>(R.id.tv_name)
         val iv_close=dialog.findViewById<ImageView>(R.id.iv_close)
         tv_name.text=name

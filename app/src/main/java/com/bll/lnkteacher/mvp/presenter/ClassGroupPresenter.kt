@@ -57,6 +57,23 @@ class ClassGroupPresenter(view: IContractView.IClassGroupView,val screen:Int=0) 
 
     }
 
+    fun setClassGroupPermission(classGroupId: Int,time:Long) {
+        val map=HashMap<String,Any>()
+        map["classGroupId"]=classGroupId
+        map["permissionTime"]=time
+        val body=RequestUtils.getBody(map)
+        val list = RetrofitManager.service.setGroupPermission(body)
+        doRequest(list, object : Callback<Any>(view,screen) {
+            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
+                return false
+            }
+            override fun success(tBaseResult: BaseResult<Any>) {
+                view.onPermission()
+            }
+        }, true)
+
+    }
+
     fun createClassGroup(name: String,grade:Int,type:Int) {
 
         val body = RequestUtils.getBody(

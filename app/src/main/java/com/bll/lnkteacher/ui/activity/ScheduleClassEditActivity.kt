@@ -4,10 +4,8 @@ import android.graphics.Color
 import android.os.Handler
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup.LayoutParams
 import android.widget.GridLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
@@ -21,11 +19,10 @@ import com.bll.lnkteacher.manager.ClassScheduleGreenDaoManager
 import com.bll.lnkteacher.mvp.model.ClassScheduleBean
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.ClassGroupPresenter
-import com.bll.lnkteacher.mvp.presenter.FileUploadPresenter
+import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.mvp.view.IContractView.IClassGroupView
 import com.bll.lnkteacher.utils.BitmapUtils
-import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileImageUploadManager
 import kotlinx.android.synthetic.main.ac_class_schedule_edit.grid
 import kotlinx.android.synthetic.main.common_title.tv_btn_1
@@ -33,8 +30,8 @@ import kotlinx.android.synthetic.main.common_title.tv_btn_2
 import org.greenrobot.eventbus.EventBus
 
 //排课表
-class ScheduleClassEditActivity : BaseAppCompatActivity(), IContractView.IFileUploadView,IClassGroupView {
-    private lateinit var mUploadPresenter :FileUploadPresenter
+class ScheduleClassEditActivity : BaseAppCompatActivity(), IContractView.IQiniuView,IClassGroupView {
+    private lateinit var mUploadPresenter :QiniuPresenter
     private lateinit var mPresenter:ClassGroupPresenter
     private var type=1
     private var classGroupId=0
@@ -96,7 +93,7 @@ class ScheduleClassEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
     }
 
     override fun initChangeScreenData() {
-        mUploadPresenter = FileUploadPresenter(this,getCurrentScreenPos())
+        mUploadPresenter = QiniuPresenter(this,getCurrentScreenPos())
         mPresenter=ClassGroupPresenter(this,getCurrentScreenPos())
     }
 
@@ -104,9 +101,6 @@ class ScheduleClassEditActivity : BaseAppCompatActivity(), IContractView.IFileUp
         setPageTitle("排课表   编辑")
         showView(tv_btn_1,tv_btn_2)
 
-        val layoutParams= LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        layoutParams.topMargin= DP2PX.dip2px(this,100f)
-        grid.layoutParams=layoutParams
 
         tv_btn_2.text="模板"
         tv_btn_2.setOnClickListener {

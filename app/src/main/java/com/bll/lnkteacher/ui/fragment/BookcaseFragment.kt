@@ -23,11 +23,11 @@ import com.bll.lnkteacher.widget.SpaceGridItemDeco1
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_down
 import kotlinx.android.synthetic.main.fragment_bookcase.iv_content_up
+import kotlinx.android.synthetic.main.fragment_bookcase.iv_tips
 import kotlinx.android.synthetic.main.fragment_bookcase.ll_book_top
 import kotlinx.android.synthetic.main.fragment_bookcase.rv_list
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_book_type
 import kotlinx.android.synthetic.main.fragment_bookcase.tv_name
-import kotlinx.android.synthetic.main.item_bookcase_type.iv_tips
 import org.greenrobot.eventbus.EventBus
 
 /**

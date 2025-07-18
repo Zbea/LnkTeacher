@@ -102,7 +102,7 @@ class MessageListActivity : BaseAppCompatActivity(), IContractView.IMessageView,
     private fun initRecyclerView() {
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         layoutParams.setMargins(
-            DP2PX.dip2px(this, 50f), DP2PX.dip2px(this, 40f),
+            DP2PX.dip2px(this, 50f), DP2PX.dip2px(this, 30f),
             DP2PX.dip2px(this, 50f), 0
         )
         layoutParams.weight = 1f
@@ -116,9 +116,6 @@ class MessageListActivity : BaseAppCompatActivity(), IContractView.IMessageView,
         }
         mAdapter?.setOnItemLongClickListener { adapter, view, position ->
             CommonDialog(this).setContent("确定删除？").builder().onDialogClickListener = object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-
                 override fun ok() {
                     val item = lists[position]
                     val map = HashMap<String, Any>()
