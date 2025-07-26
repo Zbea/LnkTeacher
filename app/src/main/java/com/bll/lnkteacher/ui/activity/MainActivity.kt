@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.hardware.display.DisplayManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.view.KeyEvent
@@ -82,6 +83,7 @@ class MainActivity : BaseAppCompatActivity() {
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
+        intentFilter.addAction(DisplayManager.ACTION_WIFI_DISPLAY_STATUS_CHANGED)
         registerReceiver(myBroadcastReceiver,intentFilter)
 
         val isTips=SPUtil.getBoolean("SpecificationTips")

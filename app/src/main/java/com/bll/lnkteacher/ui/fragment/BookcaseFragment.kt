@@ -1,7 +1,6 @@
 package com.bll.lnkteacher.ui.fragment
 
 import android.content.Intent
-import android.view.View
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
@@ -80,7 +79,12 @@ class BookcaseFragment : BaseMainFragment() {
      * 查找本地书籍
      */
     private fun findBook() {
-        iv_tips?.visibility=if (ItemTypeDaoManager.getInstance().isExistBookType) View.VISIBLE else View.GONE
+        if (ItemTypeDaoManager.getInstance().isExistBookType){
+            showView(iv_tips)
+        }
+        else{
+            disMissView(iv_tips)
+        }
 
         books = BookGreenDaoManager.getInstance().queryAllBook(true)
         if (books.size == 0) {

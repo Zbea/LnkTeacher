@@ -46,11 +46,11 @@ class LessonsFullImageActivity:BaseDrawingActivity() {
     override fun initView() {
         iv_move_up.setOnClickListener {
             if (moveY>0)
-                moveY-=600
+                moveY-=1000
             sv_view.scrollTo(0, moveY)
         }
         iv_move_down.setOnClickListener {
-            moveY+=600
+            moveY+=1000
             sv_view.scrollTo(0, moveY)
         }
 

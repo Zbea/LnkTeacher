@@ -3,6 +3,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bll.lnkteacher.Constants
+import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
@@ -84,7 +85,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     override fun onCorrectSuccess() {
         showToast(userItems[posUser].name + getString(R.string.teaching_correct_success))
         correctStatus = 2
-        userItems[posUser].score = tv_total_score.text.toString().toDouble()
+        userItems[posUser].score = getResultStandardType(tv_total_score.text.toString())
         userItems[posUser].submitUrl = url
         userItems[posUser].status = 2
         userItems[posUser].question = Gson().toJson(initScores)
@@ -134,7 +135,8 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         val title = if (correctList?.taskType == 1) "作业卷" else "测卷"
         setPageTitle("${title}批改  ${correctList?.title}  ${mClassBean?.name}")
         disMissView(iv_catalog)
-        setPageSetting("全部保存")
+        if (correctList?.selfBatchStatus==1)
+            setPageSetting("全部保存")
         iv_btn.setImageResource(R.mipmap.icon_draw_image_zoom)
 
         if (correctList?.taskType==1){
@@ -200,7 +202,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
         }
 
         tv_total_score.setOnClickListener {
-            if (correctStatus == 1) {
+            if (correctStatus == 1&&correctModule>0) {
                 NumberDialog(this, getCurrentScreenPos(), "请输入总分").builder().setDialogClickListener {
                     tv_total_score.text = it.toString()
                 }
@@ -246,7 +248,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 val oldItem = userItems[posUser]
                 oldItem.isCheck = false
                 oldItem.currentScores = currentScores.stream().collect(Collectors.toList())
-                oldItem.score = tv_total_score.text.toString().toDouble()
+                oldItem.score =getResultStandardType(tv_total_score.text.toString())
                 mAdapter?.notifyItemChanged(posUser)
 
                 posUser = position//设置当前学生下标
@@ -257,6 +259,26 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                 Handler().post {
                     setContentView()
                 }
+            }
+        }
+    }
+
+    /**
+     * 获取当前总分
+     */
+    private fun getResultStandardType(str:String):Double{
+        return when(str){
+            "A"->{
+                1.0
+            }
+            "B"->{
+                2.0
+            }
+            "C"->{
+                3.0
+            }
+            else->{
+                str.toDouble()
             }
         }
     }
@@ -300,23 +322,35 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
                 when (correctStatus) {
                     1 -> {
-                        if (!userItem.question.isNullOrEmpty()) {
-                            initScores = ScoreItemUtils.questionToList(userItem.question)
-                            currentScores = if (userItem.currentScores.isNotEmpty()) {
-                                userItem.currentScores.stream().collect(Collectors.toList())
+                        if (correctModule>0){
+                            if (!userItem.question.isNullOrEmpty()) {
+                                initScores = ScoreItemUtils.questionToList(userItem.question)
+                                currentScores = if (userItem.currentScores.isNotEmpty()) {
+                                    userItem.currentScores.stream().collect(Collectors.toList())
+                                } else {
+                                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                                }
                             } else {
-                                ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                                initScores = ScoreItemUtils.questionToList(correctList?.question!!)
+                                currentScores = if (userItem.currentScores.isNotEmpty()) {
+                                    userItem.currentScores.stream().collect(Collectors.toList())
+                                } else {
+                                    ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(correctList?.question!!))
+                                }
                             }
-                        } else {
-                            initScores = ScoreItemUtils.questionToList(correctList?.question!!)
-                            currentScores = if (userItem.currentScores.isNotEmpty()) {
-                                userItem.currentScores.stream().collect(Collectors.toList())
-                            } else {
-                                ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(correctList?.question!!))
+                        }
+                        else{
+                            currentResults=DataBeanManager.getResultChildItems().stream().collect(Collectors.toList())
+                            if (userItem.score>0){
+                                for (item in currentResults){
+                                    if (item.sort==userItem.score.toInt()){
+                                        item.isCheck=true
+                                    }
+                                }
                             }
                         }
                         currentImages = ToolUtils.getImages(userItem.studentUrl)
-                        tv_total_score.text = userItem.score.toString()
+                        tv_total_score.text = if (correctModule>0)userItem.score.toString() else DataBeanManager.getResultStandardStr(userItem.score,correctModule)
                         showView(ll_score, ll_score_topic, tv_save)
                         disMissView(tv_share)
 
@@ -325,13 +359,25 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
                     }
 
                     2 -> {
-                        currentScores = if (userItem.currentScores.isNotEmpty()) {
-                            userItem.currentScores.stream().collect(Collectors.toList())
-                        } else {
-                            ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                        if (correctModule>0){
+                            currentScores = if (userItem.currentScores.isNotEmpty()) {
+                                userItem.currentScores.stream().collect(Collectors.toList())
+                            } else {
+                                ScoreItemUtils.jsonListToModuleList(correctModule, ScoreItemUtils.questionToList(userItem.question))
+                            }
+                        }
+                        else{
+                            currentResults=DataBeanManager.getResultChildItems().stream().collect(Collectors.toList())
+                            if (userItem.score>0){
+                                for (item in currentResults){
+                                    if (item.sort==userItem.score.toInt()){
+                                        item.isCheck=true
+                                    }
+                                }
+                            }
                         }
                         currentImages = ToolUtils.getImages(userItem.submitUrl)
-                        tv_total_score.text = userItem.score.toString()
+                        tv_total_score.text = if (correctModule>0)userItem.score.toString() else DataBeanManager.getResultStandardStr(userItem.score,correctModule)
                         showView(ll_score, ll_score_topic, tv_share)
                         disMissView(tv_save)
 
@@ -341,6 +387,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
                     3 -> {
                         currentScores.clear()
+                        currentResults.clear()
                         currentImages = mutableListOf()
                         disMissView(ll_score, ll_score_topic)
 
@@ -468,7 +515,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private fun commit() {
         val map = HashMap<String, Any>()
         map["studentTaskId"] = userItems[posUser].studentTaskId
-        map["score"] = tv_total_score.text.toString().toDouble()
+        map["score"] = getResultStandardType(tv_total_score.text.toString())
         map["submitUrl"] = url
         map["status"] = 2
         map["question"] = Gson().toJson(initScores)

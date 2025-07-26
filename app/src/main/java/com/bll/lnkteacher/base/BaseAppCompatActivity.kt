@@ -37,6 +37,7 @@ import com.bll.lnkteacher.dialog.ProgressDialog
 import com.bll.lnkteacher.mvp.model.CommonData
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.User
+import com.bll.lnkteacher.mvp.model.homework.ResultStandardItem.ResultChildItem
 import com.bll.lnkteacher.mvp.model.testpaper.AnalyseItem
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.presenter.CommonPresenter
@@ -47,6 +48,7 @@ import com.bll.lnkteacher.ui.adapter.ExamAnalyseAdapter
 import com.bll.lnkteacher.ui.adapter.ExamAnalyseMultiAdapter
 import com.bll.lnkteacher.ui.adapter.TabTypeAdapter
 import com.bll.lnkteacher.ui.adapter.TopicMultistageScoreAdapter
+import com.bll.lnkteacher.ui.adapter.TopicResultStandardAdapter
 import com.bll.lnkteacher.ui.adapter.TopicScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicTwoScoreAdapter
 import com.bll.lnkteacher.ui.adapter.TopicTwoScoreAdapter.ChildAdapter
@@ -105,6 +107,7 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var mTopicScoreAdapter: TopicScoreAdapter? = null
     var mTopicTwoScoreAdapter: TopicTwoScoreAdapter? = null
     var mTopicMultistageScoreAdapter: TopicMultistageScoreAdapter? = null
+    var mTopicResultStandardAdapter:TopicResultStandardAdapter?=null
 
     var mAnalyseAdapter: ExamAnalyseAdapter? = null
     var mAnalyseMultiAdapter: ExamAnalyseMultiAdapter? = null
@@ -115,6 +118,8 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
     var scoreMode = 0//1打分
     var correctStatus = 0//批改状态
     var answerImages = mutableListOf<String>()
+
+    var currentResults= mutableListOf<ResultChildItem>()
 
     open fun navigationToFragment(fragment: Fragment?) {
         if (fragment != null) {
@@ -386,11 +391,11 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
      */
     fun initRecyclerViewScore() {
         iv_score_up.setOnClickListener {
-            rv_list_score.scrollBy(0, -DP2PX.dip2px(this, 200f))
+            rv_list_score.scrollBy(0, -DP2PX.dip2px(this, 300f))
         }
 
         iv_score_down.setOnClickListener {
-            rv_list_score.scrollBy(0, DP2PX.dip2px(this, 200f))
+            rv_list_score.scrollBy(0, DP2PX.dip2px(this, 300f))
         }
 
         when (correctModule) {
@@ -568,6 +573,24 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
                     rv_list_score.addItemDecoration(SpaceItemDeco(DP2PX.dip2px(this@BaseAppCompatActivity, 15f)))
                 }
             }
+            else->{
+                rv_list_score.layoutManager = GridLayoutManager(this, 3)
+                mTopicResultStandardAdapter=TopicResultStandardAdapter(R.layout.item_homework_result_standard_child,null).apply {
+                    rv_list_score.adapter = this
+                    bindToRecyclerView(rv_list_score)
+                    setOnItemClickListener { adapter, view, position ->
+                        if (correctStatus == 1) {
+                            for (item in currentResults){
+                                item.isCheck=false
+                            }
+                            val item =currentResults[position]
+                            item.isCheck=true
+                            notifyDataSetChanged()
+                            tv_total_score.text=DataBeanManager.getResultStandardStr(item.sort.toDouble(),correctModule)
+                        }
+                    }
+                }
+            }
         }
 
     }
@@ -585,6 +608,9 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             }
             6, 7 -> {
                 mTopicMultistageScoreAdapter?.setNewData(currentScores)
+            }
+            else->{
+                mTopicResultStandardAdapter?.setNewData(currentResults)
             }
         }
     }

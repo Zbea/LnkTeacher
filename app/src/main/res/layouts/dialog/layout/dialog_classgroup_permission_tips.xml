@@ -18,15 +18,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:textSize="22sp"
-        android:text="选择时间后，时间到后自动关闭权限,将允许学生查看；"
+        android:text="选择时间后，时间到后自动关闭权限；"
         android:textColor="@color/black"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_20"
+        android:layout_height="@dimen/dp_50"
         android:textSize="22sp"
-        android:text="选择时间后，时间到后自动关闭权限,将允许学生查看；"
         android:textColor="@color/black"/>
 
 

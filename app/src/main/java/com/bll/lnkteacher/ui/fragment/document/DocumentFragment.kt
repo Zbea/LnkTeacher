@@ -7,38 +7,45 @@ import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
 import com.bll.lnkteacher.MethodManager
 import com.bll.lnkteacher.R
-import com.bll.lnkteacher.base.BaseFragment
+import com.bll.lnkteacher.base.BaseMainFragment
 import com.bll.lnkteacher.dialog.ClassGroupSelectorDialog
 import com.bll.lnkteacher.dialog.LongClickManageDialog
 import com.bll.lnkteacher.mvp.model.ItemList
 import com.bll.lnkteacher.mvp.presenter.DocumentPresenter
-import com.bll.lnkteacher.mvp.presenter.QiniuPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
 import com.bll.lnkteacher.ui.adapter.DocumentAdapter
 import com.bll.lnkteacher.utils.DP2PX
 import com.bll.lnkteacher.utils.FileUploadManager
 import com.bll.lnkteacher.utils.FileUtils
+import com.bll.lnkteacher.utils.SPUtil
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
 import kotlinx.android.synthetic.main.fragment_give_lessons.rv_list
 
-class DocumentFragment:BaseFragment(),IContractView.IQiniuView,IContractView.IDocumentView {
-    private var qiniuPresenter=QiniuPresenter(this)
+class DocumentFragment:BaseMainFragment(),IContractView.IDocumentView {
     private var documentPresenter=DocumentPresenter(this,1)
     private var mAdapter: DocumentAdapter? = null
     private var path=""
     private var classIds= mutableListOf<Int>()
     private var position=0
+    private var isSend=true
 
-    override fun onToken(token: String) {
+    override fun onUpload(token: String) {
         val file= mAdapter?.data?.get(position)
         FileUploadManager(token).apply {
             upload(file?.path!!)
             setCallBack{
-                val map=HashMap<String,Any>()
-                map["title"]=FileUtils.getUrlName(file.path)
-                map["url"]=it
-                map["classIds"]=classIds
-                documentPresenter.sendDocument(map)
+                hideLoading()
+                if (isSend){
+                    val map=HashMap<String,Any>()
+                    map["title"]=FileUtils.getUrlName(file.path)
+                    map["url"]=it
+                    map["classIds"]=classIds
+                    documentPresenter.sendDocument(map)
+                }
+                else{
+                    SPUtil.putString(file.name,it)
+                    MethodManager.gotoDocument(requireActivity(), file)
+                }
             }
         }
     }
@@ -53,6 +60,7 @@ class DocumentFragment:BaseFragment(),IContractView.IQiniuView,IContractView.IDo
 
     override fun initView() {
         pageSize=25
+        initDialog(1)
         initRecycleView()
         path=FileAddress().getPathDocument("默认")
     }
@@ -76,8 +84,22 @@ class DocumentFragment:BaseFragment(),IContractView.IQiniuView,IContractView.IDo
             rv_list?.addItemDecoration(SpaceGridItemDeco(3, 20))
             setEmptyView(R.layout.common_empty)
             setOnItemClickListener { adapter, view, position ->
+                this@DocumentFragment.position=position
                 val file = data[position]
-                MethodManager.gotoDocument(requireActivity(), file)
+                val format=FileUtils.getUrlFormat(file.path)
+                if (format.equals(".ppt") || format.equals(".pptx")) {
+                    val url= SPUtil.getString(file.name)
+                    if (url.isNotEmpty()){
+                        MethodManager.gotoDocument(requireActivity(), file)
+                    }
+                    else{
+                        isSend=false
+                        mQiniuPresenter.getToken(true)
+                    }
+                }
+                else{
+                    MethodManager.gotoDocument(requireActivity(), file)
+                }
             }
             setOnItemLongClickListener { adapter, view, position ->
                 this@DocumentFragment.position=position
@@ -102,6 +124,7 @@ class DocumentFragment:BaseFragment(),IContractView.IQiniuView,IContractView.IDo
             .setOnDialogClickListener { position->
                 when(position){
                     0->{
+                        SPUtil.putString(file.name,"")
                         FileUtils.deleteFile(file)
                         val drawPath = file.parent + "/${FileUtils.getUrlName(file.path)}draw/"
                         FileUtils.delete(drawPath)
@@ -109,13 +132,14 @@ class DocumentFragment:BaseFragment(),IContractView.IQiniuView,IContractView.IDo
                         mAdapter?.data?.indexOf(file)?.let { mAdapter?.remove(it) }
                     }
                     1->{
-                        if (!FileUtils.getUrlFormat(file.path).equals(".pdf")){
-                            showToast(1,"目前只支持发送pdf文件给学生")
-                            return@setOnDialogClickListener
-                        }
+//                        if (!FileUtils.getUrlFormat(file.path).equals(".pdf")){
+//                            showToast(1,"目前只支持发送pdf文件给学生")
+//                            return@setOnDialogClickListener
+//                        }
                         ClassGroupSelectorDialog(requireActivity(),1,DataBeanManager.classGroups).builder().setOnDialogSelectListener{
                             classIds= it.toMutableList()
-                            qiniuPresenter.getToken()
+                            isSend=true
+                            mQiniuPresenter.getToken(true)
                         }
                     }
                 }

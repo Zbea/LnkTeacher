@@ -43,7 +43,7 @@ class ClassGroupPermissionTipsDialog(val context: Context,val view: View) {
 
     fun show() {
         if (mPopupWindow != null) {
-            mPopupWindow?.showAsDropDown(view,-(width-230)/2, -height-60, Gravity.START)
+            mPopupWindow?.showAsDropDown(view,-(width-200)/2, -height-60, Gravity.START)
         }
     }
 }

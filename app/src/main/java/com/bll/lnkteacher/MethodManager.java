@@ -97,7 +97,8 @@ public class MethodManager {
     public static void gotoDocument(Context context,File file){
         String format=FileUtils.getUrlFormat(file.getPath());
         if (format.equals(".ppt") || format.equals(".pptx")){
-            gotoPptDetails(context,file.getPath(),Constants.SCREEN_LEFT);
+            String url=SPUtil.INSTANCE.getString(file.getName());
+            gotoPptDetails(context,file.getPath(),url);
         }
         else if (format.equals(".png") || format.equals(".jpg")||format.equals(".jpeg")){
             List<String> images=new ArrayList<>();
@@ -125,11 +126,19 @@ public class MethodManager {
         }
     }
 
-    public static void gotoPptDetails(Context context,String path,int flags){
+    public static void gotoPptDetails(Context context,String localPath,String url){
         if (AppUtils.isAvailable(context,Constants.PACKAGE_PPT)){
+            int flags=0;
+            if(DataBeanManager.INSTANCE.isConnectDisplayStatus()){
+                flags=Constants.SCREEN_FULL ;
+            }
+            else {
+                flags=Constants.SCREEN_LEFT;
+            }
             Intent intent = new Intent();
             intent.setComponent(new ComponentName(Constants.PACKAGE_PPT,"com.htfyun.dualdocreader.OpenFileActivity"));
-            intent.putExtra("path", path);
+            intent.putExtra("path", localPath);
+            intent.putExtra("url", url);
             intent.putExtra(Constants.INTENT_SCREEN_LABEL, flags);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

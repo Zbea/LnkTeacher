@@ -40,7 +40,7 @@ class TestPaperCorrectAdapter(layoutResId: Int, data: List<CorrectBean>?) : Base
         else{
             true
         }
-        helper.setGone(tv_analyse, isShow)
+        helper.setGone(tv_analyse, isShow&&item.questionType>0)
         helper.setGone(tv_send,item.taskType!=1)
 
         val rvList=helper.getView<RecyclerView>(rv_list)

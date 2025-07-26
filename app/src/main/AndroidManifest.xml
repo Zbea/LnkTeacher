@@ -82,6 +82,8 @@
                 <action android:name="com.bll.lnkteacher.refresh"/>
                 <action android:name="com.htfyun.blackwhitebar.uploaddata"/>
                 <action android:name="com.htfyun.blackwhitebar.refresh"/>
+                <!--投屏监听-->
+<!--                <action android:name="android.hardware.display.action.WIFI_DISPLAY_STATUS_CHANGED"/>-->
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED"/>

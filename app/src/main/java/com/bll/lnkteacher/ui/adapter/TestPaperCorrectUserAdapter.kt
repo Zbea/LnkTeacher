@@ -9,21 +9,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 
 class TestPaperCorrectUserAdapter(layoutResId: Int,val type:Int,val questionType:Int, data: List<TestPaperClassUserList.ClassUserBean>?) : BaseQuickAdapter<TestPaperClassUserList.ClassUserBean, BaseViewHolder>(layoutResId, data) {
     override fun convert(helper: BaseViewHolder, item: TestPaperClassUserList.ClassUserBean) {
-        val score=if (type==1){
-            if (item.status==2) " "+DataBeanManager.getResultStandardStr(item.score,questionType) else ""
-        }
-        else if (type==2){
-            if (item.status==2) item.score.toString() else ""
-        }
-        else{
-            ""
-        }
-
+        val score=if (item.status==2) " "+DataBeanManager.getResultStandardStr(item.score,questionType) else ""
         if (type==1){
             val tvScore=helper.getView<TextView>(R.id.tv_score)
             tvScore.textSize=22f
         }
-
         helper.setText(R.id.tv_score,score)
         helper.setText(R.id.tv_name,item.name)
         helper.setGone(R.id.iv_share,item.shareType==1)

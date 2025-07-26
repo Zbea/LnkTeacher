@@ -9,6 +9,7 @@ import com.liulishuo.filedownloader.FileDownloader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FileMultitaskDownManager {
@@ -19,7 +20,7 @@ public class FileMultitaskDownManager {
     private List<String> paths;//文件的绝对路径
     private String auth = "";
     private String token = "";
-    private int num=0;
+    private final AtomicInteger activeCount = new AtomicInteger(0);
 
 
     public static FileMultitaskDownManager with(Context context) {
@@ -37,7 +38,7 @@ public class FileMultitaskDownManager {
     //创建下载链接
     public FileMultitaskDownManager create(List<String> urls) {
         this.urls = urls;
-        num=0;
+        activeCount.addAndGet(urls.size());
         return this;
     }
 
@@ -65,8 +66,7 @@ public class FileMultitaskDownManager {
 
             @Override
             protected void completed(BaseDownloadTask task) {
-                num+=1;
-                if (num==urls.size()){
+                if (activeCount.decrementAndGet() == 0) {
                     multitaskCallBack.completed(task);
                 }
             }

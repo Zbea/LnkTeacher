@@ -3,6 +3,7 @@ package com.bll.lnkteacher
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.hardware.display.DisplayManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
@@ -51,6 +52,18 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             Constants.NET_REFRESH->{
                 if (NetworkUtil.isNetworkConnected()){
                     EventBus.getDefault().post(Constants.NETWORK_CONNECTION_COMPLETE_EVENT )
+                }
+            }
+            DisplayManager.ACTION_WIFI_DISPLAY_STATUS_CHANGED->{
+                val displayManager=context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+                val wifiDisplayStatus=displayManager.getWifiDisplayStatus()
+                if (wifiDisplayStatus!=null&&wifiDisplayStatus.getActiveDisplay()!=null){
+                    DataBeanManager.isConnectDisplayStatus=true
+                    Log.d("debug", "监听投屏连接")
+                }
+                else{
+                    DataBeanManager.isConnectDisplayStatus=false
+                    Log.d("debug", "监听投屏断开")
                 }
             }
         }

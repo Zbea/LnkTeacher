@@ -109,13 +109,12 @@ abstract class BaseFragment : Fragment(), IBaseView,  IContractView.ICommonView{
         isViewPrepare = true
 
         mUser=MethodManager.getUser()
-
+        initDialog()
         initCommonTitle()
         if (rv_tab!=null){
             initTabView()
         }
         initView()
-        initDialog()
         lazyLoadDataIfPrepared()
     }
 
