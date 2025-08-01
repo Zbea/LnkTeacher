@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -11,8 +11,11 @@ import com.bll.lnkteacher.dialog.InputContentDialog
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.AccountInfoPresenter
+import com.bll.lnkteacher.mvp.presenter.SmsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.view.IContractView.ISmsView
 import com.bll.lnkteacher.utils.SPUtil
+import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_name
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_password
 import kotlinx.android.synthetic.main.ac_account_info.btn_edit_phone
@@ -27,39 +30,42 @@ import kotlinx.android.synthetic.main.ac_account_info.tv_province_str
 import kotlinx.android.synthetic.main.ac_account_info.tv_school
 import kotlinx.android.synthetic.main.ac_account_info.tv_user
 
-class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoView {
+class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoView,ISmsView {
 
     private lateinit var presenter:AccountInfoPresenter
+    private lateinit var smsPresenter: SmsPresenter
     private var nickname=""
     private var school=0
     private var schoolBean: SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
-
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        selectorSchool(list)
-    }
+    private var type=0
 
     override fun onSms() {
         showToast("短信发送成功")
+        if (type==0){
+            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
+                smsPresenter.checkPhone(it)
+            }
+        }
     }
-
     override fun onCheckSuccess() {
         editPhone()
     }
 
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
     override fun onEditPhone() {
         showToast("修改手机号码成功")
         mUser?.telNumber=phone
-        tv_phone.text=phone
+        tv_phone.text=getPhoneStr(phone)
     }
-
     override fun onEditNameSuccess() {
         showToast("修改姓名成功")
         mUser?.nickname=nickname
         tv_name.text = nickname
     }
-
     override fun onEditSchool() {
         mUser?.schoolId = schoolBean?.id
         mUser?.schoolProvince=schoolBean?.province
@@ -84,6 +90,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     override fun initChangeScreenData() {
         presenter=AccountInfoPresenter(this,getCurrentScreenPos())
+        smsPresenter= SmsPresenter(this,getCurrentScreenPos())
     }
 
     @SuppressLint("WrongConstant")
@@ -94,7 +101,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         mUser?.apply {
             tv_user.text = account
             tv_name.text = nickname
-            tv_phone.text =  telNumber.substring(0,3)+"****"+telNumber.substring(7,11)
+            tv_phone.text =getPhoneStr(telNumber)
             tv_course_str.text=subjectName
             tv_province_str.text = schoolProvince
             tv_city.text = schoolCity
@@ -111,10 +118,8 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
 
         btn_edit_phone.setOnClickListener {
-            presenter.sms(mUser?.telNumber!!)
-            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
-                presenter.checkPhone(it)
-            }
+            type=0
+            smsPresenter.sms(mUser?.telNumber!!)
         }
 
         btn_edit_password.setOnClickListener {
@@ -134,6 +139,9 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
 
     }
 
+    private fun getPhoneStr(phone:String):String{
+        return if (ToolUtils.isPhoneNum(phone)) phone.substring(0, 3) + "****" + phone.substring(7, 11) else ""
+    }
 
     private fun editPhone(){
         EditPhoneDialog(this).builder().setOnDialogClickListener(object : EditPhoneDialog.OnDialogClickListener {
@@ -142,7 +150,8 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
                 presenter.editPhone(code, phone)
             }
             override fun onPhone(phone: String) {
-                presenter.sms(phone)
+                type=1
+                smsPresenter.sms(phone)
             }
         })
     }

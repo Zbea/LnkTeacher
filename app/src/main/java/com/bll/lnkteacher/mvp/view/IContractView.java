@@ -41,18 +41,20 @@ public interface IContractView {
         void getAccount(User user);
     }
 
+    //短信回调
+    interface ISmsView extends IBaseView {
+        default void onSms(){}
+        default void onCheckSuccess(){}
+    }
+
     //注册 找回密码
     interface IRegisterOrFindPsdView extends IBaseView {
-        void onSms();
         void onRegister();
         void onFindPsd();
     }
 
     //账户页面回调
     interface IAccountInfoView extends IBaseView {
-
-        void onSms();
-        void onCheckSuccess();
         void onEditPhone();
         void onEditNameSuccess();
         void onEditSchool();

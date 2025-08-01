@@ -39,7 +39,7 @@ class EditPhoneDialog(val context: Context) {
         }
         btn_code.setOnClickListener {
             val phone=ed_phone.text.toString()
-            if (phone.isNotEmpty()){
+            if (ToolUtils.isPhoneNum(phone)){
                 listener?.onPhone(phone)
                 btn_code.isEnabled = false
                 btn_code.isClickable = false

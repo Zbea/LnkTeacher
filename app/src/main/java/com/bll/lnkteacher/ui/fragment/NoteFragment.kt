@@ -26,6 +26,8 @@ import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.mvp.model.PrivacyPassword
+import com.bll.lnkteacher.mvp.presenter.SmsPresenter
+import com.bll.lnkteacher.mvp.view.IContractView.ISmsView
 import com.bll.lnkteacher.ui.activity.NotebookManagerActivity
 import com.bll.lnkteacher.ui.adapter.NoteAdapter
 import com.bll.lnkteacher.utils.DP2PX
@@ -41,7 +43,9 @@ import java.io.File
 /**
  * 笔记
  */
-class NoteFragment : BaseMainFragment() {
+class NoteFragment : BaseMainFragment(), ISmsView {
+    private var smsPresenter= SmsPresenter(this,2)
+
     private var popupBeans = mutableListOf<PopupBean>()
     private var notes = mutableListOf<Note>()
     private var mAdapter: NoteAdapter? = null
@@ -49,6 +53,17 @@ class NoteFragment : BaseMainFragment() {
     private var tabPos = 0//当前笔记本标记
     private var typeStr=""
     private var privacyPassword:PrivacyPassword?=null
+    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
+
+    override fun onSms() {
+        showToast(2,"短信发送成功")
+    }
+    override fun onCheckSuccess() {
+        showToast(2,"密本密码设置成功")
+        MethodManager.savePrivacyPassword(1,privacyPassword)
+        privacyPasswordDialog?.getPrivacyPassword()
+        mAdapter?.notifyItemChanged(position)
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_list
@@ -121,9 +136,19 @@ class NoteFragment : BaseMainFragment() {
         mAdapter?.setOnItemClickListener { adapter, view, position ->
             val note = notes[position]
             if (tabPos==0&&privacyPassword!=null&&!note.isCancelPassword){
-                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                    MethodManager.gotoNote(requireActivity(),note)
-                }
+                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity(),1).builder()
+                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                    override fun onClick() {
+                        MethodManager.gotoNote(requireActivity(),note)
+                    }
+                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                        this@NoteFragment.privacyPassword=privacyPassword
+                        smsPresenter.checkPhone(code)
+                    }
+                    override fun onPhone(phone: String) {
+                        smsPresenter.sms(phone)
+                    }
+                })
             }
             else{
                 MethodManager.gotoNote(requireActivity(),note)
@@ -159,11 +184,15 @@ class NoteFragment : BaseMainFragment() {
                 }
                 R.id.iv_password->{
                     if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                            privacyPassword=it
-                            mAdapter?.notifyDataSetChanged()
-                            showToast("密本密码设置成功")
-                        }
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
+                            override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                this@NoteFragment.privacyPassword=privacyPassword
+                                smsPresenter.checkPhone(code)
+                            }
+                            override fun onPhone(phone: String) {
+                                smsPresenter.sms(phone)
+                            }
+                        })
                     }
                     else{
                         val titleStr=if (note.isCancelPassword) "确定设置密码？" else "确定取消密码？"
@@ -171,11 +200,21 @@ class NoteFragment : BaseMainFragment() {
                             override fun cancel() {
                             }
                             override fun ok() {
-                                PrivacyPasswordDialog(requireActivity(),1).builder().setOnDialogClickListener{
-                                    note.isCancelPassword=!note.isCancelPassword
-                                    NoteDaoManager.getInstance().insertOrReplace(note)
-                                    mAdapter?.notifyItemChanged(position)
-                                }
+                                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity(),1).builder()
+                                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                                    override fun onClick() {
+                                        note.isCancelPassword=!note.isCancelPassword
+                                        NoteDaoManager.getInstance().insertOrReplace(note)
+                                        mAdapter?.notifyItemChanged(position)
+                                    }
+                                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                        this@NoteFragment.privacyPassword=privacyPassword
+                                        smsPresenter.checkPhone(code)
+                                    }
+                                    override fun onPhone(phone: String) {
+                                        smsPresenter.sms(phone)
+                                    }
+                                })
                             }
                         })
                     }

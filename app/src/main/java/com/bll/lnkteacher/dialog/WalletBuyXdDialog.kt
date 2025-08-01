@@ -2,15 +2,15 @@ package com.bll.lnkteacher.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.widget.Button
 import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.mvp.model.AccountQdBean
-import com.bll.lnkteacher.ui.adapter.AccountXdAdapter
 import com.bll.lnkteacher.widget.SpaceGridItemDeco
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.BaseViewHolder
 
 class WalletBuyXdDialog(val context: Context, val list: List<AccountQdBean>) {
 
@@ -44,9 +44,9 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountQdBean>) {
 
         btn_ok.setOnClickListener {
             dismiss()
-            var payType=if (rb_wx.isChecked)  0  else  1
+            val payType=if (rb_wx.isChecked)  2  else  1
             if (listener!=null)
-                listener?.onClick(id.toString())
+                listener?.onClick(payType,id.toString())
         }
 
         if (list.isNotEmpty()) {
@@ -68,11 +68,34 @@ class WalletBuyXdDialog(val context: Context, val list: List<AccountQdBean>) {
     private var listener: OnDialogClickListener? = null
 
     fun interface OnDialogClickListener {
-        fun onClick(id:String)
+        fun onClick(payType:Int,id:String)
     }
 
     fun setOnDialogClickListener(listener: OnDialogClickListener?) {
         this.listener = listener
+    }
+
+    class AccountXdAdapter(layoutResId: Int, data: List<AccountQdBean>?) : BaseQuickAdapter<AccountQdBean, BaseViewHolder>(layoutResId, data) {
+
+        var mPosition = 0
+
+        override fun convert(helper: BaseViewHolder, item: AccountQdBean) {
+            helper.setText(R.id.tv_name,item.amount.toString())
+            if (helper.adapterPosition==mPosition){
+                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_solid_5dp_corner)
+                helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.white) )
+            }
+            else{
+                helper.setBackgroundRes(R.id.tv_name,R.drawable.bg_black_stroke_5dp_corner)
+                helper.setTextColor(R.id.tv_name,mContext.resources.getColor(R.color.black))
+            }
+        }
+
+        fun setItemView(position: Int) {
+            mPosition=position
+            notifyDataSetChanged()
+        }
+
     }
 
 }

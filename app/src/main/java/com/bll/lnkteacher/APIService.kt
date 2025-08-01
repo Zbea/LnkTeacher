@@ -186,7 +186,7 @@ interface APIService{
      * 提交学豆订单
      */
     @POST("wallets/order/{id}")
-    fun postOrder(@Path("id") id:String ): Observable<BaseResult<AccountOrder>>
+    fun postOrder(@Path("id") id:String ,@Query("type") type:Int): Observable<BaseResult<AccountOrder>>
     /**
      * 查看订单状态
      */

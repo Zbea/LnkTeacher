@@ -54,7 +54,7 @@ class PrivacyPasswordEditDialog(private val context: Context,private val type:In
                 SToast.showText(2,"密码输入不一致")
                 return@setOnClickListener
             }
-            checkPassword?.password= MD5Utils.digest(checkPassword?.password)
+            checkPassword?.password= MD5Utils.digest(passwordStr)
             MethodManager.savePrivacyPassword(type,checkPassword)
             dialog.dismiss()
             listener?.onClick()

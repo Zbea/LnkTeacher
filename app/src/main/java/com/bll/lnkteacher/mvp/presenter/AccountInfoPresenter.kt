@@ -11,23 +11,6 @@ import com.bll.lnkteacher.net.RetrofitManager
 
 class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) : BasePresenter<IContractView.IAccountInfoView>(view) {
 
-
-    fun sms(phone:String) {
-
-        val sms = RetrofitManager.service.getSms(phone)
-
-        doRequest(sms, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onSms()
-            }
-
-        }, true)
-
-    }
-
     fun editPhone(code: String,phone: String) {
         val body = RequestUtils.getBody(
             Pair.create("telNumber", phone),
@@ -44,22 +27,6 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) 
         }, true)
     }
 
-    fun checkPhone(code: String) {
-        val body = RequestUtils.getBody(
-            Pair.create("code", code)
-        )
-        val editName = RetrofitManager.service.checkPhone(body)
-        doRequest(editName, object : Callback<Any>(view,screen) {
-            override fun failed(tBaseResult: BaseResult<Any>): Boolean {
-                return false
-            }
-            override fun success(tBaseResult: BaseResult<Any>) {
-                view.onCheckSuccess()
-            }
-        }, true)
-    }
-
-
     fun editName(name: String) {
         val body = RequestUtils.getBody(
             Pair.create("nickName", name)
@@ -74,7 +41,6 @@ class AccountInfoPresenter(view: IContractView.IAccountInfoView,val screen:Int) 
             }
         }, true)
     }
-
 
     fun editSchool(id: Int) {
         val map=HashMap<String,Any>()

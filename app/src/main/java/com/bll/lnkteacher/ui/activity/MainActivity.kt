@@ -15,10 +15,10 @@ import com.bll.lnkteacher.*
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.manager.*
 import com.bll.lnkteacher.mvp.model.ItemTypeBean
+import com.bll.lnkteacher.ui.activity.account.AccountInfoActivity
 import com.bll.lnkteacher.ui.activity.classgroup.ClassGroupActivity
 import com.bll.lnkteacher.ui.adapter.MainListAdapter
 import com.bll.lnkteacher.ui.fragment.*
-import com.bll.lnkteacher.ui.fragment.document.GiveLessonsFragment
 import com.bll.lnkteacher.utils.FileUtils
 import com.bll.lnkteacher.utils.SPUtil
 import kotlinx.android.synthetic.main.ac_main.*
@@ -142,7 +142,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
 
         iv_user_a.setOnClickListener {
-            customStartActivity(Intent(this,AccountInfoActivity::class.java))
+            customStartActivity(Intent(this, AccountInfoActivity::class.java))
         }
 
         iv_classgroup.setOnClickListener {

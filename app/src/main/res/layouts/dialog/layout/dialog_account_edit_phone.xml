@@ -42,7 +42,7 @@
             android:textColorHint="@color/color_text_hint"
             android:textColor="@color/black"
             android:gravity="center_vertical"
-            android:inputType="number"
+            android:inputType="phone"
             android:textSize="@dimen/sp_20"
             android:lines="1"
             android:background="@drawable/bg_black_stroke_5dp_corner" />

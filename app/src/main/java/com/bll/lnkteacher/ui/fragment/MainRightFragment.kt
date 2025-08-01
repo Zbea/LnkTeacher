@@ -23,8 +23,11 @@ import com.bll.lnkteacher.mvp.model.Message
 import com.bll.lnkteacher.mvp.model.MessageBean
 import com.bll.lnkteacher.mvp.model.Note
 import com.bll.lnkteacher.mvp.model.PopupBean
+import com.bll.lnkteacher.mvp.model.PrivacyPassword
 import com.bll.lnkteacher.mvp.presenter.MainRightPresenter
+import com.bll.lnkteacher.mvp.presenter.SmsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.view.IContractView.ISmsView
 import com.bll.lnkteacher.ui.activity.MessageListActivity
 import com.bll.lnkteacher.ui.activity.ScheduleClassEditActivity
 import com.bll.lnkteacher.ui.activity.ScheduleCourseActivity
@@ -48,8 +51,9 @@ import kotlinx.android.synthetic.main.fragment_main_right.tv_schedule_class
 import kotlinx.android.synthetic.main.fragment_main_right.tv_schedule_course
 import java.io.File
 
-class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
+class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView,ISmsView {
 
+    private var smsPresenter=SmsPresenter(this,2)
     private var mPresenter=MainRightPresenter(this,2)
     private var messages= mutableListOf<MessageBean>()
     private var mMessageAdapter:MainMessageAdapter?=null
@@ -60,6 +64,17 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
+
+    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
+
+    override fun onSms() {
+        showToast(2,"短信发送成功")
+    }
+    override fun onCheckSuccess() {
+        showToast(2,"日记密码设置成功")
+        MethodManager.savePrivacyPassword(0,privacyPassword)
+        privacyPasswordDialog?.getPrivacyPassword()
+    }
 
     override fun onList(message: Message) {
         messages=message.list
@@ -76,6 +91,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
 
     @SuppressLint("WrongConstant")
     override fun initView() {
+
         ll_message.setOnClickListener {
             customStartActivity(Intent(activity, MessageListActivity::class.java))
         }
@@ -147,9 +163,19 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
      */
     private fun startDiaryActivity(typeId:Int){
         if (privacyPassword!=null&&privacyPassword?.isSet==true){
-            PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
-            }
+            privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
+            privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                override fun onClick() {
+                    customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
+                }
+                override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                    this@MainRightFragment.privacyPassword=privacyPassword
+                    smsPresenter.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter.sms(phone)
+                }
+            })
         }
         else{
             customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
@@ -178,21 +204,34 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView {
             when(it.id){
                 1->{
                     if (privacyPassword==null){
-                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener{
-                            privacyPassword=it
-                            showToast("日记密码设置成功")
-                        }
+                        PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
+                            override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                this@MainRightFragment.privacyPassword=privacyPassword
+                                smsPresenter.checkPhone(code)
+                            }
+                            override fun onPhone(phone: String) {
+                                smsPresenter.sms(phone)
+                            }
+                        })
                     }
                     else{
                         val titleStr=if (privacyPassword?.isSet==true) "确定取消密码？" else "确定设置密码？"
-                        CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
+                        CommonDialog(requireActivity(),2).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
                             override fun ok() {
-                                PrivacyPasswordDialog(requireActivity()).builder().setOnDialogClickListener{
-                                    privacyPassword!!.isSet=!privacyPassword!!.isSet
-                                    MethodManager.savePrivacyPassword(0,privacyPassword)
-                                }
+                                privacyPasswordDialog=PrivacyPasswordDialog(requireActivity()).builder()
+                                privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
+                                    override fun onClick() {
+                                        privacyPassword!!.isSet=!privacyPassword!!.isSet
+                                        MethodManager.savePrivacyPassword(0,privacyPassword)
+                                    }
+                                    override fun onSave(privacyPassword: PrivacyPassword, code: String) {
+                                        this@MainRightFragment.privacyPassword=privacyPassword
+                                        smsPresenter.checkPhone(code)
+                                    }
+                                    override fun onPhone(phone: String) {
+                                        smsPresenter.sms(phone)
+                                    }
+                                })
                             }
                         })
                     }

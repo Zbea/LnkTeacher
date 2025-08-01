@@ -1,4 +1,4 @@
-package com.bll.lnkteacher.ui.activity
+package com.bll.lnkteacher.ui.activity.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -11,7 +11,9 @@ import com.bll.lnkteacher.dialog.PopupRadioList
 import com.bll.lnkteacher.dialog.SchoolSelectDialog
 import com.bll.lnkteacher.mvp.model.SchoolBean
 import com.bll.lnkteacher.mvp.presenter.RegisterOrFindPsdPresenter
+import com.bll.lnkteacher.mvp.presenter.SmsPresenter
 import com.bll.lnkteacher.mvp.view.IContractView
+import com.bll.lnkteacher.mvp.view.IContractView.ISmsView
 import com.bll.lnkteacher.utils.MD5Utils
 import com.bll.lnkteacher.utils.NetworkUtil
 import com.bll.lnkteacher.utils.SPUtil
@@ -30,23 +32,23 @@ import kotlinx.android.synthetic.main.ac_account_register.tv_password
 import kotlinx.android.synthetic.main.ac_account_register.tv_school
 
 
-class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView{
+class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegisterOrFindPsdView,ISmsView{
 
     private lateinit var presenter:RegisterOrFindPsdPresenter
+    private lateinit var smsPresenter: SmsPresenter
     private var countDownTimer: CountDownTimer? = null
     private var flags = 0
     private var school=0
     private var schoolSelectDialog:SchoolSelectDialog?=null
-
-    override fun onListSchools(list: MutableList<SchoolBean>) {
-        selectorSchool(list)
-    }
 
     override fun onSms() {
         showToast("发送验证码成功")
         showCountDownView()
     }
 
+    override fun onListSchools(list: MutableList<SchoolBean>) {
+        selectorSchool(list)
+    }
     override fun onRegister() {
         showToast("注册成功")
         setIntent()
@@ -73,6 +75,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
 
     override fun initChangeScreenData() {
         presenter= RegisterOrFindPsdPresenter(this,getCurrentScreenPos())
+        smsPresenter= SmsPresenter(this,getCurrentScreenPos())
     }
 
     override fun initView() {
@@ -81,6 +84,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                 setPageTitle("修改密码")
                 disMissView(ll_name,ll_school)
                 ed_user.setText(SPUtil.getString("account"))
+                ed_phone.setText(mUser?.telNumber)
                 tv_password.text="修改密码"
                 btn_register.text="提交"
             }
@@ -95,7 +99,7 @@ class AccountRegisterActivity : BaseAppCompatActivity(), IContractView.IRegister
                 showToast(getString(R.string.phone_tip))
                 return@setOnClickListener
             }
-            presenter.sms(phone)
+            smsPresenter.sms(phone)
         }
 
         tv_course_btn.setOnClickListener {

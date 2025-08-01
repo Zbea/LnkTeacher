@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Handler
 import android.os.Looper
 import android.widget.ImageView
+import android.widget.TextView
 import com.bll.lnkteacher.R
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.dialog.WalletBuyXdDialog
@@ -25,6 +26,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     private var qrCodeDialog:Dialog?=null
     private var orderThread: OrderThread?=null//定时器
     private val handlerThread = Handler(Looper.myLooper()!!)
+    private var payType=0
 
     override fun getXdList(list: MutableList<AccountQdBean>) {
         xdList= list
@@ -42,7 +44,7 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
                 qrCodeDialog?.dismiss()
             runOnUiThread {
                 mUser?.balance = mUser?.balance?.plus(order.amount)
-                tv_xdmoney.text = "" + mUser?.balance
+                tv_xdmoney.text = "青豆:  " + mUser?.balance
                 SPUtil.putObj("user",mUser!!)
             }
         }
@@ -81,9 +83,10 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
     private fun getXdView(){
         if (xdDialog==null){
             xdDialog= WalletBuyXdDialog(this,xdList).builder()
-            xdDialog?.setOnDialogClickListener { id ->
+            xdDialog?.setOnDialogClickListener { payType,id ->
+                this.payType=payType
                 xdDialog?.dismiss()
-                walletPresenter.postXdOrder(id)
+                walletPresenter.postXdOrder(id,payType)
             }
         }
         else{
@@ -99,8 +102,11 @@ class WalletActivity:BaseAppCompatActivity(),IContractView.IWalletView{
         qrCodeDialog?.setCanceledOnTouchOutside(false)
         val iv_qrcode = qrCodeDialog?.findViewById<ImageView>(R.id.iv_qrcode)
         qrCodeDialog?.show()
-        val bitmap = CodeUtils.createQRCode(url, DP2PX.dip2px(this,300f), null)
+        val bitmap = CodeUtils.createQRCode(url, DP2PX.dip2px(this,350f), null)
         iv_qrcode?.setImageBitmap(bitmap)
+
+        val tv_title = qrCodeDialog?.findViewById<TextView>(R.id.tv_title)
+        tv_title?.text=if (payType==2) "请微信扫描二维码支付" else "请支付宝扫描二维码支付"
 
         val iv_close = qrCodeDialog?.findViewById<ImageView>(R.id.iv_close)
         iv_close?.setOnClickListener {
