@@ -35,6 +35,7 @@ import com.bll.lnkteacher.ui.activity.LessonsFullImageActivity;
 import com.bll.lnkteacher.utils.ActivityManager;
 import com.bll.lnkteacher.utils.AppUtils;
 import com.bll.lnkteacher.utils.FileUtils;
+import com.bll.lnkteacher.utils.MD5Utils;
 import com.bll.lnkteacher.utils.SPUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -240,6 +241,8 @@ public class MethodManager {
         TextbookGreenDaoManager.getInstance().deleteBook(book); //删除本地数据库
         FileUtils.deleteFile(new File(book.bookPath));//删除下载的书籍资源
         FileUtils.deleteFile(new File(book.bookDrawPath));
+        String annotationPath=new FileAddress().getPathTextBookAnnotation(MD5Utils.digest(book.bookId+""));
+        FileUtils.deleteFile(new File(annotationPath));
         EventBus.getDefault().post(Constants.TEXT_BOOK_EVENT);
     }
 

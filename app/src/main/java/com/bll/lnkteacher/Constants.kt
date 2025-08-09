@@ -89,6 +89,7 @@ class Constants {
         const val CALENDER_SET_EVENT = "CalenderSetEvent"
         const val NETWORK_CONNECTION_COMPLETE_EVENT = "NetworkConnectionCompleteEvent"//网络连接成功
         const val SCREENSHOT_MANAGER_EVENT = "ScreenshotManagerEvent"//截图管理刷新
+        const val TEXTBOOK_ANNOTATION_CHANGE_PAGE_EVENT="TextBookAnnotationChangePageEvent"//课本页面切换通知
 
         const val PACKAGE_PPT= "com.htfyun.dualdocreader"
         const val PACKAGE_READER = "com.geniatech.knote.reader"

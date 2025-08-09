@@ -60,18 +60,21 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView,ISmsV
 
     private var notes= mutableListOf<Note>()
     private var mNoteAdapter:MainNoteAdapter?=null
+
     private var privacyPassword=MethodManager.getPrivacyPassword(0)
+    private var privacyPasswordSave:PrivacyPassword?=null
+    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
+
     private var diaryStartLong=0L
     private var diaryEndLong=0L
     private var diaryUploadTitleStr=""
-
-    private var privacyPasswordDialog:PrivacyPasswordDialog?=null
 
     override fun onSms() {
         showToast(2,"短信发送成功")
     }
     override fun onCheckSuccess() {
         showToast(2,"日记密码设置成功")
+        privacyPassword=privacyPasswordSave
         MethodManager.savePrivacyPassword(0,privacyPassword)
         privacyPasswordDialog?.getPrivacyPassword()
     }
@@ -169,7 +172,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView,ISmsV
                     customStartActivity(Intent(activity,DiaryActivity::class.java).setFlags(typeId))
                 }
                 override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                    this@MainRightFragment.privacyPassword=privacyPassword
+                    privacyPasswordSave=privacyPassword
                     smsPresenter.checkPhone(code)
                 }
                 override fun onPhone(phone: String) {
@@ -206,7 +209,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView,ISmsV
                     if (privacyPassword==null){
                         PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
                             override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                this@MainRightFragment.privacyPassword=privacyPassword
+                                privacyPasswordSave=privacyPassword
                                 smsPresenter.checkPhone(code)
                             }
                             override fun onPhone(phone: String) {
@@ -225,7 +228,7 @@ class MainRightFragment : BaseMainFragment(), IContractView.IMainRightView,ISmsV
                                         MethodManager.savePrivacyPassword(0,privacyPassword)
                                     }
                                     override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                        this@MainRightFragment.privacyPassword=privacyPassword
+                                        privacyPasswordSave=privacyPassword
                                         smsPresenter.checkPhone(code)
                                     }
                                     override fun onPhone(phone: String) {

@@ -49,11 +49,11 @@ class NoteDrawingActivity : BaseDrawingActivity() {
         }
     }
 
-
     override fun initView() {
         disMissView(iv_btn)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_a)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_b)
+
         onChangeContent()
     }
 
@@ -188,7 +188,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
 
     //保存绘图以及更新手绘
     private fun setElikLoadPath(elik: EinkPWInterface, path: String) {
-        showLog(path)
         elik.setLoadFilePath(path, true)
     }
 

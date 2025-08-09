@@ -6,6 +6,8 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/statusbar_height">
 
+    <include layout="@layout/common_drawing_tool" />
+
     <include
         android:id="@+id/ll_title"
         layout="@layout/common_title" />
@@ -70,7 +72,5 @@
         android:layout_below="@+id/ll_function"
         android:layout_marginStart="@dimen/drawing_tool_width"
          />
-
-    <include layout="@layout/common_drawing_tool" />
 
 </RelativeLayout>

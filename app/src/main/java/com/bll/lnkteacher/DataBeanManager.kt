@@ -1,5 +1,6 @@
 package com.bll.lnkteacher
 
+import android.graphics.Bitmap
 import com.bll.lnkteacher.MyApplication.Companion.mContext
 import com.bll.lnkteacher.mvp.model.*
 import com.bll.lnkteacher.mvp.model.catalog.CatalogChildBean
@@ -11,6 +12,8 @@ import java.util.*
 
 object DataBeanManager {
 
+    var copyBitmap: Bitmap?=null//剪切、复制保存bitmap
+    var textBookAnnotationPath=""//页面切换地址
     var isConnectDisplayStatus=false
 
     var classGroups = mutableListOf<ClassGroup>()

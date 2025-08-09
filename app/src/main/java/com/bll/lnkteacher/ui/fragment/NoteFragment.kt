@@ -53,6 +53,7 @@ class NoteFragment : BaseMainFragment(), ISmsView {
     private var tabPos = 0//当前笔记本标记
     private var typeStr=""
     private var privacyPassword:PrivacyPassword?=null
+    private var privacyPasswordSave:PrivacyPassword?=null
     private var privacyPasswordDialog:PrivacyPasswordDialog?=null
 
     override fun onSms() {
@@ -60,7 +61,8 @@ class NoteFragment : BaseMainFragment(), ISmsView {
     }
     override fun onCheckSuccess() {
         showToast(2,"密本密码设置成功")
-        MethodManager.savePrivacyPassword(1,privacyPassword)
+        privacyPassword=privacyPasswordSave
+        MethodManager.savePrivacyPassword(1,privacyPasswordSave)
         privacyPasswordDialog?.getPrivacyPassword()
         mAdapter?.notifyItemChanged(position)
     }
@@ -142,7 +144,7 @@ class NoteFragment : BaseMainFragment(), ISmsView {
                         MethodManager.gotoNote(requireActivity(),note)
                     }
                     override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                        this@NoteFragment.privacyPassword=privacyPassword
+                        privacyPasswordSave=privacyPassword
                         smsPresenter.checkPhone(code)
                     }
                     override fun onPhone(phone: String) {
@@ -186,7 +188,7 @@ class NoteFragment : BaseMainFragment(), ISmsView {
                     if (privacyPassword==null){
                         PrivacyPasswordCreateDialog(requireActivity()).builder().setOnDialogClickListener(object : PrivacyPasswordCreateDialog.OnDialogClickListener {
                             override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                this@NoteFragment.privacyPassword=privacyPassword
+                                privacyPasswordSave=privacyPassword
                                 smsPresenter.checkPhone(code)
                             }
                             override fun onPhone(phone: String) {
@@ -197,8 +199,6 @@ class NoteFragment : BaseMainFragment(), ISmsView {
                     else{
                         val titleStr=if (note.isCancelPassword) "确定设置密码？" else "确定取消密码？"
                         CommonDialog(requireActivity()).setContent(titleStr).builder().setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                            override fun cancel() {
-                            }
                             override fun ok() {
                                 privacyPasswordDialog=PrivacyPasswordDialog(requireActivity(),1).builder()
                                 privacyPasswordDialog?.setOnDialogClickListener(object : PrivacyPasswordDialog.OnDialogClickListener{
@@ -208,7 +208,7 @@ class NoteFragment : BaseMainFragment(), ISmsView {
                                         mAdapter?.notifyItemChanged(position)
                                     }
                                     override fun onSave(privacyPassword: PrivacyPassword, code: String) {
-                                        this@NoteFragment.privacyPassword=privacyPassword
+                                        privacyPasswordSave=privacyPassword
                                         smsPresenter.checkPhone(code)
                                     }
                                     override fun onPhone(phone: String) {

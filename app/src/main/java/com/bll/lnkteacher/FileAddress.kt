@@ -39,41 +39,49 @@ class FileAddress {
      * /storage/emulated/0/Books
      */
     fun getPathBook(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/$fileName"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}book"
     }
-
+    fun getPathBookPath(fileName: String):String{
+        return "$BOOK_PATH/${getAccountId()}/${fileName}"
+    }
     fun getPathBookDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/${fileName}draw"
+        return "$BOOK_PATH/${getAccountId()}/${fileName}/draw"
     }
     /**
      * 教学教育地址
      */
     fun getPathTeachingBook(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/teachingBook/$fileName"
+        return "$BOOK_PATH/${getAccountId()}/teachingBook/${fileName}book"
+    }
+    fun getPathTeachingBookPath(fileName: String):String{
+        return "$BOOK_PATH/${getAccountId()}/teachingBook/${fileName}"
     }
     fun getPathTeachingBookDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/teachingBook/${fileName}draw"
+        return "$BOOK_PATH/${getAccountId()}/teachingBook/${fileName}/draw"
     }
 
-    fun getPathHandout(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/handout/$fileName"
-    }
-    fun getPathHandoutDraw(fileName: String):String{
-        return "$BOOK_PATH/${getAccountId()}/handout/${fileName}draw"
-    }
 
     fun getPathTextBook(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/$fileName"
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}book"
+    }
+    fun getPathTextBookPath(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}"
     }
     fun getPathTextBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}/draw"
+    }
+    fun getPathTextBookAnnotation(fileName: String):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}/annotation"
+    }
+    fun getPathTextBookAnnotation(fileName: String,page:Int):String{
+        return "$TEXTBOOK_PATH/${getAccountId()}/textbook/${fileName}/annotation/${page}"
     }
 
     fun getPathHomeworkBook(fileName: String):String{
         return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/$fileName"
     }
     fun getPathHomeworkBookDraw(fileName: String):String{
-        return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/${fileName}/draw"
+        return "$TEXTBOOK_PATH/${getAccountId()}/homeworkBook/${fileName}draw"
     }
 
     /**
