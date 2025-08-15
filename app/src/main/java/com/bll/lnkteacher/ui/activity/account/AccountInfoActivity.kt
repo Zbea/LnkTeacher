@@ -39,15 +39,9 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
     private var schoolBean: SchoolBean?=null
     private var schoolSelectDialog:SchoolSelectDialog?=null
     private var phone=""
-    private var type=0
 
     override fun onSms() {
         showToast("短信发送成功")
-        if (type==0){
-            InputContentDialog(this,1,"请输入验证码",1).builder().setOnDialogClickListener{
-                smsPresenter.checkPhone(it)
-            }
-        }
     }
     override fun onCheckSuccess() {
         editPhone()
@@ -118,8 +112,15 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
         }
 
         btn_edit_phone.setOnClickListener {
-            type=0
-            smsPresenter.sms(mUser?.telNumber!!)
+            EditPhoneDialog(this,mUser?.telNumber!!).builder().setOnDialogClickListener(object : EditPhoneDialog.OnDialogClickListener {
+                override fun onClick(code: String, phone: String) {
+                    this@AccountInfoActivity.phone=phone
+                    smsPresenter.checkPhone(code)
+                }
+                override fun onPhone(phone: String) {
+                    smsPresenter.sms(phone)
+                }
+            })
         }
 
         btn_edit_password.setOnClickListener {
@@ -150,7 +151,6 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
                 presenter.editPhone(code, phone)
             }
             override fun onPhone(phone: String) {
-                type=1
                 smsPresenter.sms(phone)
             }
         })
@@ -175,7 +175,7 @@ class AccountInfoActivity:BaseAppCompatActivity(), IContractView.IAccountInfoVie
             schoolSelectDialog=SchoolSelectDialog(this,schools).builder()
             schoolSelectDialog?.setOnDialogClickListener{
                 school=it.id
-                presenter?.editSchool(it.id)
+                presenter.editSchool(it.id)
                 for (item in schools){
                     if (item.id==school)
                         schoolBean=item

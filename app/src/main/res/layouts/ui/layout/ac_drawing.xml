@@ -60,7 +60,6 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/statusbar_height"
         android:visibility="gone" />
-        />
 
     <LinearLayout
         android:id="@+id/ll_diary"

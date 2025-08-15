@@ -46,8 +46,8 @@
         android:layout_marginTop="@dimen/drawing_tool_dimens"
         android:scaleType="center"
         android:src="@mipmap/icon_draw_edit"
-        android:visibility="gone"
         android:background="@drawable/click_btn_transparent_line_black"
+        android:visibility="gone"
         />
 
 

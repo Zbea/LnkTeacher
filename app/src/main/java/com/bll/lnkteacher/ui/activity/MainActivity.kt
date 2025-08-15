@@ -47,12 +47,16 @@ class MainActivity : BaseAppCompatActivity() {
     private var rightFragment: Fragment? = null
 
     private val myBroadcastReceiver=MyBroadcastReceiver()
+    private var mqttClient:MQTTClient?=null
 
     override fun layoutId(): Int {
         return R.layout.ac_main
     }
 
     override fun initData() {
+        mqttClient=MQTTClient().getInstance()
+        mqttClient?.connect(this)
+
         //创建截图默认分类
         val screenshotPath=FileAddress().getPathScreen("未分类")
         if (!FileUtils.isExist(screenshotPath)){
@@ -223,6 +227,7 @@ class MainActivity : BaseAppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mqttClient?.disconnect()
         unregisterReceiver(myBroadcastReceiver)
     }
 

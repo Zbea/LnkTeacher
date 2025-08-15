@@ -129,6 +129,7 @@ class MainLeftFragment: BaseMainFragment(),IContractView.IClassGroupView{
     }
 
     override fun lazyLoad() {
+
         nowDate=DateUtils.getStartOfDayInMillis()
         setDateView()
         setCalenderView()

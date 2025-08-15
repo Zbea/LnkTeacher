@@ -27,7 +27,6 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import org.greenrobot.eventbus.EventBus
@@ -86,10 +85,8 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
     }
 
     override fun initView() {
-        showView(iv_edit)
-        disMissView(iv_btn)
 
-        iv_edit.setOnClickListener {
+        iv_btn.setOnClickListener {
             customStartActivity(Intent(this,TextBookAnnotationActivity::class.java)
                 .putExtra("path",getAnnotationPath())
                 .putExtra( Constants.INTENT_SCREEN_LABEL, if (getCurrentScreenPos()== SCREEN_RIGHT) SCREEN_LEFT else SCREEN_RIGHT)
@@ -163,10 +160,10 @@ class TextbookDetailsActivity:BaseDrawingActivity() {
         }
 
         if (FileUtils.isExistContent(getAnnotationPath())){
-            iv_edit.setImageResource(R.mipmap.icon_draw_annotation_exist)
+            iv_btn.setImageResource(R.mipmap.icon_draw_annotation_exist)
         }
         else{
-            iv_edit.setImageResource(R.mipmap.icon_draw_annotation)
+            iv_btn.setImageResource(R.mipmap.icon_draw_annotation)
         }
 
         if (isExpand){

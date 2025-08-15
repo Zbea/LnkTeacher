@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class ItemList implements Serializable ,Comparable<ItemList>{
 
-    public int type;
+    public int type;//1收到作业,2收到测卷,3收到考卷
     public String desc;
 
     public int id;
@@ -23,6 +23,8 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
     public int resId;
     public boolean isEdit;
     public boolean isAdd;
+
+    public int userType;
 
     public ItemList() {
     }
