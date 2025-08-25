@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.hardware.display.DisplayManager
 import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
+import android.os.Handler
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -55,12 +56,18 @@ class MainActivity : BaseAppCompatActivity() {
 
     override fun initData() {
         mqttClient=MQTTClient().getInstance()
-        mqttClient?.connect(this)
+        mqttClient?.init(this)
+        mqttClient?.connect()
 
         //创建截图默认分类
         val screenshotPath=FileAddress().getPathScreen("未分类")
         if (!FileUtils.isExist(screenshotPath)){
             FileUtils.mkdirs(screenshotPath)
+        }
+
+        val path = FileAddress().getPathDocument("默认")
+        if (!FileUtils.isExist(path)){
+            MethodManager.createFileScan(this,path)
         }
 
         //删除launcherApk
@@ -229,6 +236,14 @@ class MainActivity : BaseAppCompatActivity() {
         super.onDestroy()
         mqttClient?.disconnect()
         unregisterReceiver(myBroadcastReceiver)
+    }
+
+    override fun onRefreshData() {
+        Handler().postDelayed({
+            if (mqttClient?.isConnect() == false){
+                mqttClient?.connect()
+            }
+        },20*1000)
     }
 
 }

@@ -248,9 +248,6 @@ class ClassGroupActivity : BaseAppCompatActivity(), IContractView.IClassGroupVie
         val titleStr = if (boolean) "确定解散${classGroup.name}？" else "确定退出${classGroup.name}？"
         CommonDialog(this).setContent(titleStr).builder()
             .setDialogClickListener(object : CommonDialog.OnDialogClickListener {
-                override fun cancel() {
-                }
-
                 override fun ok() {
                     if (boolean) {
                         mGroupPresenter.dissolveClassGroup(classId)

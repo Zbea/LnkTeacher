@@ -1047,7 +1047,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity(), EasyPermissions.Perm
             Constants.NETWORK_CONNECTION_COMPLETE_EVENT -> {
                 onRefreshData()
             }
-
             else -> {
                 onEventBusMessage(msgFlag)
             }

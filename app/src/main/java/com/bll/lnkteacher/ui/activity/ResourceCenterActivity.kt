@@ -10,6 +10,7 @@ import com.bll.lnkteacher.mvp.model.ItemTypeBean
 import com.bll.lnkteacher.mvp.model.PopupBean
 import com.bll.lnkteacher.ui.fragment.resource.AppDownloadFragment
 import com.bll.lnkteacher.ui.fragment.resource.CalenderDownloadFragment
+import com.bll.lnkteacher.ui.fragment.resource.DictionaryDownloadFragment
 import com.bll.lnkteacher.ui.fragment.resource.WallpaperDownloadFragment
 import kotlinx.android.synthetic.main.common_title.tv_supply
 
@@ -18,6 +19,7 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
     private var toolFragment: AppDownloadFragment? = null
     private var wallpaperFragment: WallpaperDownloadFragment? = null
     private var calenderFragment: CalenderDownloadFragment? = null
+    private var dictionaryDownloadFragment: DictionaryDownloadFragment?=null
 
     private var popSupplys= mutableListOf<PopupBean>()
 
@@ -36,6 +38,7 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
         toolFragment=AppDownloadFragment().newInstance(2)
         wallpaperFragment = WallpaperDownloadFragment()
         calenderFragment = CalenderDownloadFragment()
+        dictionaryDownloadFragment=DictionaryDownloadFragment()
 
         switchFragment(lastFragment, toolFragment)
         initTab()
@@ -66,12 +69,19 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
     override fun onTabClickListener(view: View, position: Int) {
         when(position){
             0->{
+                showView(tv_supply)
                 switchFragment(lastFragment, toolFragment)
             }
             1->{
-                switchFragment(lastFragment, wallpaperFragment)
+                disMissView(tv_supply)
+                switchFragment(lastFragment, dictionaryDownloadFragment)
             }
             2->{
+                showView(tv_supply)
+                switchFragment(lastFragment, wallpaperFragment)
+            }
+            3->{
+                showView(tv_supply)
                 switchFragment(lastFragment, calenderFragment)
             }
         }
@@ -103,6 +113,7 @@ class ResourceCenterActivity:BaseAppCompatActivity(){
         toolFragment?.initChangeScreenData()
         wallpaperFragment?.initChangeScreenData()
         calenderFragment?.initChangeScreenData()
+        dictionaryDownloadFragment?.initChangeScreenData()
     }
 
 }

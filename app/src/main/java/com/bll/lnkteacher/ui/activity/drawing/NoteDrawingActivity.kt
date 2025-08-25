@@ -17,7 +17,6 @@ import com.bll.lnkteacher.utils.ToolUtils
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_a
 import kotlinx.android.synthetic.main.common_drawing_page_number.tv_page_total_a
 import kotlinx.android.synthetic.main.common_drawing_tool.iv_btn
-import kotlinx.android.synthetic.main.common_drawing_tool.iv_edit
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page
 import kotlinx.android.synthetic.main.common_drawing_tool.tv_page_total
 import java.io.File
@@ -51,7 +50,6 @@ class NoteDrawingActivity : BaseDrawingActivity() {
     }
 
     override fun initView() {
-        showView(iv_edit)
         disMissView(iv_btn)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_a)
         MethodManager.setImageResource(this,ToolUtils.getImageResId(this,note?.contentResId),v_content_b)

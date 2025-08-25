@@ -2,6 +2,7 @@ package com.bll.lnkteacher.greendao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 
 import com.github.yuweiguocn.library.greendao.MigrationHelper;

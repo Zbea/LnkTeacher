@@ -58,7 +58,7 @@ object DataBeanManager {
         mContext.getString(R.string.teaching_tab_testpaper_correct)
     )
 
-    var resources = arrayOf("我的工具","锁屏壁纸","跳页日历")
+    var resources = arrayOf("我的工具","字典词典","锁屏壁纸","跳页日历")
 
 
     fun getClassGroups(grade: Int):MutableList<ClassGroup>{

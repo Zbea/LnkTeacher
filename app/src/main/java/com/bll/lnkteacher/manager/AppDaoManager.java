@@ -5,8 +5,6 @@ import com.bll.lnkteacher.MyApplication;
 import com.bll.lnkteacher.greendao.AppBeanDao;
 import com.bll.lnkteacher.greendao.DaoSession;
 import com.bll.lnkteacher.mvp.model.AppBean;
-import com.bll.lnkteacher.mvp.model.User;
-import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.query.WhereCondition;
 
@@ -18,16 +16,21 @@ public class AppDaoManager {
      * DaoSession
      */
     private DaoSession mDaoSession;
+    /**
+     *
+     */
     private static AppDaoManager mDbController;
+
     private final AppBeanDao dao;
+
     private static WhereCondition whereUser;
 
     /**
      * 构造初始化
      */
     public AppDaoManager() {
-        mDaoSession = MyApplication.Companion.getMDaoSession();
-        dao = mDaoSession.getAppBeanDao(); //note表
+        mDaoSession=MyApplication.Companion.getMDaoSession();
+        dao = mDaoSession.getAppBeanDao();
     }
 
     /**
@@ -50,60 +53,34 @@ public class AppDaoManager {
         dao.insertOrReplace(bean);
     }
 
-
-    public List<AppBean> queryList() {
-        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser).build().list();
+    public List<AppBean> queryAll() {
+        return dao.queryBuilder().where(whereUser).build().list();
     }
 
-    public List<AppBean> queryTool() {
-        WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
-        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition1).build().list();
+    public List<AppBean> queryToolAll() {
+        WhereCondition whereCondition=AppBeanDao.Properties.IsTool.eq(true);
+        return dao.queryBuilder().orderAsc(AppBeanDao.Properties.Time).where(whereUser,whereCondition).build().list();
     }
 
-    /**
-     * 是否存储应用
-     * @param packageName
-     * @return
-     */
-    public boolean isExist(String packageName){
+    public AppBean queryBeanByPackageName(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition).build().unique();
-        return appBean!=null;
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
-    /**
-     * 是否设置为工具
-     * @param packageName
-     * @return
-     */
-    public boolean isExistTool(String packageName){
-        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition whereCondition1=AppBeanDao.Properties.IsTool.eq(true);
-        AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition,whereCondition1).build().unique();
-        return appBean!=null;
+    public AppBean queryBeanByBookId(int bookId){
+        WhereCondition whereCondition=AppBeanDao.Properties.BookId.eq(bookId);
+        return dao.queryBuilder().where(whereUser,whereCondition).build().unique();
     }
 
-    public void delete(String packageName) {
+    public void deleteBean(String packageName) {
         WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
         AppBean appBean=dao.queryBuilder().where(whereUser,whereCondition).build().unique();
         if (appBean!=null)
-            delete(appBean);
+            deleteBean(appBean);
     }
 
-    /**
-     * 通过包名查找已经设置为工具的应用
-     * @param packageName
-     * @return
-     */
-    public AppBean queryAllByPackageName(String packageName) {
-        WhereCondition whereCondition=AppBeanDao.Properties.PackageName.eq(packageName);
-        WhereCondition where2= AppBeanDao.Properties.IsTool.eq(true);
-        return dao.queryBuilder().where(whereUser,whereCondition,where2).build().unique();
-    }
-
-
-    public void delete(AppBean item) {
-        dao.delete(item);
+    public void deleteBean(AppBean bean){
+        dao.delete(bean);
     }
 
     public void clear(){

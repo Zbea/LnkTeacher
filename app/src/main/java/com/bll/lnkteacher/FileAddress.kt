@@ -196,4 +196,16 @@ class FileAddress {
         return "$DOCUMENT_PATH/我的PPT/$typeStr"
     }
 
+    /**
+     * 字典、词典地址
+     */
+    fun getPathDictionary(bookName:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/dictionary/$bookName"
+    }
+    /**
+     * 字典、词典手写地址
+     */
+    fun getPathDictionaryDrawing(bookName:String):String{
+        return "$IMAGE_PATH/${getAccountId()}/dictionary/${bookName}note/draw"
+    }
 }

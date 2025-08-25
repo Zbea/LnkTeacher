@@ -224,7 +224,11 @@ interface APIService{
      */
     @POST("buy/book/createOrder")
     fun buyBooks(@Body requestBody: RequestBody): Observable<BaseResult<Any>>
-
+    /**
+     * 获取字典
+     */
+    @GET("dict/list")
+    fun getDictionaryList(@QueryMap map: HashMap<String,Any>): Observable<BaseResult<TextbookStore>>
     /**
      * 创建班群
      */

@@ -275,6 +275,11 @@ public interface IContractView {
         void buySuccess();
     }
 
+    interface IDictionaryResourceView extends IBaseView {
+        void onList(TextbookStore bookStore);
+        void buySuccess();
+    }
+
     interface IQiniuView extends IBaseView {
         void onToken(String token);
     }

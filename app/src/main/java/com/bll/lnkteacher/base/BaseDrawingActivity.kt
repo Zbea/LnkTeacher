@@ -120,9 +120,11 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
         elik_b?.setDrawEventListener(object : EinkPWInterface.PWDrawEventWithPoint {
             override fun onTouchDrawStart(p0: Bitmap?, p1: Boolean, p2: PWInputPoint?) {
                 if (elik_b?.drawObjectType==PWDrawObjectHandler.DRAW_OBJ_LASSO){
+                    showLog("执行b")
                     currentDrawingEditScreen=2
                     elik_a?.onLassoReset()
                     if (isStick&&DataBeanManager.copyBitmap!=null){
+                        showLog("粘贴b")
                         elik_b?.onLassoPaste(DataBeanManager.copyBitmap)
                         DataBeanManager.copyBitmap=null
                         isStick=false
@@ -206,6 +208,7 @@ abstract class BaseDrawingActivity : BaseAppCompatActivity(){
                     showToast("复制成功")
             }
             else{
+                showLog("复制b")
                 DataBeanManager.copyBitmap=elik_b?.onLassoCopy()
                 if (DataBeanManager.copyBitmap!=null)
                     showToast("复制成功")

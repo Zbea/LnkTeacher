@@ -22,6 +22,7 @@ class MQTTClient {
 
     private var client: MQTTClient? = null
     private var mMqttAndroidClient: MqttAndroidClient? = null
+    private var options : MqttConnectOptions?=null
     /**
      * 获取单例（context 最好用application的context  防止内存泄漏）
      */
@@ -36,13 +37,22 @@ class MQTTClient {
         return client
     }
 
-     fun connect(context: Context) {
+    fun init(context: Context){
         val serverURI = "tcp://api2.qinglanmb.com:1883"
         val username = "mqtt"
         val password = "EMQ12312@12asdf"
         val clientName = "Client_" + MethodManager.getUser().accountId
 
-        mMqttAndroidClient = MqttAndroidClient(MyApplication.mContext, serverURI, clientName)
+        options= MqttConnectOptions()
+        options?.userName = username
+        options?.password = password.toCharArray()
+        options?.isAutomaticReconnect = true // 开启自动重连
+        options?.isCleanSession = false // 保持会话状态
+        options?.keepAliveInterval = 60
+        options?.connectionTimeout=10
+        //        options.maxReconnectDelay=5*60*1000
+
+        mMqttAndroidClient = MqttAndroidClient(context, serverURI, clientName)
         mMqttAndroidClient?.setCallback(object : MqttCallback {
             override fun messageArrived(topic: String?, message: MqttMessage?) {
                 Log.d(TAG, "Receive message: ${message.toString()} from topic: $topic")
@@ -55,26 +65,21 @@ class MQTTClient {
                         2->{
                             EventBus.getDefault().post(Constants.TESTPAPER_CORRECT_EVENT)
                         }
+                        3->{
+                            EventBus.getDefault().post(Constants.EXAM_CORRECT_EVENT)
+                        }
                     }
                 }
             }
-
             override fun connectionLost(cause: Throwable?) {
                 Log.d(TAG, "Connection lost ${cause.toString()}")
-                connect(context)
             }
-
             override fun deliveryComplete(token: IMqttDeliveryToken?) {
-
             }
         })
-        val options = MqttConnectOptions()
-        options.userName = username
-        options.password = password.toCharArray()
-        options.isAutomaticReconnect = true // 开启自动重连
-        options.isCleanSession = false // 保持会话状态
-        options.keepAliveInterval = 60
+    }
 
+    fun connect() {
         try {
             mMqttAndroidClient?.connect(options, null, object : IMqttActionListener {
                 override fun onSuccess(asyncActionToken: IMqttToken?) {
@@ -109,17 +114,14 @@ class MQTTClient {
 
     fun disconnect() {
         try {
-            mMqttAndroidClient?.disconnect(null, object : IMqttActionListener {
-                override fun onSuccess(asyncActionToken: IMqttToken?) {
-                    Log.d(TAG, "Disconnected")
-                }
-                override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                    Log.d(TAG, "Failed to disconnect")
-                }
-            })
+            mMqttAndroidClient?.disconnect(null,null)
         } catch (e: MqttException) {
             e.printStackTrace()
         }
+    }
+
+    fun isConnect():Boolean?{
+        return mMqttAndroidClient?.isConnected
     }
 
 }

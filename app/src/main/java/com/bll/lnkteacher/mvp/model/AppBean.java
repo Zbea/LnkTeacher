@@ -1,18 +1,12 @@
 package com.bll.lnkteacher.mvp.model;
 
-import android.graphics.drawable.Drawable;
-
 import com.bll.lnkteacher.MethodManager;
-import com.bll.lnkteacher.utils.SPUtil;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-
-import java.util.List;
-import java.util.Objects;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class AppBean {
@@ -25,11 +19,17 @@ public class AppBean {
     public byte[] imageByte;
     public boolean isTool;
     public Long time;
+    public Integer type;//1应用2字典、词典
+    public String path;
+    public String imageUrl;
+    public int bookId;
     @Transient
     public boolean isCheck;
-    @Generated(hash = 558694803)
-    public AppBean(Long id, long userId, String appName, String packageName, byte[] imageByte,
-            boolean isTool, Long time) {
+
+    @Generated(hash = 1520480402)
+    public AppBean(Long id, long userId, String appName, String packageName,
+            byte[] imageByte, boolean isTool, Long time, Integer type, String path,
+            String imageUrl, int bookId) {
         this.id = id;
         this.userId = userId;
         this.appName = appName;
@@ -37,6 +37,10 @@ public class AppBean {
         this.imageByte = imageByte;
         this.isTool = isTool;
         this.time = time;
+        this.type = type;
+        this.path = path;
+        this.imageUrl = imageUrl;
+        this.bookId = bookId;
     }
     @Generated(hash = 285800313)
     public AppBean() {
@@ -83,5 +87,28 @@ public class AppBean {
     public void setTime(Long time) {
         this.time = time;
     }
-
+    public Integer getType() {
+        return this.type;
+    }
+    public void setType(Integer type) {
+        this.type = type;
+    }
+    public String getPath() {
+        return this.path;
+    }
+    public void setPath(String path) {
+        this.path = path;
+    }
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    public int getBookId() {
+        return this.bookId;
+    }
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
 }

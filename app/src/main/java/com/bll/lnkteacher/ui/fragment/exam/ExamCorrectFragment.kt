@@ -45,9 +45,6 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
     }
 
     override fun lazyLoad() {
-        if (NetworkUtil.isNetworkConnected()){
-            mPresenter.getExamCorrectList()
-        }
     }
 
     private fun initRecyclerView(){
@@ -91,8 +88,20 @@ class ExamCorrectFragment: BaseFragment(),IExamCorrectListView{
 
     }
 
+    override fun fetchData() {
+        if (NetworkUtil.isNetworkConnected()){
+            mPresenter.getExamCorrectList()
+        }
+    }
+
     override fun onRefreshData() {
-        lazyLoad()
+        fetchData()
+    }
+
+    override fun onEventBusMessage(msgFlag: String) {
+        if(msgFlag== Constants.EXAM_CORRECT_EVENT){
+            fetchData()
+        }
     }
 
 }

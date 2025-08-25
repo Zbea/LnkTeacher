@@ -28,6 +28,7 @@ import com.bll.lnkteacher.mvp.model.PrivacyPassword;
 import com.bll.lnkteacher.mvp.model.User;
 import com.bll.lnkteacher.mvp.model.book.TextbookBean;
 import com.bll.lnkteacher.ui.activity.account.AccountLoginActivity;
+import com.bll.lnkteacher.ui.activity.book.DictionaryBookDetailsActivity;
 import com.bll.lnkteacher.ui.activity.drawing.FileDrawingActivity;
 import com.bll.lnkteacher.ui.activity.drawing.NoteDrawingActivity;
 import com.bll.lnkteacher.ui.activity.book.TextbookDetailsActivity;
@@ -215,7 +216,7 @@ public class MethodManager {
     private static @NonNull JSONArray getJsonArray(List<AppBean> toolApps) {
         JSONArray result =new JSONArray();
         for (AppBean item : toolApps) {
-            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY))
+            if (Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)||item.type==2)
                 continue;
             JSONObject jsonObject = new JSONObject();
             try {
@@ -299,6 +300,17 @@ public class MethodManager {
     }
 
     /**
+     * 跳转字典词典
+     */
+    public static void gotoDictionaryDetails(Context context, int bookId,int screen) {
+        ActivityManager.getInstance().finishActivity(DictionaryBookDetailsActivity.class.getName());
+        Intent intent = new Intent(context, DictionaryBookDetailsActivity.class);
+        intent.putExtra("bookId",bookId);
+        intent.putExtra(Constants.INTENT_SCREEN_LABEL, screen);
+        context.startActivity(intent);
+    }
+
+    /**
      * 获取工具app
      * @param context
      * @param type 0 全部应用 1 设置为工具应用
@@ -307,18 +319,19 @@ public class MethodManager {
     public static List<AppBean> getAppTools(Context context,int type){
         List<AppBean> apps;
         if (type==0){
-            apps=AppDaoManager.getInstance().queryList();
+            apps=AppDaoManager.getInstance().queryAll();
         }
         else {
-            apps=AppDaoManager.getInstance().queryTool();
+            apps=AppDaoManager.getInstance().queryToolAll();
         }
         //从数据库中拿到应用集合 遍历查询已存储的应用是否已经卸载 卸载删除
         Iterator<AppBean> it=apps.iterator();
         while (it.hasNext()){
             AppBean item= it.next();
-            if (!AppUtils.isAvailable(context,item.packageName)&& !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)){
+            item.isCheck=false;
+            if (!AppUtils.isAvailable(context,item.packageName)&& !Objects.equals(item.packageName, Constants.PACKAGE_GEOMETRY)&&item.type!=2){
                 it.remove();
-                AppDaoManager.getInstance().delete(item);
+                AppDaoManager.getInstance().deleteBean(item);
             }
         }
         return apps;

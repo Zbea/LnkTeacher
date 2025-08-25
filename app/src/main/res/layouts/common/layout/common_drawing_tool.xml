@@ -47,7 +47,6 @@
         android:scaleType="center"
         android:src="@mipmap/icon_draw_edit"
         android:background="@drawable/click_btn_transparent_line_black"
-        android:visibility="gone"
         />
 
 
