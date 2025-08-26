@@ -12,6 +12,7 @@ import android.os.Handler
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aiv.aisdk.NativeLib
 import com.bll.lnkteacher.*
 import com.bll.lnkteacher.base.BaseAppCompatActivity
 import com.bll.lnkteacher.manager.*

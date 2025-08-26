@@ -26,6 +26,8 @@ public class ItemList implements Serializable ,Comparable<ItemList>{
 
     public int userType;
 
+    public String content;
+
     public ItemList() {
     }
 

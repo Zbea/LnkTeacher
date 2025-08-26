@@ -89,16 +89,6 @@
                 >
 
                 <ImageView
-                    android:id="@+id/iv_expand_arrow"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@mipmap/icon_topic_arrow_expend"
-                    android:layout_margin="@dimen/dp_10"
-                    android:background="@drawable/click_btn_transparent_line_black"
-                    />
-
-                <ImageView
                     android:id="@+id/iv_score_up"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -124,6 +114,33 @@
                     android:layout_marginBottom="@dimen/dp_25"
                     android:layout_marginStart="@dimen/dp_80"
                     android:layout_marginEnd="@dimen/dp_80"
+                    />
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:layout_margin="@dimen/dp_10"
+                    >
+                    <TextView
+                        android:id="@+id/tv_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_10"
+                        android:textSize="@dimen/sp_24"
+                        android:textColor="@color/black"
+                        />
+                </ScrollView>
+
+
+                <ImageView
+                    android:id="@+id/iv_expand_arrow"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@mipmap/icon_topic_arrow_expend"
+                    android:layout_margin="@dimen/dp_10"
+                    android:background="@drawable/click_btn_transparent_line_black"
                     />
 
             </RelativeLayout>

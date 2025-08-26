@@ -2,6 +2,7 @@ package com.bll.lnkteacher.ui.activity.teaching
 
 import android.os.Handler
 import androidx.recyclerview.widget.GridLayoutManager
+import com.aiv.aisdk.NativeLib
 import com.bll.lnkteacher.Constants
 import com.bll.lnkteacher.DataBeanManager
 import com.bll.lnkteacher.FileAddress
@@ -11,6 +12,9 @@ import com.bll.lnkteacher.base.BaseDrawingActivity
 import com.bll.lnkteacher.dialog.CommonDialog
 import com.bll.lnkteacher.dialog.ImageDialog
 import com.bll.lnkteacher.dialog.NumberDialog
+import com.bll.lnkteacher.mvp.model.AIScoreItem
+import com.bll.lnkteacher.mvp.model.AiRequestItem
+import com.bll.lnkteacher.mvp.model.AiRequestItem.ImageItem.ImageUrlItem
 import com.bll.lnkteacher.mvp.model.testpaper.CorrectBean
 import com.bll.lnkteacher.mvp.model.testpaper.ScoreItem
 import com.bll.lnkteacher.mvp.model.testpaper.TestPaperClassBean
@@ -33,6 +37,7 @@ import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score
 import kotlinx.android.synthetic.main.ac_testpaper_correct.ll_score_topic
 import kotlinx.android.synthetic.main.ac_testpaper_correct.rv_list
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_answer
+import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_content
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_save
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_share
 import kotlinx.android.synthetic.main.ac_testpaper_correct.tv_take_time
@@ -65,6 +70,7 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     private var tokenStr = ""
     private var initScores = mutableListOf<ScoreItem>()//初始题目分数
     private var isTopicExpend = false
+    private var nativeLib:NativeLib?=null
 
     override fun onToken(token: String) {
         tokenStr = token
@@ -115,6 +121,17 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
     }
 
     override fun initData() {
+        nativeLib= NativeLib()
+        nativeLib?.netConn("test", 123, object : NativeLib.MqttCallback {
+            override fun onCallback(message: String?) {
+                showLog(message.toString())
+                runOnUiThread {
+                    val alScoreItem=Gson().fromJson(message,AIScoreItem::class.java)
+                    tv_content.text=alScoreItem.result.choices[0].message.content.toString()
+                }
+            }
+        })
+
         screenPos = Constants.SCREEN_LEFT
         val classPos = intent.getIntExtra("classPos", -1)
         correctList = intent.getBundleExtra("bundle")?.get("paperCorrect") as CorrectBean
@@ -178,27 +195,41 @@ class TestPaperCorrectActivity : BaseDrawingActivity(), IContractView.ITestPaper
 
         tv_save.setOnClickListener {
             hideKeyboard()
-            if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
-                showLoading()
-                //将赋值数据初始化给原数据
-                initScores = ScoreItemUtils.updateInitListData(initScores, currentScores, correctModule)
-                if (isTopicExpend) {
-                    isTopicExpend = false
-                    setTopicExpend(false)
+
+            val aiRequestItem=AiRequestItem()
+            aiRequestItem.subject=MethodManager.getUser().subjectName
+            aiRequestItem.prompt="要求详细分析答案,给出每题得分,并总结全部得分。"
+            for (imageUrl in currentImages){
+                val item= AiRequestItem.ImageItem()
+                item.image_url=ImageUrlItem().apply {
+                    url=imageUrl
                 }
-                //没有手写，直接提交
-                if (!FileUtils.isExistContent(getPathDraw())) {
-                    url = userItems[posUser].studentUrl
-                    commit()
-                } else {
-                    if (bitmapBatchSaver.isAccomplished){
-                        commitPaper()
-                    }
-                    else{
-                        showToast("手写未保存，请稍后提交")
-                    }
-                }
+                aiRequestItem.question.add(item)
             }
+
+            nativeLib?.sendMessage(Gson().toJson(aiRequestItem).trimIndent(),-1)
+
+//            if (correctStatus == 1 && tv_total_score.text.toString().isNotEmpty()) {
+//                showLoading()
+//                //将赋值数据初始化给原数据
+//                initScores = ScoreItemUtils.updateInitListData(initScores, currentScores, correctModule)
+//                if (isTopicExpend) {
+//                    isTopicExpend = false
+//                    setTopicExpend(false)
+//                }
+//                //没有手写，直接提交
+//                if (!FileUtils.isExistContent(getPathDraw())) {
+//                    url = userItems[posUser].studentUrl
+//                    commit()
+//                } else {
+//                    if (bitmapBatchSaver.isAccomplished){
+//                        commitPaper()
+//                    }
+//                    else{
+//                        showToast("手写未保存，请稍后提交")
+//                    }
+//                }
+//            }
         }
 
         tv_total_score.setOnClickListener {

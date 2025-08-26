@@ -37,8 +37,8 @@ class Constants {
         const val STATUS_BAR_SHOW = 2147483647//永不消失
         const val RESULT_10001=10001//手写提交回调
 
-//      const val URL_BASE = "https://api2.qinglanmb.com/v1/"
-        const val URL_BASE = "http://192.168.3.100:10800/v1/"
+      const val URL_BASE = "https://api2.qinglanmb.com/v1/"
+//        const val URL_BASE = "http://192.168.3.100:10800/v1/"
 //        const val RELEASE_BASE_URL = "http://www.htfyun.com.cn:8080/"
 //        const val RELEASE_BASE_URL = "http://sys.qinglanmb.com:8080/"
         const val RELEASE_BASE_URL = "https://api2.qinglanmb.com/v1/"
